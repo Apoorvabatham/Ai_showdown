@@ -38,7 +38,7 @@ assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **
 | donald | Donald Tarrif | **Approved** | age 80, round full face, jowls, squint, big swept blond hair (hair_volume), lean-back stance, belly |
 | tesla | tesla man | **Approved** | age 55, tall slouch, long jaw, swept-back brown hair, "OCCUPY MARS" tee (tools/build_prints.py) |
 | zuckerbot | Mark Zuckerbot | **Approved** | age 42, short, pale, tight curls, wide blue eyes, upright stiff stance. Hoodie collar jagged edge fixed. |
-| jensen | Jensen Wong | **Awaiting review** | age 63, voluminous silver swept-back hair (hair_volume), confident keynote posture, black leather jacket, glasses, aged skin pass, respectful East Asian facial sculpt. |
+| jensen | Jensen Wong | **Approved** | age 63, voluminous silver swept-back hair (hair_volume), confident keynote posture, black leather jacket with NVIDIA tee (tools/build_prints.py), glasses, aged skin pass, respectful East Asian facial sculpt. |
 | ram, dario, demis, yann, geoff, sundar, xi, algorithm | | To do | earlier generic pass only (face sculpt, eyes, brows, age) |
 
 Suggested order: zuckerbot → jensen → sundar → xi → yann → geoff → ram → dario → demis → algorithm.
