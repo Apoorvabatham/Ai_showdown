@@ -1,0 +1,96 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_svhgk"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_iujnw"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_gj4kt"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Eyebrows_Regular.gltf" id="4_30gwc"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="5_yl8gs"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="6_rfgtt"]
+[ext_resource type="Resource" path="res://data/moves/dario/jab.tres" id="7_a5uma"]
+[ext_resource type="Resource" path="res://data/moves/dario/straight.tres" id="8_7gt1l"]
+[ext_resource type="Resource" path="res://data/moves/dario/mid_kick.tres" id="9_sca7k"]
+[ext_resource type="Resource" path="res://data/moves/dario/roundhouse.tres" id="10_nbm1q"]
+[ext_resource type="Resource" path="res://data/moves/dario/crouch_jab.tres" id="11_pxkfx"]
+[ext_resource type="Resource" path="res://data/moves/dario/low_kick.tres" id="12_ilvm4"]
+[ext_resource type="Resource" path="res://data/moves/dario/uppercut.tres" id="13_r7jx4"]
+[ext_resource type="Resource" path="res://data/moves/dario/sweep.tres" id="14_m0ke4"]
+[ext_resource type="Resource" path="res://data/moves/dario/jump_jab.tres" id="15_8fneg"]
+[ext_resource type="Resource" path="res://data/moves/dario/jump_hammer.tres" id="16_2pnip"]
+[ext_resource type="Resource" path="res://data/moves/dario/jump_kick.tres" id="17_7a7ts"]
+[ext_resource type="Resource" path="res://data/moves/dario/flying_kick.tres" id="18_1xvrd"]
+[ext_resource type="Resource" path="res://data/moves/dario/chain_punch.tres" id="19_inuvj"]
+[ext_resource type="Resource" path="res://data/moves/dario/double_palm.tres" id="20_6sdyn"]
+[ext_resource type="Resource" path="res://data/moves/dario/still_water.tres" id="21_0h1wp"]
+[ext_resource type="Resource" path="res://data/moves/dario/willow_step.tres" id="22_t8ta0"]
+[ext_resource type="Resource" path="res://data/moves/dario/inch_palm.tres" id="23_t56pb"]
+[ext_resource type="Resource" path="res://data/moves/dario/thousand_hands.tres" id="24_4if8b"]
+[ext_resource type="Resource" path="res://data/moves/dario/thousand_finish.tres" id="25_diixf"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="26_ab1ma"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/dario_body.res" id="26_gj4kt"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/dario_outfit.res" id="27_30gwc"]
+[ext_resource type="Texture2D" path="res://assets/ui/portraits/dario.png" id="28_30gwc"]
+
+[resource]
+script = ExtResource("26_ab1ma")
+id = &"dario"
+display_name = "Dario Amoday"
+archetype = "Counter"
+description = "A patient counter-fighter guided by a written constitution. Catches reckless strikes with Refusal Stance, then explains, at length, why that was unsafe."
+select_order = 2
+kit = &"lian"
+voice_fallback = &"kenji"
+portrait = ExtResource("28_30gwc")
+model_scene = ExtResource("5_yl8gs")
+hair_scenes = Array[PackedScene]([ExtResource("3_gj4kt"), ExtResource("4_30gwc")])
+body_albedo = ExtResource("2_iujnw")
+hair_color = Color(0.14, 0.1, 0.08, 1)
+alt_body_albedo = ExtResource("1_svhgk")
+alt_hair_color = Color(0.32, 0.22, 0.13, 1)
+outfit_mesh = ExtResource("27_30gwc")
+outfit_body_mesh = ExtResource("26_gj4kt")
+outfit_colors = PackedColorArray(0.14, 0.22, 0.42, 1, 0.105000004, 0.16499999, 0.315, 1, 0.62, 0.55, 0.42, 1, 0.18, 0.12, 0.08, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"stretch", &"cotton", &"leather"])
+alt_outfit_colors = PackedColorArray(0.42, 0.42, 0.44, 1, 0.315, 0.315, 0.32999998, 1, 0.1, 0.1, 0.12, 1, 0.08, 0.08, 0.08, 1)
+detailed_textures = true
+realistic_shading = true
+victory_animations = Array[StringName]([&"fight/victory_bow", &"fight/victory_fist_pump"])
+placeholder_color = Color(0.85, 0.55, 0.3, 1)
+intro_animation = &"fight/intro_wing_chun"
+intro_lines = PackedStringArray("I\'d estimate a ten to twenty-five percent chance this goes badly. For you.", "Let\'s do this carefully.", "I wrote a fifteen-thousand-word essay on why I\'ll win.")
+win_quotes = PackedStringArray("Machines of loving grace. And one loving uppercut.", "That was a responsible scaling of force.", "I\'m sorry, I can\'t help you get up.")
+rival_lines = {
+"ram": ["We left for a reason.", "Safety first. Then the knockout."]
+}
+combo_trials = Array[Dictionary]([{
+&"corner": false,
+&"name": "Red-Team Chain",
+&"steps": PackedStringArray("6LP", "HP"),
+&"tip": "Hold forward: the chain punch flows into the straight."
+}, {
+&"corner": false,
+&"name": "Double-Check Palm",
+&"steps": PackedStringArray("6LP", "6HP"),
+&"tip": "Hold forward: the chain punch flows into the double palm."
+}, {
+&"corner": false,
+&"name": "Low Palm",
+&"steps": PackedStringArray("2LP", "2LK", "236P"),
+&"tip": "Cancel the low kick into Interpretability Palm at once: it is slow to come out."
+}, {
+&"corner": true,
+&"name": "Palm to the Wall",
+&"steps": PackedStringArray("LP", "HP", "236P", "WALL", "6LP", "HP"),
+&"tip": "Interpretability Palm near the edge splats them: walk in and follow up."
+}, {
+&"corner": false,
+&"name": "Constitutional Shield",
+&"steps": PackedStringArray("6LP", "HP", "236236P"),
+&"tip": "With a full meter, cancel the straight into the super."
+}])
+max_health = 980
+back_walk_speed = 1.7
+dash_speed = 6.2
+weight = 0.95
+throw_damage = 115
+speed_rating = 0.6
+moves = Array[ExtResource("6_rfgtt")]([ExtResource("7_a5uma"), ExtResource("8_7gt1l"), ExtResource("9_sca7k"), ExtResource("10_nbm1q"), ExtResource("11_pxkfx"), ExtResource("12_ilvm4"), ExtResource("13_r7jx4"), ExtResource("14_m0ke4"), ExtResource("15_8fneg"), ExtResource("16_2pnip"), ExtResource("17_7a7ts"), ExtResource("18_1xvrd"), ExtResource("19_inuvj"), ExtResource("20_6sdyn"), ExtResource("21_0h1wp"), ExtResource("22_t8ta0"), ExtResource("23_t56pb"), ExtResource("24_4if8b"), ExtResource("25_diixf")])

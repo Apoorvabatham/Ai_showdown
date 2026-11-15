@@ -1,0 +1,99 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_n15wk"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_d2mnr"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_8fbpp"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Eyebrows_Regular.gltf" id="4_507e8"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="5_wyspr"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="6_e7n0n"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/jab.tres" id="7_m6y5y"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/straight.tres" id="8_unmaa"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/mid_kick.tres" id="9_q0dgj"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/roundhouse.tres" id="10_2qwxw"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/crouch_jab.tres" id="11_xs5d5"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/low_kick.tres" id="12_bgh70"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/uppercut.tres" id="13_gjckp"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/sweep.tres" id="14_jauun"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/jump_jab.tres" id="15_tak2n"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/jump_hammer.tres" id="16_grndd"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/jump_kick.tres" id="17_2nowt"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/flying_kick.tres" id="18_u4x7l"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/shoulder_tackle.tres" id="19_ckd4p"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/knee_lift.tres" id="20_86871"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/valkyrie_slam.tres" id="21_7bj5o"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/spinning_lariat.tres" id="22_ypdyu"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/thunder_valkyrie.tres" id="23_08k0e"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/zuckerbot_body.res" id="24_8fbpp"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="24_n7hc1"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/zuckerbot_outfit.res" id="25_507e8"]
+[ext_resource type="Texture2D" path="res://assets/ui/portraits/zuckerbot.png" id="26_507e8"]
+
+[resource]
+script = ExtResource("24_n7hc1")
+id = &"zuckerbot"
+display_name = "Mark Zuckerbot"
+archetype = "Grappler"
+description = "Trained in jiu-jitsu, raised on growth metrics. The Metaverse Trap pulls you into a virtual world where nobody has legs."
+select_order = 3
+kit = &"valka"
+voice_fallback = &"jin"
+portrait = ExtResource("26_507e8")
+model_scene = ExtResource("5_wyspr")
+hair_scenes = Array[PackedScene]([ExtResource("3_8fbpp"), ExtResource("4_507e8")])
+body_albedo = ExtResource("2_d2mnr")
+model_scale = 1.06
+hair_color = Color(0.3, 0.2, 0.12, 1)
+alt_body_albedo = ExtResource("1_n15wk")
+alt_hair_color = Color(0.12, 0.09, 0.07, 1)
+outfit_mesh = ExtResource("25_507e8")
+outfit_body_mesh = ExtResource("24_8fbpp")
+outfit_colors = PackedColorArray(0.42, 0.43, 0.45, 1, 0.357, 0.3655, 0.3825, 1, 0.15, 0.2, 0.32, 1, 0.8, 0.8, 0.78, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"cotton", &"denim", &"leather"])
+alt_outfit_colors = PackedColorArray(0.1, 0.18, 0.42, 1, 0.085, 0.15300001, 0.357, 1, 0.08, 0.08, 0.1, 1, 0.75, 0.75, 0.75, 1)
+detailed_textures = true
+realistic_shading = true
+victory_animations = Array[StringName]([&"fight/victory_flex", &"fight/victory_fist_pump"])
+placeholder_color = Color(0.25, 0.45, 0.9, 1)
+intro_animation = &"fight/intro_beckon"
+intro_expression = &"smirk"
+intro_lines = PackedStringArray("Hello, fellow human. I, too, enjoy combat.", "Let\'s connect. With my fist.", "I\'ve been training. In real life, even.")
+win_quotes = PackedStringArray("Thank you for your data.", "Senator, I won a fight.", "Move fast and break things. Like you.")
+rival_lines = {
+"tesla": ["You actually showed up for the cage match.", "Next time, bring legs. Real ones."]
+}
+combo_trials = Array[Dictionary]([{
+&"corner": false,
+&"name": "Jab String",
+&"steps": PackedStringArray("LP", "LP", "HP"),
+&"tip": "Jabs chain into each other and into the straight."
+}, {
+&"corner": false,
+&"name": "Low Lariat",
+&"steps": PackedStringArray("2LP", "2LP", "623P"),
+&"tip": "Low jabs, then cancel into Pivot to Video."
+}, {
+&"corner": false,
+&"name": "Knee and Lariat",
+&"steps": PackedStringArray("6LK", "623P"),
+&"tip": "Cancel the knee lift into Pivot to Video while they're in the air."
+}, {
+&"corner": true,
+&"name": "Corner Splat",
+&"steps": PackedStringArray("HK", "WALL", "LK", "HP"),
+&"tip": "A roundhouse near the edge splats them: walk in and follow up."
+}, {
+&"corner": true,
+&"name": "Tackle to the Wall",
+&"steps": PackedStringArray("6HP", "WALL", "LP", "623P"),
+&"tip": "The shoulder tackle splats them on the edge: jab, then cancel into the lariat."
+}])
+max_health = 1050
+walk_speed = 1.8
+back_walk_speed = 1.4
+dash_speed = 5.0
+jump_velocity = 5.8
+weight = 1.15
+throw_damage = 150
+power_rating = 0.8
+speed_rating = 0.4
+moves = Array[ExtResource("6_e7n0n")]([ExtResource("7_m6y5y"), ExtResource("8_unmaa"), ExtResource("9_q0dgj"), ExtResource("10_2qwxw"), ExtResource("11_xs5d5"), ExtResource("12_bgh70"), ExtResource("13_gjckp"), ExtResource("14_jauun"), ExtResource("15_tak2n"), ExtResource("16_grndd"), ExtResource("17_2nowt"), ExtResource("18_u4x7l"), ExtResource("19_ckd4p"), ExtResource("20_86871"), ExtResource("21_7bj5o"), ExtResource("22_ypdyu"), ExtResource("23_08k0e")])

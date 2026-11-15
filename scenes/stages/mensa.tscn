@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/stages/dojo.tscn" id="1_base"]
+[ext_resource type="Script" path="res://scripts/stages/stage_retheme.gd" id="2_retheme"]
+
+[node name="Mensa" instance=ExtResource("1_base")]
+
+[node name="Retheme" type="Node3D" parent="." index="1"]
+script = ExtResource("2_retheme")
+look = 1

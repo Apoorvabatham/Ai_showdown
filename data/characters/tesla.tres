@@ -1,0 +1,104 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_jkh7v"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_57bhd"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_6fbjv"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_vefoe"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_3qv4n"]
+[ext_resource type="Resource" path="res://data/moves/tesla/jab.tres" id="6_x12v2"]
+[ext_resource type="Resource" path="res://data/moves/tesla/straight.tres" id="7_hv3ia"]
+[ext_resource type="Resource" path="res://data/moves/tesla/mid_kick.tres" id="8_0mg7i"]
+[ext_resource type="Resource" path="res://data/moves/tesla/roundhouse.tres" id="9_7632y"]
+[ext_resource type="Resource" path="res://data/moves/tesla/crouch_jab.tres" id="10_xtxww"]
+[ext_resource type="Resource" path="res://data/moves/tesla/low_kick.tres" id="11_tl328"]
+[ext_resource type="Resource" path="res://data/moves/tesla/uppercut.tres" id="12_dx0na"]
+[ext_resource type="Resource" path="res://data/moves/tesla/sweep.tres" id="13_cu6di"]
+[ext_resource type="Resource" path="res://data/moves/tesla/jump_jab.tres" id="14_eewrn"]
+[ext_resource type="Resource" path="res://data/moves/tesla/jump_hammer.tres" id="15_2dfjp"]
+[ext_resource type="Resource" path="res://data/moves/tesla/jump_kick.tres" id="16_1n8w8"]
+[ext_resource type="Resource" path="res://data/moves/tesla/flying_kick.tres" id="17_qh14i"]
+[ext_resource type="Resource" path="res://data/moves/tesla/rushing_hook.tres" id="18_7147x"]
+[ext_resource type="Resource" path="res://data/moves/tesla/step_kick.tres" id="19_uf7q6"]
+[ext_resource type="Resource" path="res://data/moves/tesla/gale_slide.tres" id="20_e5gxr"]
+[ext_resource type="Resource" path="res://data/moves/tesla/crescent_rise.tres" id="21_x7p23"]
+[ext_resource type="Resource" path="res://data/moves/tesla/tempest_kicks.tres" id="22_wmn3i"]
+[ext_resource type="Resource" path="res://data/moves/tesla/tempest_finish.tres" id="23_a04um"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/tesla_body.res" id="24_6fbjv"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="24_qwdk6"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/tesla_outfit.res" id="25_vefoe"]
+[ext_resource type="Texture2D" path="res://assets/ui/portraits/tesla.png" id="26_vefoe"]
+
+[resource]
+script = ExtResource("24_qwdk6")
+id = &"tesla"
+display_name = "tesla man"
+archetype = "Rushdown"
+description = "Moves fast and breaks things, mostly his own schedule. Swears the Rocket Launch will be ready next quarter."
+select_order = 1
+kit = &"rhea"
+voice_fallback = &"jin"
+portrait = ExtResource("26_vefoe")
+model_scene = ExtResource("4_vefoe")
+hair_scenes = Array[PackedScene]([ExtResource("3_6fbjv")])
+body_albedo = ExtResource("2_57bhd")
+hair_color = Color(0.2, 0.14, 0.09, 1)
+alt_body_albedo = ExtResource("1_jkh7v")
+alt_hair_color = Color(0.36, 0.27, 0.16, 1)
+outfit_mesh = ExtResource("25_vefoe")
+outfit_body_mesh = ExtResource("24_6fbjv")
+outfit_colors = PackedColorArray(0.05, 0.05, 0.06, 1, 0.8, 0.8, 0.78, 1, 0.11, 0.13, 0.2, 1, 0.06, 0.06, 0.06, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"denim", &"leather"])
+alt_outfit_colors = PackedColorArray(0.75, 0.75, 0.75, 1, 0.1, 0.1, 0.1, 1, 0.25, 0.27, 0.32, 1, 0.8, 0.8, 0.78, 1)
+detailed_textures = true
+realistic_shading = true
+victory_animations = Array[StringName]([&"fight/victory_point", &"fight/victory_fist_pump"])
+placeholder_color = Color(0.85, 0.2, 0.2, 1)
+intro_animation = &"fight/intro_shadowbox"
+intro_expression = &"smirk"
+intro_lines = PackedStringArray("This fight will be done in two weeks. Probably.", "I\'d put my odds at a solid sixty-nine percent.", "Let\'s make fighting multiplanetary.")
+win_quotes = PackedStringArray("Rapid unscheduled disassembly. Yours.", "Concerning.", "Exactly.")
+rival_lines = {
+"ram": ["You turned my nonprofit into a product!", "My lawyers will handle the rematch."],
+"zuckerbot": ["Cage match. Finally. I'm literally ready.", "Told you I'd show up."]
+}
+combo_trials = Array[Dictionary]([{
+&"corner": false,
+&"name": "Quick Hands",
+&"steps": PackedStringArray("LP", "LP", "HP"),
+&"tip": "Jabs chain into each other and into the straight."
+}, {
+&"corner": false,
+&"name": "Step In",
+&"steps": PackedStringArray("6LK", "6HP"),
+&"tip": "Hold forward: the step kick chains into the rushing hook."
+}, {
+&"corner": false,
+&"name": "Low Slide",
+&"steps": PackedStringArray("2LP", "2LK", "236K"),
+&"tip": "Cancel the low kick into Full Self-Sliding."
+}, {
+&"corner": false,
+&"name": "Crescent Launcher",
+&"steps": PackedStringArray("LP", "LP", "623K"),
+&"tip": "Cancel the second jab into Starship Hop."
+}, {
+&"corner": true,
+&"name": "Corner Splat",
+&"steps": PackedStringArray("HK", "WALL", "LK", "HP"),
+&"tip": "A roundhouse near the edge splats them: walk in and follow up."
+}, {
+&"corner": false,
+&"name": "Rocket Launch",
+&"steps": PackedStringArray("LP", "LP", "236236K"),
+&"tip": "With a full meter, cancel the jabs into the super."
+}])
+max_health = 960
+walk_speed = 2.7
+back_walk_speed = 2.0
+dash_speed = 7.8
+jump_velocity = 6.4
+weight = 0.85
+throw_damage = 100
+power_rating = 0.35
+speed_rating = 0.9
+moves = Array[ExtResource("5_3qv4n")]([ExtResource("6_x12v2"), ExtResource("7_hv3ia"), ExtResource("8_0mg7i"), ExtResource("9_7632y"), ExtResource("10_xtxww"), ExtResource("11_tl328"), ExtResource("12_dx0na"), ExtResource("13_cu6di"), ExtResource("14_eewrn"), ExtResource("15_2dfjp"), ExtResource("16_1n8w8"), ExtResource("17_qh14i"), ExtResource("18_7147x"), ExtResource("19_uf7q6"), ExtResource("20_e5gxr"), ExtResource("21_x7p23"), ExtResource("22_wmn3i"), ExtResource("23_a04um")])

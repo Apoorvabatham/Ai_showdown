@@ -1,0 +1,94 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="1_8alh3"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_bthns"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="1_char"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="1_qdmbc"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="2_iif4c"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="3_osouf"]
+[ext_resource type="Resource" path="res://data/moves/kenji/jab.tres" id="5_5a4ip"]
+[ext_resource type="Resource" path="res://data/moves/kenji/straight.tres" id="6_e40xy"]
+[ext_resource type="Resource" path="res://data/moves/kenji/mid_kick.tres" id="7_bthns"]
+[ext_resource type="Resource" path="res://data/moves/kenji/roundhouse.tres" id="8_ynpm3"]
+[ext_resource type="Resource" path="res://data/moves/kenji/crouch_jab.tres" id="9_yj4mt"]
+[ext_resource type="Resource" path="res://data/moves/kenji/low_kick.tres" id="10_65oi5"]
+[ext_resource type="Resource" path="res://data/moves/kenji/uppercut.tres" id="11_jc7cg"]
+[ext_resource type="Resource" path="res://data/moves/kenji/sweep.tres" id="12_hp42r"]
+[ext_resource type="Resource" path="res://data/moves/kenji/jump_jab.tres" id="13_26eyd"]
+[ext_resource type="Resource" path="res://data/moves/kenji/jump_hammer.tres" id="14_xn3v5"]
+[ext_resource type="Resource" path="res://data/moves/kenji/jump_kick.tres" id="15_ffpqg"]
+[ext_resource type="Resource" path="res://data/moves/kenji/flying_kick.tres" id="16_h8qr8"]
+[ext_resource type="Resource" path="res://data/moves/kenji/advancing_straight.tres" id="17_p7x8d"]
+[ext_resource type="Resource" path="res://data/moves/kenji/snap_kick.tres" id="18_eengp"]
+[ext_resource type="Texture2D" path="res://assets/ui/portraits/kenji.png" id="19_e40xy"]
+[ext_resource type="Resource" path="res://data/moves/kenji/ki_blast.tres" id="20_jc7cg"]
+[ext_resource type="Resource" path="res://data/moves/kenji/rising_dragon.tres" id="21_hp42r"]
+[ext_resource type="Resource" path="res://data/moves/kenji/dragon_barrage.tres" id="22_26eyd"]
+[ext_resource type="Resource" path="res://data/moves/kenji/dragon_finish.tres" id="23_xn3v5"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/kenji_body.res" id="24_26eyd"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/kenji_outfit.res" id="25_xn3v5"]
+
+[resource]
+script = ExtResource("1_char")
+id = &"kenji"
+display_name = "Kenji"
+archetype = "Balanced"
+description = "An all-rounder with solid pokes and reliable combos. Medium speed, medium damage."
+portrait = ExtResource("19_e40xy")
+model_scene = ExtResource("3_osouf")
+hair_scenes = Array[PackedScene]([ExtResource("2_iif4c")])
+body_albedo = ExtResource("1_8alh3")
+hair_color = Color(0.09, 0.07, 0.06, 1)
+alt_body_albedo = ExtResource("1_bthns")
+alt_hair_color = Color(0.55, 0.38, 0.18, 1)
+outfit_mesh = ExtResource("25_xn3v5")
+outfit_body_mesh = ExtResource("24_26eyd")
+outfit_colors = PackedColorArray(0.8, 0.79, 0.76, 1, 0.07, 0.07, 0.08, 1, 0.78, 0.07, 0.07, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"cotton", &"cotton"])
+alt_outfit_colors = PackedColorArray(0.15, 0.16, 0.2, 1, 0.42, 0.24, 0.1, 1, 0.8, 0.8, 0.78, 1)
+detailed_textures = true
+realistic_shading = true
+victory_animations = Array[StringName]([&"fight/victory_bow", &"fight/victory_fist_pump"])
+placeholder_color = Color(0.2, 0.45, 0.9, 1)
+intro_animation = &"fight/intro_salute"
+intro_expression = &"guard"
+intro_lines = PackedStringArray("Show me what your training is worth.", "Let our fists do the talking.", "A clean fight. No holding back.")
+win_quotes = PackedStringArray("Discipline beats fury. Every time.", "Train harder. Then come find me again.", "You fought well. Not well enough.")
+rival_lines = {
+"jin": ["Your kicks against my fists. Again.", "Fists one, kicks nothing."],
+"lian": ["They say you can't be hit. Let's find out.", "Even still water can be stirred."]
+}
+combo_trials = Array[Dictionary]([{
+&"corner": false,
+&"name": "Jab String",
+&"steps": PackedStringArray("LP", "LP", "HP"),
+&"tip": "Jabs chain into each other and into the straight."
+}, {
+&"corner": false,
+&"name": "Snap Kick Rush",
+&"steps": PackedStringArray("6LK", "6HP"),
+&"tip": "Hold forward: the snap kick chains into the advancing straight."
+}, {
+&"corner": false,
+&"name": "Fireball Confirm",
+&"steps": PackedStringArray("LP", "HP", "236P"),
+&"tip": "Cancel the straight into Ki Blast as it hits."
+}, {
+&"corner": false,
+&"name": "Rising Dragon",
+&"steps": PackedStringArray("2LP", "2LP", "623P"),
+&"tip": "Low jabs, then cancel into the dragon punch."
+}, {
+&"corner": true,
+&"name": "Corner Splat",
+&"steps": PackedStringArray("HK", "WALL", "6LK", "6HP"),
+&"tip": "A roundhouse near the edge splats them: walk in and follow up."
+}, {
+&"corner": false,
+&"name": "Dragon Barrage",
+&"steps": PackedStringArray("LP", "HP", "236236P"),
+&"tip": "With a full meter, cancel the straight into the super."
+}])
+power_rating = 0.55
+speed_rating = 0.55
+moves = Array[ExtResource("1_qdmbc")]([ExtResource("5_5a4ip"), ExtResource("6_e40xy"), ExtResource("7_bthns"), ExtResource("8_ynpm3"), ExtResource("9_yj4mt"), ExtResource("10_65oi5"), ExtResource("11_jc7cg"), ExtResource("12_hp42r"), ExtResource("13_26eyd"), ExtResource("14_xn3v5"), ExtResource("15_ffpqg"), ExtResource("16_h8qr8"), ExtResource("17_p7x8d"), ExtResource("18_eengp"), ExtResource("20_jc7cg"), ExtResource("21_hp42r"), ExtResource("22_26eyd"), ExtResource("23_xn3v5")])

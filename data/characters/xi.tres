@@ -1,0 +1,99 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_ew8mf"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_isae7"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_lj6x7"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_b1ku0"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_gpl0b"]
+[ext_resource type="Resource" path="res://data/moves/xi/jab.tres" id="6_l33eb"]
+[ext_resource type="Resource" path="res://data/moves/xi/straight.tres" id="7_ktcae"]
+[ext_resource type="Resource" path="res://data/moves/xi/mid_kick.tres" id="8_l0i1m"]
+[ext_resource type="Resource" path="res://data/moves/xi/roundhouse.tres" id="9_d5xip"]
+[ext_resource type="Resource" path="res://data/moves/xi/crouch_jab.tres" id="10_2liso"]
+[ext_resource type="Resource" path="res://data/moves/xi/low_kick.tres" id="11_54v0a"]
+[ext_resource type="Resource" path="res://data/moves/xi/uppercut.tres" id="12_f21ct"]
+[ext_resource type="Resource" path="res://data/moves/xi/sweep.tres" id="13_r04e0"]
+[ext_resource type="Resource" path="res://data/moves/xi/jump_jab.tres" id="14_2qotp"]
+[ext_resource type="Resource" path="res://data/moves/xi/jump_hammer.tres" id="15_8syq5"]
+[ext_resource type="Resource" path="res://data/moves/xi/jump_kick.tres" id="16_3sbm7"]
+[ext_resource type="Resource" path="res://data/moves/xi/flying_kick.tres" id="17_xed31"]
+[ext_resource type="Resource" path="res://data/moves/xi/gauntlet_drive.tres" id="18_c58bn"]
+[ext_resource type="Resource" path="res://data/moves/xi/spur_rake.tres" id="19_tuvdf"]
+[ext_resource type="Resource" path="res://data/moves/xi/shield_rush.tres" id="20_3k5wm"]
+[ext_resource type="Resource" path="res://data/moves/xi/rising_gauntlet.tres" id="21_kr8ja"]
+[ext_resource type="Resource" path="res://data/moves/xi/hammerfall.tres" id="22_qox8r"]
+[ext_resource type="Resource" path="res://data/moves/xi/emerald_oath.tres" id="23_e7u8o"]
+[ext_resource type="Resource" path="res://data/moves/xi/oath_finish.tres" id="24_vpirn"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="25_5bxqi"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/xi_body.res" id="25_lj6x7"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/xi_outfit.res" id="26_b1ku0"]
+[ext_resource type="Texture2D" path="res://assets/ui/portraits/xi.png" id="27_b1ku0"]
+
+[resource]
+script = ExtResource("25_5bxqi")
+id = &"xi"
+display_name = "Xi Winping"
+archetype = "Fortress"
+description = "Stands behind the Great Firewall, absorbs hits with stoic calm and makes sure no record of his defeats survives."
+select_order = 10
+kit = &"aelia"
+voice_fallback = &"brutus"
+portrait = ExtResource("27_b1ku0")
+model_scene = ExtResource("4_b1ku0")
+hair_scenes = Array[PackedScene]([ExtResource("3_lj6x7")])
+body_albedo = ExtResource("2_isae7")
+model_scale = 1.04
+hair_color = Color(0.06, 0.06, 0.06, 1)
+alt_body_albedo = ExtResource("1_ew8mf")
+alt_hair_color = Color(0.2, 0.2, 0.2, 1)
+outfit_mesh = ExtResource("26_b1ku0")
+outfit_body_mesh = ExtResource("25_lj6x7")
+outfit_colors = PackedColorArray(0.1, 0.1, 0.11, 1, 0.05, 0.05, 0.05, 1, 0.42, 0.06, 0.08, 1, 0.82, 0.82, 0.8, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton"])
+alt_outfit_colors = PackedColorArray(0.2, 0.22, 0.28, 1, 0.2, 0.12, 0.06, 1, 0.25, 0.3, 0.5, 1, 0.85, 0.85, 0.83, 1)
+detailed_textures = true
+realistic_shading = true
+victory_animations = Array[StringName]([&"fight/victory_oath", &"fight/victory_fist_pump"])
+placeholder_color = Color(0.8, 0.12, 0.12, 1)
+intro_animation = &"fight/intro_oath"
+intro_lines = PackedStringArray("This fight has been approved in advance.", "Search results for your victory: none found.", "Harmony will be restored.")
+win_quotes = PackedStringArray("This match did not happen.", "Your defeat is trending. Officially.", "Stability maintained.")
+rival_lines = {
+"donald": ["Your tariffs do not frighten me.", "Trade war: concluded."]
+}
+combo_trials = Array[Dictionary]([{
+&"corner": false,
+&"name": "Jab String",
+&"steps": PackedStringArray("LP", "LP", "HP"),
+&"tip": "Jabs chain into each other and into the straight."
+}, {
+&"corner": false,
+&"name": "Spur and Shield",
+&"steps": PackedStringArray("6LK", "236P"),
+&"tip": "Hold forward: cancel the spur rake into Belt and Road Rush."
+}, {
+&"corner": false,
+&"name": "Five-Year Plan",
+&"steps": PackedStringArray("2LP", "2LP", "623P"),
+&"tip": "Low jabs, then cancel into Five-Year Plan."
+}, {
+&"corner": true,
+&"name": "Gauntlet to the Wall",
+&"steps": PackedStringArray("6HP", "WALL", "LP", "HP"),
+&"tip": "State Media Drive near the edge splats them: walk in and follow up."
+}, {
+&"corner": false,
+&"name": "Great Firewall",
+&"steps": PackedStringArray("LP", "HP", "236236P"),
+&"tip": "With a full meter, cancel the straight into the super."
+}])
+max_health = 1100
+walk_speed = 1.85
+back_walk_speed = 1.4
+dash_speed = 5.0
+jump_velocity = 5.7
+weight = 1.2
+throw_damage = 140
+power_rating = 0.8
+speed_rating = 0.35
+moves = Array[ExtResource("5_gpl0b")]([ExtResource("6_l33eb"), ExtResource("7_ktcae"), ExtResource("8_l0i1m"), ExtResource("9_d5xip"), ExtResource("10_2liso"), ExtResource("11_54v0a"), ExtResource("12_f21ct"), ExtResource("13_r04e0"), ExtResource("14_2qotp"), ExtResource("15_8syq5"), ExtResource("16_3sbm7"), ExtResource("17_xed31"), ExtResource("18_c58bn"), ExtResource("19_tuvdf"), ExtResource("20_3k5wm"), ExtResource("21_kr8ja"), ExtResource("22_qox8r"), ExtResource("23_e7u8o"), ExtResource("24_vpirn")])

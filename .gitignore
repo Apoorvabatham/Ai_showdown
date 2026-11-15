@@ -1,0 +1,20 @@
+# Godot 4 generated files
+.godot/
+/android/
+
+# Export output
+/build/
+*.tmp
+
+# Release archives (rebuild with the Windows export + zip step)
+/dist/*.zip
+/dist/*.tar.gz
+
+# itch.io page kit (cover, screenshots, page text and devlogs): kept locally, not published
+/dist/itch/
+
+# Local design notes (not published)
+CLAUDE.md
+
+# Local tool settings
+.claude/

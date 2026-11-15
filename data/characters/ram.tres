@@ -1,0 +1,100 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_70tor"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_fqi1o"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_mxu0h"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_2dtko"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_hvfva"]
+[ext_resource type="Resource" path="res://data/moves/ram/jab.tres" id="6_64vk5"]
+[ext_resource type="Resource" path="res://data/moves/ram/straight.tres" id="7_wjjtj"]
+[ext_resource type="Resource" path="res://data/moves/ram/mid_kick.tres" id="8_3ci6o"]
+[ext_resource type="Resource" path="res://data/moves/ram/roundhouse.tres" id="9_gwhmh"]
+[ext_resource type="Resource" path="res://data/moves/ram/crouch_jab.tres" id="10_bayxq"]
+[ext_resource type="Resource" path="res://data/moves/ram/low_kick.tres" id="11_cspcn"]
+[ext_resource type="Resource" path="res://data/moves/ram/uppercut.tres" id="12_lcpgq"]
+[ext_resource type="Resource" path="res://data/moves/ram/sweep.tres" id="13_isahl"]
+[ext_resource type="Resource" path="res://data/moves/ram/jump_jab.tres" id="14_pj28b"]
+[ext_resource type="Resource" path="res://data/moves/ram/jump_hammer.tres" id="15_25xd2"]
+[ext_resource type="Resource" path="res://data/moves/ram/jump_kick.tres" id="16_6uene"]
+[ext_resource type="Resource" path="res://data/moves/ram/flying_kick.tres" id="17_3v5gb"]
+[ext_resource type="Resource" path="res://data/moves/ram/tapik.tres" id="18_4jvkm"]
+[ext_resource type="Resource" path="res://data/moves/ram/sipa_flip.tres" id="19_vkvm7"]
+[ext_resource type="Resource" path="res://data/moves/ram/lawin_drop.tres" id="20_svm4c"]
+[ext_resource type="Resource" path="res://data/moves/ram/bagyo_rush.tres" id="21_v0w4n"]
+[ext_resource type="Resource" path="res://data/moves/ram/lawin_rise.tres" id="22_3bsan"]
+[ext_resource type="Resource" path="res://data/moves/ram/lakas_stance.tres" id="23_7p1un"]
+[ext_resource type="Resource" path="res://data/moves/ram/huling_hagupit.tres" id="24_lpls8"]
+[ext_resource type="Resource" path="res://data/moves/ram/hagupit_finish.tres" id="25_envlf"]
+[ext_resource type="Resource" path="res://data/moves/ram/hagupit_max.tres" id="26_wmciy"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="27_lrmgp"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/ram_body.res" id="27_mxu0h"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/ram_outfit.res" id="28_2dtko"]
+[ext_resource type="Texture2D" path="res://assets/ui/portraits/ram.png" id="29_2dtko"]
+
+[resource]
+script = ExtResource("27_lrmgp")
+id = &"ram"
+display_name = "Ram Altman"
+archetype = "Hype Brawler"
+description = "Charges up with Add More Compute until every rush scales like a law of nature. AGI is coming next year. Every year."
+kit = &"mira"
+voice_fallback = &"kenji"
+portrait = ExtResource("29_2dtko")
+model_scene = ExtResource("4_2dtko")
+hair_scenes = Array[PackedScene]([ExtResource("3_mxu0h")])
+body_albedo = ExtResource("2_fqi1o")
+hair_color = Color(0.26, 0.18, 0.11, 1)
+alt_body_albedo = ExtResource("1_70tor")
+alt_hair_color = Color(0.1, 0.08, 0.07, 1)
+outfit_mesh = ExtResource("28_2dtko")
+outfit_body_mesh = ExtResource("27_mxu0h")
+outfit_colors = PackedColorArray(0.42, 0.44, 0.42, 1, 0.315, 0.32999998, 0.315, 1, 0.2, 0.3, 0.48, 1, 0.8, 0.8, 0.78, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"stretch", &"denim", &"leather"])
+alt_outfit_colors = PackedColorArray(0.16, 0.24, 0.2, 1, 0.12, 0.17999999, 0.15, 1, 0.12, 0.13, 0.15, 1, 0.1, 0.1, 0.1, 1)
+detailed_textures = true
+realistic_shading = true
+victory_animations = Array[StringName]([&"fight/victory_fist_pump", &"fight/victory_point"])
+placeholder_color = Color(0.3, 0.75, 0.6, 1)
+intro_animation = &"fight/intro_power"
+intro_expression = &"grin"
+intro_lines = PackedStringArray("Honestly? I think this is going to be a really good fight.", "We\'re going to need a lot more compute for this.", "AGI is close. So is my fist.")
+win_quotes = PackedStringArray("That felt like a pretty big deal, honestly.", "Scaling works. It\'s kind of wild.", "I\'ll need about seven trillion dollars for the rematch.")
+rival_lines = {
+"dario": ["You used to work for me, you know.", "Safety is great. Shipping is better."],
+"tesla": ["Still upset you left the board?", "See you in court. Again."]
+}
+combo_trials = Array[Dictionary]([{
+&"corner": false,
+&"name": "Teaser Tweet String",
+&"steps": PackedStringArray("6LP", "6LP", "HP"),
+&"tip": "Hold forward: backfists chain into each other and into the straight."
+}, {
+&"corner": false,
+&"name": "Sipa Launcher",
+&"steps": PackedStringArray("6LP", "6HK"),
+&"tip": "The backfist chains into Pivot Flip."
+}, {
+&"corner": false,
+&"name": "Bagyo Confirm",
+&"steps": PackedStringArray("LP", "HP", "236P"),
+&"tip": "Cancel the straight into Funding Round Rush."
+}, {
+&"corner": true,
+&"name": "Corner Splat",
+&"steps": PackedStringArray("HK", "WALL", "LK", "HP"),
+&"tip": "A roundhouse near the edge splats them: walk in and follow up."
+}, {
+&"corner": false,
+&"name": "Scaling Law",
+&"steps": PackedStringArray("LP", "HP", "236236P"),
+&"tip": "With a full meter, cancel the straight into the super."
+}])
+walk_speed = 2.3
+back_walk_speed = 1.8
+dash_speed = 7.0
+jump_velocity = 6.3
+weight = 0.92
+throw_damage = 115
+power_rating = 0.55
+speed_rating = 0.75
+moves = Array[ExtResource("5_hvfva")]([ExtResource("6_64vk5"), ExtResource("7_wjjtj"), ExtResource("8_3ci6o"), ExtResource("9_gwhmh"), ExtResource("10_bayxq"), ExtResource("11_cspcn"), ExtResource("12_lcpgq"), ExtResource("13_isahl"), ExtResource("14_pj28b"), ExtResource("15_25xd2"), ExtResource("16_6uene"), ExtResource("17_3v5gb"), ExtResource("18_4jvkm"), ExtResource("19_vkvm7"), ExtResource("20_svm4c"), ExtResource("21_v0w4n"), ExtResource("22_3bsan"), ExtResource("23_7p1un"), ExtResource("24_lpls8"), ExtResource("25_envlf"), ExtResource("26_wmciy")])

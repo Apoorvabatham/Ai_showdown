@@ -1,0 +1,208 @@
+extends Node
+## Audio playback: pooled sound effects, an announcer voice channel, and crossfading
+## music, on the Music / SFX / Voice / Ambience buses (created here; Ambience carries each
+## stage's background sound and crowd, so it can be turned down on its own). Every Button in the game gets
+## focus/press sounds automatically. Purely cosmetic: nothing here affects gameplay.
+
+const SFX_DIR := "res://assets/audio/sfx/"
+const FIGHTER_VOICE_DIR := "res://assets/audio/voice/fighters/"
+const VOICE_DIR := "res://assets/audio/voice/"
+## Fighter voice files: drop-ins can be Ogg Vorbis, WAV or MP3.
+const SHOUT_EXTENSIONS := ["ogg", "wav", "mp3"]
+const MUSIC_DIR := "res://assets/audio/music/"
+const SFX := {
+	&"hit_light": ["impactPunch_medium_000", "impactPunch_medium_001", "impactPunch_medium_002", "impactPunch_medium_003", "impactPunch_medium_004"],
+	&"hit_heavy": ["impactPunch_heavy_000", "impactPunch_heavy_001", "impactPunch_heavy_002", "impactPunch_heavy_003", "impactPunch_heavy_004"],
+	&"block": ["impactPlate_light_000", "impactPlate_light_001", "impactPlate_light_002", "impactPlate_light_003", "impactPlate_light_004"],
+	&"fall": ["impactSoft_heavy_000", "impactSoft_heavy_001", "impactSoft_heavy_002", "impactSoft_heavy_003", "impactSoft_heavy_004"],
+	&"bell": ["impactBell_heavy_000", "impactBell_heavy_001"],
+	&"armor": ["impactPlate_light_000", "impactPlate_light_002", "impactPlate_light_004"], # played pitched down
+	&"swing_light": ["swing_light.wav"],
+	&"swing_heavy": ["swing_heavy.wav"],
+	&"energy": ["energy.wav"],
+	&"super": ["super.wav"],
+	&"ui_focus": ["select_001", "select_002", "select_003"],
+	&"ui_accept": ["confirmation_001"],
+	&"ui_back": ["back_001"],
+}
+const MUSIC := {
+	&"menu": "menu_space_battle",
+	&"fight": "fight_heavy_battle_2",
+	&"dojo": "fight_dojo_determination",
+	&"rooftop": "fight_rooftop_midnight_drive",
+	&"temple": "fight_temple_boss_koto",
+	&"beach": "fight_beach_funky_house",
+	&"market": "fight_market_jazzy_battle",
+	&"train": "fight_train_determined_pursuit",
+	&"courtyard": "fight_courtyard_dragon_dance",
+}
+const SFX_VOICES := 16
+const MUSIC_FADE := 1.2
+
+var _sfx: Dictionary = {} # name -> Array[AudioStream]
+var _pool: Array[AudioStreamPlayer] = []
+var _next_player := 0
+var _voice: AudioStreamPlayer
+var _music: Array[AudioStreamPlayer] = []
+var _music_name: StringName
+var _active_music := 0
+var _rng := RandomNumberGenerator.new() # cosmetic only, never gameplay RNG
+var _voice_queue: Array[String] = []
+var _shouts := {} # "<id>_<kind>" -> Array[AudioStream]
+
+const LIMITER_CEILING_DB := -1.0
+
+
+func _has_limiter() -> bool:
+	for i in AudioServer.get_bus_effect_count(0):
+		if AudioServer.get_bus_effect(0, i) is AudioEffectHardLimiter:
+			return true
+	return false
+
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	for bus in ["Music", "SFX", "Voice", "Ambience"]:
+		if AudioServer.get_bus_index(bus) < 0:
+			AudioServer.add_bus()
+			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus)
+	# Announcer, hits and music together used to reach 0 dBFS and clip. A limiter on the
+	# master keeps peaks just under it and leaves everything quieter untouched.
+	if not _has_limiter():
+		var limiter := AudioEffectHardLimiter.new()
+		limiter.ceiling_db = LIMITER_CEILING_DB
+		limiter.release = 0.12
+		AudioServer.add_bus_effect(0, limiter)
+	for sound: StringName in SFX:
+		var streams: Array[AudioStream] = []
+		for file: String in SFX[sound]:
+			streams.append(load(SFX_DIR + (file if file.contains(".") else file + ".ogg")))
+		_sfx[sound] = streams
+	for i in SFX_VOICES:
+		_pool.append(_make_player("SFX"))
+	_voice = _make_player("Voice")
+	_voice.finished.connect(_play_next_voice)
+	for i in 2:
+		_music.append(_make_player("Music"))
+	get_tree().node_added.connect(_on_node_added)
+
+
+func _make_player(bus: String) -> AudioStreamPlayer:
+	var player := AudioStreamPlayer.new()
+	player.bus = bus
+	add_child(player)
+	return player
+
+
+## Plays a named effect (random variant, slight pitch variation).
+func sfx(sound: StringName, volume_db: float = 0.0, pitch: float = 1.0) -> void:
+	var streams: Array = _sfx.get(sound, [])
+	if streams.is_empty():
+		return
+	var player := _pool[_next_player]
+	_next_player = (_next_player + 1) % _pool.size()
+	player.stream = streams[_rng.randi() % streams.size()]
+	player.volume_db = volume_db
+	player.pitch_scale = pitch * _rng.randf_range(0.94, 1.06)
+	player.play()
+
+
+## A fighter's shout: a random take of assets/audio/voice/fighters/<id>_<kind>_N.ogg
+## (or .wav / .mp3; kinds: "special", "super", "ko"). With none of its own, the takes of
+## `fallback_id` are used for every kind but "super" (a super's shout names the move).
+## Silently does nothing if there are none. Returns the player it started
+## (FighterModel.speak moves the mouth with it), or null.
+func shout(fighter_id: StringName, kind: String, volume_db: float = 0.0, fallback_id: StringName = &"") -> AudioStreamPlayer:
+	var key := "%s_%s" % [fighter_id, kind]
+	if not _shouts.has(key):
+		_shouts[key] = _shout_takes(key)
+	if (_shouts[key] as Array).is_empty() and fallback_id != &"" and kind != "super":
+		key = "%s_%s" % [fallback_id, kind]
+		if not _shouts.has(key):
+			_shouts[key] = _shout_takes(key)
+	var streams: Array = _shouts[key]
+	if streams.is_empty():
+		return null
+	var player := _pool[_next_player]
+	_next_player = (_next_player + 1) % _pool.size()
+	player.stream = streams[_rng.randi() % streams.size()]
+	player.volume_db = volume_db
+	player.pitch_scale = _rng.randf_range(0.97, 1.03)
+	player.play()
+	return player
+
+
+## The takes <key>_1 .. <key>_8 in FIGHTER_VOICE_DIR, in any of SHOUT_EXTENSIONS (the first
+## found per take number).
+func _shout_takes(key: String) -> Array[AudioStream]:
+	var takes: Array[AudioStream] = []
+	for n in range(1, 9):
+		for extension in SHOUT_EXTENSIONS:
+			var path := FIGHTER_VOICE_DIR + "%s_%d.%s" % [key, n, extension]
+			if ResourceLoader.exists(path):
+				takes.append(load(path))
+				break
+	return takes
+
+
+## Announcer line from assets/audio/voice/<line>.ogg. A new line cuts off the old one
+## and cancels any queued sequence.
+func voice(line: String) -> void:
+	_voice_queue.clear()
+	_play_voice(line)
+
+
+func _play_voice(line: String) -> void:
+	var path := VOICE_DIR + line + ".ogg"
+	if not ResourceLoader.exists(path):
+		return
+	_voice.stream = load(path)
+	_voice.play()
+
+
+## Plays announcer lines back to back ("player_1", "winner"). Replaces any queued lines.
+func voice_sequence(lines: Array[String]) -> void:
+	_voice_queue = lines.duplicate()
+	_play_next_voice()
+
+
+func _play_next_voice() -> void:
+	if _voice_queue.is_empty():
+		return
+	_play_voice(_voice_queue.pop_front())
+
+
+## Crossfades to a looping track; does nothing if it's already playing.
+func music(track: StringName) -> void:
+	if track == _music_name:
+		return
+	_music_name = track
+	var old := _music[_active_music]
+	_active_music = 1 - _active_music
+	var new := _music[_active_music]
+	var stream := load(MUSIC_DIR + MUSIC[track] + ".ogg") as AudioStreamOggVorbis
+	stream.loop = true
+	new.stream = stream
+	new.volume_db = -40.0
+	new.play()
+	var tween := create_tween().set_parallel()
+	tween.tween_property(new, "volume_db", 0.0, MUSIC_FADE)
+	if old.playing:
+		tween.tween_property(old, "volume_db", -40.0, MUSIC_FADE)
+		tween.chain().tween_callback(old.stop)
+
+
+func set_bus_volume(bus: String, linear: float) -> void:
+	var index := AudioServer.get_bus_index(bus)
+	if index >= 0:
+		AudioServer.set_bus_volume_db(index, linear_to_db(maxf(linear, 0.0001)))
+		AudioServer.set_bus_mute(index, linear <= 0.001)
+
+
+func _on_node_added(node: Node) -> void:
+	# node_added also fires when a node is reparented; connect each button only once.
+	if node is BaseButton and not node.has_meta(&"ui_sounds"):
+		node.set_meta(&"ui_sounds", true)
+		var button := node as BaseButton
+		button.focus_entered.connect(sfx.bind(&"ui_focus", -6.0))
+		button.pressed.connect(sfx.bind(&"ui_accept", -4.0))

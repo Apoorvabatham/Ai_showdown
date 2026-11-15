@@ -1,0 +1,854 @@
+class_name FighterModel
+extends Node3D
+## Skinned character visual for a Fighter. Built from CharacterData (body, skin texture,
+## hair pieces) and driven by the fighter's logic each frame: logic picks the clip and,
+## for timed clips, the exact playback time. The animation never drives gameplay.
+
+const LIBRARIES := {
+	&"ual1": preload("res://assets/animations/UAL1_Standard.glb"),
+	&"ual2": preload("res://assets/animations/UAL2_Standard.glb"),
+	&"fight": preload("res://assets/animations/fight_anims.res"),
+}
+const BLEND_TIME := 0.08
+## Outfit fabrics: weave normal map, roughness map ("" = flat roughness), UV tiling,
+## roughness (multiplies the map) and specular. Cloth is matte: full roughness from the
+## maps (about 0.8-0.9) and low specular, so the ring's spotlights don't make it glare.
+## Leather keeps a soft satin sheen with a flat roughness (its map has near-mirror specks).
+## Colour comes from the character's outfit_colors (CC0 Poly Haven textures).
+const FABRICS := {
+	&"cotton": ["res://assets/characters/outfits/textures/cotton_jersey_nor_gl_1k.jpg",
+		"res://assets/characters/outfits/textures/cotton_jersey_rough_1k.jpg", 6.0, 1.0, 0.12],
+	&"stretch": ["res://assets/characters/outfits/textures/bi_stretch_nor_gl_1k.jpg",
+		"res://assets/characters/outfits/textures/bi_stretch_rough_1k.jpg", 8.0, 1.0, 0.12],
+	&"denim": ["res://assets/characters/outfits/textures/denim_fabric_06_nor_gl_1k.jpg",
+		"res://assets/characters/outfits/textures/denim_fabric_06_rough_1k.jpg", 5.0, 1.0, 0.12],
+	&"leather": ["res://assets/stages/ring/textures/fabric_leather_02_nor_gl_1k.jpg", "", 3.0, 0.55, 0.35],
+	# Glowing lines (The Algorithm's bodysuit): stretch fabric lit by its own colour.
+	&"glow": ["res://assets/characters/outfits/textures/bi_stretch_nor_gl_1k.jpg", "", 8.0, 0.4, 0.5],
+}
+## Glowing fabric's emission strength.
+const GLOW_ENERGY := 2.5
+## Detailed fabrics (CharacterData.detailed_textures): 2K normal and roughness maps plus
+## a greyscale weave map that textures the colour (averaging 0.9), same tiling and
+## material values as above. Fabrics without an entry use FABRICS.
+const DETAILED_FABRICS := {
+	&"cotton": ["res://assets/characters/outfits/textures/detail/cotton_jersey_nor_gl_2k.jpg",
+		"res://assets/characters/outfits/textures/detail/cotton_jersey_rough_2k.jpg",
+		"res://assets/characters/outfits/textures/detail/cotton_jersey_weave_2k.jpg", 6.0, 1.0, 0.12],
+	&"stretch": ["res://assets/characters/outfits/textures/detail/bi_stretch_nor_gl_2k.jpg",
+		"res://assets/characters/outfits/textures/detail/bi_stretch_rough_2k.jpg",
+		"res://assets/characters/outfits/textures/detail/bi_stretch_weave_2k.jpg", 8.0, 1.0, 0.12],
+	&"denim": ["res://assets/characters/outfits/textures/detail/denim_fabric_06_nor_gl_2k.jpg",
+		"res://assets/characters/outfits/textures/detail/denim_fabric_06_rough_2k.jpg",
+		"res://assets/characters/outfits/textures/detail/denim_fabric_06_weave_2k.jpg", 5.0, 1.0, 0.12],
+	&"leather": ["res://assets/characters/outfits/textures/detail/fabric_leather_02_nor_gl_2k.jpg", "",
+		"res://assets/characters/outfits/textures/detail/fabric_leather_02_weave_2k.jpg", 3.0, 0.55, 0.35],
+}
+## Skin pore detail (detailed characters): a tiling normal map over the body's second UV
+## set, mixed in at SKIN_DETAIL_AMOUNT so it adds fine grain without flattening the
+## body's own normal map. Visible in close-ups, invisible at fight distance.
+const SKIN_DETAIL_NORMAL := "res://assets/characters/detail/skin_pores_nor.png"
+const SKIN_DETAIL_SCALE := 28.0
+const SKIN_DETAIL_AMOUNT := 0.3
+## Brightest fabric albedo: real white cloth reflects about 80%; brighter blooms under the
+## stage lights.
+const MAX_FABRIC_ALBEDO := 0.72
+## Realistic shading (CharacterData.realistic_shading). Skin: wrapped diffuse and a faint
+## red backlight stand in for subsurface scattering (Godot's screen-space scattering cost
+## 45% of the frame rate on integrated graphics, a third even at quality 0, because any
+## material using it adds render buffers), real skin's specular (F0 about 0.028) and a faint
+## rim tinted by the skin colour. Eyes: a clear wet coat over the iris. Hair: a stretched highlight along
+## the strands.
+const SKIN_BACKLIGHT := Color(0.16, 0.05, 0.03)
+const SKIN_SPECULAR := 0.35
+const SKIN_RIM := 0.06
+const SKIN_RIM_TINT := 0.6
+const EYE_ROUGHNESS := 0.12
+const EYE_CLEARCOAT_ROUGHNESS := 0.02
+const HAIR_ANISOTROPY := 0.7
+const HAIR_RIM := 0.15
+## Eye light: a small light in front of the face that only the eyes see (their own render
+## layer), so the wet coat always has a catchlight, as in film and game close-ups.
+const EYE_LAYER := 1 << 19
+const EYE_LIGHT_OFFSET := Vector3(0.0, 0.02, 0.6) # from the head bone, skeleton space (+Z = face)
+const EYE_LIGHT_ENERGY := 0.18
+const EYE_LIGHT_SPECULAR := 10.0
+## Bones whose lowest point must stay above the floor, with the distance from each bone
+## to the sole measured in the rest pose (filled in build()).
+## Facial expressions: blend shapes baked into every body (tools/build_outfits.gd) and
+## into the eyebrow, lash and beard pieces (tools/build_face_shapes.gd, FACE_DIR) by
+## tools/face_shapes.gd. A preset is a weight per shape; set_face() eases toward one.
+const FACE_DIR := "res://assets/characters/face/"
+const FACE_SHAPES: Array[StringName] = [&"blink", &"squint", &"brow_down", &"brow_up", &"jaw_open", &"smile", &"grimace"]
+const EXPRESSIONS := {
+	&"neutral": {&"brow_down": 0.35, &"squint": 0.15},
+	&"effort": {&"brow_down": 0.85, &"squint": 0.35, &"grimace": 0.35},
+	&"shout": {&"brow_down": 1.0, &"squint": 0.4, &"jaw_open": 0.6},
+	&"roar": {&"brow_down": 1.0, &"squint": 0.5, &"jaw_open": 1.0, &"grimace": 0.3},
+	&"pain": {&"squint": 1.0, &"blink": 0.5, &"brow_down": 0.45, &"brow_up": 0.45, &"grimace": 0.8, &"jaw_open": 0.2},
+	&"guard": {&"brow_down": 1.0, &"squint": 0.6, &"grimace": 0.6},
+	&"dazed": {&"blink": 0.6, &"brow_up": 0.35, &"grimace": 0.35, &"jaw_open": 0.15},
+	&"out": {&"blink": 1.0, &"brow_up": 0.15, &"jaw_open": 0.3},
+	&"surprise": {&"brow_up": 0.9, &"jaw_open": 0.2},
+	&"grin": {&"smile": 0.9, &"squint": 0.25, &"brow_up": 0.15},
+	&"smirk": {&"smile": 0.5, &"brow_down": 0.2},
+}
+const FACE_RISE := 14.0 # weight per second toward a stronger expression
+const FACE_FALL := 5.0 # ... and back
+const BLINK_TIME := 0.16
+const BLINK_INTERVAL := Vector2(1.8, 5.0)
+## Gaze: blend shapes on the Eyes mesh (tools/build_face_shapes.gd) that turn each eyeball
+## about its centre. GAZE_LIMITS = how far (radians) at weight 1: x = left/right, y = up,
+## z = down. set_gaze() aims them at a point.
+const GAZE_SHAPES: Array[StringName] = [&"look_left", &"look_right", &"look_up", &"look_down"]
+const GAZE_LIMITS := Vector3(0.35, 0.2, 0.25) # further and the white shows past the lids
+const GAZE_LIDS := Vector2(0.25, 0.3) # blink weight: lids open looking up (x), drop looking down (y)
+const GAZE_SPEED := 18.0 # eyes snap to a new target quickly, like a saccade
+const GAZE_BEHIND := 1.4 # radians off the face's axis: a target further round is ignored
+## Voice-driven mouth: loudness envelopes of the fighter voice clips (60 values a second,
+## 0-100) from tools/build_voice_envelopes.py. While a clip plays, its loudness opens the jaw.
+const VOICE_ENVELOPES := "res://assets/audio/voice/fighters/mouth.json"
+const VOICE_JAW := 1.0 # jaw_open at the loudest point of a clip
+const VOICE_FOLLOW := 30.0 # how fast the jaw follows the envelope
+const VOICE_BLEND := 10.0 # how fast the voice takes over the jaw from the expression and back
+
+const FLASH_SHADER := preload("res://scripts/fighter/hit_flash.gdshader")
+const FLASH_CORE := 0.02 # share of the hit flash across the middle of the body (1 at the edge); it adds in linear light, so more than a few percent washes a fighter out in a dark stage
+
+const HAIR_MOTION_DIR := "res://assets/characters/hair/motion/" # hair pieces rigged with spring chains (tools/build_hair_motion.gd)
+const HAIR_STIFFNESS := 2.5 # pull back toward the animated pose
+const HAIR_DRAG := 0.5
+const HAIR_GRAVITY := 1.0
+const HAIR_RADIUS := 0.015 # of each chain's end, for the colliders
+const HAIR_SKULL_OFFSET := Vector3(0.0, 0.08, 0.01) # skull centre from the Head bone, skeleton space (T-pose)
+const HAIR_SKULL_RADIUS := 0.085
+const HAIR_NECK_RADIUS := 0.05 # neck and shoulder joints
+const HAIR_MAX_SWING := deg_to_rad(45.0) # HairLimit: a chain never trails further than this from its place on the head
+const HAIR_CUT_DISTANCE := 0.5 # metres the head moves in one frame: the fighter was placed (a new round), so the hair starts again from the pose
+# Belt and headband tails (tools/build_outfits.gd `_tail_chain`): cloth is floppier than hair.
+const TAIL_STIFFNESS := 1.0
+const TAIL_DRAG := 0.4
+const TAIL_GRAVITY := 1.5
+const TAIL_RADIUS := 0.012
+const CUT_RESET_FRAMES := 4
+const TAIL_PLANE_GAP := 0.004 # the cloth plane sits this far behind a tail's rest line (plus its radius)
+const TAIL_MAX_BEND := deg_to_rad(50.0) # per joint, from its place on the knot or the joint above
+const TAIL_LEG_SPHERES := [[0.0, 0.1], [0.45, 0.085], [0.85, 0.07]] # [share of the way hip -> knee, radius], per thigh
+const TAIL_BACK_SPHERES := [[&"neck_01", 0.06], [&"spine_03", 0.13]] # [bone, radius]
+# Loose hems (`_rig_hems`: the jacket skirts, Rhea's shorts): a whole panel of cloth, so
+# stiffer and less bendy than a tail.
+const HEM_STIFFNESS := 3.0
+const HEM_DRAG := 0.5
+const HEM_GRAVITY := 1.0
+const HEM_RADIUS := 0.01
+const HEM_MAX_BEND := deg_to_rad(30.0)
+
+const CONTACT_BONES :=[&"foot_l", &"foot_r", &"ball_l", &"ball_r"]
+const SOLE_BELOW_ORIGIN := 0.01
+
+var skeleton: Skeleton3D
+var hair_springs: SpringBoneSimulator3D # null without hair rigged for motion
+var _hair_limit: HairLimit
+var _hair_head := Transform3D() # the head's last world transform, to spot cuts
+var _hair_started := false
+var cloth_springs: SpringBoneSimulator3D # null without a belt or headband tail or a loose hem
+var _cut_frames := 0 # frames left to hold the hair and tails at the pose after a cut
+var player: AnimationPlayer
+var _body: Node3D
+var _clip: StringName
+var _contacts := {} # bone index -> rest height above the sole
+var _flash_material: ShaderMaterial
+var _flash_tween: Tween
+var face_weights := {} # shape -> current weight (without the blink)
+var _face_meshes: Array[MeshInstance3D] = []
+var _face_indices: Array[PackedInt32Array] = [] # per face mesh, its blend shape index per FACE_SHAPES
+var _face_target: Dictionary = EXPRESSIONS[&"neutral"]
+var _blink_rng := RandomNumberGenerator.new() # cosmetic: never the match RNG
+var _blink_in := 2.0
+var _blink_time := -1.0
+var gaze := Vector2.ZERO # current eye turn: x = yaw (+ = the character's left), y = pitch (+ = up)
+var _gaze_meshes: Array[MeshInstance3D] = []
+var _gaze_indices: Array[PackedInt32Array] = []
+var _head_bone := -1
+var _head_rest := Basis.IDENTITY # head bone rest orientation in skeleton space
+var _eye_in_head := Vector3(0.0, 0.1, 0.08) # midpoint between the eyes, head bone space
+var _voice_player: AudioStreamPlayer
+var _voice_stream: AudioStream
+var _voice_envelope := PackedByteArray()
+var _voice_level := 0.0 # smoothed envelope, 0-1
+var _voice_mix := 0.0 # 1 while a clip drives the jaw
+static var _envelopes: Dictionary # clip file name -> PackedByteArray, loaded on first use
+
+
+## `alt` uses the character's alternate skin texture and hair colour (mirror matches).
+func build(data: CharacterData, alt: bool = false) -> void:
+	var body := data.model_scene.instantiate() as Node3D
+	_body = body
+	add_child(body)
+	# glTF models face +Z; fighters face -Z.
+	body.rotation.y = PI
+	scale = Vector3.ONE * data.model_scale
+
+	skeleton = body.find_child("Skeleton3D") as Skeleton3D
+	for mesh: MeshInstance3D in skeleton.find_children("*", "MeshInstance3D", true, false):
+		_use_face_piece(mesh, data.model_scene.resource_path, data.model_scene.resource_path)
+	for bone_name: StringName in CONTACT_BONES:
+		var bone := skeleton.find_bone(bone_name)
+		# The rest-pose sole sits ~1 cm below the origin.
+		_contacts[bone] = skeleton.get_bone_global_rest(bone).origin.y + SOLE_BELOW_ORIGIN
+	for hair_scene in data.hair_scenes:
+		_attach_skinned(hair_scene, data.model_scene.resource_path)
+	var albedo := data.alt_body_albedo if alt and data.alt_body_albedo else data.body_albedo
+	var realistic := data.realistic_shading and not _low_graphics()
+	_customize_materials(albedo, data.alt_hair_color if alt else data.hair_color, data.detailed_textures, realistic,
+		data.alt_material_colors if alt else {})
+	if realistic:
+		_add_eye_light()
+	if data.outfit_mesh:
+		_dress(data, alt)
+	_find_face()
+
+	player = AnimationPlayer.new()
+	body.add_child(player)
+	player.root_node = player.get_path_to(body)
+	for library_name: StringName in LIBRARIES:
+		player.add_animation_library(library_name, LIBRARIES[library_name])
+	player.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
+	_keep_materials("%s/%s/%s" % [data.id, alt, realistic])
+
+
+## Hands one copy of this look's materials to GameState to hold, so their shaders survive
+## scene changes (GameState.keep_materials). Tools run without the autoload.
+func _keep_materials(key: String) -> void:
+	var game_state := (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
+	if game_state == null:
+		return
+	var materials := []
+	for mesh: MeshInstance3D in skeleton.find_children("*", "MeshInstance3D", true, false):
+		for surface in mesh.get_surface_override_material_count():
+			if mesh.get_surface_override_material(surface):
+				materials.append(mesh.get_surface_override_material(surface))
+	materials.append(_flash())
+	game_state.keep_materials("fighter/" + key, materials)
+
+
+func clip_length(clip: StringName) -> float:
+	return player.get_animation(clip).length if player.has_animation(clip) else 1.0
+
+
+## Shows `clip`. With time >= 0 the clip is posed at that exact time (timed clips such as
+## attacks); otherwise it free-runs at `speed` (loops such as idle and walk).
+func show_clip(clip: StringName, time: float, speed: float, delta: float) -> void:
+	if not player.has_animation(clip):
+		push_warning("Missing animation clip: %s" % clip)
+		return
+	if clip != _clip:
+		_clip = clip
+		player.play(clip, BLEND_TIME)
+	if time >= 0.0:
+		# Seek just short of the target and advance onto it, so cross-fades still progress.
+		# Always advance the full delta: near time 0 this overshoots by under a frame, but
+		# advancing 0 would freeze the cross-fade (e.g. static block poses at time 0).
+		var target := minf(time, player.current_animation_length)
+		player.speed_scale = 1.0
+		player.seek(maxf(target - delta, 0.0), false)
+		player.advance(delta)
+	else:
+		player.speed_scale = speed
+		player.advance(delta)
+	_keep_feet_above_floor()
+	if hair_springs or cloth_springs:
+		_check_hair_cut()
+
+
+## The UAL clips were authored for slightly different proportions and sink these bodies'
+## feet a few cm into the floor. Lift the body so the lowest sole sits on the floor.
+## Only ever lifts, so jumps and other airborne poses are unaffected.
+func _keep_feet_above_floor() -> void:
+	var lowest := INF
+	for bone: int in _contacts:
+		lowest = minf(lowest, skeleton.get_bone_global_pose(bone).origin.y - _contacts[bone])
+	_body.position.y = maxf(-lowest, 0.0)
+
+
+## Brief additive color flash (hit/block feedback): strongest at the silhouette's edge and
+## faint across the middle, so the fighter keeps their shading instead of turning into a
+## flat white shape. The overlay is removed when it fades (it would cost a pass per mesh).
+func flash(color: Color, duration: float) -> void:
+	_set_flash_overlay(_flash())
+	if _flash_tween:
+		_flash_tween.kill()
+	_flash_material.set_shader_parameter("tint", color)
+	_flash_material.set_shader_parameter("strength", 1.0)
+	_flash_tween = create_tween()
+	_flash_tween.tween_method(func(s: float) -> void: _flash_material.set_shader_parameter("strength", s), 1.0, 0.0, duration)
+	_flash_tween.tween_callback(_set_flash_overlay.bind(null))
+
+
+func _flash() -> ShaderMaterial:
+	if _flash_material == null:
+		_flash_material = ShaderMaterial.new()
+		_flash_material.shader = FLASH_SHADER
+		_flash_material.set_shader_parameter("core", FLASH_CORE)
+	return _flash_material
+
+
+func _set_flash_overlay(material: Material) -> void:
+	for mesh: MeshInstance3D in skeleton.find_children("*", "MeshInstance3D", true, false):
+		mesh.material_overlay = material
+
+
+## Clothing: swaps in the body without the covered skin and adds the outfit mesh on the
+## same skeleton and skin (its vertices carry the body's bone weights).
+func _dress(data: CharacterData, alt: bool) -> void:
+	var body_mesh: MeshInstance3D
+	for mesh: MeshInstance3D in skeleton.find_children("*", "MeshInstance3D", true, false):
+		var material := mesh.mesh.surface_get_material(0)
+		if material and material.resource_name.begins_with("MI_Superhero"):
+			body_mesh = mesh
+	if body_mesh == null:
+		return
+	if data.outfit_body_mesh:
+		var skin_material := body_mesh.get_surface_override_material(0)
+		body_mesh.mesh = data.outfit_body_mesh
+		body_mesh.set_surface_override_material(0, skin_material)
+	var outfit := MeshInstance3D.new()
+	outfit.name = "Outfit"
+	outfit.mesh = data.outfit_mesh
+	outfit.skin = _add_cloth_springs(data.outfit_mesh.get_meta(&"spring_tails", []), body_mesh.skin)
+	skeleton.add_child(outfit)
+	outfit.skeleton = outfit.get_path_to(skeleton)
+	var colors := data.alt_outfit_colors if alt and not data.alt_outfit_colors.is_empty() else data.outfit_colors
+	for surface in data.outfit_mesh.get_surface_count():
+		var slot := _surface_slot(data, surface)
+		var fabric_name := _fabric_name(data, slot)
+		var fabric := _fabric(data, fabric_name)
+		var detailed: bool = data.detailed_textures and DETAILED_FABRICS.has(fabric_name)
+		var color: Color = colors[slot] if slot < colors.size() else Color.WHITE
+		var brightest := maxf(color.r, maxf(color.g, color.b))
+		if brightest > MAX_FABRIC_ALBEDO:
+			color = Color(color * (MAX_FABRIC_ALBEDO / brightest), 1.0)
+		var cloth := StandardMaterial3D.new()
+		cloth.albedo_color = color
+		cloth.normal_enabled = true
+		cloth.normal_texture = load(fabric[0])
+		cloth.normal_scale = 0.8
+		if fabric[1] != "":
+			cloth.roughness_texture = load(fabric[1])
+		cloth.roughness = fabric[3]
+		cloth.metallic_specular = fabric[4]
+		cloth.uv1_scale = Vector3.ONE * fabric[2]
+		# The inside shows at hems and sleeves (also on draped clothes: their lining only
+		# reaches a little way in, and single-sided they were see-through past it).
+		cloth.cull_mode = BaseMaterial3D.CULL_DISABLED
+		if detailed:
+			cloth.albedo_texture = load(DETAILED_FABRICS[fabric_name][2])
+		if data.detailed_textures:
+			cloth.vertex_color_use_as_albedo = true # hem shading and stitch lines
+		if fabric_name == &"glow":
+			cloth.emission_enabled = true
+			cloth.emission = colors[slot] if slot < colors.size() else Color.WHITE
+			cloth.emission_energy_multiplier = GLOW_ENERGY
+		outfit.set_surface_override_material(surface, cloth)
+
+
+## The textures build() loads by path for `data` (everything else comes with the
+## character's own resources). WebP textures take about 0.4 s each to decode and nothing
+## else keeps them loaded between screens, so GameState.preload_fighters() loads these
+## once at startup and holds them.
+static func texture_paths(data: CharacterData) -> PackedStringArray:
+	var paths := PackedStringArray()
+	if data.outfit_mesh:
+		for surface in data.outfit_mesh.get_surface_count():
+			var fabric_name := _fabric_name(data, _surface_slot(data, surface))
+			var fabric := _fabric(data, fabric_name)
+			paths.append(fabric[0])
+			if fabric[1] != "":
+				paths.append(fabric[1])
+			if data.detailed_textures and DETAILED_FABRICS.has(fabric_name):
+				paths.append(DETAILED_FABRICS[fabric_name][2])
+	if data.detailed_textures:
+		paths.append(SKIN_DETAIL_NORMAL)
+	return paths
+
+
+## The colour slot of an outfit surface (named main / trim / accent / extra).
+static func _surface_slot(data: CharacterData, surface: int) -> int:
+	var slot := ["main", "trim", "accent", "extra"].find(data.outfit_mesh.surface_get_name(surface))
+	return slot if slot >= 0 else surface
+
+
+static func _fabric_name(data: CharacterData, slot: int) -> StringName:
+	return data.outfit_fabrics[slot] if slot < data.outfit_fabrics.size() else &"cotton"
+
+
+## [normal map, roughness map, tiling, roughness, specular] for a fabric, using the
+## detailed maps when the character has them.
+static func _fabric(data: CharacterData, fabric_name: StringName) -> Array:
+	if data.detailed_textures and DETAILED_FABRICS.has(fabric_name):
+		var d: Array = DETAILED_FABRICS[fabric_name] # same layout as FABRICS, the weave map in the middle
+		return [d[0], d[1], d[3], d[4], d[5]]
+	return FABRICS.get(fabric_name, FABRICS[&"cotton"])
+
+
+## The detail albedo is white (multiplying changes nothing); its alpha sets how much of
+## the pore normal map is mixed in.
+func _add_skin_detail(skin: StandardMaterial3D) -> void:
+	var mix := Image.create(4, 4, false, Image.FORMAT_RGBA8)
+	mix.fill(Color(1, 1, 1, SKIN_DETAIL_AMOUNT))
+	skin.detail_enabled = true
+	skin.detail_blend_mode = BaseMaterial3D.BLEND_MODE_MUL
+	skin.detail_uv_layer = BaseMaterial3D.DETAIL_UV_2
+	skin.detail_albedo = ImageTexture.create_from_image(mix)
+	skin.detail_normal = load(SKIN_DETAIL_NORMAL)
+	skin.uv2_scale = Vector3.ONE * SKIN_DETAIL_SCALE
+
+
+func _attach_skinned(scene: PackedScene, base_path: String) -> void:
+	# Hair pieces are rigged to the same skeleton (Head bone). Move their meshes onto our
+	# skeleton; skins bind by bone name. A piece rigged for motion (tools/build_hair_motion.gd)
+	# replaces the original and brings its spring bones.
+	var piece_path := scene.resource_path
+	var motion_path := HAIR_MOTION_DIR + piece_path.get_file().get_basename() + ".scn"
+	if ResourceLoader.exists(motion_path):
+		scene = load(motion_path)
+	var piece := scene.instantiate()
+	for mesh: MeshInstance3D in piece.find_children("*", "MeshInstance3D", true, false):
+		var chains: Array = mesh.get_meta(&"spring_chains", [])
+		_add_hair_springs(chains)
+		mesh.owner = null
+		mesh.get_parent().remove_child(mesh)
+		skeleton.add_child(mesh)
+		mesh.skeleton = mesh.get_path_to(skeleton)
+		_use_face_piece(mesh, base_path, piece_path)
+	piece.free()
+
+
+## Adds a hair piece's spring chains (bones hanging from the Head) to the skeleton and lets
+## a SpringBoneSimulator3D swing them: the ends lag behind the head, settle under gravity
+## and bounce on hits. Colliders keep them out of the skull, neck, shoulders and the floor;
+## HairLimit, after the simulator, stops a fast head move leaving them trailing through the
+## skull (a fight has several such moves a second, too many to restart the hair on).
+## Cosmetic only; the simulation never reads bones.
+func _add_hair_springs(chains: Array) -> void:
+	if chains.is_empty():
+		return
+	var head := skeleton.find_bone("Head")
+	if not hair_springs:
+		hair_springs = SpringBoneSimulator3D.new()
+		hair_springs.name = "HairSprings"
+		skeleton.add_child(hair_springs)
+		_add_hair_colliders(head)
+		_hair_limit = HairLimit.new()
+		_hair_limit.name = "HairLimit"
+		_hair_limit.max_angle = HAIR_MAX_SWING
+		skeleton.add_child(_hair_limit) # modifiers run in child order: after the springs
+	var first := hair_springs.setting_count
+	hair_springs.setting_count = first + chains.size()
+	for i in chains.size():
+		var chain: Dictionary = chains[i]
+		var bone := skeleton.get_bone_count()
+		skeleton.add_bone(chain.name)
+		skeleton.set_bone_parent(bone, head)
+		skeleton.set_bone_rest(bone, chain.rest)
+		skeleton.reset_bone_pose(bone)
+		_hair_limit.bones.append(bone)
+		var s := first + i
+		hair_springs.set_root_bone_name(s, chain.name)
+		hair_springs.set_end_bone_name(s, chain.name)
+		hair_springs.set_extend_end_bone(s, true)
+		hair_springs.set_end_bone_direction(s, SkeletonModifier3D.BONE_DIRECTION_PLUS_Y)
+		hair_springs.set_end_bone_length(s, chain.length)
+		hair_springs.set_radius(s, HAIR_RADIUS)
+		hair_springs.set_stiffness(s, HAIR_STIFFNESS)
+		hair_springs.set_drag(s, HAIR_DRAG)
+		hair_springs.set_gravity(s, HAIR_GRAVITY)
+
+
+## When the fighter is placed somewhere else (a new round, a training reset) the hair and
+## tails restart from the pose instead of swinging across the gap. They're held at the pose
+## (reset, and switched off so the cut frame itself shows the plain pose) for
+## `CUT_RESET_FRAMES`: after a single reset the tails' multi-joint chains still flung out to
+## the cap for three frames.
+func _check_hair_cut() -> void:
+	var head := skeleton.global_transform * skeleton.get_bone_global_pose(_head_bone)
+	if not _hair_started or head.origin.distance_to(_hair_head.origin) > HAIR_CUT_DISTANCE:
+		_cut_frames = CUT_RESET_FRAMES
+	var holding := _cut_frames > 0
+	_cut_frames = maxi(_cut_frames - 1, 0)
+	for springs: SpringBoneSimulator3D in [hair_springs, cloth_springs]:
+		if springs:
+			springs.influence = 0.0 if holding else 1.0
+			if holding:
+				springs.reset()
+	_hair_started = true
+	_hair_head = head
+
+
+## Belt and headband tails and loose hems (tools/build_outfits.gd): adds each chain of
+## bones under its knot's bone (a hem's: the pelvis or a thigh) and a SpringBoneSimulator3D
+## to swing them, with a HairLimit on every joint (hems stiffer and bending less). Each
+## chain collides with the floor, a plane along the cloth it hangs over (fitted through its
+## own rest line: the jacket skirt's front, the back of the neck, a hem's own place on the
+## body; without it gravity pulls a tail straight down into a flared skirt), and the thighs
+## (belt, skirt: only below the hip; a shorts leg: the other thigh) or the neck and upper
+## back (headband). Returns the outfit's skin: the body's, plus the chains' binds in the
+## builder's order. Cosmetic only, like the hair.
+func _add_cloth_springs(tails: Array, body_skin: Skin) -> Skin:
+	if tails.is_empty():
+		return body_skin
+	var skin := body_skin.duplicate() as Skin
+	cloth_springs = SpringBoneSimulator3D.new()
+	cloth_springs.name = "ClothSprings"
+	skeleton.add_child(cloth_springs)
+	var limit := HairLimit.new()
+	limit.name = "ClothLimit"
+	skeleton.add_child(limit) # after the springs
+	var floor_plane := SpringBoneCollisionPlane3D.new()
+	floor_plane.name = "Floor"
+	floor_plane.top_level = true
+	cloth_springs.add_child(floor_plane)
+	var legs := _tail_leg_colliders()
+	var shared := {&"pelvis": legs, &"Head": _tail_back_colliders(),
+		# A shorts leg's own thigh is its plane; the other thigh can push it.
+		&"thigh_l": legs.filter(func(c: Node) -> bool: return c.name.begins_with("Thigh_r")),
+		&"thigh_r": legs.filter(func(c: Node) -> bool: return c.name.begins_with("Thigh_l"))}
+	cloth_springs.setting_count = tails.size()
+	for s in tails.size():
+		var chain: Dictionary = tails[s]
+		var hem: bool = chain.get("kind", &"tail") == &"hem"
+		var radius := HEM_RADIUS if hem else TAIL_RADIUS
+		var parent := skeleton.find_bone(chain.parent)
+		var parent_rest := skeleton.get_bone_global_rest(parent)
+		var root := parent_rest * (chain.joints[0].rest as Transform3D)
+		var last := root # the last joint's rest, skeleton space
+		for j in chain.joints.size():
+			var joint: Dictionary = chain.joints[j]
+			var bone := skeleton.get_bone_count()
+			skeleton.add_bone(joint.name)
+			skeleton.set_bone_parent(bone, parent)
+			skeleton.set_bone_rest(bone, joint.rest)
+			skeleton.reset_bone_pose(bone)
+			skin.add_named_bind(joint.name, joint.bind)
+			limit.bones.append(bone)
+			limit.angles.append(HEM_MAX_BEND if hem else TAIL_MAX_BEND)
+			if j > 0:
+				last = last * (joint.rest as Transform3D)
+			parent = bone
+		cloth_springs.set_root_bone_name(s, chain.joints[0].name)
+		cloth_springs.set_end_bone_name(s, chain.joints[-1].name)
+		cloth_springs.set_extend_end_bone(s, true)
+		cloth_springs.set_end_bone_direction(s, SkeletonModifier3D.BONE_DIRECTION_PLUS_Y)
+		cloth_springs.set_end_bone_length(s, chain.length)
+		cloth_springs.set_radius(s, radius)
+		cloth_springs.set_stiffness(s, HEM_STIFFNESS if hem else TAIL_STIFFNESS)
+		cloth_springs.set_drag(s, HEM_DRAG if hem else TAIL_DRAG)
+		cloth_springs.set_gravity(s, HEM_GRAVITY if hem else TAIL_GRAVITY)
+		# The cloth under the tail: a plane through its rest line, facing away from the body.
+		var tip: Vector3 = last.origin + last.basis.y.normalized() * float(chain.length)
+		var across := root.basis.x.normalized()
+		var normal: Vector3 = (tip - root.origin).cross(across).normalized()
+		if normal.dot(root.origin - parent_rest.origin) < 0.0:
+			normal = -normal
+		var plane_bone := skeleton.find_bone(chain.get("plane", &"pelvis" if chain.parent == &"pelvis" else &"spine_03"))
+		var bone_rest := skeleton.get_bone_global_rest(plane_bone)
+		var plane := SpringBoneCollisionPlane3D.new()
+		plane.name = "Cloth%d" % s
+		plane.bone = plane_bone
+		plane.position_offset = bone_rest.basis.inverse() * (root.origin - normal * (radius + TAIL_PLANE_GAP) - bone_rest.origin)
+		plane.rotation_offset = Quaternion(Vector3.UP, (bone_rest.basis.inverse() * normal).normalized())
+		cloth_springs.add_child(plane)
+		var colliders: Array = [floor_plane, plane]
+		var others: Array = shared.get(StringName(chain.parent), [])
+		if hem and chain.parent == &"pelvis":
+			# A skirt hangs over the hips, inside the spheres at the hip joints: only the
+			# thighs below push it (kicks lift them into it).
+			others = others.filter(func(c: Node) -> bool: return not c.name.ends_with("0"))
+		colliders.append_array(others)
+		cloth_springs.set_enable_all_child_collisions(s, false)
+		cloth_springs.set_collision_count(s, colliders.size())
+		for c in colliders.size():
+			cloth_springs.set_collision_path(s, c, NodePath(String((colliders[c] as Node).name)))
+	return skin
+
+
+## The thighs, for the belt tails: spheres from the hip toward the knee.
+func _tail_leg_colliders() -> Array:
+	var spheres := []
+	for side in ["l", "r"]:
+		var thigh := skeleton.find_bone("thigh_" + side)
+		var rest := skeleton.get_bone_global_rest(thigh)
+		var knee := skeleton.get_bone_global_rest(skeleton.find_bone("calf_" + side)).origin - rest.origin
+		for i in TAIL_LEG_SPHERES.size():
+			var sphere := SpringBoneCollisionSphere3D.new()
+			sphere.name = "Thigh_%s%d" % [side, i]
+			sphere.bone = thigh
+			sphere.position_offset = rest.basis.inverse() * (knee * TAIL_LEG_SPHERES[i][0])
+			sphere.radius = TAIL_LEG_SPHERES[i][1]
+			cloth_springs.add_child(sphere)
+			spheres.append(sphere)
+	return spheres
+
+
+## The neck and upper back, for the headband tails.
+func _tail_back_colliders() -> Array:
+	var spheres := []
+	for spec: Array in TAIL_BACK_SPHERES:
+		var sphere := SpringBoneCollisionSphere3D.new()
+		sphere.name = "Back_%s" % spec[0]
+		sphere.bone = skeleton.find_bone(spec[0])
+		sphere.radius = spec[1]
+		cloth_springs.add_child(sphere)
+		spheres.append(sphere)
+	return spheres
+
+
+func _add_hair_colliders(head: int) -> void:
+	var head_rest := skeleton.get_bone_global_rest(head)
+	var skull := SpringBoneCollisionSphere3D.new()
+	skull.bone = head
+	skull.position_offset = head_rest.basis.inverse() * HAIR_SKULL_OFFSET
+	skull.radius = HAIR_SKULL_RADIUS
+	hair_springs.add_child(skull)
+	for bone_name: StringName in [&"neck_01", &"upperarm_l", &"upperarm_r"]:
+		var sphere := SpringBoneCollisionSphere3D.new()
+		sphere.bone = skeleton.find_bone(bone_name)
+		sphere.radius = HAIR_NECK_RADIUS
+		hair_springs.add_child(sphere)
+	var floor_plane := SpringBoneCollisionPlane3D.new() # the floor, in world space
+	floor_plane.top_level = true
+	hair_springs.add_child(floor_plane)
+
+
+## Swaps the body's skin texture and tints hair, working on per-instance material copies.
+## `detailed` adds the skin pore detail (the dressed body carries the second UV set);
+## `realistic` the realistic skin, eye and hair shading; `tints` recolours materials by name.
+func _customize_materials(body_albedo: Texture2D, hair_color: Color, detailed: bool, realistic: bool, tints: Dictionary = {}) -> void:
+	for mesh: MeshInstance3D in skeleton.find_children("*", "MeshInstance3D", true, false):
+		for surface in mesh.get_surface_override_material_count():
+			var material := mesh.mesh.surface_get_material(surface) as StandardMaterial3D
+			if material == null:
+				continue
+			if material.resource_name.begins_with("MI_Superhero") and body_albedo:
+				var skin := material.duplicate() as StandardMaterial3D
+				skin.albedo_texture = body_albedo
+				if detailed:
+					_add_skin_detail(skin)
+				if realistic:
+					_realistic_skin(skin)
+				mesh.set_surface_override_material(surface, skin)
+			elif material.resource_name.begins_with("MI_Hair"):
+				var hair := material.duplicate() as StandardMaterial3D
+				hair.albedo_color = hair_color
+				if realistic:
+					hair.anisotropy_enabled = true
+					hair.anisotropy = HAIR_ANISOTROPY
+					hair.rim_enabled = true
+					hair.rim = HAIR_RIM
+					hair.rim_tint = 1.0
+				mesh.set_surface_override_material(surface, hair)
+			elif material.resource_name.begins_with("MI_Eyes") and realistic:
+				var eyes := material.duplicate() as StandardMaterial3D
+				eyes.roughness = EYE_ROUGHNESS
+				eyes.clearcoat_enabled = true
+				eyes.clearcoat = 1.0
+				eyes.clearcoat_roughness = EYE_CLEARCOAT_ROUGHNESS
+				mesh.set_surface_override_material(surface, eyes)
+			elif tints.has(material.resource_name):
+				var tinted := material.duplicate() as StandardMaterial3D
+				tinted.albedo_color = tints[material.resource_name]
+				mesh.set_surface_override_material(surface, tinted)
+
+
+# --- Face ------------------------------------------------------------------------------
+
+## Where build_face_shapes.gd saves the expression-ready copy of a head piece: a mesh
+## node `node_name` from `piece_path`, fitted to the head of `base_path`.
+static func face_piece_path(base_path: String, piece_path: String, node_name: String) -> String:
+	return FACE_DIR + "%s__%s__%s.res" % [base_path.get_file().get_basename(),
+		piece_path.get_file().get_basename(), node_name.validate_filename().replace(".", "_")]
+
+
+func _use_face_piece(mesh: MeshInstance3D, base_path: String, piece_path: String) -> void:
+	var path := face_piece_path(base_path, piece_path, mesh.name)
+	if ResourceLoader.exists(path):
+		mesh.mesh = load(path)
+
+
+func _find_face() -> void:
+	for mesh: MeshInstance3D in skeleton.find_children("*", "MeshInstance3D", true, false):
+		if mesh.mesh and mesh.mesh.get_blend_shape_count() > 0 and mesh.find_blend_shape_by_name(&"blink") >= 0:
+			_face_meshes.append(mesh)
+			var indices := PackedInt32Array()
+			for shape in FACE_SHAPES:
+				indices.append(mesh.find_blend_shape_by_name(shape))
+			_face_indices.append(indices)
+		if mesh.mesh and mesh.find_blend_shape_by_name(&"look_left") >= 0:
+			_gaze_meshes.append(mesh)
+			var indices := PackedInt32Array()
+			for shape in GAZE_SHAPES:
+				indices.append(mesh.find_blend_shape_by_name(shape))
+			_gaze_indices.append(indices)
+	_head_bone = skeleton.find_bone("Head")
+	if _head_bone >= 0:
+		var rest := skeleton.get_bone_global_rest(_head_bone)
+		_head_rest = rest.basis
+		if not _gaze_meshes.is_empty():
+			var eyes := _gaze_meshes[0]
+			_eye_in_head = rest.affine_inverse() * (eyes.transform * eyes.mesh.get_aabb().get_center())
+	for shape in FACE_SHAPES:
+		face_weights[shape] = 0.0
+	_blink_rng.randomize()
+	_blink_in = _blink_rng.randf_range(BLINK_INTERVAL.x, BLINK_INTERVAL.y)
+
+
+## True when this model can show expressions.
+func has_face() -> bool:
+	return not _face_meshes.is_empty()
+
+
+## Eases the face toward `expression` (a key of EXPRESSIONS) over real time `delta`, and
+## blinks now and then. Purely cosmetic.
+func set_face(expression: StringName, delta: float) -> void:
+	if _face_meshes.is_empty():
+		return
+	_face_target = EXPRESSIONS.get(expression, EXPRESSIONS[&"neutral"])
+	for shape in FACE_SHAPES:
+		var target: float = _face_target.get(shape, 0.0)
+		var current: float = face_weights[shape]
+		face_weights[shape] = move_toward(current, target, (FACE_RISE if target > current else FACE_FALL) * delta)
+	# Blinks (not while the eyes are already shut or squeezed).
+	var blink := 0.0
+	if _blink_time >= 0.0:
+		_blink_time += delta
+		blink = sin(clampf(_blink_time / BLINK_TIME, 0.0, 1.0) * PI)
+		if _blink_time >= BLINK_TIME:
+			_blink_time = -1.0
+	else:
+		_blink_in -= delta
+		if _blink_in <= 0.0:
+			_blink_in = _blink_rng.randf_range(BLINK_INTERVAL.x, BLINK_INTERVAL.y)
+			if face_weights[&"blink"] < 0.4:
+				_blink_time = 0.0
+	# A voice clip playing: its loudness drives the jaw.
+	var speaking := _voice_level_now()
+	if speaking >= 0.0:
+		_voice_level = move_toward(_voice_level, speaking, VOICE_FOLLOW * delta)
+	_voice_mix = move_toward(_voice_mix, 1.0 if speaking >= 0.0 else 0.0, VOICE_BLEND * delta)
+	var jaw := lerpf(face_weights[&"jaw_open"], _voice_level * VOICE_JAW, _voice_mix)
+	for m in _face_meshes.size():
+		for i in FACE_SHAPES.size():
+			var weight: float = face_weights[FACE_SHAPES[i]]
+			if i == 0: # blink
+				weight = maxf(weight, blink)
+				weight -= GAZE_LIDS.x * clampf(gaze.y / GAZE_LIMITS.y, 0.0, 1.0)
+				weight += GAZE_LIDS.y * clampf(-gaze.y / GAZE_LIMITS.z, 0.0, 1.0) * (1.0 - weight)
+			elif i == 4: # jaw_open
+				weight = jaw
+			if _face_indices[m][i] >= 0:
+				_face_meshes[m].set_blend_shape_value(_face_indices[m][i], weight)
+
+
+## Moves the mouth with the voice clip `player` has just started (Audio.shout). Clips
+## without an envelope, or a null player, change nothing.
+func speak(player: AudioStreamPlayer) -> void:
+	if player == null or player.stream == null:
+		return
+	if _envelopes.is_empty():
+		var json := load(VOICE_ENVELOPES) as JSON if ResourceLoader.exists(VOICE_ENVELOPES) else null
+		if json == null or not json.data is Dictionary:
+			return
+		for clip: String in json.data:
+			_envelopes[clip] = PackedByteArray(json.data[clip])
+	var envelope: PackedByteArray = _envelopes.get(player.stream.resource_path.get_file().get_basename(), PackedByteArray())
+	if envelope.is_empty():
+		return
+	_voice_player = player
+	_voice_stream = player.stream
+	_voice_envelope = envelope
+
+
+## The loudness (0-1) of the voice clip this fighter is speaking, or -1 when silent.
+## Read from the player's position, so it stays in sync with the sound (pitch, pauses).
+func _voice_level_now() -> float:
+	if _voice_player == null:
+		return -1.0
+	if not is_instance_valid(_voice_player) or not _voice_player.playing or _voice_player.stream != _voice_stream:
+		_voice_player = null # finished, or the pooled player moved on to another sound
+		return -1.0
+	var frame := int(_voice_player.get_playback_position() * 60.0)
+	return _voice_envelope[mini(frame, _voice_envelope.size() - 1)] / 100.0
+
+
+## True when this model's eyes can turn.
+func has_gaze() -> bool:
+	return not _gaze_meshes.is_empty()
+
+
+## The point between the eyes, in world space.
+func eye_position() -> Vector3:
+	if _head_bone < 0:
+		return global_position + Vector3.UP * 1.6
+	return skeleton.global_transform * skeleton.get_bone_global_pose(_head_bone) * _eye_in_head
+
+
+## Turns the eyes toward `target` (world space) over real time `delta`; Vector3.INF looks
+## straight ahead. Targets beyond the eyes' reach are followed as far as they turn, ones
+## behind the head are ignored. Purely cosmetic.
+func set_gaze(target: Vector3, delta: float) -> void:
+	if _gaze_meshes.is_empty():
+		return
+	var aim := Vector2.ZERO
+	if target.is_finite():
+		var head := skeleton.global_transform * skeleton.get_bone_global_pose(_head_bone)
+		# Into the rest-pose frame of the mesh, where the face looks along +Z.
+		var d := (_head_rest * (head.basis.inverse() * (target - head * _eye_in_head))).normalized()
+		var yaw := atan2(d.x, d.z)
+		if absf(yaw) < GAZE_BEHIND:
+			aim = Vector2(yaw, atan2(d.y, Vector2(d.x, d.z).length()))
+	gaze = gaze.lerp(aim, 1.0 - exp(-GAZE_SPEED * delta))
+	var weights := [
+		clampf(gaze.x / GAZE_LIMITS.x, 0.0, 1.0), clampf(-gaze.x / GAZE_LIMITS.x, 0.0, 1.0),
+		clampf(gaze.y / GAZE_LIMITS.y, 0.0, 1.0), clampf(-gaze.y / GAZE_LIMITS.z, 0.0, 1.0),
+	]
+	for m in _gaze_meshes.size():
+		for i in GAZE_SHAPES.size():
+			if _gaze_indices[m][i] >= 0:
+				_gaze_meshes[m].set_blend_shape_value(_gaze_indices[m][i], weights[i])
+
+
+## The Low graphics preset skips realistic shading. Looked up at runtime: tool scripts
+## compile this class without the autoloads.
+func _low_graphics() -> bool:
+	var settings := (Engine.get_main_loop() as SceneTree).root.get_node_or_null("Settings")
+	return settings != null and settings.graphics == 0 # Settings.Graphics.LOW
+
+
+func _add_eye_light() -> void:
+	for mesh: MeshInstance3D in skeleton.find_children("*", "MeshInstance3D", true, false):
+		var material := mesh.mesh.surface_get_material(0)
+		if material and material.resource_name.begins_with("MI_Eyes"):
+			mesh.layers |= EYE_LAYER
+	var head := skeleton.find_bone("Head")
+	var attachment := BoneAttachment3D.new()
+	attachment.bone_name = "Head"
+	skeleton.add_child(attachment)
+	var rest := skeleton.get_bone_global_rest(head)
+	var light := OmniLight3D.new()
+	light.name = "EyeLight"
+	light.position = rest.affine_inverse() * (rest.origin + EYE_LIGHT_OFFSET)
+	light.light_cull_mask = EYE_LAYER
+	light.light_energy = EYE_LIGHT_ENERGY
+	light.light_specular = EYE_LIGHT_SPECULAR
+	light.omni_range = 1.2
+	attachment.add_child(light)
+
+
+func _realistic_skin(skin: StandardMaterial3D) -> void:
+	skin.diffuse_mode = BaseMaterial3D.DIFFUSE_LAMBERT_WRAP
+	skin.backlight_enabled = true
+	skin.backlight = SKIN_BACKLIGHT
+	skin.metallic_specular = SKIN_SPECULAR
+	skin.rim_enabled = true
+	skin.rim = SKIN_RIM
+	skin.rim_tint = SKIN_RIM_TINT

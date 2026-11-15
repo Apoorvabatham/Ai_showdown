@@ -1,0 +1,104 @@
+class_name CharacterData
+extends Resource
+## Static definition of a playable character. One .tres per character in res://data/characters/
+## (the AI Showdown roster); the original 3D Fighter cast lives in res://data/kits/ and
+## provides the movesets, CPU personalities and showcase routines (`kit`).
+
+@export var id: StringName
+@export var display_name: String
+@export var archetype: String
+@export_multiline var description: String
+## Position on the character select screen (lowest first).
+@export var select_order: int = 0
+## Fighting kit this character is built on: the id of an original fighter in
+## res://data/kits/ whose CPU personality and select-screen routine it uses. Empty = `id`.
+@export var kit: StringName
+## Fighter whose special/KO shouts are used when this one has none of its own
+## (assets/audio/voice/fighters/<id>_<kind>_N.ogg). Empty = no fallback.
+@export var voice_fallback: StringName
+
+@export_group("Visuals")
+@export var portrait: Texture2D
+## Rigged glTF body (Quaternius UAL skeleton). Null = graybox capsule.
+@export var model_scene: PackedScene
+## Extra skinned pieces (hair, beard) rigged to the same skeleton.
+@export var hair_scenes: Array[PackedScene] = []
+## Optional skin texture variant replacing the body's base color.
+@export var body_albedo: Texture2D
+@export var model_scale: float = 1.0
+## Tint for hair/eyebrow materials (the free Quaternius hair textures are greyscale).
+@export var hair_color: Color = Color.WHITE
+## Alternate look for mirror matches (P2 picks the same character).
+@export var alt_body_albedo: Texture2D
+@export var alt_hair_color: Color = Color.WHITE
+## Mirror matches, for models with their own materials (no generated outfit): material
+## name -> colour replacing that material's albedo colour (Aelia's armour).
+@export var alt_material_colors: Dictionary = {}
+## Generated clothing (tools/build_outfits.gd): a skinned mesh on the body's skeleton with
+## one surface per colour slot (main, trim, accent, extra), and the body with the covered
+## skin removed so nothing pokes through.
+@export var outfit_mesh: Mesh
+@export var outfit_body_mesh: Mesh
+## Per outfit surface: colour, fabric (&"cotton", &"stretch", &"denim", &"leather").
+@export var outfit_colors: PackedColorArray = PackedColorArray()
+@export var outfit_fabrics: Array[StringName] = []
+## Outfit colours for mirror matches.
+@export var alt_outfit_colors: PackedColorArray = PackedColorArray()
+## Higher-detail materials: fabric weave in the colour, 2K fabric maps, hem shading and
+## stitch lines (vertex colours from build_outfits.gd), and skin pore detail.
+@export var detailed_textures: bool = false
+## Stylized-realism shading (pilot): subsurface-scattered skin with a soft rim, wet eyes
+## and an anisotropic hair highlight. Off on the Low graphics preset.
+@export var realistic_shading: bool = false
+## Match-win animations ("library/clip"); one is picked at random.
+@export var victory_animations: Array[StringName] = []
+## Tint used for graybox stand-ins and UI until real models/portraits exist.
+@export var placeholder_color: Color = Color.WHITE
+
+@export_group("Intro and quotes")
+## Pre-fight intro animation ("library/clip"), ending in the guard (FightIntro).
+@export var intro_animation: StringName
+## FighterModel.EXPRESSIONS preset worn through the intro.
+@export var intro_expression: StringName = &"neutral"
+## Pre-fight lines; one is picked at random unless a rival line applies.
+@export var intro_lines: PackedStringArray = PackedStringArray()
+## Match-win quotes; one is picked at random unless a rival quote applies.
+@export var win_quotes: PackedStringArray = PackedStringArray()
+## Rivalries: opponent id -> [intro line, win quote].
+@export var rival_lines: Dictionary = {}
+
+@export_group("Training")
+## Combo trials (TrainingMode): each {name, steps, corner, tip}. `steps` are move inputs
+## ("LP", "2HP", "236P"...) to land in one combo, plus "WALL" for a wall splat; `corner`
+## starts the dummy at the stage edge. From tools/build_movesets.gd TRIALS.
+@export var combo_trials: Array[Dictionary] = []
+
+@export_group("Stats")
+@export var max_health: int = 1000
+## Meters per second.
+@export var walk_speed: float = 2.0
+@export var back_walk_speed: float = 1.6
+@export var dash_speed: float = 6.0
+@export var sidestep_distance: float = 0.8
+@export var jump_velocity: float = 6.0
+## Scales knockback received. Heavier characters get pushed less.
+@export var weight: float = 1.0
+@export var throw_damage: int = 120
+## 0..1 ratings shown as bars on the character select screen.
+@export_range(0.0, 1.0) var power_rating := 0.5
+@export_range(0.0, 1.0) var speed_rating := 0.5
+
+@export_group("Moves")
+@export var moves: Array[MoveData] = []
+
+
+## True for fighters built on the shared base bodies (assets/characters/base/), which get
+## generated outfits, detailed textures and expression shapes; false for an imported model
+## that brings its own (Aelia: her own mesh on the game skeleton, tools/build_aelia.gd).
+func uses_base_body() -> bool:
+	return model_scene != null and model_scene.resource_path.begins_with("res://assets/characters/base/")
+
+
+## The id used for kit-based lookups (CPU personality, showcase routine).
+func kit_id() -> StringName:
+	return kit if kit != &"" else id

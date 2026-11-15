@@ -1,0 +1,98 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_yt2cr"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_40xxx"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_wbv0g"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_eil64"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_couvb"]
+[ext_resource type="Resource" path="res://data/moves/donald/jab.tres" id="6_julv2"]
+[ext_resource type="Resource" path="res://data/moves/donald/straight.tres" id="7_loigl"]
+[ext_resource type="Resource" path="res://data/moves/donald/mid_kick.tres" id="8_wturp"]
+[ext_resource type="Resource" path="res://data/moves/donald/roundhouse.tres" id="9_qx6pd"]
+[ext_resource type="Resource" path="res://data/moves/donald/crouch_jab.tres" id="10_n378v"]
+[ext_resource type="Resource" path="res://data/moves/donald/low_kick.tres" id="11_aqolw"]
+[ext_resource type="Resource" path="res://data/moves/donald/uppercut.tres" id="12_xgvnv"]
+[ext_resource type="Resource" path="res://data/moves/donald/sweep.tres" id="13_5s8w1"]
+[ext_resource type="Resource" path="res://data/moves/donald/jump_jab.tres" id="14_6cj7w"]
+[ext_resource type="Resource" path="res://data/moves/donald/jump_hammer.tres" id="15_u2icb"]
+[ext_resource type="Resource" path="res://data/moves/donald/jump_kick.tres" id="16_4yve5"]
+[ext_resource type="Resource" path="res://data/moves/donald/flying_kick.tres" id="17_v7gu4"]
+[ext_resource type="Resource" path="res://data/moves/donald/shoulder_tackle.tres" id="18_6hvke"]
+[ext_resource type="Resource" path="res://data/moves/donald/knee_lift.tres" id="19_3y8at"]
+[ext_resource type="Resource" path="res://data/moves/donald/valkyrie_slam.tres" id="20_f3in3"]
+[ext_resource type="Resource" path="res://data/moves/donald/spinning_lariat.tres" id="21_w5h6o"]
+[ext_resource type="Resource" path="res://data/moves/donald/thunder_valkyrie.tres" id="22_ntcpl"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="23_ky3cs"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/donald_body.res" id="23_wbv0g"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/donald_outfit.res" id="24_eil64"]
+[ext_resource type="Texture2D" path="res://assets/ui/portraits/donald.png" id="25_eil64"]
+
+[resource]
+script = ExtResource("23_ky3cs")
+id = &"donald"
+display_name = "Donald Tarrif"
+archetype = "Heavy Grappler"
+description = "A heavyweight dealmaker. Slaps a tariff on every hit and calls every round the greatest round in history."
+select_order = 9
+kit = &"valka"
+voice_fallback = &"brutus"
+portrait = ExtResource("25_eil64")
+model_scene = ExtResource("4_eil64")
+hair_scenes = Array[PackedScene]([ExtResource("3_wbv0g")])
+body_albedo = ExtResource("2_40xxx")
+model_scale = 1.06
+hair_color = Color(0.88, 0.7, 0.38, 1)
+alt_body_albedo = ExtResource("1_yt2cr")
+alt_hair_color = Color(0.85, 0.85, 0.82, 1)
+outfit_mesh = ExtResource("24_eil64")
+outfit_body_mesh = ExtResource("23_wbv0g")
+outfit_colors = PackedColorArray(0.07, 0.09, 0.2, 1, 0.05, 0.05, 0.05, 1, 0.75, 0.06, 0.08, 1, 0.82, 0.82, 0.8, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton"])
+alt_outfit_colors = PackedColorArray(0.12, 0.12, 0.13, 1, 0.2, 0.12, 0.06, 1, 0.12, 0.2, 0.55, 1, 0.85, 0.85, 0.83, 1)
+detailed_textures = true
+realistic_shading = true
+victory_animations = Array[StringName]([&"fight/victory_flex", &"fight/victory_fist_pump"])
+placeholder_color = Color(0.85, 0.15, 0.15, 1)
+intro_animation = &"fight/intro_beckon"
+intro_expression = &"smirk"
+intro_lines = PackedStringArray("Many people are saying I\'m the best fighter. Tremendous.", "This fight is rigged. Very unfair. I\'ll win anyway.", "We\'re putting a big, beautiful tariff on your punches.")
+win_quotes = PackedStringArray("Nobody has ever seen a win like that. Nobody.", "Tariffed. One hundred and forty-five percent.", "You\'re fired.")
+rival_lines = {
+"xi": ["Your punches are coming in way too cheap.", "Great deal. Best deal ever."]
+}
+combo_trials = Array[Dictionary]([{
+&"corner": false,
+&"name": "Jab String",
+&"steps": PackedStringArray("LP", "LP", "HP"),
+&"tip": "Jabs chain into each other and into the straight."
+}, {
+&"corner": false,
+&"name": "Low Lariat",
+&"steps": PackedStringArray("2LP", "2LP", "623P"),
+&"tip": "Low jabs, then cancel into Executive Order."
+}, {
+&"corner": false,
+&"name": "Knee and Lariat",
+&"steps": PackedStringArray("6LK", "623P"),
+&"tip": "Cancel the knee lift into Executive Order while they're in the air."
+}, {
+&"corner": true,
+&"name": "Corner Splat",
+&"steps": PackedStringArray("HK", "WALL", "LK", "HP"),
+&"tip": "A roundhouse near the edge splats them: walk in and follow up."
+}, {
+&"corner": true,
+&"name": "Tackle to the Wall",
+&"steps": PackedStringArray("6HP", "WALL", "LP", "623P"),
+&"tip": "The shoulder tackle splats them on the edge: jab, then cancel into the lariat."
+}])
+max_health = 1150
+walk_speed = 1.6
+back_walk_speed = 1.2
+dash_speed = 4.6
+jump_velocity = 5.5
+weight = 1.3
+throw_damage = 170
+power_rating = 0.9
+speed_rating = 0.3
+moves = Array[ExtResource("5_couvb")]([ExtResource("6_julv2"), ExtResource("7_loigl"), ExtResource("8_wturp"), ExtResource("9_qx6pd"), ExtResource("10_n378v"), ExtResource("11_aqolw"), ExtResource("12_xgvnv"), ExtResource("13_5s8w1"), ExtResource("14_6cj7w"), ExtResource("15_u2icb"), ExtResource("16_4yve5"), ExtResource("17_v7gu4"), ExtResource("18_6hvke"), ExtResource("19_3y8at"), ExtResource("20_f3in3"), ExtResource("21_w5h6o"), ExtResource("22_ntcpl")])

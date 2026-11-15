@@ -1,0 +1,98 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_at8a7"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_kfoxg"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="3_233vy"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="4_soqyl"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/jab.tres" id="5_x2hp0"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/straight.tres" id="6_kkud4"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/mid_kick.tres" id="7_5n7v7"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/roundhouse.tres" id="8_lx3f2"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/crouch_jab.tres" id="9_pm0tc"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/low_kick.tres" id="10_bhor0"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/uppercut.tres" id="11_uitx4"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/sweep.tres" id="12_gjol2"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/jump_jab.tres" id="13_n64h4"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/jump_hammer.tres" id="14_8a0mi"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/jump_kick.tres" id="15_uylfq"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/flying_kick.tres" id="16_s370v"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/rushing_hook.tres" id="17_p3w2l"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/step_kick.tres" id="18_khjtc"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/gale_slide.tres" id="19_p6x4c"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/crescent_rise.tres" id="20_ur51r"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/tempest_kicks.tres" id="21_d28ur"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/tempest_finish.tres" id="22_n8c8e"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="23_4wtgs"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/algorithm_body.res" id="23_233vy"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/algorithm_outfit.res" id="23_kfoxg"]
+[ext_resource type="Texture2D" path="res://assets/ui/portraits/algorithm.png" id="25_soqyl"]
+
+[resource]
+script = ExtResource("23_4wtgs")
+id = &"algorithm"
+display_name = "The Algorithm"
+archetype = "Boss"
+description = "An optimisation process nobody fully understands. It doesn't hate you. It just wants you to keep watching."
+select_order = 11
+kit = &"rhea"
+voice_fallback = &"jin"
+portrait = ExtResource("25_soqyl")
+model_scene = ExtResource("3_233vy")
+body_albedo = ExtResource("2_kfoxg")
+alt_body_albedo = ExtResource("1_at8a7")
+outfit_mesh = ExtResource("23_kfoxg")
+outfit_body_mesh = ExtResource("23_233vy")
+outfit_colors = PackedColorArray(0.04, 0.045, 0.06, 1, 0.15, 0.95, 1, 1)
+outfit_fabrics = Array[StringName]([&"stretch", &"glow"])
+alt_outfit_colors = PackedColorArray(0.9, 0.9, 0.92, 1, 1, 0.25, 0.85, 1)
+realistic_shading = true
+victory_animations = Array[StringName]([&"fight/victory_point", &"fight/victory_fist_pump"])
+placeholder_color = Color(0.2, 0.95, 0.95, 1)
+intro_animation = &"fight/intro_shadowbox"
+intro_expression = &"smirk"
+intro_lines = PackedStringArray("Recommended for you: defeat.", "Optimising for your attention.", "You will keep playing. You always do.")
+win_quotes = PackedStringArray("Thank you for your engagement.", "Are you still watching?", "Your screen time today: too much.")
+rival_lines = {
+"zuckerbot": ["I made you.", "Engagement: up 400 percent."]
+}
+combo_trials = Array[Dictionary]([{
+&"corner": false,
+&"name": "Quick Hands",
+&"steps": PackedStringArray("LP", "LP", "HP"),
+&"tip": "Jabs chain into each other and into the straight."
+}, {
+&"corner": false,
+&"name": "Step In",
+&"steps": PackedStringArray("6LK", "6HP"),
+&"tip": "Hold forward: the step kick chains into the rushing hook."
+}, {
+&"corner": false,
+&"name": "Low Slide",
+&"steps": PackedStringArray("2LP", "2LK", "236K"),
+&"tip": "Cancel the low kick into Infinite Scroll."
+}, {
+&"corner": false,
+&"name": "Crescent Launcher",
+&"steps": PackedStringArray("LP", "LP", "623K"),
+&"tip": "Cancel the second jab into Viral Spike."
+}, {
+&"corner": true,
+&"name": "Corner Splat",
+&"steps": PackedStringArray("HK", "WALL", "LK", "HP"),
+&"tip": "A roundhouse near the edge splats them: walk in and follow up."
+}, {
+&"corner": false,
+&"name": "Engagement Loop",
+&"steps": PackedStringArray("LP", "LP", "236236K"),
+&"tip": "With a full meter, cancel the jabs into the super."
+}])
+max_health = 1050
+walk_speed = 2.6
+back_walk_speed = 2.0
+dash_speed = 7.5
+jump_velocity = 6.4
+weight = 0.85
+throw_damage = 100
+power_rating = 0.6
+speed_rating = 0.9
+moves = Array[ExtResource("4_soqyl")]([ExtResource("5_x2hp0"), ExtResource("6_kkud4"), ExtResource("7_5n7v7"), ExtResource("8_lx3f2"), ExtResource("9_pm0tc"), ExtResource("10_bhor0"), ExtResource("11_uitx4"), ExtResource("12_gjol2"), ExtResource("13_n64h4"), ExtResource("14_8a0mi"), ExtResource("15_uylfq"), ExtResource("16_s370v"), ExtResource("17_p3w2l"), ExtResource("18_khjtc"), ExtResource("19_p6x4c"), ExtResource("20_ur51r"), ExtResource("21_d28ur"), ExtResource("22_n8c8e")])
