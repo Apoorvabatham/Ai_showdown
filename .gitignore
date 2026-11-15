@@ -18,3 +18,8 @@ CLAUDE.md
 
 # Local tool settings
 .claude/
+
+# Python cache
+__pycache__/
+*.py[cod]
+

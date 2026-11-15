@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" path="res://assets/characters/aged/T_sundar_skin.png" id="1_ksgio"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="2_qiyug"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="3_hj4g3"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_qiyug"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_qiyug"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="4_p7qgi"]
 [ext_resource type="Resource" path="res://data/moves/sundar/jab.tres" id="5_ksgio"]
 [ext_resource type="Resource" path="res://data/moves/sundar/straight.tres" id="6_qiyug"]
@@ -26,6 +26,7 @@
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="23_bdy5b"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/sundar_body.res" id="23_hj4g3"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/sundar_outfit.res" id="24_p7qgi"]
+[ext_resource type="Texture2D" path="res://assets/characters/prints/T_sundar_tee.png" id="26_ibel8"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/sundar.png" id="26_ksgio"]
 
 [resource]
@@ -42,14 +43,17 @@ model_scene = ExtResource("3_hj4g3")
 hair_scenes = Array[PackedScene]([ExtResource("3_qiyug")])
 body_albedo = ExtResource("1_ksgio")
 model_scale = 1.02
-hair_color = Color(0.12, 0.11, 0.11, 1)
+hair_color = Color(0.11, 0.1, 0.1, 1)
 alt_body_albedo = ExtResource("1_ksgio")
-alt_hair_color = Color(0.38, 0.38, 0.4, 1)
+alt_hair_color = Color(0.35, 0.35, 0.38, 1)
 outfit_mesh = ExtResource("24_p7qgi")
 outfit_body_mesh = ExtResource("23_hj4g3")
-outfit_colors = PackedColorArray(0.1, 0.13, 0.25, 1, 0.075, 0.0975, 0.1875, 1, 0.36, 0.37, 0.4, 1, 0.08, 0.08, 0.08, 1)
-outfit_fabrics = Array[StringName]([&"cotton", &"stretch", &"cotton", &"leather"])
-alt_outfit_colors = PackedColorArray(0.42, 0.12, 0.12, 1, 0.315, 0.089999996, 0.089999996, 1, 0.15, 0.15, 0.17, 1, 0.08, 0.08, 0.08, 1)
+outfit_textures = {
+0: ExtResource("26_ibel8")
+}
+outfit_colors = PackedColorArray(0.12, 0.12, 0.13, 1, 0.8, 0.8, 0.78, 1, 0.18, 0.22, 0.28, 1, 0.08, 0.08, 0.08, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"denim", &"leather"])
+alt_outfit_colors = PackedColorArray(0.9, 0.9, 0.92, 1, 0.1, 0.1, 0.1, 1, 0.12, 0.12, 0.14, 1, 0.12, 0.12, 0.12, 1)
 detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_bow", &"fight/victory_fist_pump"])
@@ -64,22 +68,21 @@ body_shape = {
 }
 face_shape = {
 "age": 54,
-&"cheekbones": 0.002,
+&"cheekbones": 0.003,
 &"chin": 0.003,
 &"chin_forward": 0.002,
-&"chin_round": 0.001,
 &"eye_open": -0.0006,
 &"eye_tilt": 0.0004,
-&"face_length": 1.05,
-&"fullness": -0.004,
-&"jaw": 0.91,
-&"nose_bridge": 0.002,
-&"nose_length": 0.004,
-&"nose_width": 0.96
+&"face_length": 1.06,
+&"fullness": -0.005,
+&"jaw": 0.9,
+&"nose_bridge": 0.003,
+&"nose_length": 0.005,
+&"nose_width": 0.95
 }
-brow_scale = Vector3(0.96, 0.76, 1)
-hair_scale = Vector3(0.98, 0.97, 0.98)
-hair_offset = Vector3(0, 0.001, 0)
+brow_scale = Vector3(0.96, 0.78, 1)
+hair_scale = Vector3(1.01, 1.05, 1.02)
+hair_offset = Vector3(0, 0.003, 0)
 eye_texture = ExtResource("2_qiyug")
 face_rest = {
 &"smile": 0.45

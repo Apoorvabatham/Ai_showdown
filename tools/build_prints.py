@@ -17,6 +17,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FONT = os.path.join(ROOT, "tools", "fonts", "InterDisplay-BlackItalic.otf")
+FONT_REG = os.path.join(ROOT, "tools", "fonts", "Inter-SemiBold.otf")
 SIZE = 2048
 PX_PER_M = 2400  # design resolution
 
@@ -101,10 +102,56 @@ def nvidia(width_m=0.10):
     return res, width_m, width_m * 1.05
 
 
+def google(width_m=0.14):
+    """Google logo: 4-color circular G emblem over 'Google' logotype."""
+    W = int(width_m * PX_PER_M)
+    H = int(width_m * 0.95 * PX_PER_M)
+    SS = 4
+    sw, sh = W * SS, H * SS
+
+    img = Image.new("RGBA", (sw, sh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+
+    # Official Google Colors
+    c_blue = (66, 133, 244, 255)
+    c_red = (234, 67, 53, 255)
+    c_yellow = (251, 188, 5, 255)
+    c_green = (52, 168, 83, 255)
+
+    cx, cy = sw * 0.5, sh * 0.36
+    r_out = sw * 0.22
+    r_in = sw * 0.125
+    thick = int(r_out - r_in)
+    bbox = [cx - r_out, cy - r_out, cx + r_out, cy + r_out]
+
+    # 4 sectors
+    d.arc(bbox, start=195, end=315, fill=c_red, width=thick)
+    d.arc(bbox, start=135, end=200, fill=c_yellow, width=thick)
+    d.arc(bbox, start=45, end=140, fill=c_green, width=thick)
+    d.arc(bbox, start=315, end=405, fill=c_blue, width=thick)
+    d.rectangle([cx - sw * 0.01, cy - thick * 0.5, cx + r_out, cy + thick * 0.5], fill=c_blue)
+
+    # Text: "Google" in clean sans font
+    font_size = int(sw * 0.15)
+    font = ImageFont.truetype(FONT_REG, font_size)
+    letters = [("G", c_blue), ("o", c_red), ("o", c_yellow), ("g", c_blue), ("l", c_green), ("e", c_red)]
+    total_w = sum(d.textlength(ch, font=font) for ch, _ in letters)
+    cur_x = (sw - total_w) / 2
+    text_y = sh * 0.68
+
+    for ch, col in letters:
+        d.text((cur_x, text_y), ch, font=font, fill=col)
+        cur_x += d.textlength(ch, font=font)
+
+    res = img.resize((W, H), Image.Resampling.LANCZOS)
+    return res, width_m, width_m * 0.95
+
+
 # id -> (output name, base colour (0..1), design, centre (x, y) on the chest, metres)
 PRINTS = {
     "tesla": ("tee", (0.05, 0.05, 0.06), occupy_mars, (0.0, 1.355)),
     "jensen": ("tee", (0.12, 0.12, 0.13), nvidia, (0.0, 1.365)),
+    "sundar": ("tee", (0.12, 0.12, 0.13), google, (0.0, 1.355)),
 }
 
 

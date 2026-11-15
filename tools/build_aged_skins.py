@@ -71,7 +71,56 @@ def strokes(L, age):
     return out, k
 
 
-def paint(skin_path, L, mapper, age, seed):
+def paint_sundar_beard(out, L, mapper, W, H):
+    """Paints Sundar Pichai's signature neatly groomed short beard and mustache."""
+    b_mask = Image.new("L", (W * SS, H * SS), 0)
+    b_draw = ImageDraw.Draw(b_mask)
+    seam = L["seam"]
+
+    # 1. Mustache
+    m_pts = []
+    for xi in np.linspace(-0.024, 0.024, 25):
+        m_pts.append((xi, seam + 0.005 + 0.003 * (1.0 - (xi / 0.024)**2)))
+    for xi in np.linspace(0.022, -0.022, 25):
+        m_pts.append((xi, seam + 0.015 + 0.003 * (1.0 - (xi / 0.022)**2)))
+    uv_m = mapper([p[0] for p in m_pts], [p[1] for p in m_pts])
+    b_draw.polygon([(u * W * SS, v * H * SS) for u, v in uv_m], fill=190)
+
+    # 2. Soul patch
+    s_poly = [(-0.006, seam - 0.008), (0.006, seam - 0.008), (0.005, seam - 0.022), (-0.005, seam - 0.022)]
+    uv_s = mapper([p[0] for p in s_poly], [p[1] for p in s_poly])
+    b_draw.polygon([(u * W * SS, v * H * SS) for u, v in uv_s], fill=180)
+
+    # 3. Chin beard
+    c_poly = []
+    for xi in np.linspace(-0.032, 0.032, 25):
+        c_poly.append((xi, seam - 0.022))
+    for xi in np.linspace(0.040, -0.040, 30):
+        c_poly.append((xi, seam - 0.055 - 0.01 * (1.0 - (xi / 0.04)**2)))
+    uv_c = mapper([p[0] for p in c_poly], [p[1] for p in c_poly])
+    b_draw.polygon([(u * W * SS, v * H * SS) for u, v in uv_c], fill=210)
+
+    # 4. Jaw straps
+    for s in [-1, 1]:
+        strap = [
+            (s * 0.030, seam - 0.024),
+            (s * 0.048, seam - 0.008),
+            (s * 0.054, seam + 0.012),
+            (s * 0.046, seam + 0.015),
+            (s * 0.040, seam - 0.004),
+            (s * 0.026, seam - 0.030)
+        ]
+        uv_strap = mapper([p[0] for p in strap], [p[1] for p in strap])
+        b_draw.polygon([(u * W * SS, v * H * SS) for u, v in uv_strap], fill=175)
+
+    b_mask = b_mask.resize((W, H), Image.Resampling.LANCZOS).filter(ImageFilter.GaussianBlur(3.0))
+    b_arr = np.asarray(b_mask, np.float32)[..., None] / 255.0
+
+    stubble_col = np.array([32, 28, 26], dtype=np.float32)
+    return out * (1.0 - b_arr * 0.72) + stubble_col * (b_arr * 0.72)
+
+
+def paint(skin_path, L, mapper, age, seed, fighter_id=""):
     img = Image.open(skin_path).convert("RGB")
     W, H = img.size
     lines, k = strokes(L, age)
@@ -96,10 +145,14 @@ def paint(skin_path, L, mapper, age, seed):
     base = np.asarray(img, np.float32)
     crease = base * np.array([0.7, 0.58, 0.54])  # darker, a touch warmer in the folds
     out = base * (1 - a) + crease * a
-    # Older skin: slightly paler and less saturated.
-    grey = out.mean(-1, keepdims=True)
-    out = out + (grey - out) * 0.08 * k
-    out = out + (np.array([250, 238, 228]) - out) * 0.05 * k
+    if fighter_id == "sundar":
+        # Keep warm golden undertone, avoid washing out with pale grey
+        out = paint_sundar_beard(out, L, mapper, W, H)
+    else:
+        # Older skin: slightly paler and less saturated.
+        grey = out.mean(-1, keepdims=True)
+        out = out + (grey - out) * 0.08 * k
+        out = out + (np.array([250, 238, 228]) - out) * 0.05 * k
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
 
 
@@ -122,7 +175,7 @@ def main():
     for f in data["fighters"]:
         if only and f["id"] not in only:
             continue
-        out = paint(f["skin"], data, mapper, float(f["age"]), abs(hash(f["id"])) % 2**32)
+        out = paint(f["skin"], data, mapper, float(f["age"]), abs(hash(f["id"])) % 2**32, fighter_id=f["id"])
         path = os.path.join(AGED, "T_%s_skin.png" % f["id"])
         out.save(path, optimize=True)
         write_import(path)
