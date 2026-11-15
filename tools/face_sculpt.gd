@@ -24,6 +24,9 @@ extends RefCounted
 ##   face_length  length of the face below the eyes (factor)
 ##   lips         fuller, more forward lips (m; - thinner)
 ##   mouth_width  width of the mouth (factor)
+##   jowls        heavy jowls: flesh along the jaw line pushed out and down (m)
+##   double_chin  a full double chin under the jaw (m)
+##   pout         a pushed-out, pursed lower lip (m)
 ##
 ## Changes stay small (millimetres) and away from the eyeballs and the skull, so the shared
 ## eyebrows, eyes and hair still sit right.
@@ -65,6 +68,15 @@ static func apply(verts: PackedVector3Array, L: Dictionary, params: Dictionary) 
 		if P.has("fullness"):
 			var cheek := _blob(Vector3(ax, p.y, p.z), Vector3(0.048, eye.y - 0.055, eye.z - 0.02), 0.05)
 			d += out_dir * float(P.fullness) * cheek * neck_fade
+		if P.has("jowls"):
+			var jowl := _blob(Vector3(ax, p.y, p.z), Vector3(0.05, seam - 0.035, eye.z - 0.035), 0.045) * neck_fade
+			d += (out_dir + Vector3(0, -0.5, 0)).normalized() * float(P.jowls) * jowl
+		if P.has("double_chin"):
+			var under := _blob(Vector3(ax * 0.8, p.y, p.z), Vector3(0.0, seam - 0.075, eye.z - 0.03), 0.05)
+			d += Vector3(0, -0.4, 1.0).normalized() * float(P.double_chin) * under
+		if P.has("pout"):
+			var lower_lip := (1.0 - _ramp(ax, 0.012, 0.03)) * _blob1(p.y, seam - 0.008, 0.011) * _ramp(p.z, eye.z - 0.005, eye.z + 0.008)
+			d.z += float(P.pout) * lower_lip
 		if P.has("cheekbones"):
 			var bone := _blob(Vector3(ax, p.y, p.z), Vector3(0.052, eye.y - 0.024, eye.z - 0.015), 0.026)
 			d += out_dir * float(P.cheekbones) * bone

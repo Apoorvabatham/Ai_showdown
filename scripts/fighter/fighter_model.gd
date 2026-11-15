@@ -204,6 +204,11 @@ func build(data: CharacterData, alt: bool = false) -> void:
 		_attach_skinned(hair_scene, data.model_scene.resource_path)
 	if data.brow_scale != Vector3.ONE:
 		_shape_brows(data.brow_scale)
+	if data.hair_scale != Vector3.ONE or data.hair_offset != Vector3.ZERO:
+		for scene in data.hair_scenes:
+			var hair_mesh := skeleton.find_child(scene.resource_path.get_file().get_basename(), true, false) as MeshInstance3D
+			if hair_mesh:
+				_rescale_skinned(hair_mesh, data.hair_scale, data.hair_offset)
 	var albedo := data.alt_body_albedo if alt and data.alt_body_albedo else data.body_albedo
 	var realistic := data.realistic_shading and not _low_graphics()
 	_customize_materials(albedo, data.alt_hair_color if alt else data.hair_color, data.detailed_textures, realistic,
@@ -219,6 +224,11 @@ func build(data: CharacterData, alt: bool = false) -> void:
 		_reshape(data.body_shape)
 	if not data.accessories.is_empty():
 		_add_accessories(data, data.alt_hair_color if alt else data.hair_color)
+	if not data.posture.is_empty():
+		var posture := PostureModifier.new()
+		posture.name = "Posture"
+		skeleton.add_child(posture)
+		posture.setup(skeleton, data.posture)
 
 	player = AnimationPlayer.new()
 	body.add_child(player)
@@ -267,16 +277,22 @@ func _reshape(shape_data: Dictionary) -> void:
 ## editing its skin binds (its own copy of the skin).
 func _shape_brows(brow_scale: Vector3) -> void:
 	var brows := skeleton.find_child("Eyebrows", true, false) as MeshInstance3D
-	if brows == null or brows.skin == null:
+	if brows:
+		_rescale_skinned(brows, brow_scale, Vector3.ZERO)
+
+
+## Scales a skinned piece about its own middle and shifts it (`offset` in mesh space,
+## which for the head pieces is head-aligned at rest), by editing its own copy of the skin.
+func _rescale_skinned(mesh: MeshInstance3D, scale_: Vector3, offset: Vector3) -> void:
+	if mesh.skin == null:
 		return
-	var skin := brows.skin.duplicate() as Skin
-	var centre := brows.mesh.get_aabb().get_center()
+	var skin := mesh.skin.duplicate() as Skin
+	var centre := mesh.mesh.get_aabb().get_center()
+	var local := Transform3D(Basis(), centre + offset) * Transform3D(Basis.from_scale(scale_), Vector3.ZERO) \
+		* Transform3D(Basis(), -centre)
 	for i in skin.get_bind_count():
-		var bind := skin.get_bind_pose(i)
-		var c := bind * centre # the brows' middle in this bone's space
-		skin.set_bind_pose(i, Transform3D(Basis(), c) * Transform3D(Basis.from_scale(brow_scale), Vector3.ZERO)
-			* Transform3D(Basis(), -c) * bind)
-	brows.skin = skin
+		skin.set_bind_pose(i, skin.get_bind_pose(i) * local)
+	mesh.skin = skin
 
 
 ## Head pieces (CharacterData.accessories), on a BoneAttachment3D following the Head bone
@@ -361,15 +377,21 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 				instance.material_override = hair
 				root.add_child(instance)
 			&"swoop":
-				# A big swept-over front: volume over the crown, swept forward over the brow.
-				var top := SphereMesh.new()
-				top.radius = 0.5
-				top.height = 1.0
-				_piece(root, top, hair, eyes + Vector3(0.0, 0.07, -0.05), Vector3(-0.2, 0, 0), Vector3(0.19, 0.075, 0.2))
-				var front := SphereMesh.new()
-				front.radius = 0.5
-				front.height = 1.0
-				_piece(root, front, hair, eyes + Vector3(0.015, 0.072, 0.02), Vector3(-0.1, 0, 0.15), Vector3(0.15, 0.05, 0.075))
+				# A big blond swept-over style: volume on the crown, a wave swept forward and
+				# across over the brow, full sides swept back, a rounded back.
+				var shiny := hair.duplicate() as StandardMaterial3D
+				shiny.roughness = 0.45
+				shiny.rim_enabled = true
+				shiny.rim = 0.3
+				var blob := SphereMesh.new()
+				blob.radius = 0.5
+				blob.height = 1.0
+				blob.radial_segments = 24
+				blob.rings = 12
+				_piece(root, blob, shiny, eyes + Vector3(0.0, 0.088, -0.045), Vector3(-0.1, 0, 0), Vector3(0.188, 0.11, 0.215))
+				_piece(root, blob, shiny, eyes + Vector3(0.006, 0.1, 0.035), Vector3(-0.35, 0.0, 0.1), Vector3(0.18, 0.07, 0.11))
+				_piece(root, blob, shiny, eyes + Vector3(-0.025, 0.098, 0.075), Vector3(-0.55, 0.0, 0.2), Vector3(0.12, 0.04, 0.055))
+				_piece(root, blob, shiny, eyes + Vector3(0.0, 0.035, -0.105), Vector3.ZERO, Vector3(0.17, 0.12, 0.08))
 			&"receding":
 				# Skin-coloured cap over the front of the hairline (a higher forehead).
 				var cap := SphereMesh.new()

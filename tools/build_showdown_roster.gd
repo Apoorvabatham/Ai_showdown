@@ -214,13 +214,14 @@ const ROSTER := [
 		skin = &"tan", hair = ["Hair_SimpleParted"], hair_color = Color(0.88, 0.7, 0.38), alt_hair_color = Color(0.85, 0.85, 0.82),
 		damage = 1.1, stats = {max_health = 1150, walk_speed = 1.6, back_walk_speed = 1.2, dash_speed = 4.6, weight = 1.3,
 			throw_damage = 170, jump_velocity = 5.5, power_rating = 0.9, speed_rating = 0.3},
-		face = {fullness = 0.009, jaw = 1.12, chin = 0.003, chin_forward = -0.001, brow = 0.001, nose_width = 1.06, eye_open = -0.0015, lips = 0.002, mouth_width = 0.92},
-		face_rest = {squint = 0.6, brow_down = 0.5, grimace = 0.3}, brows = Vector3(1.0, 0.7, 1.0), eyes = "Blue",
-		scale = 1.07, accessories = [&"swoop"],
+		face = {fullness = 0.012, jaw = 1.18, jowls = 0.008, double_chin = 0.009, eye_open = -0.0025, mouth_width = 0.84, pout = 0.004, lips = 0.002, nose_width = 1.08, brow = 0.001, face_length = 0.97},
+		face_rest = {squint = 0.55, brow_down = 0.35, grimace = 0.25}, brows = Vector3(1.0, 0.7, 1.0), eyes = "Blue",
+		scale = 1.07, accessories = [], hair_volume = [Vector3(1.18, 1.45, 1.22), Vector3(0, 0.012, 0.008)],
 		shape = {pelvis = [Vector3(1.32, 1, 1.45), Vector3(0, 0, 0.02)], spine_01 = [Vector3(1.55, 1, 1.85), Vector3(0, 0, 0.06)],
 			spine_02 = [Vector3(1.4, 1, 1.6), Vector3(0, 0, 0.04)], spine_03 = Vector3(1.15, 1, 1.2),
 			neck_01 = Vector3(1.28, 1, 1.25), thigh = Vector3(1.16, 1, 1.16), upperarm = Vector3(1.12, 1, 1.12),
-			lowerarm = Vector3(1.05, 1, 1.05), Head = Vector3(1.06, 1.02, 1.05)},
+			lowerarm = Vector3(1.05, 1, 1.05), Head = Vector3(1.12, 1.06, 1.1)},
+		posture = {spine_02 = Vector3(-5, 0, 0), spine_03 = Vector3(-6, 0, 0), neck_01 = Vector3(-4, 0, 0), Head = Vector3(-6, 0, 0), upperarm = Vector3(0, 0, -8)},
 		moves = {valkyrie_slam = "The Art of the Deal", spinning_lariat = "Executive Order", shoulder_tackle = "Trade War Tackle",
 			knee_lift = "Fake News Knee", thunder_valkyrie = "Shower of Tariffs"},
 		voice = &"brutus", color = Color(0.85, 0.15, 0.15),
@@ -295,6 +296,9 @@ func _build(spec: Dictionary, order: int) -> void:
 	data.body_shape = spec.get("shape", {}).duplicate(true)
 	data.face_shape = spec.get("face", {}).duplicate(true)
 	data.face_rest = spec.get("face_rest", {}).duplicate(true)
+	data.posture = spec.get("posture", {}).duplicate(true)
+	data.hair_scale = spec.hair_volume[0] if spec.has("hair_volume") else Vector3.ONE
+	data.hair_offset = spec.hair_volume[1] if spec.has("hair_volume") else Vector3.ZERO
 	data.brow_scale = spec.get("brows", Vector3.ONE)
 	data.eye_texture = load("res://assets/characters/base/T_Eye_%s.png" % spec.eyes) if spec.has("eyes") else null
 	var accessories: Array[StringName] = []

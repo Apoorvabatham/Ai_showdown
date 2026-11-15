@@ -69,11 +69,20 @@ extends Resource
 ## Eyebrow shape: scale of the brows about their middle (x width, y thickness and arch,
 ## z depth); e.g. (1, 0.6, 1) for slimmer, straighter brows.
 @export var brow_scale: Vector3 = Vector3.ONE
+## Hair volume: the hair pieces scaled about their middle (x width, y height, z depth),
+## e.g. a big swept style. Vector3.ONE = as modelled.
+@export var hair_scale: Vector3 = Vector3.ONE
+## Shift of the hair pieces (m, head space: +Y up, +Z forward), after hair_scale.
+@export var hair_offset: Vector3 = Vector3.ZERO
 ## Iris texture replacing the base eyes' brown (assets/characters/base/T_Eye_*.png).
 @export var eye_texture: Texture2D
 ## Resting expression: FighterModel.FACE_SHAPES weights (squint, brow_up, smile...) added to
 ## every expression, so a fighter keeps a characteristic look (a squint, raised brows).
 @export var face_rest: Dictionary = {}
+## Stance: bone name (without _l/_r for both sides) -> extra rotation in degrees (bone
+## space: X bends forward/back, Y twists, Z tilts sideways), on top of every animation
+## (PostureModifier).
+@export var posture: Dictionary = {}
 ## Extra pieces on the head (FighterModel._add_accessories): &"glasses", &"curls" (short
 ## curly hair), &"tousled" (messy tufts), &"swoop" (a big swept-over front), &"receding".
 @export var accessories: Array[StringName] = []
