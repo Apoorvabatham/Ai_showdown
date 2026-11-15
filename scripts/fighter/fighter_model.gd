@@ -172,6 +172,7 @@ var _gaze_indices: Array[PackedInt32Array] = []
 var _head_bone := -1
 var _head_rest := Basis.IDENTITY # head bone rest orientation in skeleton space
 var _eye_in_head := Vector3(0.0, 0.1, 0.08) # midpoint between the eyes, head bone space
+var _head_scale := Vector3.ONE # CharacterData.body_shape's "Head" (accessories follow it)
 var _voice_player: AudioStreamPlayer
 var _voice_stream: AudioStream
 var _voice_envelope := PackedByteArray()
@@ -207,6 +208,10 @@ func build(data: CharacterData, alt: bool = false) -> void:
 	if data.outfit_mesh:
 		_dress(data, alt)
 	_find_face()
+	if not data.body_shape.is_empty():
+		_reshape(data.body_shape)
+	if not data.accessories.is_empty():
+		_add_accessories(data, data.alt_hair_color if alt else data.hair_color)
 
 	player = AnimationPlayer.new()
 	body.add_child(player)
@@ -215,6 +220,155 @@ func build(data: CharacterData, alt: bool = false) -> void:
 		player.add_animation_library(library_name, LIBRARIES[library_name])
 	player.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
 	_keep_materials("%s/%s/%s" % [data.id, alt, realistic])
+
+
+## Body proportions (CharacterData.body_shape): scales (and shifts) the flesh bound to each
+## listed bone by editing the skin binds of every skinned mesh (body, outfit, hair), so
+## clothes stay on the body and nothing else changes: the skeleton, animations and the
+## simulation never see it. Bones are named without their _l/_r side.
+func _reshape(shape_data: Dictionary) -> void:
+	var shape := {} # keys as Strings (the data may use StringNames)
+	for key in shape_data:
+		shape[String(key)] = shape_data[key]
+	var skins := {} # original skin -> reshaped copy (meshes sharing a skin share the copy)
+	for mesh: MeshInstance3D in skeleton.find_children("*", "MeshInstance3D", true, false):
+		if mesh.skin == null:
+			continue
+		if not skins.has(mesh.skin):
+			var skin := mesh.skin.duplicate() as Skin
+			for i in skin.get_bind_count():
+				var bone_name := String(skin.get_bind_name(i))
+				if bone_name == "" and skin.get_bind_bone(i) >= 0:
+					bone_name = skeleton.get_bone_name(skin.get_bind_bone(i))
+				var key := bone_name.trim_suffix("_l").trim_suffix("_r")
+				if not shape.has(key):
+					continue
+				var entry: Variant = shape[key]
+				var scale_: Vector3 = entry[0] if entry is Array else entry
+				var offset: Vector3 = entry[1] if entry is Array and (entry as Array).size() > 1 else Vector3.ZERO
+				if bone_name.ends_with("_r"):
+					offset.x = -offset.x
+				skin.set_bind_pose(i, Transform3D(Basis.from_scale(scale_), offset) * skin.get_bind_pose(i))
+			skins[mesh.skin] = skin
+		mesh.skin = skins[mesh.skin]
+	if shape.has("Head"):
+		var head: Variant = shape["Head"]
+		_head_scale = head[0] if head is Array else head
+
+
+## Head pieces (CharacterData.accessories), on a BoneAttachment3D following the Head bone
+## and placed from the eyes (_eye_in_head, head bone space: +Y up, +Z forward).
+func _add_accessories(data: CharacterData, hair_color: Color) -> void:
+	if _head_bone < 0:
+		return
+	var mount := BoneAttachment3D.new()
+	mount.name = "Accessories"
+	mount.bone_name = "Head"
+	skeleton.add_child(mount)
+	var root := Node3D.new()
+	root.scale = _head_scale
+	mount.add_child(root)
+	var eyes := _eye_in_head
+	var hair := StandardMaterial3D.new()
+	hair.albedo_color = hair_color
+	hair.roughness = 0.75
+	for piece: StringName in data.accessories:
+		match piece:
+			&"glasses":
+				var frame := StandardMaterial3D.new()
+				frame.albedo_color = data.accessory_color
+				frame.roughness = 0.35
+				frame.metallic = 0.3
+				var lens := StandardMaterial3D.new()
+				lens.albedo_color = Color(0.75, 0.85, 0.95, 0.18)
+				lens.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				lens.roughness = 0.05
+				for side in [-1.0, 1.0]:
+					var center: Vector3 = eyes + Vector3(side * 0.034, 0.0, 0.028)
+					var ring := TorusMesh.new()
+					ring.inner_radius = 0.019
+					ring.outer_radius = 0.023
+					ring.rings = 24
+					ring.ring_segments = 6
+					_piece(root, ring, frame, center, Vector3(PI / 2, 0, 0), Vector3(1.0, 1.0, 0.8))
+					var glass := CylinderMesh.new()
+					glass.top_radius = 0.02
+					glass.bottom_radius = 0.02
+					glass.height = 0.002
+					_piece(root, glass, lens, center, Vector3(PI / 2, 0, 0))
+					var arm := BoxMesh.new()
+					arm.size = Vector3(0.004, 0.005, 0.085)
+					_piece(root, arm, frame, eyes + Vector3(side * 0.059, 0.004, -0.015), Vector3(0, side * 0.08, 0))
+				var bridge := BoxMesh.new()
+				bridge.size = Vector3(0.024, 0.004, 0.004)
+				_piece(root, bridge, frame, eyes + Vector3(0, 0.006, 0.03))
+			&"curls", &"tousled":
+				# Short curls (or bigger, looser tufts) over the top and back of the head.
+				var curly := piece == &"curls"
+				var ball := SphereMesh.new()
+				ball.radius = 0.016 if curly else 0.022
+				ball.height = ball.radius * 2.0
+				ball.radial_segments = 8
+				ball.rings = 4
+				var multi := MultiMesh.new()
+				multi.transform_format = MultiMesh.TRANSFORM_3D
+				multi.mesh = ball
+				var spots: Array[Transform3D] = []
+				var rng := RandomNumberGenerator.new()
+				rng.seed = hash(data.id)
+				var center := eyes + Vector3(0, 0.035, -0.07)
+				for i in (150 if curly else 90):
+					# Fibonacci sphere, upper cap only (above the brow at the front).
+					var t := (i + 0.5) / (150.0 if curly else 90.0)
+					var y := 1.0 - t * 1.1
+					var r := sqrt(maxf(1.0 - y * y, 0.0))
+					var a := i * 2.39996
+					var dir := Vector3(cos(a) * r, y, sin(a) * r)
+					if dir.z > 0.35 and dir.y < 0.45:
+						continue # keep the forehead clear
+					if dir.y < -0.05 and dir.z > -0.2:
+						continue # nothing over the ears and face
+					var spot := center + dir * Vector3(0.094, 0.096, 0.108) * rng.randf_range(0.98, 1.03)
+					spots.append(Transform3D(Basis().scaled(Vector3(1.0, 0.8, 1.0) * rng.randf_range(0.8, 1.2)), spot))
+				multi.instance_count = spots.size()
+				for i in spots.size():
+					multi.set_instance_transform(i, spots[i])
+				var instance := MultiMeshInstance3D.new()
+				instance.multimesh = multi
+				instance.material_override = hair
+				root.add_child(instance)
+			&"swoop":
+				# A big swept-over front: volume over the crown, swept forward over the brow.
+				var top := SphereMesh.new()
+				top.radius = 0.5
+				top.height = 1.0
+				_piece(root, top, hair, eyes + Vector3(0.0, 0.07, -0.05), Vector3(-0.2, 0, 0), Vector3(0.19, 0.075, 0.2))
+				var front := SphereMesh.new()
+				front.radius = 0.5
+				front.height = 1.0
+				_piece(root, front, hair, eyes + Vector3(0.015, 0.072, 0.02), Vector3(-0.1, 0, 0.15), Vector3(0.15, 0.05, 0.075))
+			&"receding":
+				# Skin-coloured cap over the front of the hairline (a higher forehead).
+				var cap := SphereMesh.new()
+				cap.radius = 0.5
+				cap.height = 1.0
+				var skin_mat := StandardMaterial3D.new()
+				skin_mat.albedo_color = data.accessory_color
+				skin_mat.roughness = 0.6
+				_piece(root, cap, skin_mat, eyes + Vector3(0.0, 0.07, -0.02), Vector3(-0.35, 0, 0), Vector3(0.17, 0.08, 0.17))
+
+
+func _piece(parent: Node3D, mesh: Mesh, material: Material, position_: Vector3, rotation_ := Vector3.ZERO,
+		scale_ := Vector3.ONE) -> MeshInstance3D:
+	var instance := MeshInstance3D.new()
+	instance.mesh = mesh
+	instance.material_override = material
+	instance.position = position_
+	instance.rotation = rotation_
+	instance.scale = scale_
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(instance)
+	return instance
 
 
 ## Hands one copy of this look's materials to GameState to hold, so their shaders survive

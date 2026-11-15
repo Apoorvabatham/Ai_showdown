@@ -30,13 +30,18 @@ const SKINS := {
 }
 
 ## Per fighter. `moves`: kit move file -> new name (a super's follow-ups share its name);
-## `damage`: multiplier on every move's damage and chip; `stats`: CharacterData overrides.
+## `damage`: multiplier on every move's damage and chip; `stats`: CharacterData overrides;
+## `scale`, `shape`, `accessories`: height, body proportions and head pieces
+## (CharacterData.model_scale, body_shape, accessories).
 const ROSTER := [
 	{
 		id = &"ram", name = "Ram Altman", kit = &"mira", archetype = "Hype Brawler",
 		description = "Charges up with Add More Compute until every rush scales like a law of nature. AGI is coming next year. Every year.",
-		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.26, 0.18, 0.11), alt_hair_color = Color(0.1, 0.08, 0.07),
+		skin = &"light", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.3, 0.21, 0.13), alt_hair_color = Color(0.1, 0.08, 0.07),
 		damage = 1.0, stats = {},
+		scale = 0.95, accessories = [&"tousled"],
+		shape = {spine_03 = Vector3(0.9, 1, 0.92), upperarm = Vector3(0.84, 1, 0.84), lowerarm = Vector3(0.88, 1, 0.88),
+			thigh = Vector3(0.9, 1, 0.9), calf = Vector3(0.92, 1, 0.92)},
 		moves = {lakas_stance = "Add More Compute", bagyo_rush = "Funding Round Rush", lawin_rise = "Hype Cycle",
 			lawin_drop = "Product Drop", sipa_flip = "Pivot Flip", tapik = "Teaser Tweet",
 			huling_hagupit = "Scaling Law", hagupit_finish = "Scaling Law", hagupit_max = "Scaling Law"},
@@ -53,6 +58,9 @@ const ROSTER := [
 		description = "Moves fast and breaks things, mostly his own schedule. Swears the Rocket Launch will be ready next quarter.",
 		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.2, 0.14, 0.09), alt_hair_color = Color(0.36, 0.27, 0.16),
 		damage = 0.95, stats = {walk_speed = 2.7, dash_speed = 7.8},
+		scale = 1.06, accessories = [],
+		shape = {spine_01 = [Vector3(1.1, 1, 1.15), Vector3(0, 0, 0.01)], spine_02 = Vector3(1.05, 1, 1.08), neck_01 = Vector3(1.1, 1, 1.1),
+			Head = Vector3(1.03, 1.02, 1.02)},
 		moves = {gale_slide = "Full Self-Sliding", crescent_rise = "Starship Hop", rushing_hook = "Hardcore Hook",
 			step_kick = "Hyperloop Step", tempest_kicks = "Rocket Launch", tempest_finish = "Rocket Launch"},
 		voice = &"jin", color = Color(0.85, 0.2, 0.2),
@@ -67,6 +75,9 @@ const ROSTER := [
 		description = "A patient counter-fighter guided by a written constitution. Catches reckless strikes with Refusal Stance, then explains, at length, why that was unsafe.",
 		skin = &"light", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.14, 0.1, 0.08), alt_hair_color = Color(0.32, 0.22, 0.13),
 		damage = 1.0, stats = {},
+		scale = 0.98, accessories = [&"curls"],
+		shape = {spine_03 = Vector3(0.9, 1, 0.9), upperarm = Vector3(0.85, 1, 0.85), lowerarm = Vector3(0.88, 1, 0.88),
+			thigh = Vector3(0.9, 1, 0.9)},
 		moves = {still_water = "Refusal Stance", inch_palm = "Interpretability Palm", willow_step = "Responsible Scaling Step",
 			chain_punch = "Red-Team Chain", double_palm = "Double-Check Palm",
 			thousand_hands = "Constitutional Shield", thousand_finish = "Constitutional Shield"},
@@ -80,8 +91,10 @@ const ROSTER := [
 	{
 		id = &"zuckerbot", name = "Mark Zuckerbot", kit = &"valka", archetype = "Grappler",
 		description = "Trained in jiu-jitsu, raised on growth metrics. The Metaverse Trap pulls you into a virtual world where nobody has legs.",
-		skin = &"light", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.3, 0.2, 0.12), alt_hair_color = Color(0.12, 0.09, 0.07),
+		skin = &"light", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.28, 0.19, 0.12), alt_hair_color = Color(0.12, 0.09, 0.07),
 		damage = 1.0, stats = {},
+		scale = 0.93, accessories = [&"curls"],
+		shape = {upperarm = Vector3(1.05, 1, 1.05), neck_01 = Vector3(1.06, 1, 1.06), Head = Vector3(1.03, 1.0, 1.0)},
 		moves = {valkyrie_slam = "Data Harvest Slam", spinning_lariat = "Pivot to Video", shoulder_tackle = "Move Fast Tackle",
 			knee_lift = "Like-Button Knee", thunder_valkyrie = "Metaverse Trap"},
 		voice = &"jin", color = Color(0.25, 0.45, 0.9),
@@ -92,8 +105,10 @@ const ROSTER := [
 	{
 		id = &"jensen", name = "Jensen Wong", kit = &"kenji", archetype = "Zoner",
 		description = "Never seen out of his leather jacket. Fires Tensor Blasts across the screen and buries rivals in GPU Rain. Weak spot: a rival chipmaker CEO who also happens to be family.",
-		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.2, 0.2, 0.2), alt_hair_color = Color(0.55, 0.55, 0.55),
+		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.32, 0.32, 0.33), alt_hair_color = Color(0.12, 0.12, 0.12),
 		damage = 1.05, stats = {},
+		scale = 0.97, accessories = [&"glasses"],
+		shape = {spine_03 = Vector3(0.95, 1, 0.95), upperarm = Vector3(0.92, 1, 0.92), spine_01 = Vector3(1.04, 1, 1.05)},
 		moves = {ki_blast = "Tensor Blast", rising_dragon = "Leather Uppercut", snap_kick = "Keynote Kick",
 			advancing_straight = "The More You Buy", dragon_barrage = "GPU Rain", dragon_finish = "GPU Rain"},
 		projectile_color = Color(0.46, 0.8, 0.0),
@@ -109,6 +124,9 @@ const ROSTER := [
 		description = "Former chess prodigy and game designer. Reads every fight forty moves ahead, then folds you like a protein.",
 		skin = &"light", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.1, 0.08, 0.07), alt_hair_color = Color(0.3, 0.22, 0.14),
 		damage = 1.0, stats = {},
+		scale = 0.92, accessories = [],
+		shape = {spine_03 = Vector3(0.9, 1, 0.9), upperarm = Vector3(0.86, 1, 0.86), lowerarm = Vector3(0.9, 1, 0.9),
+			Head = Vector3(1.03, 1.02, 1.02)},
 		moves = {spinning_back_kick = "Move 37", tornado_kick = "Self-Play Tornado", axe_kick = "Checkmate Axe",
 			push_kick = "Gambit Push", hurricane_kicks = "Protein Fold", hurricane_finish = "Protein Fold"},
 		voice = &"jin", color = Color(0.3, 0.55, 0.95),
@@ -122,6 +140,9 @@ const ROSTER := [
 		description = "A heavyweight sceptic who insists none of this is real intelligence, then flattens you to prove the point. Posts the rebuttal mid-combo.",
 		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.32, 0.31, 0.3), alt_hair_color = Color(0.12, 0.1, 0.09),
 		damage = 1.0, stats = {},
+		scale = 1.0, accessories = [&"glasses"],
+		shape = {spine_01 = [Vector3(1.18, 1, 1.25), Vector3(0, 0, 0.015)], spine_02 = Vector3(1.1, 1, 1.15), pelvis = Vector3(1.08, 1, 1.1),
+			neck_01 = Vector3(1.1, 1, 1.1), Head = Vector3(1.04, 1.02, 1.03)},
 		moves = {bull_charge = "Open-Source Charge", earthquake = "World Model Quake", overhead_smash = "Cat-Level Smash",
 			heavy_boot = "Convolution Boot", titan_rush = "It's Just Autocomplete", titan_finish = "It's Just Autocomplete"},
 		voice = &"brutus", color = Color(0.6, 0.3, 0.85),
@@ -137,6 +158,9 @@ const ROSTER := [
 		description = "The godfather of the neural net, now touring the world to warn you about it. His heavy moves shrug off a hit; his super comes with second thoughts.",
 		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.86, 0.86, 0.84), alt_hair_color = Color(0.6, 0.6, 0.6),
 		damage = 0.95, stats = {},
+		scale = 1.05, accessories = [],
+		shape = {spine_03 = Vector3(0.88, 1, 0.9), upperarm = Vector3(0.8, 1, 0.8), lowerarm = Vector3(0.85, 1, 0.85),
+			thigh = Vector3(0.88, 1, 0.88), calf = Vector3(0.9, 1, 0.9), neck_01 = Vector3(0.9, 1, 0.9)},
 		moves = {shield_rush = "Backprop Rush", rising_gauntlet = "Deep Uppercut", hammerfall = "Boltzmann Hammer",
 			gauntlet_drive = "Gradient Drive", spur_rake = "Dropout Rake",
 			emerald_oath = "I Regret Nothing… Wait", oath_finish = "I Regret Nothing… Wait"},
@@ -152,6 +176,9 @@ const ROSTER := [
 		description = "Unflappable and endlessly polite. Ranks your weaknesses and serves you ten blue links' worth of fireballs. Takes a hit better than he throws one.",
 		skin = &"medium", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.16, 0.15, 0.15), alt_hair_color = Color(0.45, 0.45, 0.45),
 		damage = 0.9, stats = {max_health = 1100, walk_speed = 1.8, back_walk_speed = 1.5, weight = 1.1, power_rating = 0.4, speed_rating = 0.45},
+		scale = 0.97, accessories = [],
+		shape = {spine_03 = Vector3(0.92, 1, 0.92), upperarm = Vector3(0.86, 1, 0.86), lowerarm = Vector3(0.9, 1, 0.9),
+			thigh = Vector3(0.92, 1, 0.92)},
 		moves = {ki_blast = "Ten Blue Links", rising_dragon = "Featured Snippet", snap_kick = "Quarterly Kick",
 			advancing_straight = "Sponsored Result", dragon_barrage = "Search Result", dragon_finish = "Search Result"},
 		projectile_color = Color(0.26, 0.52, 0.96),
@@ -166,6 +193,11 @@ const ROSTER := [
 		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.88, 0.7, 0.38), alt_hair_color = Color(0.85, 0.85, 0.82),
 		damage = 1.1, stats = {max_health = 1150, walk_speed = 1.6, back_walk_speed = 1.2, dash_speed = 4.6, weight = 1.3,
 			throw_damage = 170, jump_velocity = 5.5, power_rating = 0.9, speed_rating = 0.3},
+		scale = 1.07, accessories = [&"swoop"],
+		shape = {pelvis = [Vector3(1.32, 1, 1.45), Vector3(0, 0, 0.02)], spine_01 = [Vector3(1.55, 1, 1.85), Vector3(0, 0, 0.06)],
+			spine_02 = [Vector3(1.4, 1, 1.6), Vector3(0, 0, 0.04)], spine_03 = Vector3(1.15, 1, 1.2),
+			neck_01 = Vector3(1.28, 1, 1.25), thigh = Vector3(1.16, 1, 1.16), upperarm = Vector3(1.12, 1, 1.12),
+			lowerarm = Vector3(1.05, 1, 1.05), Head = Vector3(1.06, 1.02, 1.05)},
 		moves = {valkyrie_slam = "The Art of the Deal", spinning_lariat = "Executive Order", shoulder_tackle = "Trade War Tackle",
 			knee_lift = "Fake News Knee", thunder_valkyrie = "Shower of Tariffs"},
 		voice = &"brutus", color = Color(0.85, 0.15, 0.15),
@@ -179,6 +211,9 @@ const ROSTER := [
 		description = "Stands behind the Great Firewall, absorbs hits with stoic calm and makes sure no record of his defeats survives.",
 		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.06, 0.06, 0.06), alt_hair_color = Color(0.2, 0.2, 0.2),
 		damage = 1.0, stats = {max_health = 1100},
+		scale = 0.98, accessories = [],
+		shape = {spine_01 = [Vector3(1.2, 1, 1.28), Vector3(0, 0, 0.015)], spine_02 = Vector3(1.12, 1, 1.18), pelvis = Vector3(1.08, 1, 1.1),
+			neck_01 = Vector3(1.12, 1, 1.12), Head = Vector3(1.06, 1.0, 1.04)},
 		moves = {shield_rush = "Belt and Road Rush", rising_gauntlet = "Five-Year Plan", hammerfall = "Social Credit Hammer",
 			gauntlet_drive = "State Media Drive", spur_rake = "Censor Sweep",
 			emerald_oath = "Great Firewall", oath_finish = "Great Firewall"},
@@ -192,6 +227,9 @@ const ROSTER := [
 		description = "An optimisation process nobody fully understands. It doesn't hate you. It just wants you to keep watching.",
 		skin = &"light", hair = [], hair_color = Color.WHITE, alt_hair_color = Color.WHITE,
 		damage = 1.1, stats = {max_health = 1050, power_rating = 0.6},
+		scale = 1.1, accessories = [],
+		shape = {spine_03 = Vector3(0.9, 1, 0.88), upperarm = Vector3(0.82, 1, 0.82), lowerarm = Vector3(0.85, 1, 0.85),
+			thigh = Vector3(0.85, 1, 0.85), calf = Vector3(0.88, 1, 0.88), Head = Vector3(0.95, 1.05, 0.98)},
 		moves = {gale_slide = "Infinite Scroll", crescent_rise = "Viral Spike", rushing_hook = "Clickbait Hook",
 			step_kick = "Autoplay Kick", tempest_kicks = "Engagement Loop", tempest_finish = "Engagement Loop"},
 		voice = &"jin", color = Color(0.2, 0.95, 0.95),
@@ -228,7 +266,11 @@ func _build(spec: Dictionary, order: int) -> void:
 	# Look: everyone is on the male base body (kits on the female body or Aelia's own
 	# model included), with a generated outfit (tools/build_outfits.gd).
 	data.model_scene = load(MALE_BODY)
-	data.model_scale = clampf(kit.model_scale, 1.0, 1.08)
+	data.model_scale = spec.get("scale", 1.0)
+	data.body_shape = spec.get("shape", {}).duplicate(true)
+	var accessories: Array[StringName] = []
+	accessories.assign(spec.get("accessories", []))
+	data.accessories = accessories
 	data.body_albedo = load(SKINS[spec.skin])
 	data.alt_body_albedo = load(SKINS[&"light_alt"] if spec.skin == &"light" else SKINS[spec.skin])
 	var hair: Array[PackedScene] = []

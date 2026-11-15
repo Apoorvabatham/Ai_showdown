@@ -39,6 +39,7 @@ voice_fallback = &"jin"
 portrait = ExtResource("25_soqyl")
 model_scene = ExtResource("3_233vy")
 body_albedo = ExtResource("2_kfoxg")
+model_scale = 1.1
 alt_body_albedo = ExtResource("1_at8a7")
 outfit_mesh = ExtResource("23_kfoxg")
 outfit_body_mesh = ExtResource("23_233vy")
@@ -48,6 +49,14 @@ alt_outfit_colors = PackedColorArray(0.9, 0.9, 0.92, 1, 1, 0.25, 0.85, 1)
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_point", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.2, 0.95, 0.95, 1)
+body_shape = {
+&"Head": Vector3(0.95, 1.05, 0.98),
+&"calf": Vector3(0.88, 1, 0.88),
+&"lowerarm": Vector3(0.85, 1, 0.85),
+&"spine_03": Vector3(0.9, 1, 0.88),
+&"thigh": Vector3(0.85, 1, 0.85),
+&"upperarm": Vector3(0.82, 1, 0.82)
+}
 intro_animation = &"fight/intro_shadowbox"
 intro_expression = &"smirk"
 intro_lines = PackedStringArray("Recommended for you: defeat.", "Optimising for your attention.", "You will keep playing. You always do.")

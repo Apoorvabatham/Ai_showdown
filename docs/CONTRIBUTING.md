@@ -77,8 +77,8 @@ godot --headless --path . -s res://tests/sim_test.gd
 
 ### Tools that render images
 
-`render_portraits.gd`, `render_cutins.gd`, `render_stage_thumbs.gd`, `render_key_art.gd`
-and `render_screenshots.gd` need a real renderer, so they cannot use `--headless`. On a
+`render_portraits.gd`, `render_cutins.gd`, `render_stage_thumbs.gd`, `render_key_art.gd`,
+`render_model_sheet.gd` and `render_screenshots.gd` need a real renderer, so they cannot use `--headless`. On a
 desktop, run them normally (`godot --path . -s res://tools/<tool>.gd`). On a headless Linux
 box, wrap them in Xvfb:
 
@@ -142,6 +142,36 @@ character-select order (`select_order`). Fields:
 | `rivals` | `{ "<other id>": [lines] }` shown when facing that fighter. |
 
 Keep every string within the [content rules](#8-content-rules-for-the-parody).
+
+### Body build, hair pieces and glasses
+
+Three optional `ROSTER` fields (stored in the "Build" export group of `CharacterData` as
+`model_scale`, `body_shape`, `accessories`, plus `accessory_color`) change a fighter's
+silhouette without touching moves:
+
+- `scale`: overall height (`model_scale`).
+- `shape`: per-bone flesh scaling applied to the skin bind poses (`FighterModel._reshape`).
+  It is visual only; bones, animations and hitboxes are unchanged. Keys are bone names
+  without `_l`/`_r` (`pelvis`, `spine_01`, `spine_02`, `spine_03`, `neck_01`, `Head`,
+  `clavicle`, `upperarm`, `lowerarm`, `hand`, `thigh`, `calf`, `foot`). A value is either a
+  `Vector3` scale in bone space (Y along the bone, X width, Z depth/front) or
+  `[scale, offset]`, where a positive Z offset pushes the flesh forward (a belly). Typical
+  ranges: 0.8-0.95 for slim, 1.1-1.5 for heavy. Donald's belly is a good example: e.g.
+  `spine_01 = [Vector3(1.55, 1, 1.85), Vector3(0, 0, 0.06)]` (wider, deeper, pushed
+  forward); see his entry in `ROSTER` for the full set.
+- `accessories`: array of `&"glasses"` (frame colour comes from `accessory_color`),
+  `&"curls"`, `&"tousled"` or `&"swoop"`. They are built from simple meshes
+  (`FighterModel._add_accessories` / `_piece`) on a `BoneAttachment3D` on the `Head`,
+  placed relative to the eyes. `&"receding"` exists but is experimental. To add a new
+  accessory, add a `match` branch in `FighterModel._add_accessories`.
+
+After changing any of these, re-run `build_showdown_roster.gd -- <id>` and check the result
+with the model sheet, which writes `docs/screenshots/roster.jpg` (front, side and head
+close-up per fighter; ids after `--` are optional):
+
+```bash
+xvfb-run -a -s "-screen 0 1920x1080x24" godot --rendering-driver opengl3 --path . -s res://tools/render_model_sheet.gd -- <id>
+```
 
 ### 3.3 Pipeline, in this order
 

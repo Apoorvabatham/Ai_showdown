@@ -42,7 +42,7 @@ portrait = ExtResource("27_edjrd")
 model_scene = ExtResource("5_qlay1")
 hair_scenes = Array[PackedScene]([ExtResource("3_vaoro"), ExtResource("4_edjrd")])
 body_albedo = ExtResource("2_dc8o8")
-model_scale = 1.02
+model_scale = 0.92
 hair_color = Color(0.1, 0.08, 0.07, 1)
 alt_body_albedo = ExtResource("1_sjpdj")
 alt_hair_color = Color(0.3, 0.22, 0.14, 1)
@@ -55,6 +55,12 @@ detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_point", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.3, 0.55, 0.95, 1)
+body_shape = {
+&"Head": Vector3(1.03, 1.02, 1.02),
+&"lowerarm": Vector3(0.9, 1, 0.9),
+&"spine_03": Vector3(0.9, 1, 0.9),
+&"upperarm": Vector3(0.86, 1, 0.86)
+}
 intro_animation = &"fight/intro_kick"
 intro_expression = &"guard"
 intro_lines = PackedStringArray("I\'ve already simulated this fight. You lose.", "First, solve fighting. Then use it to solve everything else.", "A nice game. Shall we?")

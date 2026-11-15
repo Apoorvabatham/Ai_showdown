@@ -43,6 +43,7 @@ portrait = ExtResource("28_30gwc")
 model_scene = ExtResource("5_yl8gs")
 hair_scenes = Array[PackedScene]([ExtResource("3_gj4kt"), ExtResource("4_30gwc")])
 body_albedo = ExtResource("2_iujnw")
+model_scale = 0.98
 hair_color = Color(0.14, 0.1, 0.08, 1)
 alt_body_albedo = ExtResource("1_svhgk")
 alt_hair_color = Color(0.32, 0.22, 0.13, 1)
@@ -55,6 +56,13 @@ detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_bow", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.85, 0.55, 0.3, 1)
+body_shape = {
+&"lowerarm": Vector3(0.88, 1, 0.88),
+&"spine_03": Vector3(0.9, 1, 0.9),
+&"thigh": Vector3(0.9, 1, 0.9),
+&"upperarm": Vector3(0.85, 1, 0.85)
+}
+accessories = Array[StringName]([&"curls"])
 intro_animation = &"fight/intro_wing_chun"
 intro_lines = PackedStringArray("I\'d estimate a ten to twenty-five percent chance this goes badly. For you.", "Let\'s do this carefully.", "I wrote a fifteen-thousand-word essay on why I\'ll win.")
 win_quotes = PackedStringArray("Machines of loving grace. And one loving uppercut.", "That was a responsible scaling of force.", "I\'m sorry, I can\'t help you get up.")

@@ -55,6 +55,19 @@ extends Resource
 ## Tint used for graybox stand-ins and UI until real models/portraits exist.
 @export var placeholder_color: Color = Color.WHITE
 
+@export_group("Build")
+## Body proportions (base bodies): bone name without _l/_r ("spine_02", "upperarm",
+## "Head"...) -> Vector3 scale in that bone's space (Y runs along the bone, Z faces front),
+## or [scale, offset] to also shift its flesh (m, bone space; +Z pushes a belly forward).
+## Applied to the skin binds (FighterModel._reshape), so only the mesh changes: bones,
+## animations and hitboxes stay the same.
+@export var body_shape: Dictionary = {}
+## Extra pieces on the head (FighterModel._add_accessories): &"glasses", &"curls" (short
+## curly hair), &"tousled" (messy tufts), &"swoop" (a big swept-over front), &"receding".
+@export var accessories: Array[StringName] = []
+## Glasses frame colour.
+@export var accessory_color: Color = Color(0.05, 0.05, 0.06)
+
 @export_group("Intro and quotes")
 ## Pre-fight intro animation ("library/clip"), ending in the guard (FightIntro).
 @export var intro_animation: StringName

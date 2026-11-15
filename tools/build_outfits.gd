@@ -395,10 +395,8 @@ func _sweater_spec(sweater: Color, pants: Color, shoes: Color, pants_fabric: Str
 						if quarter_zip:
 							rib = maxf(rib, minf(_zip(p, n, 0.006), p.y - (L.chest - 0.05)))
 						return rib,
-					drape = _top_drape(L, {base = 0.017, sleeve_end = cuff, cuff_flare = 0.006, sag = 0.01, amount = 0.6,
-						chest_fall = 8, fine_below = hem + 0.1,
-						pin = func(p: Vector3) -> bool: return p.y < hem + 0.035 or absf(p.x) > cuff - 0.035})},
-				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, L.waist),
+				},
+				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, hem + 0.03),
 					drape = _pants_drape(L, {base = 0.011, flare = 0.008, hem = L.ankle + 0.05, amount = 0.7, cover = hem, cover_max = 0.014,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
 				{slot = Slot.EXTRA, offset = 0.017, flat_soles = true, trim_slot = Slot.TRIM,
@@ -420,9 +418,8 @@ func _tee_spec(tee: Color, jeans: Color, shoes: Color, alt_tee: Color, alt_jeans
 			var sleeve: float = L.shoulder + (L.elbow - L.shoulder) * 0.5
 			return [
 				{slot = Slot.MAIN, offset = 0.009, region = func(p, n): return _top(p, L, hem, sleeve),
-					drape = _top_drape(L, {base = 0.009, sleeve_end = sleeve, cuff_flare = 0.01, amount = 0.5, chest_fall = 8,
-						fine_below = hem + 0.1})},
-				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, L.waist),
+				},
+				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, hem + 0.03),
 					drape = _pants_drape(L, {base = 0.011, flare = 0.008, hem = L.ankle + 0.05, amount = 0.7, cover = hem, cover_max = 0.012,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
 				{slot = Slot.EXTRA, offset = 0.017, flat_soles = true, trim_slot = Slot.TRIM,
@@ -473,15 +470,13 @@ func _hoodie_spec(hoodie: Color, jeans: Color, shoes: Color, alt_hoodie: Color, 
 						if p.z <= 0.03 or n.z < 0.35:
 							return -1.0
 						return minf(minf(p.y - (L.hip + 0.0), (L.waist - 0.01) - p.y), 0.12 - absf(p.x)),
-					drape = _top_drape(L, {base = 0.022, sleeve_end = cuff, cuff_flare = 0.01, sag = 0.014, amount = 0.8,
-						chest_fall = 9, fine_below = hem + 0.12,
-						pin = func(p: Vector3) -> bool: return p.y < hem + 0.03})},
+				},
 				# The hood, folded down behind the neck.
 				{slot = Slot.MAIN, offset = 0.034, region = func(p, n):
 					if p.z > -0.01:
 						return -1.0
 					return minf(minf(p.y - (L.neck - 0.1), (L.neck + 0.07) - p.y), 0.13 - absf(p.x))},
-				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, L.waist),
+				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, hem + 0.03),
 					drape = _pants_drape(L, {base = 0.011, flare = 0.008, hem = L.ankle + 0.05, amount = 0.7, cover = hem, cover_max = 0.014,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
 				{slot = Slot.EXTRA, offset = 0.017, flat_soles = true, trim_slot = Slot.TRIM,
@@ -508,9 +503,7 @@ func _cardigan_spec(cardigan: Color, band: Color, trousers: Color, shirt: Color,
 					region = func(p, n): return minf(_top(p, L, hem, cuff), -_v_cut(p, n, L, v_bottom, 0.085)),
 					trim = func(p, n): return maxf(_v_cut(p, n, L, v_bottom, 0.085) + 0.014,
 						_placket(p, 0.013) if p.y < v_bottom + 0.01 else -1.0),
-					drape = _top_drape(L, {base = 0.02, sleeve_end = cuff, cuff_flare = 0.008, sag = 0.012, amount = 0.6,
-						chest_fall = 8, fine_below = hem + 0.1,
-						fine = func(p: Vector3) -> bool: return _v_cut(p, Vector3.BACK, L, v_bottom, 0.085) > -0.05})},
+				},
 				{slot = Slot.EXTRA, offset = 0.008, region = func(p, n): return _top(p, L, L.waist - 0.06, L.wrist - 0.02)},
 				{slot = Slot.ACCENT, offset = 0.012, region = func(p, n): return _legs(p, L.ankle + 0.03, L.waist)},
 				{slot = Slot.TRIM, offset = 0.013, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},

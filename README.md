@@ -32,6 +32,10 @@ A parody 2-player 3D fighting game in which caricatures of AI-industry public pe
 
 ## Roster
 
+Fighters have individual builds (height, belly, slim or heavy), glasses and hair pieces, defined per fighter in the roster builder.
+
+![Roster model sheet](docs/screenshots/roster.jpg)
+
 | id | Name | Kit (original moveset) | Super |
 |---|---|---|---|
 | ram | Ram Altman | mira | Scaling Law (powers up with the "Add More Compute" stance) |

@@ -2,8 +2,9 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_70tor"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_fqi1o"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_mxu0h"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_hvfva"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_2dtko"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Eyebrows_Regular.gltf" id="4_64vk5"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_hvfva"]
 [ext_resource type="Resource" path="res://data/moves/ram/jab.tres" id="6_64vk5"]
 [ext_resource type="Resource" path="res://data/moves/ram/straight.tres" id="7_wjjtj"]
@@ -41,9 +42,10 @@ kit = &"mira"
 voice_fallback = &"kenji"
 portrait = ExtResource("29_2dtko")
 model_scene = ExtResource("4_2dtko")
-hair_scenes = Array[PackedScene]([ExtResource("3_mxu0h")])
+hair_scenes = Array[PackedScene]([ExtResource("3_hvfva"), ExtResource("4_64vk5")])
 body_albedo = ExtResource("2_fqi1o")
-hair_color = Color(0.26, 0.18, 0.11, 1)
+model_scale = 0.95
+hair_color = Color(0.3, 0.21, 0.13, 1)
 alt_body_albedo = ExtResource("1_70tor")
 alt_hair_color = Color(0.1, 0.08, 0.07, 1)
 outfit_mesh = ExtResource("28_2dtko")
@@ -55,6 +57,14 @@ detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_fist_pump", &"fight/victory_point"])
 placeholder_color = Color(0.3, 0.75, 0.6, 1)
+body_shape = {
+&"calf": Vector3(0.92, 1, 0.92),
+&"lowerarm": Vector3(0.88, 1, 0.88),
+&"spine_03": Vector3(0.9, 1, 0.92),
+&"thigh": Vector3(0.9, 1, 0.9),
+&"upperarm": Vector3(0.84, 1, 0.84)
+}
+accessories = Array[StringName]([&"tousled"])
 intro_animation = &"fight/intro_power"
 intro_expression = &"grin"
 intro_lines = PackedStringArray("Honestly? I think this is going to be a really good fight.", "We\'re going to need a lot more compute for this.", "AGI is close. So is my fist.")
