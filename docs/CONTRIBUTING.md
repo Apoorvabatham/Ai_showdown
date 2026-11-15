@@ -144,6 +144,56 @@ character-select order (`select_order`). Fields:
 
 Keep every string within the [content rules](#8-content-rules-for-the-parody).
 
+### 3.2a ROSTER field reference (look fields)
+
+One line per look field. "Re-run" lists what must be run after changing it (see the
+[full rebuild order](#full-rebuild-order-for-one-fighter) below); `roster` is
+`build_showdown_roster.gd -- <id>`, `outfits` is `build_outfits.gd -- <id>`.
+
+| Field | Type, units, range | Re-run |
+|---|---|---|
+| `skin` | `StringName` key of `SKINS` | roster (and aged skins if `age` is set) |
+| `age` | Years (int, about 25-85). Lines start at 35 and reach full strength at 82; age spots from about 70. Also adds jowl sag through `FaceSculpt` (`face_shape["age"]`, jowls from 40) | `build_aged_skins.gd`, `build_aged_skins.py <id>`, `--import`, roster, outfits (the sag is baked into the body) |
+| `face` | Dictionary of `FaceSculpt` params (table below), metres or factors | outfits, then roster |
+| `face_rest` | `{blend shape: 0..1}` | roster |
+| `eyes` | Iris name: `Brown`, `Blue`, `Green`, `Grey`, `DarkBrown` | roster |
+| `brows` | `Vector3` scale (x length, y thickness, z depth), keep >= 0.7 | roster |
+| `hair` | Array of hair piece names from `assets/characters/hair/` | roster |
+| `hair_volume` | `[scale, offset]`: `Vector3` scale (x width, y height, z depth; 1 = as modelled) and `Vector3` offset in metres in head space (+Y up, +Z forward, applied after the scale). Becomes `CharacterData.hair_scale` / `hair_offset` and scales the real hair mesh (`FighterModel._rescale_skinned`). Typical: `[Vector3(1.18, 1.45, 1.22), Vector3(0, 0.012, 0.008)]` | roster |
+| `scale` | Overall height factor (`model_scale`, about 0.9-1.1) | roster |
+| `shape` | Per-bone flesh scale or `[scale, offset]` (see below) | roster |
+| `posture` | `{bone: Vector3(x, y, z)}` rotation in **degrees** added on top of every animation, in bone space: X bends forward (+) or leans back (-), Y twists, Z tilts sideways. Bone names without `_l`/`_r` apply to both sides, mirrored for `_r` (Y and Z flip). Applied by `PostureModifier`; visual only, hitboxes and the simulation never see it. Typical: 3-15 degrees, e.g. `{spine_03 = Vector3(-6, 0, 0), Head = Vector3(-6, 0, 0)}` for a chest-out lean back | roster |
+| `accessories` | Array of `&"glasses"`, `&"curls"`, `&"tousled"`, `&"swoop"` | roster |
+| `prints` | `{slot index: name}`, e.g. `{0: "tee"}`. Slot index = the outfit colour slot (0 = main). Becomes `CharacterData.outfit_textures` from `assets/characters/prints/T_<id>_<name>.png`; replaces that slot's colour and weave (not used in mirror matches). Needs `PRINTS` in `tools/build_prints.py` | `build_prints.py`, `--import`, roster (`build_outfits.gd` only if the outfit spec changed) |
+
+**Aged skins (`age`).** A two-step pass paints age lines into a copy of the fighter's skin:
+
+1. `build_aged_skins.gd` exports the face geometry, landmarks and every roster fighter's
+   age and skin to `assets/characters/aged/face_uv.json`.
+2. `build_aged_skins.py` (Pillow and numpy) draws the lines and writes
+   `assets/characters/aged/T_<id>_skin.png`. Pass ids to limit it.
+
+The roster builder uses that file as `body_albedo` (and as the mirror-match skin) when it
+exists. Each new PNG is imported by `--import`, and its `.import` must use VRAM compression
+(see the print note below).
+
+**Prints.** `tools/build_prints.py` reads the chest vertices from `face_uv.json` (so run
+`build_aged_skins.gd` once first), draws each design in its `PRINTS` entry
+(`id: (name, base colour, design function, centre in metres)`) and writes
+`assets/characters/prints/T_<id>_<name>.png`. Designs must be original parody artwork: no
+real logos, trademarks or brand marks. A new print `.png` imports lossless by default, and
+`tests/sim_test.gd` ("Download size: no 3D texture is imported lossless") then fails. Copy
+the `.import` pattern of `assets/characters/aged/T_donald_skin.png.import` next to the
+print (same `compress/mode=1`, `compress/high_quality=false`, `mipmaps/generate=true`,
+`detect_3d/compress_to=1`; change `source_file`, and drop the `uid` and `path`/`dest_files`
+lines so Godot regenerates them on the next import):
+
+```bash
+cp assets/characters/aged/T_donald_skin.png.import assets/characters/prints/T_<id>_<name>.png.import
+```
+
+Then edit `source_file` in the copy and run `godot --headless --path . --import`.
+
 ### Body build, hair pieces and glasses
 
 Three optional `ROSTER` fields (stored in the "Build" export group of `CharacterData` as
@@ -203,6 +253,11 @@ shapes are made, so blinking and the mouth still fit). Changing `face` therefore
 | `face_length` | Length of the face below the eyes, factor (0.95 to 1.06) |
 | `lips` | Fuller, more forward lips, m (- thinner; about +-0.003) |
 | `mouth_width` | Mouth width, factor (0.9 to 1.1) |
+| `jowls` | Heavy jowls: flesh along the jaw line pushed out and down, m (0 to 0.006) |
+| `double_chin` | A full double chin under the jaw, m (0 to 0.006) |
+| `pout` | A pushed-out, pursed lower lip, m (0 to 0.004) |
+| `chin_round` | Rounds off the jaw corners (pulled in at the angle of the jaw), m; a softer, rounder face (0 to 0.004) |
+| `age` | Years. Normally set through the roster `age` field, not here; adds sagging jowls (from about 40), puffier lower lids and deeper smile lines |
 
 Style guideline (from `FaceSculpt`): keep changes subtle, millimetre-scale and away from the
 eyeballs and skull, so the shared brows, eyes and hair still sit right. Aim for recognisable
@@ -234,6 +289,76 @@ Order of work after editing these fields:
    check the head close-ups.
 5. `godot --headless --path . --import`.
 6. `build_showdown_roster.gd -- <id>` again, so the portrait links up.
+
+### Full rebuild order for one fighter
+
+Use this when a change touches age, prints, face, posture or anything else visual. Skip
+the steps that do not apply (age and prints only matter if the fighter has them).
+
+1. Edit the `ROSTER` entry in `tools/build_showdown_roster.gd`.
+2. Aged skin, two steps (only if the fighter has `age`):
+
+```bash
+godot --headless --path . -s res://tools/build_aged_skins.gd
+```
+
+```bash
+python3 tools/build_aged_skins.py <id>
+```
+
+3. Prints (only if the fighter has `prints`; add the `.import` copy described above):
+
+```bash
+python3 tools/build_prints.py
+```
+
+4. Import the new textures:
+
+```bash
+godot --headless --path . --import
+```
+
+5. Build the character data:
+
+```bash
+godot --headless --path . -s res://tools/build_showdown_roster.gd -- <id>
+```
+
+6. Bake the outfit and face (`face`, `age` sag):
+
+```bash
+godot --headless --path . -s res://tools/build_outfits.gd -- <id>
+```
+
+7. Render the model sheet, then the portrait and cut-in, and check them:
+
+```bash
+xvfb-run -a -s "-screen 0 1920x1080x24" godot --rendering-driver opengl3 --path . -s res://tools/render_model_sheet.gd -- <id>
+```
+
+```bash
+xvfb-run -a -s "-screen 0 1920x1080x24" godot --rendering-driver opengl3 --path . -s res://tools/render_portraits.gd -- <id>
+```
+
+```bash
+xvfb-run -a -s "-screen 0 1920x1080x24" godot --rendering-driver opengl3 --path . -s res://tools/render_cutins.gd -- <id>
+```
+
+8. Import the renders, then rebuild once more so the new portrait is linked:
+
+```bash
+godot --headless --path . --import
+```
+
+```bash
+godot --headless --path . -s res://tools/build_showdown_roster.gd -- <id>
+```
+
+9. Run the tests; the summary must print `0 failure(s)`:
+
+```bash
+godot --headless --path . -s res://tests/sim_test.gd
+```
 
 ### 3.3 Pipeline, in this order
 

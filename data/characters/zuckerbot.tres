@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Showdown_Male_Pale.png" id="1_8fbpp"]
+[ext_resource type="Texture2D" path="res://assets/characters/aged/T_zuckerbot_skin.png" id="1_8fbpp"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Blue.png" id="2_507e8"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_8fbpp"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="5_wyspr"]
@@ -40,7 +40,7 @@ portrait = ExtResource("26_507e8")
 model_scene = ExtResource("5_wyspr")
 hair_scenes = Array[PackedScene]([ExtResource("3_8fbpp")])
 body_albedo = ExtResource("1_8fbpp")
-model_scale = 0.93
+model_scale = 0.92
 hair_color = Color(0.28, 0.19, 0.12, 1)
 alt_body_albedo = ExtResource("1_8fbpp")
 alt_hair_color = Color(0.12, 0.09, 0.07, 1)
@@ -54,23 +54,37 @@ realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_flex", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.25, 0.45, 0.9, 1)
 body_shape = {
-&"Head": Vector3(1.03, 1, 1),
-&"neck_01": Vector3(1.06, 1, 1.06),
-&"upperarm": Vector3(1.05, 1, 1.05)
+&"Head": Vector3(1, 1.03, 1),
+&"lowerarm": Vector3(1.04, 1, 1.04),
+&"neck_01": Vector3(1.1, 1, 1.08),
+&"spine_03": Vector3(1.04, 1, 1.02),
+&"upperarm": Vector3(1.08, 1, 1.08)
 }
 face_shape = {
-&"cheekbones": -0.001,
-&"chin": -0.003,
-&"eye_open": 0.0015,
+"age": 42,
+&"brow": -0.0015,
+&"cheekbones": 0.0015,
+&"chin": -0.002,
+&"chin_forward": 0.003,
+&"eye_open": 0.0024,
 &"face_length": 0.97,
-&"jaw": 0.94,
-&"nose_width": 0.95
+&"fullness": -0.002,
+&"jaw": 0.9,
+&"lips": -0.001,
+&"mouth_width": 0.88,
+&"nose_width": 0.94
 }
 brow_scale = Vector3(1, 0.8, 1)
 eye_texture = ExtResource("2_507e8")
 face_rest = {
 &"brow_up": 0.35,
-&"smile": 0.15
+&"smile": 0.12
+}
+posture = {
+&"Head": Vector3(4, 0, 0),
+&"neck_01": Vector3(-2, 0, 0),
+&"spine_02": Vector3(-3, 0, 0),
+&"spine_03": Vector3(-3, 0, 0)
 }
 accessories = Array[StringName]([&"curls"])
 intro_animation = &"fight/intro_beckon"
