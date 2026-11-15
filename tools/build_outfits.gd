@@ -336,8 +336,8 @@ func _showdown_specs() -> Dictionary:
 			Color(0.9, 0.9, 0.92), Color(0.12, 0.12, 0.14), Color(0.12, 0.12, 0.12)),
 		"donald": _suit_spec(navy, white_shirt, Color(0.75, 0.06, 0.08), Color(0.05, 0.05, 0.05),
 			Color(0.12, 0.12, 0.13), Color(0.12, 0.2, 0.55), true),
-		"xi": _suit_spec(Color(0.1, 0.1, 0.11), white_shirt, Color(0.42, 0.06, 0.08), Color(0.05, 0.05, 0.05),
-			Color(0.2, 0.22, 0.28), Color(0.25, 0.3, 0.5)),
+		"xi": _suit_spec(Color(0.08, 0.08, 0.09), white_shirt, Color(0.75, 0.08, 0.08), Color(0.05, 0.05, 0.05),
+			Color(0.14, 0.16, 0.22), Color(0.85, 0.68, 0.12)),
 		"algorithm": _bodysuit_spec(Color(0.04, 0.045, 0.06), Color(0.15, 0.95, 1.0), Color(1.0, 0.25, 0.85)),
 	}
 
