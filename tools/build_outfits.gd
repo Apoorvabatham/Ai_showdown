@@ -336,8 +336,8 @@ func _showdown_specs() -> Dictionary:
 			Color(0.9, 0.9, 0.92), Color(0.12, 0.12, 0.14), Color(0.12, 0.12, 0.12)),
 		"donald": _suit_spec(navy, white_shirt, Color(0.75, 0.06, 0.08), Color(0.05, 0.05, 0.05),
 			Color(0.12, 0.12, 0.13), Color(0.12, 0.2, 0.55), true),
-		"xi": _suit_spec(Color(0.08, 0.08, 0.09), white_shirt, Color(0.75, 0.08, 0.08), Color(0.05, 0.05, 0.05),
-			Color(0.14, 0.16, 0.22), Color(0.85, 0.68, 0.12)),
+		"xi": _zhongshan_spec(Color(0.08, 0.08, 0.09), Color(0.05, 0.05, 0.05),
+			Color(0.18, 0.21, 0.19), Color(0.06, 0.06, 0.06)),
 		"algorithm": _bodysuit_spec(Color(0.04, 0.045, 0.06), Color(0.15, 0.95, 1.0), Color(1.0, 0.25, 0.85)),
 	}
 
@@ -389,6 +389,60 @@ func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit:
 		alt_colors = [alt_suit, Color(0.2, 0.12, 0.06), alt_tie, Color(0.85, 0.85, 0.83), alt_suit.darkened(0.5)],
 		fabrics = [&"cotton", &"leather", &"stretch", &"cotton", &"leather"],
 	}
+
+
+## Zhongshan (Mao) suit: closed-front tunic jacket with standing mandarin collar,
+## central button line, symmetrical breast pockets, tailored trousers and leather shoes.
+## Slots: suit, shoes, pockets/placket, collar, buttons.
+func _zhongshan_spec(suit: Color, shoes: Color, alt_suit: Color, alt_shoes: Color) -> Dictionary:
+	var pieces := func(L: Dictionary) -> Array:
+		var hem: float = L.hip - 0.09
+		var jacket := func(p, n): return _top(p, L, hem, L.wrist - 0.045)
+		var collar := func(p, n):
+			var h := minf(p.y - (L.neck - 0.035), (L.neck + 0.022) - p.y)
+			var rad := 0.082 - Vector2(p.x, p.z - L.neck_z).length()
+			return minf(h, rad)
+		return [
+			# Jacket to below the hips, closed front, long sleeves.
+			{slot = Slot.MAIN, offset = 0.022, region = jacket},
+			# Standing mandarin collar wrapped cleanly around the neck.
+			{slot = Slot.EXTRA, offset = 0.028, hide = false, stitches = false, region = collar},
+			# Center front placket band.
+			{slot = Slot.ACCENT, offset = 0.025, hide = false, stitches = false, region = func(p, n):
+				return minf(jacket.call(p, n), _placket(p, 0.012)) if p.y < L.neck - 0.01 else -1.0},
+			# Symmetrical breast pockets.
+			{slot = Slot.ACCENT, offset = 0.026, hide = false, stitches = false, region = func(p, n):
+				if p.z <= 0.01 or n.z < 0.35:
+					return -1.0
+				var px := absf(p.x)
+				var in_x := minf(px - 0.045, 0.095 - px)
+				var in_y := minf(p.y - (L.chest - 0.04), (L.chest + 0.035) - p.y)
+				return minf(in_x, in_y)},
+			# Five buttons down the front placket.
+			{slot = Slot.DETAIL, offset = 0.028, hide = false, stitches = false, region = func(p, n):
+				if p.z <= 0.01 or n.z < 0.45:
+					return -1.0
+				var d := -1.0
+				for k in 5:
+					var by := lerpf(L.neck - 0.015, hem + 0.06, float(k) / 4.0)
+					var b := 0.008 - Vector2(p.x, p.y - by).length()
+					d = maxf(d, b)
+				return d},
+			# Trousers to the shoes.
+			{slot = Slot.MAIN, offset = 0.013, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.03),
+				drape = _pants_drape(L, {base = 0.013, flare = 0.01, hem = L.ankle + 0.03, amount = 0.6, cover = hem, cover_max = 0.016,
+					pin = func(p: Vector3) -> bool: return p.y > hem})},
+			# Leather shoes, flat soles.
+			{slot = Slot.TRIM, offset = 0.016, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},
+		]
+	return {
+		detailed = true,
+		pieces = pieces,
+		colors = [suit, shoes, suit.darkened(0.12), suit, Color(0.2, 0.2, 0.22)],
+		alt_colors = [alt_suit, alt_shoes, alt_suit.darkened(0.12), alt_suit, Color(0.75, 0.62, 0.2)],
+		fabrics = [&"cotton", &"leather", &"cotton", &"cotton", &"metal"],
+	}
+
 
 
 ## Crew-neck sweater (ribbed hem and cuffs; `quarter_zip` adds a zip at the neck) over
