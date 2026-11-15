@@ -37,7 +37,7 @@ assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **
 |---|---|---|---|
 | donald | Donald Tarrif | **Approved** | age 80, round full face, jowls, squint, big swept blond hair (hair_volume), lean-back stance, belly |
 | tesla | tesla man | **Approved** | age 55, tall slouch, long jaw, swept-back brown hair, "OCCUPY MARS" tee (tools/build_prints.py) |
-| zuckerbot | Mark Zuckerbot | **In progress, not yet shown to the owner** | age 42, short, pale, tight curls, wide blue eyes, upright stiff stance. Known issue: the hoodie's hood/collar shows a jagged edge at the neck (`_hoodie_spec` in tools/build_outfits.gd) |
+| zuckerbot | Mark Zuckerbot | **Awaiting review** | age 42, short, pale, tight curls, wide blue eyes, upright stiff stance. Hoodie collar jagged edge fixed (continuous SDF for hood on upper back, hide=false, stitches=false). |
 | jensen | Jensen Wong | To do | owner asked: black leather jacket (done), glasses (done), East Asian features (respectful) |
 | ram, dario, demis, yann, geoff, sundar, xi, algorithm | | To do | earlier generic pass only (face sculpt, eyes, brows, age) |
 

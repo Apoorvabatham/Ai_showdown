@@ -493,11 +493,12 @@ func _hoodie_spec(hoodie: Color, jeans: Color, shoes: Color, alt_hoodie: Color, 
 							return -1.0
 						return minf(minf(p.y - (L.hip + 0.0), (L.waist - 0.01) - p.y), 0.12 - absf(p.x)),
 				},
-				# The hood, folded down behind the neck.
-				{slot = Slot.MAIN, offset = 0.034, region = func(p, n):
-					if p.z > -0.01:
-						return -1.0
-					return minf(minf(p.y - (L.neck - 0.1), (L.neck + 0.07) - p.y), 0.13 - absf(p.x))},
+				# The hood, folded down behind the neck on the upper back.
+				{slot = Slot.MAIN, offset = 0.028, hide = false, stitches = false, region = func(p, n):
+					var y_band: float = minf(p.y - (L.neck - 0.14), (L.neck - 0.01) - p.y)
+					var x_band: float = 0.11 - absf(p.x)
+					var z_back: float = (L.neck_z - 0.035) - p.z
+					return minf(minf(y_band, x_band), z_back)},
 				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, hem + 0.03),
 					drape = _pants_drape(L, {base = 0.011, flare = 0.008, hem = L.ankle + 0.05, amount = 0.7, cover = hem, cover_max = 0.014,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
