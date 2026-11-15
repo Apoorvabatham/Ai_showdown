@@ -26,6 +26,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/tesla_body.res" id="24_6fbjv"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="24_qwdk6"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/tesla_outfit.res" id="25_vefoe"]
+[ext_resource type="Texture2D" path="res://assets/characters/prints/T_tesla_tee.png" id="26_3qv4n"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/tesla.png" id="26_vefoe"]
 
 [resource]
@@ -42,11 +43,14 @@ model_scene = ExtResource("4_vefoe")
 hair_scenes = Array[PackedScene]([ExtResource("3_6fbjv")])
 body_albedo = ExtResource("1_vefoe")
 model_scale = 1.09
-hair_color = Color(0.2, 0.14, 0.09, 1)
+hair_color = Color(0.27, 0.18, 0.11, 1)
 alt_body_albedo = ExtResource("1_vefoe")
 alt_hair_color = Color(0.36, 0.27, 0.16, 1)
 outfit_mesh = ExtResource("25_vefoe")
 outfit_body_mesh = ExtResource("24_6fbjv")
+outfit_textures = {
+0: ExtResource("26_3qv4n")
+}
 outfit_colors = PackedColorArray(0.05, 0.05, 0.06, 1, 0.8, 0.8, 0.78, 1, 0.11, 0.13, 0.2, 1, 0.06, 0.06, 0.06, 1)
 outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"denim", &"leather"])
 alt_outfit_colors = PackedColorArray(0.75, 0.75, 0.75, 1, 0.1, 0.1, 0.1, 1, 0.25, 0.27, 0.32, 1, 0.8, 0.8, 0.78, 1)
@@ -79,8 +83,8 @@ face_shape = {
 &"nose_width": 1.04
 }
 brow_scale = Vector3(1, 0.85, 1)
-hair_scale = Vector3(1.04, 1.08, 1.06)
-hair_offset = Vector3(0, 0.006, -0.012)
+hair_scale = Vector3(1.1, 1.28, 1.12)
+hair_offset = Vector3(0, 0.012, -0.014)
 eye_texture = ExtResource("3_3qv4n")
 face_rest = {
 &"brow_up": 0.1,

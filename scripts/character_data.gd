@@ -39,6 +39,9 @@ extends Resource
 ## skin removed so nothing pokes through.
 @export var outfit_mesh: Mesh
 @export var outfit_body_mesh: Mesh
+## Printed outfit slots: slot index -> texture in the body's UV layout (a T-shirt print,
+## tools/build_prints.py), replacing that slot's colour and weave (not in mirror matches).
+@export var outfit_textures: Dictionary = {}
 ## Per outfit surface: colour, fabric (&"cotton", &"stretch", &"denim", &"leather").
 @export var outfit_colors: PackedColorArray = PackedColorArray()
 @export var outfit_fabrics: Array[StringName] = []

@@ -345,9 +345,9 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 				# Short curls (or bigger, looser tufts) over the top and back of the head.
 				var curly := piece == &"curls"
 				var ball := SphereMesh.new()
-				ball.radius = 0.016 if curly else 0.022
+				ball.radius = 0.011 if curly else 0.022
 				ball.height = ball.radius * 2.0
-				ball.radial_segments = 8
+				ball.radial_segments = 6
 				ball.rings = 4
 				var multi := MultiMesh.new()
 				multi.transform_format = MultiMesh.TRANSFORM_3D
@@ -356,9 +356,9 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 				var rng := RandomNumberGenerator.new()
 				rng.seed = hash(data.id)
 				var center := eyes + Vector3(0, 0.035, -0.07)
-				for i in (150 if curly else 90):
+				for i in (320 if curly else 90):
 					# Fibonacci sphere, upper cap only (above the brow at the front).
-					var t := (i + 0.5) / (150.0 if curly else 90.0)
+					var t := (i + 0.5) / (320.0 if curly else 90.0)
 					var y := 1.0 - t * 1.1
 					var r := sqrt(maxf(1.0 - y * y, 0.0))
 					var a := i * 2.39996
@@ -367,7 +367,7 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 						continue # keep the forehead clear
 					if dir.y < -0.05 and dir.z > -0.2:
 						continue # nothing over the ears and face
-					var spot := center + dir * Vector3(0.094, 0.096, 0.108) * rng.randf_range(0.98, 1.03)
+					var spot := center + dir * Vector3(0.092, 0.094, 0.106) * rng.randf_range(0.985, 1.02)
 					spots.append(Transform3D(Basis().scaled(Vector3(1.0, 0.8, 1.0) * rng.randf_range(0.8, 1.2)), spot))
 				multi.instance_count = spots.size()
 				for i in spots.size():
@@ -544,6 +544,12 @@ func _dress(data: CharacterData, alt: bool) -> void:
 			cloth.albedo_texture = load(DETAILED_FABRICS[fabric_name][2])
 		if data.detailed_textures:
 			cloth.vertex_color_use_as_albedo = true # hem shading and stitch lines
+		if not alt and data.outfit_textures.has(slot):
+			cloth.albedo_texture = data.outfit_textures[slot]
+			cloth.albedo_color = Color.WHITE
+			cloth.uv1_scale = Vector3.ONE
+			cloth.normal_enabled = false
+			cloth.roughness_texture = null
 		if fabric_name == &"metal":
 			cloth.metallic = 0.9
 			cloth.normal_scale = 0.05

@@ -42,6 +42,12 @@ func _initialize() -> void:
 		var v := _verts[i]
 		if absf(v.x) < 0.085 and v.y > eye.y - 0.17 and v.y < eye.y + 0.1 and v.z > eye.z - 0.045:
 			face.append([v.x, v.y, v.z, _uvs[i].x, _uvs[i].y])
+	# The chest front too, for printed T-shirts (tools/build_prints.py).
+	var chest := []
+	for i in _verts.size():
+		var v := _verts[i]
+		if absf(v.x) < 0.17 and v.y > eye.y - 0.5 and v.y < eye.y - 0.17 and v.z > 0.04:
+			chest.append([v.x, v.y, v.z, _uvs[i].x, _uvs[i].y])
 	var roster_script: GDScript = load(ROSTER_TOOL)
 	var skins: Dictionary = roster_script.get_script_constant_map()["SKINS"]
 	var fighters := []
@@ -49,7 +55,7 @@ func _initialize() -> void:
 		if spec.has("age"):
 			fighters.append({id = String(spec.id), age = spec.age, skin = ProjectSettings.globalize_path(skins[spec.skin])})
 	var data := {eye = [eye.x, eye.y, eye.z], eye_radius = _L.eye_radius, seam = _L.seam, corner = _L.corner,
-		face = face, fighters = fighters}
+		face = face, chest = chest, fighters = fighters}
 	var file := FileAccess.open(OUT_DIR + "face_uv.json", FileAccess.WRITE)
 	file.store_string(JSON.stringify(data))
 	file.close()

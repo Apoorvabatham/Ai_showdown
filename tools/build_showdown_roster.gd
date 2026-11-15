@@ -63,11 +63,11 @@ const ROSTER := [
 		id = &"tesla", name = "tesla man", kit = &"rhea", archetype = "Rushdown",
 		age = 55,
 		description = "Moves fast and breaks things, mostly his own schedule. Swears the Rocket Launch will be ready next quarter.",
-		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.2, 0.14, 0.09), alt_hair_color = Color(0.36, 0.27, 0.16),
+		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.27, 0.18, 0.11), alt_hair_color = Color(0.36, 0.27, 0.16),
 		damage = 0.95, stats = {walk_speed = 2.7, dash_speed = 7.8},
 		face = {jaw = 1.16, chin = 0.009, chin_forward = 0.006, face_length = 1.08, fullness = 0.009, cheekbones = 0.002, eye_open = -0.0018, brow = 0.002, nose_length = 0.002, nose_width = 1.04, mouth_width = 1.08, lips = -0.001},
 		face_rest = {smile = 0.5, squint = 0.25, brow_up = 0.1}, brows = Vector3(1.0, 0.85, 1.0), eyes = "Green",
-		scale = 1.09, accessories = [], hair_volume = [Vector3(1.04, 1.08, 1.06), Vector3(0, 0.006, -0.012)],
+		scale = 1.09, accessories = [], hair_volume = [Vector3(1.1, 1.28, 1.12), Vector3(0, 0.012, -0.014)], prints = {0: "tee"},
 		shape = {spine_03 = Vector3(1.1, 1, 1.06), spine_02 = Vector3(1.06, 1, 1.08), spine_01 = [Vector3(1.12, 1, 1.18), Vector3(0, 0, 0.012)],
 			neck_01 = Vector3(1.12, 1, 1.1), upperarm = Vector3(0.9, 1, 0.9), lowerarm = Vector3(0.93, 1, 0.93), Head = Vector3(1.05, 1.08, 1.04)},
 		posture = {spine_03 = Vector3(7, 0, 0), neck_01 = Vector3(6, 0, 0), Head = Vector3(-15, 0, 0), clavicle = Vector3(0, -6, 0)},
@@ -107,10 +107,12 @@ const ROSTER := [
 		description = "Trained in jiu-jitsu, raised on growth metrics. The Metaverse Trap pulls you into a virtual world where nobody has legs.",
 		skin = &"pale", hair = ["Hair_Buzzed"], hair_color = Color(0.28, 0.19, 0.12), alt_hair_color = Color(0.12, 0.09, 0.07),
 		damage = 1.0, stats = {},
-		face = {jaw = 0.94, chin = -0.003, nose_width = 0.95, cheekbones = -0.001, eye_open = 0.0015, face_length = 0.97},
-		face_rest = {brow_up = 0.35, smile = 0.15}, brows = Vector3(1.0, 0.8, 1.0), eyes = "Blue",
-		scale = 0.93, accessories = [&"curls"],
-		shape = {upperarm = Vector3(1.05, 1, 1.05), neck_01 = Vector3(1.06, 1, 1.06), Head = Vector3(1.03, 1.0, 1.0)},
+		face = {jaw = 0.9, chin = -0.002, chin_forward = 0.003, face_length = 0.97, fullness = -0.002, cheekbones = 0.0015, eye_open = 0.0024, nose_width = 0.94, mouth_width = 0.88, lips = -0.001, brow = -0.0015},
+		face_rest = {brow_up = 0.35, smile = 0.12}, brows = Vector3(1.0, 0.8, 1.0), eyes = "Blue",
+		scale = 0.92, accessories = [&"curls"],
+		shape = {upperarm = Vector3(1.08, 1, 1.08), lowerarm = Vector3(1.04, 1, 1.04), neck_01 = Vector3(1.1, 1, 1.08),
+			spine_03 = Vector3(1.04, 1, 1.02), Head = Vector3(1.0, 1.03, 1.0)},
+		posture = {spine_02 = Vector3(-3, 0, 0), spine_03 = Vector3(-3, 0, 0), neck_01 = Vector3(-2, 0, 0), Head = Vector3(4, 0, 0)},
 		moves = {valkyrie_slam = "Data Harvest Slam", spinning_lariat = "Pivot to Video", shoulder_tackle = "Move Fast Tackle",
 			knee_lift = "Like-Button Knee", thunder_valkyrie = "Metaverse Trap"},
 		voice = &"jin", color = Color(0.25, 0.45, 0.9),
@@ -311,6 +313,12 @@ func _build(spec: Dictionary, order: int) -> void:
 		data.face_shape["age"] = spec.age # sagging with age (FaceSculpt)
 	data.face_rest = spec.get("face_rest", {}).duplicate(true)
 	data.posture = spec.get("posture", {}).duplicate(true)
+	var prints := {}
+	for slot in spec.get("prints", {}):
+		var print_path := "res://assets/characters/prints/T_%s_%s.png" % [spec.id, spec.prints[slot]]
+		if ResourceLoader.exists(print_path):
+			prints[slot] = load(print_path)
+	data.outfit_textures = prints
 	data.hair_scale = spec.hair_volume[0] if spec.has("hair_volume") else Vector3.ONE
 	data.hair_offset = spec.hair_volume[1] if spec.has("hair_volume") else Vector3.ZERO
 	data.brow_scale = spec.get("brows", Vector3.ONE)
