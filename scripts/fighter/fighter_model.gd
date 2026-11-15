@@ -23,6 +23,8 @@ const FABRICS := {
 	&"denim": ["res://assets/characters/outfits/textures/denim_fabric_06_nor_gl_1k.jpg",
 		"res://assets/characters/outfits/textures/denim_fabric_06_rough_1k.jpg", 5.0, 1.0, 0.12],
 	&"leather": ["res://assets/stages/ring/textures/fabric_leather_02_nor_gl_1k.jpg", "", 3.0, 0.55, 0.35],
+	# Zips, buttons and buckles: smooth metal (FighterModel makes it metallic).
+	&"metal": ["res://assets/characters/outfits/textures/bi_stretch_nor_gl_1k.jpg", "", 1.0, 0.3, 0.5],
 	# Glowing lines (The Algorithm's bodysuit): stretch fabric lit by its own colour.
 	&"glow": ["res://assets/characters/outfits/textures/bi_stretch_nor_gl_1k.jpg", "", 8.0, 0.4, 0.5],
 }
@@ -172,6 +174,7 @@ var _gaze_indices: Array[PackedInt32Array] = []
 var _head_bone := -1
 var _head_rest := Basis.IDENTITY # head bone rest orientation in skeleton space
 var _eye_in_head := Vector3(0.0, 0.1, 0.08) # midpoint between the eyes, head bone space
+var _face_rest := {} # CharacterData.face_rest, keyed by StringName
 var _head_scale := Vector3.ONE # CharacterData.body_shape's "Head" (accessories follow it)
 var _voice_player: AudioStreamPlayer
 var _voice_stream: AudioStream
@@ -199,15 +202,19 @@ func build(data: CharacterData, alt: bool = false) -> void:
 		_contacts[bone] = skeleton.get_bone_global_rest(bone).origin.y + SOLE_BELOW_ORIGIN
 	for hair_scene in data.hair_scenes:
 		_attach_skinned(hair_scene, data.model_scene.resource_path)
+	if data.brow_scale != Vector3.ONE:
+		_shape_brows(data.brow_scale)
 	var albedo := data.alt_body_albedo if alt and data.alt_body_albedo else data.body_albedo
 	var realistic := data.realistic_shading and not _low_graphics()
 	_customize_materials(albedo, data.alt_hair_color if alt else data.hair_color, data.detailed_textures, realistic,
-		data.alt_material_colors if alt else {})
+		data.alt_material_colors if alt else {}, data.eye_texture)
 	if realistic:
 		_add_eye_light()
 	if data.outfit_mesh:
 		_dress(data, alt)
 	_find_face()
+	for key in data.face_rest:
+		_face_rest[StringName(key)] = float(data.face_rest[key])
 	if not data.body_shape.is_empty():
 		_reshape(data.body_shape)
 	if not data.accessories.is_empty():
@@ -254,6 +261,22 @@ func _reshape(shape_data: Dictionary) -> void:
 	if shape.has("Head"):
 		var head: Variant = shape["Head"]
 		_head_scale = head[0] if head is Array else head
+
+
+## Eyebrow shape (CharacterData.brow_scale): scales the brow mesh about its own middle by
+## editing its skin binds (its own copy of the skin).
+func _shape_brows(brow_scale: Vector3) -> void:
+	var brows := skeleton.find_child("Eyebrows", true, false) as MeshInstance3D
+	if brows == null or brows.skin == null:
+		return
+	var skin := brows.skin.duplicate() as Skin
+	var centre := brows.mesh.get_aabb().get_center()
+	for i in skin.get_bind_count():
+		var bind := skin.get_bind_pose(i)
+		var c := bind * centre # the brows' middle in this bone's space
+		skin.set_bind_pose(i, Transform3D(Basis(), c) * Transform3D(Basis.from_scale(brow_scale), Vector3.ZERO)
+			* Transform3D(Basis(), -c) * bind)
+	brows.skin = skin
 
 
 ## Head pieces (CharacterData.accessories), on a BoneAttachment3D following the Head bone
@@ -499,6 +522,9 @@ func _dress(data: CharacterData, alt: bool) -> void:
 			cloth.albedo_texture = load(DETAILED_FABRICS[fabric_name][2])
 		if data.detailed_textures:
 			cloth.vertex_color_use_as_albedo = true # hem shading and stitch lines
+		if fabric_name == &"metal":
+			cloth.metallic = 0.9
+			cloth.normal_scale = 0.05
 		if fabric_name == &"glow":
 			cloth.emission_enabled = true
 			cloth.emission = colors[slot] if slot < colors.size() else Color.WHITE
@@ -528,7 +554,7 @@ static func texture_paths(data: CharacterData) -> PackedStringArray:
 
 ## The colour slot of an outfit surface (named main / trim / accent / extra).
 static func _surface_slot(data: CharacterData, surface: int) -> int:
-	var slot := ["main", "trim", "accent", "extra"].find(data.outfit_mesh.surface_get_name(surface))
+	var slot := ["main", "trim", "accent", "extra", "detail"].find(data.outfit_mesh.surface_get_name(surface))
 	return slot if slot >= 0 else surface
 
 
@@ -777,7 +803,8 @@ func _add_hair_colliders(head: int) -> void:
 ## Swaps the body's skin texture and tints hair, working on per-instance material copies.
 ## `detailed` adds the skin pore detail (the dressed body carries the second UV set);
 ## `realistic` the realistic skin, eye and hair shading; `tints` recolours materials by name.
-func _customize_materials(body_albedo: Texture2D, hair_color: Color, detailed: bool, realistic: bool, tints: Dictionary = {}) -> void:
+func _customize_materials(body_albedo: Texture2D, hair_color: Color, detailed: bool, realistic: bool, tints: Dictionary = {},
+		eye_texture: Texture2D = null) -> void:
 	for mesh: MeshInstance3D in skeleton.find_children("*", "MeshInstance3D", true, false):
 		for surface in mesh.get_surface_override_material_count():
 			var material := mesh.mesh.surface_get_material(surface) as StandardMaterial3D
@@ -801,12 +828,15 @@ func _customize_materials(body_albedo: Texture2D, hair_color: Color, detailed: b
 					hair.rim = HAIR_RIM
 					hair.rim_tint = 1.0
 				mesh.set_surface_override_material(surface, hair)
-			elif material.resource_name.begins_with("MI_Eyes") and realistic:
+			elif material.resource_name.begins_with("MI_Eyes") and (realistic or eye_texture):
 				var eyes := material.duplicate() as StandardMaterial3D
-				eyes.roughness = EYE_ROUGHNESS
-				eyes.clearcoat_enabled = true
-				eyes.clearcoat = 1.0
-				eyes.clearcoat_roughness = EYE_CLEARCOAT_ROUGHNESS
+				if eye_texture:
+					eyes.albedo_texture = eye_texture
+				if realistic:
+					eyes.roughness = EYE_ROUGHNESS
+					eyes.clearcoat_enabled = true
+					eyes.clearcoat = 1.0
+					eyes.clearcoat_roughness = EYE_CLEARCOAT_ROUGHNESS
 				mesh.set_surface_override_material(surface, eyes)
 			elif tints.has(material.resource_name):
 				var tinted := material.duplicate() as StandardMaterial3D
@@ -868,7 +898,7 @@ func set_face(expression: StringName, delta: float) -> void:
 		return
 	_face_target = EXPRESSIONS.get(expression, EXPRESSIONS[&"neutral"])
 	for shape in FACE_SHAPES:
-		var target: float = _face_target.get(shape, 0.0)
+		var target: float = clampf(_face_target.get(shape, 0.0) + _face_rest.get(shape, 0.0), 0.0, 1.0)
 		var current: float = face_weights[shape]
 		face_weights[shape] = move_toward(current, target, (FACE_RISE if target > current else FACE_FALL) * delta)
 	# Blinks (not while the eyes are already shut or squeezed).

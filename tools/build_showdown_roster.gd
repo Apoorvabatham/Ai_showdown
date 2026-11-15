@@ -27,18 +27,23 @@ const SKINS := {
 	&"light_alt": "res://assets/characters/base/T_Superhero_Male_Dark.png",
 	&"medium": "res://assets/characters/base/T_Showdown_Male_Medium.png",
 	&"brown": "res://assets/characters/jin/T_Jin_Body.png",
+	&"tan": "res://assets/characters/base/T_Showdown_Male_Tan.png",
+	&"pale": "res://assets/characters/base/T_Showdown_Male_Pale.png",
+	&"warm": "res://assets/characters/base/T_Showdown_Male_Warm.png",
 }
 
 ## Per fighter. `moves`: kit move file -> new name (a super's follow-ups share its name);
 ## `damage`: multiplier on every move's damage and chip; `stats`: CharacterData overrides;
-## `scale`, `shape`, `accessories`: height, body proportions and head pieces
-## (CharacterData.model_scale, body_shape, accessories).
+## `scale`, `shape`, `face`, `accessories`: height, body proportions, facial structure and
+## head pieces (CharacterData.model_scale, body_shape, face_shape, accessories).
 const ROSTER := [
 	{
 		id = &"ram", name = "Ram Altman", kit = &"mira", archetype = "Hype Brawler",
 		description = "Charges up with Add More Compute until every rush scales like a law of nature. AGI is coming next year. Every year.",
-		skin = &"light", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.3, 0.21, 0.13), alt_hair_color = Color(0.1, 0.08, 0.07),
+		skin = &"light", hair = ["Hair_Buzzed"], hair_color = Color(0.3, 0.21, 0.13), alt_hair_color = Color(0.1, 0.08, 0.07),
 		damage = 1.0, stats = {},
+		face = {jaw = 0.93, chin = -0.003, fullness = -0.003, nose_width = 0.93, eye_open = 0.0012, mouth_width = 0.95},
+		face_rest = {brow_up = 0.55, smile = 0.2}, brows = Vector3(0.95, 0.75, 1.0), eyes = "Blue",
 		scale = 0.95, accessories = [&"tousled"],
 		shape = {spine_03 = Vector3(0.9, 1, 0.92), upperarm = Vector3(0.84, 1, 0.84), lowerarm = Vector3(0.88, 1, 0.88),
 			thigh = Vector3(0.9, 1, 0.9), calf = Vector3(0.92, 1, 0.92)},
@@ -58,6 +63,8 @@ const ROSTER := [
 		description = "Moves fast and breaks things, mostly his own schedule. Swears the Rocket Launch will be ready next quarter.",
 		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.2, 0.14, 0.09), alt_hair_color = Color(0.36, 0.27, 0.16),
 		damage = 0.95, stats = {walk_speed = 2.7, dash_speed = 7.8},
+		face = {jaw = 1.1, chin = 0.006, chin_forward = 0.004, fullness = 0.003, brow = 0.001, eye_open = -0.0008, face_length = 1.04},
+		face_rest = {smile = 0.5, squint = 0.2}, eyes = "Green",
 		scale = 1.06, accessories = [],
 		shape = {spine_01 = [Vector3(1.1, 1, 1.15), Vector3(0, 0, 0.01)], spine_02 = Vector3(1.05, 1, 1.08), neck_01 = Vector3(1.1, 1, 1.1),
 			Head = Vector3(1.03, 1.02, 1.02)},
@@ -73,8 +80,10 @@ const ROSTER := [
 	{
 		id = &"dario", name = "Dario Amoday", kit = &"lian", archetype = "Counter",
 		description = "A patient counter-fighter guided by a written constitution. Catches reckless strikes with Refusal Stance, then explains, at length, why that was unsafe.",
-		skin = &"light", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.14, 0.1, 0.08), alt_hair_color = Color(0.32, 0.22, 0.13),
+		skin = &"light", hair = ["Hair_Buzzed"], hair_color = Color(0.14, 0.1, 0.08), alt_hair_color = Color(0.32, 0.22, 0.13),
 		damage = 1.0, stats = {},
+		face = {fullness = 0.002, nose_width = 1.06, chin = -0.002, eye_open = 0.0005, lips = 0.001},
+		face_rest = {brow_up = 0.55}, eyes = "DarkBrown",
 		scale = 0.98, accessories = [&"curls"],
 		shape = {spine_03 = Vector3(0.9, 1, 0.9), upperarm = Vector3(0.85, 1, 0.85), lowerarm = Vector3(0.88, 1, 0.88),
 			thigh = Vector3(0.9, 1, 0.9)},
@@ -91,8 +100,10 @@ const ROSTER := [
 	{
 		id = &"zuckerbot", name = "Mark Zuckerbot", kit = &"valka", archetype = "Grappler",
 		description = "Trained in jiu-jitsu, raised on growth metrics. The Metaverse Trap pulls you into a virtual world where nobody has legs.",
-		skin = &"light", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.28, 0.19, 0.12), alt_hair_color = Color(0.12, 0.09, 0.07),
+		skin = &"pale", hair = ["Hair_Buzzed"], hair_color = Color(0.28, 0.19, 0.12), alt_hair_color = Color(0.12, 0.09, 0.07),
 		damage = 1.0, stats = {},
+		face = {jaw = 0.94, chin = -0.003, nose_width = 0.95, cheekbones = -0.001, eye_open = 0.0015, face_length = 0.97},
+		face_rest = {brow_up = 0.35, smile = 0.15}, brows = Vector3(1.0, 0.8, 1.0), eyes = "Blue",
 		scale = 0.93, accessories = [&"curls"],
 		shape = {upperarm = Vector3(1.05, 1, 1.05), neck_01 = Vector3(1.06, 1, 1.06), Head = Vector3(1.03, 1.0, 1.0)},
 		moves = {valkyrie_slam = "Data Harvest Slam", spinning_lariat = "Pivot to Video", shoulder_tackle = "Move Fast Tackle",
@@ -105,8 +116,10 @@ const ROSTER := [
 	{
 		id = &"jensen", name = "Jensen Wong", kit = &"kenji", archetype = "Zoner",
 		description = "Never seen out of his leather jacket. Fires Tensor Blasts across the screen and buries rivals in GPU Rain. Weak spot: a rival chipmaker CEO who also happens to be family.",
-		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.32, 0.32, 0.33), alt_hair_color = Color(0.12, 0.12, 0.12),
+		skin = &"warm", hair = ["Hair_SimpleParted"], hair_color = Color(0.32, 0.32, 0.33), alt_hair_color = Color(0.12, 0.12, 0.12),
 		damage = 1.05, stats = {},
+		face = {eye_fold = 1.0, nose_bridge = -0.006, nose_width = 1.16, cheekbones = 0.005, fullness = 0.003, brow = -0.004, jaw = 1.04, eye_tilt = 0.0012},
+		face_rest = {smile = 0.65}, brows = Vector3(1.0, 0.72, 1.0), eyes = "DarkBrown",
 		scale = 0.97, accessories = [&"glasses"],
 		shape = {spine_03 = Vector3(0.95, 1, 0.95), upperarm = Vector3(0.92, 1, 0.92), spine_01 = Vector3(1.04, 1, 1.05)},
 		moves = {ki_blast = "Tensor Blast", rising_dragon = "Leather Uppercut", snap_kick = "Keynote Kick",
@@ -122,8 +135,10 @@ const ROSTER := [
 	{
 		id = &"demis", name = "Demis Hasabist", kit = &"jin", archetype = "Kicker",
 		description = "Former chess prodigy and game designer. Reads every fight forty moves ahead, then folds you like a protein.",
-		skin = &"light", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.1, 0.08, 0.07), alt_hair_color = Color(0.3, 0.22, 0.14),
+		skin = &"light", hair = ["Hair_Buzzed"], hair_color = Color(0.1, 0.08, 0.07), alt_hair_color = Color(0.3, 0.22, 0.14),
 		damage = 1.0, stats = {},
+		face = {jaw = 0.92, chin = -0.002, fullness = -0.003, nose_length = 0.002, eye_open = 0.0008},
+		face_rest = {brow_down = 0.2, smile = 0.1}, brows = Vector3(1.0, 0.85, 1.0), eyes = "DarkBrown",
 		scale = 0.92, accessories = [],
 		shape = {spine_03 = Vector3(0.9, 1, 0.9), upperarm = Vector3(0.86, 1, 0.86), lowerarm = Vector3(0.9, 1, 0.9),
 			Head = Vector3(1.03, 1.02, 1.02)},
@@ -140,6 +155,8 @@ const ROSTER := [
 		description = "A heavyweight sceptic who insists none of this is real intelligence, then flattens you to prove the point. Posts the rebuttal mid-combo.",
 		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.32, 0.31, 0.3), alt_hair_color = Color(0.12, 0.1, 0.09),
 		damage = 1.0, stats = {},
+		face = {fullness = 0.005, jaw = 1.08, nose_width = 1.12, brow = 0.002, eye_open = -0.0005, chin = 0.001},
+		face_rest = {brow_down = 0.45, grimace = 0.15}, eyes = "Grey",
 		scale = 1.0, accessories = [&"glasses"],
 		shape = {spine_01 = [Vector3(1.18, 1, 1.25), Vector3(0, 0, 0.015)], spine_02 = Vector3(1.1, 1, 1.15), pelvis = Vector3(1.08, 1, 1.1),
 			neck_01 = Vector3(1.1, 1, 1.1), Head = Vector3(1.04, 1.02, 1.03)},
@@ -156,8 +173,10 @@ const ROSTER := [
 	{
 		id = &"geoff", name = "Geoff Hintoff", kit = &"aelia", archetype = "Armoured Elder",
 		description = "The godfather of the neural net, now touring the world to warn you about it. His heavy moves shrug off a hit; his super comes with second thoughts.",
-		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.86, 0.86, 0.84), alt_hair_color = Color(0.6, 0.6, 0.6),
+		skin = &"pale", hair = ["Hair_SimpleParted"], hair_color = Color(0.86, 0.86, 0.84), alt_hair_color = Color(0.6, 0.6, 0.6),
 		damage = 0.95, stats = {},
+		face = {face_length = 1.08, fullness = -0.005, jaw = 0.92, chin = 0.006, nose_length = 0.004, nose_bridge = 0.002, brow = 0.003, eye_open = -0.0012, cheekbones = -0.001},
+		face_rest = {brow_up = 0.75, grimace = 0.2}, brows = Vector3(1.05, 1.1, 1.0), eyes = "Grey",
 		scale = 1.05, accessories = [],
 		shape = {spine_03 = Vector3(0.88, 1, 0.9), upperarm = Vector3(0.8, 1, 0.8), lowerarm = Vector3(0.85, 1, 0.85),
 			thigh = Vector3(0.88, 1, 0.88), calf = Vector3(0.9, 1, 0.9), neck_01 = Vector3(0.9, 1, 0.9)},
@@ -174,8 +193,10 @@ const ROSTER := [
 	{
 		id = &"sundar", name = "Sundar Pickai", kit = &"kenji", archetype = "Calm Zoner",
 		description = "Unflappable and endlessly polite. Ranks your weaknesses and serves you ten blue links' worth of fireballs. Takes a hit better than he throws one.",
-		skin = &"medium", hair = ["Hair_Buzzed", "Eyebrows_Regular"], hair_color = Color(0.16, 0.15, 0.15), alt_hair_color = Color(0.45, 0.45, 0.45),
+		skin = &"medium", hair = ["Hair_Buzzed"], hair_color = Color(0.16, 0.15, 0.15), alt_hair_color = Color(0.45, 0.45, 0.45),
 		damage = 0.9, stats = {max_health = 1100, walk_speed = 1.8, back_walk_speed = 1.5, weight = 1.1, power_rating = 0.4, speed_rating = 0.45},
+		face = {nose_width = 1.1, nose_length = 0.003, jaw = 0.94, chin = 0.002, fullness = -0.002, lips = 0.001},
+		face_rest = {smile = 0.6}, brows = Vector3(0.95, 0.78, 1.0), eyes = "DarkBrown",
 		scale = 0.97, accessories = [],
 		shape = {spine_03 = Vector3(0.92, 1, 0.92), upperarm = Vector3(0.86, 1, 0.86), lowerarm = Vector3(0.9, 1, 0.9),
 			thigh = Vector3(0.92, 1, 0.92)},
@@ -190,9 +211,11 @@ const ROSTER := [
 	{
 		id = &"donald", name = "Donald Tarrif", kit = &"valka", archetype = "Heavy Grappler",
 		description = "A heavyweight dealmaker. Slaps a tariff on every hit and calls every round the greatest round in history.",
-		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.88, 0.7, 0.38), alt_hair_color = Color(0.85, 0.85, 0.82),
+		skin = &"tan", hair = ["Hair_SimpleParted"], hair_color = Color(0.88, 0.7, 0.38), alt_hair_color = Color(0.85, 0.85, 0.82),
 		damage = 1.1, stats = {max_health = 1150, walk_speed = 1.6, back_walk_speed = 1.2, dash_speed = 4.6, weight = 1.3,
 			throw_damage = 170, jump_velocity = 5.5, power_rating = 0.9, speed_rating = 0.3},
+		face = {fullness = 0.009, jaw = 1.12, chin = 0.003, chin_forward = -0.001, brow = 0.001, nose_width = 1.06, eye_open = -0.0015, lips = 0.002, mouth_width = 0.92},
+		face_rest = {squint = 0.6, brow_down = 0.5, grimace = 0.3}, brows = Vector3(1.0, 0.7, 1.0), eyes = "Blue",
 		scale = 1.07, accessories = [&"swoop"],
 		shape = {pelvis = [Vector3(1.32, 1, 1.45), Vector3(0, 0, 0.02)], spine_01 = [Vector3(1.55, 1, 1.85), Vector3(0, 0, 0.06)],
 			spine_02 = [Vector3(1.4, 1, 1.6), Vector3(0, 0, 0.04)], spine_03 = Vector3(1.15, 1, 1.2),
@@ -209,8 +232,10 @@ const ROSTER := [
 	{
 		id = &"xi", name = "Xi Winping", kit = &"aelia", archetype = "Fortress",
 		description = "Stands behind the Great Firewall, absorbs hits with stoic calm and makes sure no record of his defeats survives.",
-		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.06, 0.06, 0.06), alt_hair_color = Color(0.2, 0.2, 0.2),
+		skin = &"warm", hair = ["Hair_SimpleParted"], hair_color = Color(0.06, 0.06, 0.06), alt_hair_color = Color(0.2, 0.2, 0.2),
 		damage = 1.0, stats = {max_health = 1100},
+		face = {eye_fold = 1.0, nose_bridge = -0.006, nose_width = 1.18, cheekbones = 0.005, fullness = 0.007, jaw = 1.1, chin = -0.004, brow = -0.004, eye_tilt = 0.001},
+		face_rest = {smile = 0.1}, brows = Vector3(1.0, 0.6, 1.0), eyes = "DarkBrown",
 		scale = 0.98, accessories = [],
 		shape = {spine_01 = [Vector3(1.2, 1, 1.28), Vector3(0, 0, 0.015)], spine_02 = Vector3(1.12, 1, 1.18), pelvis = Vector3(1.08, 1, 1.1),
 			neck_01 = Vector3(1.12, 1, 1.12), Head = Vector3(1.06, 1.0, 1.04)},
@@ -268,6 +293,10 @@ func _build(spec: Dictionary, order: int) -> void:
 	data.model_scene = load(MALE_BODY)
 	data.model_scale = spec.get("scale", 1.0)
 	data.body_shape = spec.get("shape", {}).duplicate(true)
+	data.face_shape = spec.get("face", {}).duplicate(true)
+	data.face_rest = spec.get("face_rest", {}).duplicate(true)
+	data.brow_scale = spec.get("brows", Vector3.ONE)
+	data.eye_texture = load("res://assets/characters/base/T_Eye_%s.png" % spec.eyes) if spec.has("eyes") else null
 	var accessories: Array[StringName] = []
 	accessories.assign(spec.get("accessories", []))
 	data.accessories = accessories

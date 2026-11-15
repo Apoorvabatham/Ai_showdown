@@ -2,9 +2,9 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_70tor"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_fqi1o"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Blue.png" id="3_64vk5"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_hvfva"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_2dtko"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Eyebrows_Regular.gltf" id="4_64vk5"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_hvfva"]
 [ext_resource type="Resource" path="res://data/moves/ram/jab.tres" id="6_64vk5"]
 [ext_resource type="Resource" path="res://data/moves/ram/straight.tres" id="7_wjjtj"]
@@ -42,7 +42,7 @@ kit = &"mira"
 voice_fallback = &"kenji"
 portrait = ExtResource("29_2dtko")
 model_scene = ExtResource("4_2dtko")
-hair_scenes = Array[PackedScene]([ExtResource("3_hvfva"), ExtResource("4_64vk5")])
+hair_scenes = Array[PackedScene]([ExtResource("3_hvfva")])
 body_albedo = ExtResource("2_fqi1o")
 model_scale = 0.95
 hair_color = Color(0.3, 0.21, 0.13, 1)
@@ -63,6 +63,20 @@ body_shape = {
 &"spine_03": Vector3(0.9, 1, 0.92),
 &"thigh": Vector3(0.9, 1, 0.9),
 &"upperarm": Vector3(0.84, 1, 0.84)
+}
+face_shape = {
+&"chin": -0.003,
+&"eye_open": 0.0012,
+&"fullness": -0.003,
+&"jaw": 0.93,
+&"mouth_width": 0.95,
+&"nose_width": 0.93
+}
+brow_scale = Vector3(0.95, 0.75, 1)
+eye_texture = ExtResource("3_64vk5")
+face_rest = {
+&"brow_up": 0.55,
+&"smile": 0.2
 }
 accessories = Array[StringName]([&"tousled"])
 intro_animation = &"fight/intro_power"

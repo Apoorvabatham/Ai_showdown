@@ -30,7 +30,8 @@ const EYE_CLEARANCE := 0.0008 # lids stay this far outside the eyeball
 
 ## Measures the head of a base model scene (an instance): the right eyeball (x > 0;
 ## the left mirrors it), the lip crease and the jaw hinge.
-static func landmarks(scene: Node) -> Dictionary:
+## `body_override`: measure these body vertices instead (a sculpted face, FaceSculpt).
+static func landmarks(scene: Node, body_override := PackedVector3Array()) -> Dictionary:
 	var eyes: PackedVector3Array
 	var body: PackedVector3Array
 	for mi: MeshInstance3D in scene.find_children("*", "MeshInstance3D", true, false):
@@ -41,6 +42,8 @@ static func landmarks(scene: Node) -> Dictionary:
 			eyes = mi.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
 		elif material.resource_name.begins_with("MI_Superhero"):
 			body = mi.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	if not body_override.is_empty():
+		body = body_override
 	var lo := Vector3.INF
 	var hi := -Vector3.INF
 	for p in eyes:

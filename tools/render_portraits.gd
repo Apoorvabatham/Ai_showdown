@@ -18,19 +18,7 @@ const FACES := {
 	&"mira": {&"smile": 1.0, &"squint": 0.3, &"brow_up": 0.25}, # grinning
 	&"lian": {&"smile": 0.3, &"brow_down": 0.45, &"squint": 0.3}, # calm, a little amused
 	&"aelia": {}, # her own head has no expression shapes (the model's face as made)
-	# AI Showdown
-	&"ram": {&"smile": 0.45, &"brow_up": 0.4}, # earnest optimism
-	&"tesla": {&"smile": 0.8, &"squint": 0.4, &"brow_down": 0.3}, # smirking
-	&"dario": {&"brow_up": 0.5, &"squint": 0.2}, # concerned
-	&"zuckerbot": {&"smile": 0.35}, # practised smile
-	&"jensen": {&"smile": 0.9, &"squint": 0.3}, # keynote grin
-	&"demis": {&"brow_down": 0.6, &"squint": 0.4}, # thinking several moves ahead
-	&"yann": {&"brow_down": 0.9, &"grimace": 0.4, &"squint": 0.3}, # unconvinced
-	&"geoff": {&"brow_up": 1.0, &"grimace": 0.3}, # worried
-	&"sundar": {&"smile": 0.6, &"brow_up": 0.2}, # polite
-	&"donald": {&"brow_down": 0.9, &"squint": 0.6, &"smile": 0.3}, # sizing you up
-	&"xi": {&"squint": 0.2}, # impassive
-	&"algorithm": {},
+	# AI Showdown fighters: their CharacterData.face_rest gives the look.
 }
 
 ## Pose per fighter when the guard won't do ([clip, time, aim offset, camera distance
@@ -105,7 +93,9 @@ func _render(character: CharacterData) -> void:
 	camera.look_at_from_position(aim + (Vector3(0.42, -0.01, -1.1)) * zoom, aim)
 	camera.current = true
 	turn_head(model, camera.global_position, HEAD_TURN)
-	var face: Dictionary = FACES.get(character.id, FighterModel.EXPRESSIONS[&"neutral"])
+	var face: Dictionary = (FACES.get(character.id, FighterModel.EXPRESSIONS[&"neutral"]) as Dictionary).duplicate()
+	for shape_key in character.face_rest: # the fighter's resting look on top
+		face[StringName(shape_key)] = clampf(face.get(StringName(shape_key), 0.0) + float(character.face_rest[shape_key]), 0.0, 1.0)
 	model._blink_in = INF
 	for i in 4:
 		for m in model._face_meshes.size():

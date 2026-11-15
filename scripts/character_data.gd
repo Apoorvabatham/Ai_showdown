@@ -62,6 +62,18 @@ extends Resource
 ## Applied to the skin binds (FighterModel._reshape), so only the mesh changes: bones,
 ## animations and hitboxes stay the same.
 @export var body_shape: Dictionary = {}
+## Facial structure baked into the generated body (tools/face_sculpt.gd: jaw, chin,
+## chin_forward, cheekbones, fullness, nose_width, nose_length, nose_bridge, brow, eye_fold,
+## eye_tilt). Rebuild the outfit (tools/build_outfits.gd) after changing it.
+@export var face_shape: Dictionary = {}
+## Eyebrow shape: scale of the brows about their middle (x width, y thickness and arch,
+## z depth); e.g. (1, 0.6, 1) for slimmer, straighter brows.
+@export var brow_scale: Vector3 = Vector3.ONE
+## Iris texture replacing the base eyes' brown (assets/characters/base/T_Eye_*.png).
+@export var eye_texture: Texture2D
+## Resting expression: FighterModel.FACE_SHAPES weights (squint, brow_up, smile...) added to
+## every expression, so a fighter keeps a characteristic look (a squint, raised brows).
+@export var face_rest: Dictionary = {}
 ## Extra pieces on the head (FighterModel._add_accessories): &"glasses", &"curls" (short
 ## curly hair), &"tousled" (messy tufts), &"swoop" (a big swept-over front), &"receding".
 @export var accessories: Array[StringName] = []

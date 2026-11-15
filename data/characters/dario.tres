@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_svhgk"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_iujnw"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_gj4kt"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Eyebrows_Regular.gltf" id="4_30gwc"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="3_yl8gs"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="5_yl8gs"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="6_rfgtt"]
 [ext_resource type="Resource" path="res://data/moves/dario/jab.tres" id="7_a5uma"]
@@ -41,7 +41,7 @@ kit = &"lian"
 voice_fallback = &"kenji"
 portrait = ExtResource("28_30gwc")
 model_scene = ExtResource("5_yl8gs")
-hair_scenes = Array[PackedScene]([ExtResource("3_gj4kt"), ExtResource("4_30gwc")])
+hair_scenes = Array[PackedScene]([ExtResource("3_gj4kt")])
 body_albedo = ExtResource("2_iujnw")
 model_scale = 0.98
 hair_color = Color(0.14, 0.1, 0.08, 1)
@@ -61,6 +61,17 @@ body_shape = {
 &"spine_03": Vector3(0.9, 1, 0.9),
 &"thigh": Vector3(0.9, 1, 0.9),
 &"upperarm": Vector3(0.85, 1, 0.85)
+}
+face_shape = {
+&"chin": -0.002,
+&"eye_open": 0.0005,
+&"fullness": 0.002,
+&"lips": 0.001,
+&"nose_width": 1.06
+}
+eye_texture = ExtResource("3_yl8gs")
+face_rest = {
+&"brow_up": 0.55
 }
 accessories = Array[StringName]([&"curls"])
 intro_animation = &"fight/intro_wing_chun"

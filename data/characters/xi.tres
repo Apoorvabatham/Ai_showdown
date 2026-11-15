@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_ew8mf"]
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_isae7"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Showdown_Male_Warm.png" id="1_lj6x7"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="2_b1ku0"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_lj6x7"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_b1ku0"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_gpl0b"]
@@ -41,16 +41,16 @@ voice_fallback = &"brutus"
 portrait = ExtResource("27_b1ku0")
 model_scene = ExtResource("4_b1ku0")
 hair_scenes = Array[PackedScene]([ExtResource("3_lj6x7")])
-body_albedo = ExtResource("2_isae7")
+body_albedo = ExtResource("1_lj6x7")
 model_scale = 0.98
 hair_color = Color(0.06, 0.06, 0.06, 1)
-alt_body_albedo = ExtResource("1_ew8mf")
+alt_body_albedo = ExtResource("1_lj6x7")
 alt_hair_color = Color(0.2, 0.2, 0.2, 1)
 outfit_mesh = ExtResource("26_b1ku0")
 outfit_body_mesh = ExtResource("25_lj6x7")
-outfit_colors = PackedColorArray(0.1, 0.1, 0.11, 1, 0.05, 0.05, 0.05, 1, 0.42, 0.06, 0.08, 1, 0.82, 0.82, 0.8, 1)
-outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton"])
-alt_outfit_colors = PackedColorArray(0.2, 0.22, 0.28, 1, 0.2, 0.12, 0.06, 1, 0.25, 0.3, 0.5, 1, 0.85, 0.85, 0.83, 1)
+outfit_colors = PackedColorArray(0.1, 0.1, 0.11, 1, 0.05, 0.05, 0.05, 1, 0.42, 0.06, 0.08, 1, 0.82, 0.82, 0.8, 1, 0.05, 0.05, 0.055, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton", &"leather"])
+alt_outfit_colors = PackedColorArray(0.2, 0.22, 0.28, 1, 0.2, 0.12, 0.06, 1, 0.25, 0.3, 0.5, 1, 0.85, 0.85, 0.83, 1, 0.1, 0.11, 0.14, 1)
 detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_oath", &"fight/victory_fist_pump"])
@@ -61,6 +61,22 @@ body_shape = {
 &"pelvis": Vector3(1.08, 1, 1.1),
 &"spine_01": [Vector3(1.2, 1, 1.28), Vector3(0, 0, 0.015)],
 &"spine_02": Vector3(1.12, 1, 1.18)
+}
+face_shape = {
+&"brow": -0.004,
+&"cheekbones": 0.005,
+&"chin": -0.004,
+&"eye_fold": 1.0,
+&"eye_tilt": 0.001,
+&"fullness": 0.007,
+&"jaw": 1.1,
+&"nose_bridge": -0.006,
+&"nose_width": 1.18
+}
+brow_scale = Vector3(1, 0.6, 1)
+eye_texture = ExtResource("2_b1ku0")
+face_rest = {
+&"smile": 0.1
 }
 intro_animation = &"fight/intro_oath"
 intro_lines = PackedStringArray("This fight has been approved in advance.", "Search results for your victory: none found.", "Harmony will be restored.")

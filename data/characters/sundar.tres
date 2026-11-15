@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Showdown_Male_Medium.png" id="1_p7qgi"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="1_vof1v"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Eyebrows_Regular.gltf" id="2_bylqy"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="2_qiyug"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="3_hj4g3"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="4_p7qgi"]
 [ext_resource type="Resource" path="res://data/moves/sundar/jab.tres" id="5_ksgio"]
@@ -39,7 +39,7 @@ kit = &"kenji"
 voice_fallback = &"kenji"
 portrait = ExtResource("26_ksgio")
 model_scene = ExtResource("3_hj4g3")
-hair_scenes = Array[PackedScene]([ExtResource("1_vof1v"), ExtResource("2_bylqy")])
+hair_scenes = Array[PackedScene]([ExtResource("1_vof1v")])
 body_albedo = ExtResource("1_p7qgi")
 model_scale = 0.97
 hair_color = Color(0.16, 0.15, 0.15, 1)
@@ -59,6 +59,19 @@ body_shape = {
 &"spine_03": Vector3(0.92, 1, 0.92),
 &"thigh": Vector3(0.92, 1, 0.92),
 &"upperarm": Vector3(0.86, 1, 0.86)
+}
+face_shape = {
+&"chin": 0.002,
+&"fullness": -0.002,
+&"jaw": 0.94,
+&"lips": 0.001,
+&"nose_length": 0.003,
+&"nose_width": 1.1
+}
+brow_scale = Vector3(0.95, 0.78, 1)
+eye_texture = ExtResource("2_qiyug")
+face_rest = {
+&"smile": 0.6
 }
 intro_animation = &"fight/intro_salute"
 intro_expression = &"guard"

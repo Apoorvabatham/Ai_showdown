@@ -129,7 +129,8 @@ character-select order (`select_order`). Fields:
 | `kit` | One of the kit ids above. |
 | `archetype` | Short label shown on select (e.g. "Heavy Grappler"). |
 | `description` | One or two lines of satire for the select screen. |
-| `skin` | `&"light"`, `&"medium"` or `&"brown"` (see `SKINS`). Mirror matches use the dark skin automatically. |
+| `skin` | One of `&"light"`, `&"light_alt"`, `&"medium"`, `&"brown"`, `&"tan"`, `&"pale"`, `&"warm"` (see `SKINS`). Mirror matches use the dark skin automatically. |
+| `face`, `face_rest`, `eyes`, `brows` | Optional facial structure, resting expression, iris colour and eyebrow shape; see [Face, eyes, brows and skin](#face-eyes-brows-and-skin). |
 | `hair` | Array of pieces from `assets/characters/hair/` (e.g. `["Hair_SimpleParted"]`, `["Hair_Buzzed", "Eyebrows_Regular"]`); `[]` for none. |
 | `hair_color`, `alt_hair_color` | `Color` for P1 and the mirror-match alternate. |
 | `damage` | Multiplier on every move's damage and chip damage (1.0 = kit default). |
@@ -173,6 +174,67 @@ close-up per fighter; ids after `--` are optional):
 xvfb-run -a -s "-screen 0 1920x1080x24" godot --rendering-driver opengl3 --path . -s res://tools/render_model_sheet.gd -- <id>
 ```
 
+### Face, eyes, brows and skin
+
+Four optional `ROSTER` fields give each fighter a recognisable face on the shared base head
+(`CharacterData.face_shape`, `face_rest`, `eye_texture`, `brow_scale`).
+
+**`face`** is a dictionary of structure parameters, applied by `FaceSculpt.apply`
+(`tools/face_sculpt.gd`) to the head vertices. It is **baked into the generated body** by
+`tools/build_outfits.gd` (`_build` calls `FaceSculpt.apply` before the expression blend
+shapes are made, so blinking and the mouth still fit). Changing `face` therefore needs
+`build_outfits.gd -- <id>` to be re-run, not just the roster builder. All keys are optional;
+0 / 1 means "as modelled":
+
+| Key | Meaning (typical range) |
+|---|---|
+| `jaw` | Width of lower face and jaw, factor (0.93 narrow to 1.08 broad) |
+| `chin` | Chin length, m (+ longer, - shorter/rounder; about +-0.004) |
+| `chin_forward` | Chin projection, m (about +-0.004) |
+| `cheekbones` | Cheekbone prominence, m outward (0 to 0.004) |
+| `fullness` | Fuller (+) or hollower (-) cheeks and jowls, m (about +-0.004) |
+| `nose_width` | Nose width, factor (0.9 to 1.12) |
+| `nose_length` | Nose length, m (+ longer, tip lower; about +-0.004) |
+| `nose_bridge` | Bridge height between the eyes, m (- flatter; about +-0.003) |
+| `brow` | Brow ridge projection, m (+ heavier; 0 to 0.004) |
+| `eye_fold` | 0..1: fuller upper lid with a softer fold, eye opening slightly narrower |
+| `eye_tilt` | m, raises (+) the outer eye corners (about +-0.002) |
+| `eye_open` | m, raises (+, rounder, wider) or lowers (-, hooded) the upper lid rim (about +-0.002) |
+| `face_length` | Length of the face below the eyes, factor (0.95 to 1.06) |
+| `lips` | Fuller, more forward lips, m (- thinner; about +-0.003) |
+| `mouth_width` | Mouth width, factor (0.9 to 1.1) |
+
+Style guideline (from `FaceSculpt`): keep changes subtle, millimetre-scale and away from the
+eyeballs and skull, so the shared brows, eyes and hair still sit right. Aim for recognisable
+public-persona traits (a narrow jaw, heavy brows, a broad smile), never ethnic caricature.
+
+**`face_rest`** is a resting expression: weights (0..1) for the `FighterModel.FACE_SHAPES`
+blend shapes `blink`, `squint`, `brow_down`, `brow_up`, `jaw_open`, `smile` and `grimace`.
+They are added to every expression (clamped to 1), e.g. `{brow_up = 0.55, smile = 0.2}` for a
+perpetually eager look. It is plain data, so only the roster builder needs a re-run.
+
+**`eyes`** is the iris texture name: `"Brown"`, `"Blue"`, `"Green"`, `"Grey"` or `"DarkBrown"`,
+loaded from `assets/characters/base/T_Eye_<name>.png` (`FighterModel._customize_materials`).
+Omit it to keep the default eye.
+
+**`brows`** is a `Vector3` `brow_scale` applied to the eyebrow mesh about its own middle
+(`FighterModel._shape_brows`): x length, y thickness/arch, z depth. `y < 1` makes brows
+slimmer and straighter, `y > 1` heavier. Keep every component at about 0.7 or more, or the
+brows sink into the skin.
+
+**`skin`** picks a body texture from `SKINS`: `light`, `light_alt`, `medium`, `brown`, `tan`,
+`pale`, `warm`. Add a texture and a `SKINS` entry for a new tone.
+
+Order of work after editing these fields:
+
+1. Edit the `ROSTER` entry.
+2. `build_showdown_roster.gd -- <id>` (writes `face_rest`, `eyes`, `brows`, `skin`).
+3. `build_outfits.gd -- <id>` (bakes `face` into the body).
+4. Render `render_portraits.gd`, `render_cutins.gd` and `render_model_sheet.gd -- <id>` and
+   check the head close-ups.
+5. `godot --headless --path . --import`.
+6. `build_showdown_roster.gd -- <id>` again, so the portrait links up.
+
 ### 3.3 Pipeline, in this order
 
 1. Build the character and its moves (no portrait yet; that is fine):
@@ -184,7 +246,11 @@ godot --headless --path . -s res://tools/build_showdown_roster.gd -- <id>
 2. Add an outfit spec in `_showdown_specs()` of `tools/build_outfits.gd`, keyed by the id.
    Use a helper: `_suit_spec`, `_sweater_spec`, `_tee_spec`, `_leather_jacket_spec`,
    `_hoodie_spec`, `_cardigan_spec` or `_bodysuit_spec` (read the doc comment above each
-   for its colour slots; copy a neighbour, e.g. `"demis"` for a suit). Then generate it:
+   for its colour slots; copy a neighbour, e.g. `"demis"` for a suit). Outfits have a 5th
+   slot, `Slot.DETAIL`, made of metal hardware (fabric `&"metal"`): zips, buttons and
+   similar; `_leather_jacket_spec` and `_suit_spec` already use it for zips, collar, lapels
+   and buttons. This step also bakes the fighter's `face` parameters into the body. Then
+   generate it:
 
 ```bash
 godot --headless --path . -s res://tools/build_outfits.gd -- <id>

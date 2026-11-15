@@ -47,7 +47,7 @@ const TAIL_ROOT_FADE := 0.12 # share of a tail's length, from the knot, still pa
 const TAIL_PREFIX := "cloth_tail_"
 const HEM_FULL_AT := 0.5 # share of a hem chain's length, from its root, where its bones take over fully
 
-enum Slot { MAIN, TRIM, ACCENT, EXTRA }
+enum Slot { MAIN, TRIM, ACCENT, EXTRA, DETAIL }
 
 var _body_skin: Skin
 var _pelvis_bind := 0
@@ -72,7 +72,7 @@ func _initialize() -> void:
 		if data == null:
 			push_error("No character data for %s" % id)
 			continue
-		var result := _build(data.model_scene, spec)
+		var result := _build(data.model_scene, spec, data.face_shape)
 		data.detailed_textures = spec.get("detailed", false)
 		var outfit_path := OUT_DIR + id + "_outfit.res"
 		var body_path := OUT_DIR + id + "_body.res"
@@ -315,7 +315,7 @@ func _kit_specs() -> Dictionary:
 func _showdown_specs() -> Dictionary:
 	var navy := Color(0.07, 0.09, 0.2)
 	var white_shirt := Color(0.82, 0.82, 0.8)
-	var black_leather := Color(0.05, 0.05, 0.05)
+	var black_leather := Color(0.035, 0.035, 0.04)
 	return {
 		"ram": _sweater_spec(Color(0.42, 0.44, 0.42), Color(0.2, 0.3, 0.48), Color(0.8, 0.8, 0.78), &"denim",
 			Color(0.16, 0.24, 0.2), Color(0.12, 0.13, 0.15), Color(0.1, 0.1, 0.1)),
@@ -325,7 +325,7 @@ func _showdown_specs() -> Dictionary:
 			Color(0.42, 0.42, 0.44), Color(0.1, 0.1, 0.12), Color(0.08, 0.08, 0.08)),
 		"zuckerbot": _hoodie_spec(Color(0.42, 0.43, 0.45), Color(0.15, 0.2, 0.32), Color(0.8, 0.8, 0.78),
 			Color(0.1, 0.18, 0.42), Color(0.08, 0.08, 0.1), Color(0.75, 0.75, 0.75)),
-		"jensen": _leather_jacket_spec(black_leather, Color(0.06, 0.06, 0.07), Color(0.07, 0.07, 0.08),
+		"jensen": _leather_jacket_spec(black_leather, Color(0.2, 0.2, 0.21), Color(0.08, 0.08, 0.09),
 			Color(0.3, 0.18, 0.1), Color(0.12, 0.12, 0.13), Color(0.2, 0.2, 0.22)),
 		"demis": _suit_spec(navy, white_shirt, null, Color(0.05, 0.05, 0.05), Color(0.25, 0.25, 0.27), Color(0.6, 0.7, 0.8)),
 		"yann": _suit_spec(Color(0.16, 0.16, 0.17), Color(0.55, 0.65, 0.8), null, Color(0.05, 0.05, 0.05),
@@ -342,24 +342,37 @@ func _showdown_specs() -> Dictionary:
 	}
 
 
-## Two-piece suit: a jacket with a V front over a shirt (and a tie unless `tie` is null),
-## trousers in the suit's colour and leather shoes. `long_tie` hangs below the belt.
-## Slots: suit, shoes, tie, shirt.
+## Two-piece suit: a jacket with a V front and lapels over a shirt (and a tie unless `tie`
+## is null), two buttons, trousers in the suit's colour and leather shoes. `long_tie`
+## hangs below the belt. Slots: suit, shoes, tie, shirt, buttons.
 func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit: Color, alt_tie: Color,
 		long_tie := false) -> Dictionary:
 	var pieces := func(L: Dictionary) -> Array:
 		var v_bottom: float = (L.chest + L.waist) * 0.5 - 0.03
 		var hem: float = L.hip - 0.11
+		var jacket := func(p, n): return minf(_top(p, L, hem, L.wrist - 0.045), -_v_cut(p, n, L, v_bottom, 0.095))
 		var list := [
-			# Jacket to below the hips, long sleeves, open in a V over the shirt.
-			{slot = Slot.MAIN, offset = 0.021, region = func(p, n):
-				return minf(_top(p, L, hem, L.wrist - 0.045), -_v_cut(p, n, L, v_bottom, 0.095))},
+			# Jacket to below the hips, long sleeves, open in a V over the shirt; the
+			# front edge below the V is a placket line.
+			{slot = Slot.MAIN, offset = 0.022, region = jacket},
+			# Lapels: a raised band along both edges of the V, rolling over at the chest.
+			{slot = Slot.MAIN, offset = 0.028, hide = false, stitches = false, region = func(p, n):
+				return minf(jacket.call(p, n), _v_cut(p, n, L, v_bottom, 0.095) + 0.03)},
+			# Two buttons below the V.
+			{slot = Slot.DETAIL, offset = 0.026, hide = false, stitches = false, region = func(p, n):
+				if p.z <= 0.0 or n.z < 0.5:
+					return -1.0
+				var b1 := 0.009 - Vector2(p.x, p.y - (v_bottom - 0.035)).length()
+				var b2 := 0.009 - Vector2(p.x, p.y - (v_bottom - 0.105)).length()
+				return maxf(b1, b2)},
 			# Shirt (shows in the V and at the cuffs).
 			{slot = Slot.EXTRA, offset = 0.008, region = func(p, n): return _top(p, L, L.waist - 0.06, L.wrist - 0.03)},
-			# Trousers to the shoes.
-			{slot = Slot.MAIN, offset = 0.012, region = func(p, n): return _legs(p, L.ankle + 0.03, L.waist)},
+			# Trousers to the shoes, a little loose.
+			{slot = Slot.MAIN, offset = 0.013, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.03),
+				drape = _pants_drape(L, {base = 0.013, flare = 0.01, hem = L.ankle + 0.03, amount = 0.6, cover = hem, cover_max = 0.016,
+					pin = func(p: Vector3) -> bool: return p.y > hem})},
 			# Leather shoes, soles flat on the floor.
-			{slot = Slot.TRIM, offset = 0.013, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},
+			{slot = Slot.TRIM, offset = 0.016, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},
 		]
 		if tie != null:
 			var bottom: float = (L.hip - 0.06) if long_tie else (L.waist + 0.02)
@@ -372,9 +385,9 @@ func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit:
 	return {
 		detailed = true,
 		pieces = pieces,
-		colors = [suit, shoes, tie if tie != null else shirt, shirt],
-		alt_colors = [alt_suit, Color(0.2, 0.12, 0.06), alt_tie, Color(0.85, 0.85, 0.83)],
-		fabrics = [&"cotton", &"leather", &"stretch", &"cotton"],
+		colors = [suit, shoes, tie if tie != null else shirt, shirt, suit.darkened(0.5)],
+		alt_colors = [alt_suit, Color(0.2, 0.12, 0.06), alt_tie, Color(0.85, 0.85, 0.83), alt_suit.darkened(0.5)],
+		fabrics = [&"cotton", &"leather", &"stretch", &"cotton", &"leather"],
 	}
 
 
@@ -432,26 +445,35 @@ func _tee_spec(tee: Color, jeans: Color, shoes: Color, alt_tee: Color, alt_jeans
 	}
 
 
-## Leather jacket, open down the front over a crew-neck tee, dark jeans and boots.
-## Slots: jacket, tee, jeans, boots.
+## Leather biker-style jacket, open down the front with silver zip edges, a standing
+## collar and a waistband, over a crew-neck tee; dark jeans and boots.
+## Slots: jacket, tee, jeans, boots, zip (metal).
 func _leather_jacket_spec(jacket: Color, tee: Color, jeans: Color, alt_jacket: Color, alt_tee: Color, alt_jeans: Color) -> Dictionary:
 	return {
 		detailed = true,
 		pieces = func(L: Dictionary) -> Array:
 			var hem: float = L.waist - 0.07
-			var opening := func(p, n): return _placket(p, 0.06) if p.y < L.neck - 0.04 else -1.0
+			var opening := func(p, n): return _placket(p, 0.055) if p.y < L.neck - 0.035 else -1.0
+			var body := func(p, n): return minf(_top(p, L, hem, L.wrist - 0.035), -opening.call(p, n))
 			return [
-				{slot = Slot.MAIN, offset = 0.022, region = func(p, n):
-					return minf(_top(p, L, hem, L.wrist - 0.035), -opening.call(p, n))},
+				# The jacket, its zip running down both open edges.
+				{slot = Slot.MAIN, offset = 0.024, trim_slot = Slot.DETAIL, region = body,
+					trim = func(p, n): return opening.call(p, n) + 0.007 if p.y > hem + 0.01 else -1.0},
+				# Standing collar round the neck, open at the front.
+				{slot = Slot.MAIN, offset = 0.034, hide = false, stitches = false, region = func(p, n):
+					return minf(minf(p.y - (L.neck - 0.045), (L.neck + 0.022) - p.y), minf(body.call(p, n), 0.11 - absf(p.x)))},
+				# Waistband and cuffs: thicker bands.
+				{slot = Slot.MAIN, offset = 0.03, hide = false, stitches = false, region = func(p, n):
+					return minf(body.call(p, n), maxf((hem + 0.03) - p.y, absf(p.x) - (L.wrist - 0.07)))},
 				{slot = Slot.TRIM, offset = 0.008, region = func(p, n): return _top(p, L, L.hip - 0.03, L.shoulder + 0.08)},
-				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.06, L.waist),
-					drape = _pants_drape(L, {base = 0.011, flare = 0.006, hem = L.ankle + 0.06, amount = 0.6,
+				{slot = Slot.ACCENT, offset = 0.012, region = func(p, n): return _legs(p, L.ankle + 0.06, L.waist),
+					drape = _pants_drape(L, {base = 0.012, flare = 0.006, hem = L.ankle + 0.06, amount = 0.6,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
-				{slot = Slot.EXTRA, offset = 0.016, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.1)},
+				{slot = Slot.EXTRA, offset = 0.018, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.1)},
 			],
-		colors = [jacket, tee, jeans, Color(0.06, 0.05, 0.05)],
-		alt_colors = [alt_jacket, alt_tee, alt_jeans, Color(0.25, 0.15, 0.08)],
-		fabrics = [&"leather", &"cotton", &"denim", &"leather"],
+		colors = [jacket, tee, jeans, Color(0.06, 0.05, 0.05), Color(0.75, 0.75, 0.78)],
+		alt_colors = [alt_jacket, alt_tee, alt_jeans, Color(0.25, 0.15, 0.08), Color(0.8, 0.65, 0.3)],
+		fabrics = [&"leather", &"cotton", &"denim", &"leather", &"metal"],
 	}
 
 
@@ -741,7 +763,8 @@ func _loose_pants_folds(p: Vector3, L: Dictionary, hem: float, cover: float, amo
 
 # --- Building ------------------------------------------------------------------------
 
-func _build(model_scene: PackedScene, spec: Dictionary) -> Dictionary:
+## `face`: CharacterData.face_shape, sculpted into the body's face first (FaceSculpt).
+func _build(model_scene: PackedScene, spec: Dictionary, face_shape: Dictionary = {}) -> Dictionary:
 	var scene := model_scene.instantiate()
 	var skeleton := scene.find_child("Skeleton3D") as Skeleton3D
 	var body_instance: MeshInstance3D
@@ -762,6 +785,18 @@ func _build(model_scene: PackedScene, spec: Dictionary) -> Dictionary:
 	var bones: PackedInt32Array = arrays[Mesh.ARRAY_BONES]
 	var weights: PackedFloat32Array = arrays[Mesh.ARRAY_WEIGHTS]
 	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	if not face_shape.is_empty():
+		var sculpted := FaceSculpt.apply(verts, FaceShapes.landmarks(scene), face_shape)
+		# Turn each original normal as much as the surface turned there (the model's own
+		# normals aren't the plain smooth ones, so replacing them leaves visible patches).
+		var before := FaceShapes._smooth_normals(verts, indices)
+		var after := FaceShapes._smooth_normals(sculpted, indices)
+		for v in verts.size():
+			if sculpted[v] != verts[v] and before[v] != after[v]:
+				normals[v] = (Quaternion(before[v], after[v]) * normals[v]).normalized()
+		verts = sculpted
+		arrays[Mesh.ARRAY_VERTEX] = verts
+		arrays[Mesh.ARRAY_NORMAL] = normals
 	var pieces: Array = spec.pieces.call(L)
 
 	var detailed: bool = spec.get("detailed", false)
@@ -908,7 +943,7 @@ func _build(model_scene: PackedScene, spec: Dictionary) -> Dictionary:
 	body.surface_set_material(0, body_instance.mesh.surface_get_material(0).duplicate())
 	body.surface_set_name(0, body_instance.mesh.surface_get_name(0))
 	# Facial expressions (blend shapes, an opened mouth and its interior).
-	var face := FaceShapes.landmarks(scene)
+	var face := FaceShapes.landmarks(scene, verts)
 	body = FaceShapes.build(body, face, FaceShapes.eye_openings(verts, face), true)
 	scene.free()
 	return {outfit = outfit, body = body, outfit_triangles = triangles,

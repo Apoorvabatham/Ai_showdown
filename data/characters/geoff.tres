@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_u8hgu"]
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_tvdc8"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Showdown_Male_Pale.png" id="1_o4s5d"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Grey.png" id="2_30nuw"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_o4s5d"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_30nuw"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_5ox4u"]
@@ -41,10 +41,10 @@ voice_fallback = &"brutus"
 portrait = ExtResource("27_30nuw")
 model_scene = ExtResource("4_30nuw")
 hair_scenes = Array[PackedScene]([ExtResource("3_o4s5d")])
-body_albedo = ExtResource("2_tvdc8")
+body_albedo = ExtResource("1_o4s5d")
 model_scale = 1.05
 hair_color = Color(0.86, 0.86, 0.84, 1)
-alt_body_albedo = ExtResource("1_u8hgu")
+alt_body_albedo = ExtResource("1_o4s5d")
 alt_hair_color = Color(0.6, 0.6, 0.6, 1)
 outfit_mesh = ExtResource("26_30nuw")
 outfit_body_mesh = ExtResource("25_o4s5d")
@@ -62,6 +62,23 @@ body_shape = {
 &"spine_03": Vector3(0.88, 1, 0.9),
 &"thigh": Vector3(0.88, 1, 0.88),
 &"upperarm": Vector3(0.8, 1, 0.8)
+}
+face_shape = {
+&"brow": 0.003,
+&"cheekbones": -0.001,
+&"chin": 0.006,
+&"eye_open": -0.0012,
+&"face_length": 1.08,
+&"fullness": -0.005,
+&"jaw": 0.92,
+&"nose_bridge": 0.002,
+&"nose_length": 0.004
+}
+brow_scale = Vector3(1.05, 1.1, 1)
+eye_texture = ExtResource("2_30nuw")
+face_rest = {
+&"brow_up": 0.75,
+&"grimace": 0.2
 }
 intro_animation = &"fight/intro_oath"
 intro_lines = PackedStringArray("I invented this move. Now I\'m starting to worry about it.", "Let me warn you about what happens next.", "I quit my job so I could speak freely. Mostly about punching.")

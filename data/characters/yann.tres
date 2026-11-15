@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_f3xt4"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_fvbhp"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_8thui"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Grey.png" id="3_c3rmk"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_bsh8p"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_c3rmk"]
 [ext_resource type="Resource" path="res://data/moves/yann/jab.tres" id="6_l5h58"]
@@ -46,9 +47,9 @@ alt_body_albedo = ExtResource("1_f3xt4")
 alt_hair_color = Color(0.12, 0.1, 0.09, 1)
 outfit_mesh = ExtResource("25_bsh8p")
 outfit_body_mesh = ExtResource("24_8thui")
-outfit_colors = PackedColorArray(0.16, 0.16, 0.17, 1, 0.05, 0.05, 0.05, 1, 0.55, 0.65, 0.8, 1, 0.55, 0.65, 0.8, 1)
-outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton"])
-alt_outfit_colors = PackedColorArray(0.3, 0.22, 0.14, 1, 0.2, 0.12, 0.06, 1, 0.82, 0.82, 0.8, 1, 0.85, 0.85, 0.83, 1)
+outfit_colors = PackedColorArray(0.16, 0.16, 0.17, 1, 0.05, 0.05, 0.05, 1, 0.55, 0.65, 0.8, 1, 0.55, 0.65, 0.8, 1, 0.08, 0.08, 0.085, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton", &"leather"])
+alt_outfit_colors = PackedColorArray(0.3, 0.22, 0.14, 1, 0.2, 0.12, 0.06, 1, 0.82, 0.82, 0.8, 1, 0.85, 0.85, 0.83, 1, 0.15, 0.11, 0.07, 1)
 detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_flex", &"fight/victory_fist_pump"])
@@ -59,6 +60,19 @@ body_shape = {
 &"pelvis": Vector3(1.08, 1, 1.1),
 &"spine_01": [Vector3(1.18, 1, 1.25), Vector3(0, 0, 0.015)],
 &"spine_02": Vector3(1.1, 1, 1.15)
+}
+face_shape = {
+&"brow": 0.002,
+&"chin": 0.001,
+&"eye_open": -0.0005,
+&"fullness": 0.005,
+&"jaw": 1.08,
+&"nose_width": 1.12
+}
+eye_texture = ExtResource("3_c3rmk")
+face_rest = {
+&"brow_down": 0.45,
+&"grimace": 0.15
 }
 accessories = Array[StringName]([&"glasses"])
 intro_animation = &"fight/intro_knuckles"

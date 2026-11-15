@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_yt2cr"]
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_40xxx"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Showdown_Male_Tan.png" id="1_wbv0g"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Blue.png" id="2_eil64"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_wbv0g"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_eil64"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_couvb"]
@@ -39,16 +39,16 @@ voice_fallback = &"brutus"
 portrait = ExtResource("25_eil64")
 model_scene = ExtResource("4_eil64")
 hair_scenes = Array[PackedScene]([ExtResource("3_wbv0g")])
-body_albedo = ExtResource("2_40xxx")
+body_albedo = ExtResource("1_wbv0g")
 model_scale = 1.07
 hair_color = Color(0.88, 0.7, 0.38, 1)
-alt_body_albedo = ExtResource("1_yt2cr")
+alt_body_albedo = ExtResource("1_wbv0g")
 alt_hair_color = Color(0.85, 0.85, 0.82, 1)
 outfit_mesh = ExtResource("24_eil64")
 outfit_body_mesh = ExtResource("23_wbv0g")
-outfit_colors = PackedColorArray(0.07, 0.09, 0.2, 1, 0.05, 0.05, 0.05, 1, 0.75, 0.06, 0.08, 1, 0.82, 0.82, 0.8, 1)
-outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton"])
-alt_outfit_colors = PackedColorArray(0.12, 0.12, 0.13, 1, 0.2, 0.12, 0.06, 1, 0.12, 0.2, 0.55, 1, 0.85, 0.85, 0.83, 1)
+outfit_colors = PackedColorArray(0.07, 0.09, 0.2, 1, 0.05, 0.05, 0.05, 1, 0.75, 0.06, 0.08, 1, 0.82, 0.82, 0.8, 1, 0.035, 0.045, 0.1, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton", &"leather"])
+alt_outfit_colors = PackedColorArray(0.12, 0.12, 0.13, 1, 0.2, 0.12, 0.06, 1, 0.12, 0.2, 0.55, 1, 0.85, 0.85, 0.83, 1, 0.06, 0.06, 0.065, 1)
 detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_flex", &"fight/victory_fist_pump"])
@@ -63,6 +63,24 @@ body_shape = {
 &"spine_03": Vector3(1.15, 1, 1.2),
 &"thigh": Vector3(1.16, 1, 1.16),
 &"upperarm": Vector3(1.12, 1, 1.12)
+}
+face_shape = {
+&"brow": 0.001,
+&"chin": 0.003,
+&"chin_forward": -0.001,
+&"eye_open": -0.0015,
+&"fullness": 0.009,
+&"jaw": 1.12,
+&"lips": 0.002,
+&"mouth_width": 0.92,
+&"nose_width": 1.06
+}
+brow_scale = Vector3(1, 0.7, 1)
+eye_texture = ExtResource("2_eil64")
+face_rest = {
+&"brow_down": 0.5,
+&"grimace": 0.3,
+&"squint": 0.6
 }
 accessories = Array[StringName]([&"swoop"])
 intro_animation = &"fight/intro_beckon"
