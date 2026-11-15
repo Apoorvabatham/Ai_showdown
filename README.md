@@ -151,3 +151,7 @@ Based on [3D Fighter](https://github.com/clintcan/3d-fighter) by Clint Christoph
 - **Third-party assets:** keep their own licenses; the full list is in [assets/CREDITS.md](assets/CREDITS.md).
 
 Made with [Godot Engine](https://godotengine.org).
+
+## Contributing
+
+See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for how to add or change fighters, moves, voices, stages and title art.

@@ -1,7 +1,7 @@
 extends SceneTree
 ## Renders the AI Showdown key art: the whole roster lined up in their fight stances, lit
 ## cyan and magenta, on a transparent background (assets/ui/source/key_art_fighters.png).
-## tools/build_key_art.py then composes the splash, wallpaper and logo around it.
+## tools/build_showdown_art.py then composes the splash, wallpaper and logo around it.
 ##
 ## Run WINDOWED (needs the renderer): godot --path . -s res://tools/render_key_art.gd
 
