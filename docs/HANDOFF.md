@@ -40,9 +40,10 @@ assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **
 | zuckerbot | Mark Zuckerbot | **Approved** | age 42, short, pale, tight curls, wide blue eyes, upright stiff stance. Hoodie collar jagged edge fixed. |
 | jensen | Jensen Wong | **Approved** | age 63, voluminous silver swept-back hair (hair_volume), confident keynote posture, black leather jacket with NVIDIA tee (tools/build_prints.py), glasses, aged skin pass, respectful East Asian facial sculpt. |
 | sundar | Sundar Pickai | **Approved** | age 54, warm golden skin tone, cropped crew cut hair (Hair_Buzzed), trimmed beard/mustache, Google logo tee (tools/build_prints.py), wireframe glasses, calm upright posture. |
-| ram, dario, demis, yann, geoff, xi, algorithm | | To do | earlier generic pass only (face sculpt, eyes, brows, age) |
+| xi | Xi Winping | **Approved** | age 73, round heavy non-muscular build with paunch, soft facial contour, epicanthic folds, statesman combed-back parted hair (hair_volume), authentic high-collar Zhongshan Mao suit with white collar liner, 5 brass buttons, red delegate badge, symmetrical chest/hip flap pockets. |
+| ram, dario, demis, yann, geoff, algorithm | | To do | earlier generic pass only (face sculpt, eyes, brows, age) |
 
-Suggested order: zuckerbot → jensen → sundar → xi → yann → geoff → ram → dario → demis → algorithm.
+Suggested order: yann → geoff → ram → dario → demis → algorithm.
 Make each one **completely distinct** from the approved ones (silhouette, posture, hair, face
 shape, colours); the owner rejected subtle differences.
 
