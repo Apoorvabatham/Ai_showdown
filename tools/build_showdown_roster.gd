@@ -250,7 +250,7 @@ const ROSTER := [
 		id = &"xi", name = "Xi Winping", kit = &"aelia", archetype = "Fortress",
 		age = 73,
 		description = "Stands behind the Great Firewall, absorbs hits with stoic calm and makes sure no record of his defeats survives.",
-		skin = &"warm", hair = ["Hair_Buzzed"], hair_color = Color(0.06, 0.06, 0.06), alt_hair_color = Color(0.35, 0.35, 0.38),
+		skin = &"warm", hair = ["Hair_SimpleParted"], hair_color = Color(0.08, 0.08, 0.09), alt_hair_color = Color(0.38, 0.38, 0.40),
 		damage = 1.0, stats = {max_health = 1100, weight = 1.35},
 		face = {
 			eye_fold = 0.85, eye_open = -0.0010, eye_tilt = 0.0002,
@@ -260,9 +260,9 @@ const ROSTER := [
 			jowls = 0.008, double_chin = 0.012,
 			mouth_width = 0.92, lips = 0.002, brow = -0.003,
 		},
-		face_rest = {smile = 0.30, squint = 0.08}, brows = Vector3(1.02, 0.88, 1.0), eyes = "DarkBrown",
+		face_rest = {smile = 0.28, squint = 0.08}, brows = Vector3(1.04, 0.92, 1.0), eyes = "DarkBrown",
 		scale = 0.98, accessories = [],
-		hair_volume = [Vector3(1.02, 1.05, 1.02), Vector3(0, 0.003, 0.0)],
+		hair_volume = [Vector3(1.14, 1.15, 1.12), Vector3(0.002, 0.009, -0.005)],
 		shape = {
 			pelvis = [Vector3(1.35, 1.0, 1.40), Vector3(0, 0, 0.02)],
 			spine_01 = [Vector3(1.52, 1.0, 1.72), Vector3(0, 0, 0.06)],
