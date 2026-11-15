@@ -206,13 +206,15 @@ const ROSTER := [
 		id = &"sundar", name = "Sundar Pickai", kit = &"kenji", archetype = "Calm Zoner",
 		age = 54,
 		description = "Unflappable and endlessly polite. Ranks your weaknesses and serves you ten blue links' worth of fireballs. Takes a hit better than he throws one.",
-		skin = &"medium", hair = ["Hair_Buzzed"], hair_color = Color(0.16, 0.15, 0.15), alt_hair_color = Color(0.45, 0.45, 0.45),
+		skin = &"medium", hair = ["Hair_SimpleParted"], hair_color = Color(0.12, 0.11, 0.11), alt_hair_color = Color(0.38, 0.38, 0.4),
 		damage = 0.9, stats = {max_health = 1100, walk_speed = 1.8, back_walk_speed = 1.5, weight = 1.1, power_rating = 0.4, speed_rating = 0.45},
-		face = {nose_width = 1.1, nose_length = 0.003, jaw = 0.94, chin = 0.002, fullness = -0.002, lips = 0.001},
-		face_rest = {smile = 0.6}, brows = Vector3(0.95, 0.78, 1.0), eyes = "DarkBrown",
-		scale = 0.97, accessories = [],
-		shape = {spine_03 = Vector3(0.92, 1, 0.92), upperarm = Vector3(0.86, 1, 0.86), lowerarm = Vector3(0.9, 1, 0.9),
-			thigh = Vector3(0.92, 1, 0.92)},
+		face = {face_length = 1.05, jaw = 0.91, chin = 0.003, chin_round = 0.001, chin_forward = 0.002, nose_width = 0.96, nose_length = 0.004, nose_bridge = 0.002, fullness = -0.004, cheekbones = 0.002, eye_open = -0.0006, eye_tilt = 0.0004},
+		face_rest = {smile = 0.45}, brows = Vector3(0.96, 0.76, 1.0), eyes = "DarkBrown",
+		scale = 1.02, accessories = [&"glasses"], accessory_color = Color(0.08, 0.08, 0.1),
+		hair_volume = [Vector3(0.98, 0.97, 0.98), Vector3(0, 0.001, 0.0)],
+		shape = {spine_03 = Vector3(0.88, 1, 0.88), upperarm = Vector3(0.84, 1, 0.84), lowerarm = Vector3(0.88, 1, 0.88),
+			thigh = Vector3(0.88, 1, 0.88), calf = Vector3(0.9, 1, 0.9), neck_01 = Vector3(0.92, 1.05, 0.92)},
+		posture = {spine_02 = Vector3(1, 0, 0), spine_03 = Vector3(1, 0, 0), neck_01 = Vector3(2, 0, 0), Head = Vector3(-2, 0, 0)},
 		moves = {ki_blast = "Ten Blue Links", rising_dragon = "Featured Snippet", snap_kick = "Quarterly Kick",
 			advancing_straight = "Sponsored Result", dragon_barrage = "Search Result", dragon_finish = "Search Result"},
 		projectile_color = Color(0.26, 0.52, 0.96),
@@ -327,6 +329,8 @@ func _build(spec: Dictionary, order: int) -> void:
 	var accessories: Array[StringName] = []
 	accessories.assign(spec.get("accessories", []))
 	data.accessories = accessories
+	if spec.has("accessory_color"):
+		data.accessory_color = spec.accessory_color
 	data.body_albedo = load(SKINS[spec.skin])
 	var aged := "res://assets/characters/aged/T_%s_skin.png" % spec.id
 	if spec.has("age") and ResourceLoader.exists(aged):
