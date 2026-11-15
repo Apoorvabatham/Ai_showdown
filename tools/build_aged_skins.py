@@ -103,6 +103,17 @@ def paint(skin_path, L, mapper, age, seed):
     return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
 
 
+def write_import(path):
+    """Imports the texture like the base skins (VRAM compressed, mipmaps): Godot's
+    defaults would keep it lossless, several MB more per fighter in the download."""
+    base = os.path.join(ROOT, "assets", "characters", "base", "T_Superhero_Male_Light.png.import")
+    text = open(base).read()
+    params = text[text.index("[params]"):]
+    res = "res://" + os.path.relpath(path, ROOT).replace(os.sep, "/")
+    with open(path + ".import", "w") as f:
+        f.write('[remap]\n\nimporter="texture"\ntype="CompressedTexture2D"\n\n[deps]\n\nsource_file="%s"\n\n' % res + params)
+
+
 def main():
     data = json.load(open(os.path.join(AGED, "face_uv.json")))
     mapper, err = fit(data["face"])
@@ -114,6 +125,7 @@ def main():
         out = paint(f["skin"], data, mapper, float(f["age"]), abs(hash(f["id"])) % 2**32)
         path = os.path.join(AGED, "T_%s_skin.png" % f["id"])
         out.save(path, optimize=True)
+        write_import(path)
         print(f"{f['id']:10s} age {f['age']} -> {os.path.relpath(path, ROOT)}")
 
 
