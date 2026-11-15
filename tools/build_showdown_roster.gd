@@ -128,7 +128,7 @@ const ROSTER := [
 		damage = 1.05, stats = {},
 		face = {eye_fold = 1.0, nose_bridge = -0.005, nose_width = 1.12, cheekbones = 0.004, fullness = 0.002, brow = -0.003, jaw = 1.02, eye_tilt = 0.0012, eye_open = -0.001, chin_round = 0.002, mouth_width = 1.02},
 		face_rest = {smile = 0.45, squint = 0.15}, brows = Vector3(1.0, 0.72, 1.0), eyes = "DarkBrown",
-		scale = 0.97, accessories = [&"glasses"], hair_volume = [Vector3(1.1, 1.22, 1.12), Vector3(0, 0.008, -0.008)],
+		scale = 0.97, accessories = [&"glasses"], hair_volume = [Vector3(1.1, 1.22, 1.12), Vector3(0, 0.008, -0.008)], prints = {1: "tee"},
 		shape = {spine_03 = Vector3(0.96, 1, 0.96), upperarm = Vector3(0.94, 1, 0.94), lowerarm = Vector3(0.95, 1, 0.95), spine_01 = Vector3(1.02, 1, 1.04)},
 		posture = {spine_02 = Vector3(-3, 0, 0), spine_03 = Vector3(-4, 0, 0), neck_01 = Vector3(-3, 0, 0), Head = Vector3(-3, 0, 0), clavicle = Vector3(0, 3, 0)},
 		moves = {ki_blast = "Tensor Blast", rising_dragon = "Leather Uppercut", snap_kick = "Keynote Kick",

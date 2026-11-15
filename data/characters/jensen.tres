@@ -26,6 +26,7 @@
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="24_2wpfc"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/jensen_body.res" id="24_n68sn"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/jensen_outfit.res" id="25_i1kn0"]
+[ext_resource type="Texture2D" path="res://assets/characters/prints/T_jensen_tee.png" id="26_5ljcw"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/jensen.png" id="26_i1kn0"]
 
 [resource]
@@ -47,6 +48,9 @@ alt_body_albedo = ExtResource("1_i1kn0")
 alt_hair_color = Color(0.18, 0.18, 0.2, 1)
 outfit_mesh = ExtResource("25_i1kn0")
 outfit_body_mesh = ExtResource("24_n68sn")
+outfit_textures = {
+1: ExtResource("26_5ljcw")
+}
 outfit_colors = PackedColorArray(0.035, 0.035, 0.04, 1, 0.2, 0.2, 0.21, 1, 0.08, 0.08, 0.09, 1, 0.06, 0.05, 0.05, 1, 0.75, 0.75, 0.78, 1)
 outfit_fabrics = Array[StringName]([&"leather", &"cotton", &"denim", &"leather", &"metal"])
 alt_outfit_colors = PackedColorArray(0.3, 0.18, 0.1, 1, 0.12, 0.12, 0.13, 1, 0.2, 0.2, 0.22, 1, 0.25, 0.15, 0.08, 1, 0.8, 0.65, 0.3, 1)

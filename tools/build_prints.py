@@ -54,10 +54,67 @@ def occupy_mars(width_m=0.27):
     return img, width_m, width_m * 0.72
 
 
+def nvidia(width_m=0.10):
+    """NVIDIA logo: green spiral/eye emblem over NVIDIA text."""
+    W = int(width_m * PX_PER_M)
+    H = int(width_m * 1.05 * PX_PER_M)
+    SS = 2
+    sw, sh = W * SS, H * SS
+    img = Image.new("RGBA", (sw, sh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+
+    green = (118, 185, 0, 255)
+    light_green = (150, 215, 20, 255)
+    white = (248, 248, 248, 255)
+
+    cx, cy = sw * 0.5, sh * 0.38
+
+    # 1. Outer green swoosh
+    r1 = sw * 0.34
+    d.arc([cx - r1, cy - r1 * 0.8, cx + r1, cy + r1 * 0.8], start=180, end=380, fill=green, width=int(sw * 0.065))
+
+    # 2. Middle green swoosh
+    r2 = r1 * 0.74
+    d.arc([cx - r2 * 0.9, cy - r2 * 0.75, cx + r2 * 1.1, cy + r2 * 0.75], start=190, end=385, fill=green, width=int(sw * 0.055))
+
+    # 3. Inner green swoosh
+    r3 = r2 * 0.70
+    d.arc([cx - r3 * 0.8, cy - r3 * 0.7, cx + r3 * 1.15, cy + r3 * 0.7], start=200, end=390, fill=light_green, width=int(sw * 0.045))
+
+    # 4. Central pupil / iris
+    pr_x, pr_y = sw * 0.065, sh * 0.055
+    pcx, pcy = cx + sw * 0.02, cy + sh * 0.01
+    d.ellipse([pcx - pr_x, pcy - pr_y, pcx + pr_x, pcy + pr_y], fill=white)
+    d.ellipse([pcx - pr_x * 0.35, pcy - pr_y * 0.8, pcx + pr_x * 0.35, pcy + pr_y * 0.8], fill=(20, 20, 22, 255))
+
+    # 5. Bottom eye waterline
+    d.arc([cx - r1 * 0.75, cy - r1 * 0.2, cx + r1 * 0.85, cy + r1 * 0.7], start=20, end=160, fill=green, width=int(sw * 0.04))
+
+    # Text: "NVIDIA"
+    font_size = int(sw * 0.17)
+    font = ImageFont.truetype(FONT, font_size)
+    text = "NVIDIA"
+    tw = d.textlength(text, font=font)
+    d.text(((sw - tw) / 2, sh * 0.73), text, font=font, fill=white)
+
+    res = img.resize((W, H), Image.Resampling.LANCZOS)
+    return res, width_m, width_m * 1.05
+
+
 # id -> (output name, base colour (0..1), design, centre (x, y) on the chest, metres)
 PRINTS = {
     "tesla": ("tee", (0.05, 0.05, 0.06), occupy_mars, (0.0, 1.355)),
+    "jensen": ("tee", (0.12, 0.12, 0.13), nvidia, (0.0, 1.365)),
 }
+
+
+def write_import(path):
+    base = os.path.join(ROOT, "assets", "characters", "base", "T_Superhero_Male_Light.png.import")
+    text = open(base).read()
+    params = text[text.index("[params]"):]
+    res = "res://" + os.path.relpath(path, ROOT).replace(os.sep, "/")
+    with open(path + ".import", "w") as f:
+        f.write('[remap]\n\nimporter="texture"\ntype="CompressedTexture2D"\n\n[deps]\n\nsource_file="%s"\n\n' % res + params)
 
 
 def build(fid, name, colour, design, centre, to_xy):
@@ -77,6 +134,7 @@ def build(fid, name, colour, design, centre, to_xy):
     out = Image.fromarray(np.clip(base, 0, 255).astype(np.uint8))
     path = os.path.join(ROOT, "assets", "characters", "prints", f"T_{fid}_{name}.png")
     out.save(path, optimize=True)
+    write_import(path)
     print(f"{fid}: {os.path.relpath(path, ROOT)}")
     return path
 
