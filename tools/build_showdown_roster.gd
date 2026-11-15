@@ -39,6 +39,7 @@ const SKINS := {
 const ROSTER := [
 	{
 		id = &"ram", name = "Ram Altman", kit = &"mira", archetype = "Hype Brawler",
+		age = 41,
 		description = "Charges up with Add More Compute until every rush scales like a law of nature. AGI is coming next year. Every year.",
 		skin = &"light", hair = ["Hair_Buzzed"], hair_color = Color(0.3, 0.21, 0.13), alt_hair_color = Color(0.1, 0.08, 0.07),
 		damage = 1.0, stats = {},
@@ -60,6 +61,7 @@ const ROSTER := [
 	},
 	{
 		id = &"tesla", name = "tesla man", kit = &"rhea", archetype = "Rushdown",
+		age = 55,
 		description = "Moves fast and breaks things, mostly his own schedule. Swears the Rocket Launch will be ready next quarter.",
 		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.2, 0.14, 0.09), alt_hair_color = Color(0.36, 0.27, 0.16),
 		damage = 0.95, stats = {walk_speed = 2.7, dash_speed = 7.8},
@@ -79,6 +81,7 @@ const ROSTER := [
 	},
 	{
 		id = &"dario", name = "Dario Amoday", kit = &"lian", archetype = "Counter",
+		age = 43,
 		description = "A patient counter-fighter guided by a written constitution. Catches reckless strikes with Refusal Stance, then explains, at length, why that was unsafe.",
 		skin = &"light", hair = ["Hair_Buzzed"], hair_color = Color(0.14, 0.1, 0.08), alt_hair_color = Color(0.32, 0.22, 0.13),
 		damage = 1.0, stats = {},
@@ -99,6 +102,7 @@ const ROSTER := [
 	},
 	{
 		id = &"zuckerbot", name = "Mark Zuckerbot", kit = &"valka", archetype = "Grappler",
+		age = 42,
 		description = "Trained in jiu-jitsu, raised on growth metrics. The Metaverse Trap pulls you into a virtual world where nobody has legs.",
 		skin = &"pale", hair = ["Hair_Buzzed"], hair_color = Color(0.28, 0.19, 0.12), alt_hair_color = Color(0.12, 0.09, 0.07),
 		damage = 1.0, stats = {},
@@ -115,6 +119,7 @@ const ROSTER := [
 	},
 	{
 		id = &"jensen", name = "Jensen Wong", kit = &"kenji", archetype = "Zoner",
+		age = 63,
 		description = "Never seen out of his leather jacket. Fires Tensor Blasts across the screen and buries rivals in GPU Rain. Weak spot: a rival chipmaker CEO who also happens to be family.",
 		skin = &"warm", hair = ["Hair_SimpleParted"], hair_color = Color(0.32, 0.32, 0.33), alt_hair_color = Color(0.12, 0.12, 0.12),
 		damage = 1.05, stats = {},
@@ -134,6 +139,7 @@ const ROSTER := [
 	},
 	{
 		id = &"demis", name = "Demis Hasabist", kit = &"jin", archetype = "Kicker",
+		age = 50,
 		description = "Former chess prodigy and game designer. Reads every fight forty moves ahead, then folds you like a protein.",
 		skin = &"light", hair = ["Hair_Buzzed"], hair_color = Color(0.1, 0.08, 0.07), alt_hair_color = Color(0.3, 0.22, 0.14),
 		damage = 1.0, stats = {},
@@ -152,6 +158,7 @@ const ROSTER := [
 	},
 	{
 		id = &"yann", name = "Yann LeCant", kit = &"brutus", archetype = "Power",
+		age = 65,
 		description = "A heavyweight sceptic who insists none of this is real intelligence, then flattens you to prove the point. Posts the rebuttal mid-combo.",
 		skin = &"light", hair = ["Hair_SimpleParted"], hair_color = Color(0.32, 0.31, 0.3), alt_hair_color = Color(0.12, 0.1, 0.09),
 		damage = 1.0, stats = {},
@@ -172,6 +179,7 @@ const ROSTER := [
 	},
 	{
 		id = &"geoff", name = "Geoff Hintoff", kit = &"aelia", archetype = "Armoured Elder",
+		age = 78,
 		description = "The godfather of the neural net, now touring the world to warn you about it. His heavy moves shrug off a hit; his super comes with second thoughts.",
 		skin = &"pale", hair = ["Hair_SimpleParted"], hair_color = Color(0.86, 0.86, 0.84), alt_hair_color = Color(0.6, 0.6, 0.6),
 		damage = 0.95, stats = {},
@@ -192,6 +200,7 @@ const ROSTER := [
 	},
 	{
 		id = &"sundar", name = "Sundar Pickai", kit = &"kenji", archetype = "Calm Zoner",
+		age = 54,
 		description = "Unflappable and endlessly polite. Ranks your weaknesses and serves you ten blue links' worth of fireballs. Takes a hit better than he throws one.",
 		skin = &"medium", hair = ["Hair_Buzzed"], hair_color = Color(0.16, 0.15, 0.15), alt_hair_color = Color(0.45, 0.45, 0.45),
 		damage = 0.9, stats = {max_health = 1100, walk_speed = 1.8, back_walk_speed = 1.5, weight = 1.1, power_rating = 0.4, speed_rating = 0.45},
@@ -210,17 +219,18 @@ const ROSTER := [
 	},
 	{
 		id = &"donald", name = "Donald Tarrif", kit = &"valka", archetype = "Heavy Grappler",
+		age = 80,
 		description = "A heavyweight dealmaker. Slaps a tariff on every hit and calls every round the greatest round in history.",
 		skin = &"tan", hair = ["Hair_SimpleParted"], hair_color = Color(0.88, 0.7, 0.38), alt_hair_color = Color(0.85, 0.85, 0.82),
 		damage = 1.1, stats = {max_health = 1150, walk_speed = 1.6, back_walk_speed = 1.2, dash_speed = 4.6, weight = 1.3,
 			throw_damage = 170, jump_velocity = 5.5, power_rating = 0.9, speed_rating = 0.3},
-		face = {fullness = 0.012, jaw = 1.18, jowls = 0.008, double_chin = 0.009, eye_open = -0.0025, mouth_width = 0.84, pout = 0.004, lips = 0.002, nose_width = 1.08, brow = 0.001, face_length = 0.97},
+		face = {fullness = 0.022, jaw = 0.95, chin_round = 0.013, jowls = 0.01, double_chin = 0.008, cheekbones = -0.002, eye_open = -0.0025, mouth_width = 0.84, pout = 0.004, lips = 0.002, nose_width = 1.08, brow = 0.001},
 		face_rest = {squint = 0.55, brow_down = 0.35, grimace = 0.25}, brows = Vector3(1.0, 0.7, 1.0), eyes = "Blue",
 		scale = 1.07, accessories = [], hair_volume = [Vector3(1.18, 1.45, 1.22), Vector3(0, 0.012, 0.008)],
 		shape = {pelvis = [Vector3(1.32, 1, 1.45), Vector3(0, 0, 0.02)], spine_01 = [Vector3(1.55, 1, 1.85), Vector3(0, 0, 0.06)],
 			spine_02 = [Vector3(1.4, 1, 1.6), Vector3(0, 0, 0.04)], spine_03 = Vector3(1.15, 1, 1.2),
 			neck_01 = Vector3(1.28, 1, 1.25), thigh = Vector3(1.16, 1, 1.16), upperarm = Vector3(1.12, 1, 1.12),
-			lowerarm = Vector3(1.05, 1, 1.05), Head = Vector3(1.12, 1.06, 1.1)},
+			lowerarm = Vector3(1.05, 1, 1.05), Head = Vector3(1.05, 1.08, 1.08)},
 		posture = {spine_02 = Vector3(-5, 0, 0), spine_03 = Vector3(-6, 0, 0), neck_01 = Vector3(-4, 0, 0), Head = Vector3(-6, 0, 0), upperarm = Vector3(0, 0, -8)},
 		moves = {valkyrie_slam = "The Art of the Deal", spinning_lariat = "Executive Order", shoulder_tackle = "Trade War Tackle",
 			knee_lift = "Fake News Knee", thunder_valkyrie = "Shower of Tariffs"},
@@ -232,6 +242,7 @@ const ROSTER := [
 	},
 	{
 		id = &"xi", name = "Xi Winping", kit = &"aelia", archetype = "Fortress",
+		age = 73,
 		description = "Stands behind the Great Firewall, absorbs hits with stoic calm and makes sure no record of his defeats survives.",
 		skin = &"warm", hair = ["Hair_SimpleParted"], hair_color = Color(0.06, 0.06, 0.06), alt_hair_color = Color(0.2, 0.2, 0.2),
 		damage = 1.0, stats = {max_health = 1100},
@@ -295,6 +306,8 @@ func _build(spec: Dictionary, order: int) -> void:
 	data.model_scale = spec.get("scale", 1.0)
 	data.body_shape = spec.get("shape", {}).duplicate(true)
 	data.face_shape = spec.get("face", {}).duplicate(true)
+	if spec.has("age"):
+		data.face_shape["age"] = spec.age # sagging with age (FaceSculpt)
 	data.face_rest = spec.get("face_rest", {}).duplicate(true)
 	data.posture = spec.get("posture", {}).duplicate(true)
 	data.hair_scale = spec.hair_volume[0] if spec.has("hair_volume") else Vector3.ONE
@@ -305,7 +318,10 @@ func _build(spec: Dictionary, order: int) -> void:
 	accessories.assign(spec.get("accessories", []))
 	data.accessories = accessories
 	data.body_albedo = load(SKINS[spec.skin])
-	data.alt_body_albedo = load(SKINS[&"light_alt"] if spec.skin == &"light" else SKINS[spec.skin])
+	var aged := "res://assets/characters/aged/T_%s_skin.png" % spec.id
+	if spec.has("age") and ResourceLoader.exists(aged):
+		data.body_albedo = load(aged) # age lines (tools/build_aged_skins.gd)
+	data.alt_body_albedo = data.body_albedo if ResourceLoader.exists(aged) else load(SKINS[&"light_alt"] if spec.skin == &"light" else SKINS[spec.skin])
 	var hair: Array[PackedScene] = []
 	for piece: String in spec.hair:
 		hair.append(load(HAIR_DIR + piece + (".tscn" if ResourceLoader.exists(HAIR_DIR + piece + ".tscn") else ".gltf")))

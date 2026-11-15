@@ -27,6 +27,9 @@ extends RefCounted
 ##   jowls        heavy jowls: flesh along the jaw line pushed out and down (m)
 ##   double_chin  a full double chin under the jaw (m)
 ##   pout         a pushed-out, pursed lower lip (m)
+##   chin_round   rounds off the jaw corners (m pulled in at the angle of the jaw), for a
+##                softer, rounder face instead of a square one
+##   age          years: sagging jowls, puffier lower lids and deeper smile lines with age
 ##
 ## Changes stay small (millimetres) and away from the eyeballs and the skull, so the shared
 ## eyebrows, eyes and hair still sit right.
@@ -39,6 +42,9 @@ static func apply(verts: PackedVector3Array, L: Dictionary, params: Dictionary) 
 	var P := {}
 	for key in params:
 		P[String(key)] = params[key]
+	var old := clampf((float(P.get("age", 0.0)) - 40.0) / 40.0, 0.0, 1.0)
+	if old > 0.0:
+		P["jowls"] = float(P.get("jowls", 0.0)) + 0.004 * old
 	var eye: Vector3 = L.eye # right eyeball centre (x > 0)
 	var r: float = L.eye_radius
 	var seam: float = L.seam
@@ -71,6 +77,10 @@ static func apply(verts: PackedVector3Array, L: Dictionary, params: Dictionary) 
 		if P.has("jowls"):
 			var jowl := _blob(Vector3(ax, p.y, p.z), Vector3(0.05, seam - 0.035, eye.z - 0.035), 0.045) * neck_fade
 			d += (out_dir + Vector3(0, -0.5, 0)).normalized() * float(P.jowls) * jowl
+		if P.has("chin_round"):
+			# The jaw's corners (low, at the sides) pulled in and up: a rounder outline.
+			var angle := _blob(Vector3(ax, p.y, p.z), Vector3(0.058, seam - 0.05, eye.z - 0.06), 0.04) * neck_fade
+			d += (-out_dir + Vector3(0, 0.4, 0)).normalized() * float(P.chin_round) * angle
 		if P.has("double_chin"):
 			var under := _blob(Vector3(ax * 0.8, p.y, p.z), Vector3(0.0, seam - 0.075, eye.z - 0.03), 0.05)
 			d += Vector3(0, -0.4, 1.0).normalized() * float(P.double_chin) * under
@@ -115,6 +125,10 @@ static func apply(verts: PackedVector3Array, L: Dictionary, params: Dictionary) 
 				d.y += e * rim
 				if e < 0.0:
 					d.z += -e * 0.7 * rim # keep the lowered lid outside the eyeball
+			if old > 0.0:
+				# Puffy lower lids: the skin under each eye swells forward.
+				var bag := _blob1(q.y, -r * 1.5, r * 0.7) * (1.0 - _ramp(absf(q.x), r * 0.9, r * 1.7))
+				d.z += 0.0022 * old * bag
 			if P.has("eye_tilt"):
 				var corner := _ramp(q.x, 0.0, r * 1.2) * (1.0 - _ramp(absf(q.y), r * 0.9, r * 1.8)) * (1.0 - _ramp(q.x, r * 1.6, r * 2.4))
 				d.y += float(P.eye_tilt) * corner
