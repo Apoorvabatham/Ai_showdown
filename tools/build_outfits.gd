@@ -648,27 +648,41 @@ func _hoodie_spec(hoodie: Color, jeans: Color, shoes: Color, alt_hoodie: Color, 
 
 
 ## Cardigan, open in a V with a button band, over a collared shirt; trousers and
-## leather shoes. Slots: cardigan, button band and shoes, trousers, shirt.
+## leather shoes. Slots: cardigan, button band and shoes, trousers, shirt, buttons.
 func _cardigan_spec(cardigan: Color, band: Color, trousers: Color, shirt: Color, alt_cardigan: Color, alt_trousers: Color) -> Dictionary:
 	return {
 		detailed = true,
 		pieces = func(L: Dictionary) -> Array:
-			var v_bottom: float = L.waist - 0.01
-			var hem: float = L.hip - 0.07
-			var cuff: float = L.wrist - 0.03
+			var v_bottom: float = (L.chest + L.waist) * 0.5 - 0.02
+			var hem: float = L.hip - 0.08
+			var cuff: float = L.wrist - 0.035
+			var card := func(p, n): return minf(_top(p, L, hem, cuff), -_v_cut(p, n, L, v_bottom, 0.085))
 			return [
-				{slot = Slot.MAIN, offset = 0.02, trim_slot = Slot.TRIM,
-					region = func(p, n): return minf(_top(p, L, hem, cuff), -_v_cut(p, n, L, v_bottom, 0.085)),
-					trim = func(p, n): return maxf(_v_cut(p, n, L, v_bottom, 0.085) + 0.014,
-						_placket(p, 0.013) if p.y < v_bottom + 0.01 else -1.0),
-				},
-				{slot = Slot.EXTRA, offset = 0.008, region = func(p, n): return _top(p, L, L.waist - 0.06, L.wrist - 0.02)},
-				{slot = Slot.ACCENT, offset = 0.012, region = func(p, n): return _legs(p, L.ankle + 0.03, L.waist)},
+				# Cardigan body and sleeves, open in a V
+				{slot = Slot.MAIN, offset = 0.020, region = card},
+				# Trim band along the V opening
+				{slot = Slot.TRIM, offset = 0.025, hide = false, stitches = false, region = func(p, n):
+					return minf(card.call(p, n), _v_cut(p, n, L, v_bottom, 0.085) + 0.022)},
+				# 4 horn buttons down the front placket below the V
+				{slot = Slot.DETAIL, offset = 0.027, hide = false, stitches = false, region = func(p, n):
+					if p.z <= 0.02 or n.z < 0.4:
+						return -1.0
+					var d := -1.0
+					for y_btn in [v_bottom - 0.03, v_bottom - 0.07, v_bottom - 0.11, v_bottom - 0.15]:
+						d = maxf(d, 0.0075 - Vector2(p.x, p.y - y_btn).length())
+					return d},
+				# Collared shirt showing in the V and cuffs
+				{slot = Slot.EXTRA, offset = 0.008, region = func(p, n): return _top(p, L, L.waist - 0.06, L.wrist - 0.025)},
+				# Trousers
+				{slot = Slot.ACCENT, offset = 0.012, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.03),
+					drape = _pants_drape(L, {base = 0.012, flare = 0.008, hem = L.ankle + 0.03, amount = 0.5, cover = hem, cover_max = 0.014,
+						pin = func(p: Vector3) -> bool: return p.y > hem})},
+				# Walking shoes
 				{slot = Slot.TRIM, offset = 0.013, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},
 			],
-		colors = [cardigan, band, trousers, shirt],
-		alt_colors = [alt_cardigan, alt_cardigan.darkened(0.3), alt_trousers, Color(0.85, 0.85, 0.83)],
-		fabrics = [&"cotton", &"leather", &"cotton", &"cotton"],
+		colors = [cardigan, band, trousers, shirt, Color(0.18, 0.12, 0.08)],
+		alt_colors = [alt_cardigan, alt_cardigan.darkened(0.3), alt_trousers, Color(0.85, 0.85, 0.83), Color(0.12, 0.12, 0.12)],
+		fabrics = [&"cotton", &"leather", &"cotton", &"cotton", &"leather"],
 	}
 
 

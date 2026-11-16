@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Showdown_Male_Pale.png" id="1_o4s5d"]
+[ext_resource type="Texture2D" path="res://assets/characters/aged/T_geoff_skin.png" id="1_30nuw"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Grey.png" id="2_30nuw"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_o4s5d"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_30nuw"]
@@ -41,16 +41,16 @@ voice_fallback = &"brutus"
 portrait = ExtResource("27_30nuw")
 model_scene = ExtResource("4_30nuw")
 hair_scenes = Array[PackedScene]([ExtResource("3_o4s5d")])
-body_albedo = ExtResource("1_o4s5d")
-model_scale = 1.05
-hair_color = Color(0.86, 0.86, 0.84, 1)
-alt_body_albedo = ExtResource("1_o4s5d")
-alt_hair_color = Color(0.6, 0.6, 0.6, 1)
+body_albedo = ExtResource("1_30nuw")
+model_scale = 1.04
+hair_color = Color(0.88, 0.88, 0.86, 1)
+alt_body_albedo = ExtResource("1_30nuw")
+alt_hair_color = Color(0.55, 0.55, 0.55, 1)
 outfit_mesh = ExtResource("26_30nuw")
 outfit_body_mesh = ExtResource("25_o4s5d")
-outfit_colors = PackedColorArray(0.55, 0.47, 0.36, 1, 0.28, 0.2, 0.13, 1, 0.3, 0.3, 0.32, 1, 0.66, 0.74, 0.82, 1)
-outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"cotton", &"cotton"])
-alt_outfit_colors = PackedColorArray(0.2, 0.26, 0.2, 1, 0.14, 0.182, 0.14, 1, 0.12, 0.12, 0.12, 1, 0.85, 0.85, 0.83, 1)
+outfit_colors = PackedColorArray(0.55, 0.47, 0.36, 1, 0.28, 0.2, 0.13, 1, 0.3, 0.3, 0.32, 1, 0.66, 0.74, 0.82, 1, 0.18, 0.12, 0.08, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"cotton", &"cotton", &"leather"])
+alt_outfit_colors = PackedColorArray(0.2, 0.26, 0.2, 1, 0.14, 0.182, 0.14, 1, 0.12, 0.12, 0.12, 1, 0.85, 0.85, 0.83, 1, 0.12, 0.12, 0.12, 1)
 detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_oath", &"fight/victory_fist_pump"])
@@ -58,27 +58,45 @@ placeholder_color = Color(0.85, 0.75, 0.5, 1)
 body_shape = {
 &"calf": Vector3(0.9, 1, 0.9),
 &"lowerarm": Vector3(0.85, 1, 0.85),
-&"neck_01": Vector3(0.9, 1, 0.9),
-&"spine_03": Vector3(0.88, 1, 0.9),
+&"neck_01": Vector3(0.9, 1.05, 0.9),
+&"spine_01": Vector3(0.92, 1, 0.92),
+&"spine_02": Vector3(0.9, 1, 0.9),
+&"spine_03": Vector3(0.88, 1, 0.88),
 &"thigh": Vector3(0.88, 1, 0.88),
-&"upperarm": Vector3(0.8, 1, 0.8)
+&"upperarm": Vector3(0.82, 1, 0.82)
 }
 face_shape = {
+"age": 78,
 &"brow": 0.003,
 &"cheekbones": -0.001,
 &"chin": 0.006,
-&"eye_open": -0.0012,
+&"chin_forward": 0.002,
+&"eye_open": -0.001,
+&"eye_tilt": -0.0002,
 &"face_length": 1.08,
-&"fullness": -0.005,
+&"fullness": -0.006,
 &"jaw": 0.92,
-&"nose_bridge": 0.002,
-&"nose_length": 0.004
+&"jowls": 0.004,
+&"nose_bridge": 0.003,
+&"nose_length": 0.006,
+&"nose_width": 0.95
 }
-brow_scale = Vector3(1.05, 1.1, 1)
+brow_scale = Vector3(1.02, 1.05, 1)
+hair_scale = Vector3(1.05, 1.13, 1.06)
+hair_offset = Vector3(0, 0.006, -0.002)
 eye_texture = ExtResource("2_30nuw")
 face_rest = {
-&"brow_up": 0.75,
-&"grimace": 0.2
+&"brow_down": 0.15,
+&"brow_up": 0.55,
+&"grimace": 0.1,
+&"smile": 0.1
+}
+posture = {
+&"Head": Vector3(-5, 0, 0),
+&"neck_01": Vector3(4, 0, 0),
+&"spine_01": Vector3(2, 0, 0),
+&"spine_02": Vector3(3, 0, 0),
+&"spine_03": Vector3(2, 0, 0)
 }
 intro_animation = &"fight/intro_oath"
 intro_lines = PackedStringArray("I invented this move. Now I\'m starting to worry about it.", "Let me warn you about what happens next.", "I quit my job so I could speak freely. Mostly about punching.")
