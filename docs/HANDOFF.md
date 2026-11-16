@@ -42,8 +42,9 @@ assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **
 | sundar | Sundar Pickai | **Approved** | age 54, warm golden skin tone, cropped crew cut hair (Hair_Buzzed), trimmed beard/mustache, Google logo tee (tools/build_prints.py), wireframe glasses, calm upright posture. |
 | xi | Xi Winping | **Approved** | age 73, round heavy non-muscular build with paunch, soft facial contour, epicanthic folds, statesman combed-back parted hair (hair_volume), authentic high-collar Zhongshan Mao suit with white collar liner, 5 brass buttons, red delegate badge, symmetrical chest/hip flap pockets. |
 | yann | Yann LeCant | **Approved** | age 65, robust barrel-chested academic heavyweight build, square jaw with subtle 5 o'clock stubble shadow, rectangular glasses, wavy salt-and-pepper hair, knowing French smirk, academic charcoal blazer with lapels over light blue open-collar shirt, dark denim jeans, brown leather dress shoes. |
-| geoff | Geoff Hintoff | **Review Ready** | age 78, slender tall stooped elder build, long narrow face, age-78 creases and age spots, wispy silver-white thinning hair, arched brows of perpetual concern, knit oatmeal cardigan sweater with contrast button band and 4 horn buttons, pale blue Oxford shirt, charcoal wool trousers, brown walking shoes. |
-| ram, dario, demis, algorithm | | To do | earlier generic pass only (face sculpt, eyes, brows, age) |
+| geoff | Geoff Hintoff | **Approved** | age 78, slender tall stooped elder build, long narrow face, age-78 creases and age spots, wispy silver-white thinning hair, arched brows of perpetual concern, knit oatmeal cardigan sweater with contrast button band and 4 horn buttons, pale blue Oxford shirt, charcoal wool trousers, brown walking shoes. |
+| ram | Ram Altman | **Review Ready** | age 41, trim athletic build, youthful oval jaw, wide intense blue eyes, neat parted brown hair, alert tech-founder rest expression, heather slate grey quarter-zip tech pullover with center zipper and ribbed cuffs, slim dark wash denim jeans, white sneakers. |
+| dario, demis, algorithm | | To do | earlier generic pass only (face sculpt, eyes, brows, age) |
 
 Suggested order: yann → geoff → ram → dario → demis → algorithm.
 Make each one **completely distinct** from the approved ones (silhouette, posture, hair, face

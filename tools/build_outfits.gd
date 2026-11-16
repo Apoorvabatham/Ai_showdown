@@ -317,8 +317,8 @@ func _showdown_specs() -> Dictionary:
 	var white_shirt := Color(0.82, 0.82, 0.8)
 	var black_leather := Color(0.035, 0.035, 0.04)
 	return {
-		"ram": _sweater_spec(Color(0.42, 0.44, 0.42), Color(0.2, 0.3, 0.48), Color(0.8, 0.8, 0.78), &"denim",
-			Color(0.16, 0.24, 0.2), Color(0.12, 0.13, 0.15), Color(0.1, 0.1, 0.1)),
+		"ram": _sweater_spec(Color(0.32, 0.35, 0.38), Color(0.14, 0.18, 0.28), Color(0.86, 0.86, 0.88), &"denim",
+			Color(0.14, 0.18, 0.28), Color(0.10, 0.10, 0.12), Color(0.30, 0.30, 0.32), true),
 		"tesla": _tee_spec(Color(0.05, 0.05, 0.06), Color(0.11, 0.13, 0.2), Color(0.06, 0.06, 0.06),
 			Color(0.75, 0.75, 0.75), Color(0.25, 0.27, 0.32), Color(0.8, 0.8, 0.78)),
 		"dario": _sweater_spec(Color(0.14, 0.22, 0.42), Color(0.62, 0.55, 0.42), Color(0.18, 0.12, 0.08), &"cotton",
