@@ -1,7 +1,6 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_sjpdj"]
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_dc8o8"]
+[ext_resource type="Texture2D" path="res://assets/characters/aged/T_demis_skin.png" id="1_vaoro"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="3_qlay1"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_RecedingGrandmaster.tscn" id="4_edjrd"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="5_qlay1"]
@@ -41,10 +40,10 @@ voice_fallback = &"jin"
 portrait = ExtResource("27_edjrd")
 model_scene = ExtResource("5_qlay1")
 hair_scenes = Array[PackedScene]([ExtResource("4_edjrd")])
-body_albedo = ExtResource("2_dc8o8")
-model_scale = 0.92
-hair_color = Color(0.1, 0.08, 0.07, 1)
-alt_body_albedo = ExtResource("1_sjpdj")
+body_albedo = ExtResource("1_vaoro")
+model_scale = 0.94
+hair_color = Color(0.12, 0.1, 0.09, 1)
+alt_body_albedo = ExtResource("1_vaoro")
 alt_hair_color = Color(0.3, 0.22, 0.14, 1)
 outfit_mesh = ExtResource("26_edjrd")
 outfit_body_mesh = ExtResource("25_vaoro")
@@ -56,26 +55,48 @@ realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_point", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.3, 0.55, 0.95, 1)
 body_shape = {
-&"Head": Vector3(1.03, 1.02, 1.02),
-&"lowerarm": Vector3(0.9, 1, 0.9),
+&"Head": Vector3(1.02, 1.02, 1.02),
+&"calf": Vector3(0.9, 1, 0.9),
+&"lowerarm": Vector3(0.88, 1, 0.88),
+&"neck_01": Vector3(0.92, 1, 0.92),
+&"spine_01": Vector3(0.92, 1, 0.92),
+&"spine_02": Vector3(0.9, 1, 0.9),
 &"spine_03": Vector3(0.9, 1, 0.9),
+&"thigh": Vector3(0.88, 1, 0.88),
 &"upperarm": Vector3(0.86, 1, 0.86)
 }
 face_shape = {
 "age": 50,
-&"chin": -0.002,
-&"eye_open": 0.0008,
+&"brow": 0.002,
+&"cheekbones": 0.002,
+&"chin": 0.002,
+&"chin_round": 0.005,
+&"eye_open": 0.0002,
+&"eye_tilt": 0.0004,
+&"face_length": 0.98,
 &"fullness": -0.003,
-&"jaw": 0.92,
-&"nose_length": 0.002
+&"jaw": 0.94,
+&"lips": 0.001,
+&"mouth_width": 0.94,
+&"nose_bridge": 0.003,
+&"nose_length": 0.003,
+&"nose_width": 0.96
 }
-brow_scale = Vector3(1, 0.85, 1)
-hair_scale = Vector3(1.01, 1.04, 1.02)
+brow_scale = Vector3(1.02, 0.86, 1)
+hair_scale = Vector3(1.02, 1.05, 1.02)
 hair_offset = Vector3(0, 0.003, 0)
 eye_texture = ExtResource("3_qlay1")
 face_rest = {
-&"brow_down": 0.2,
-&"smile": 0.1
+&"brow_down": 0.3,
+&"brow_up": 0.15,
+&"smile": 0.26,
+&"squint": 0.15
+}
+posture = {
+&"Head": Vector3(-2, 0, 0),
+&"neck_01": Vector3(2, 0, 0),
+&"spine_01": Vector3(1, 0, 0),
+&"spine_02": Vector3(1, 0, 0)
 }
 intro_animation = &"fight/intro_kick"
 intro_expression = &"guard"

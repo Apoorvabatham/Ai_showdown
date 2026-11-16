@@ -45,7 +45,8 @@ assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **
 | geoff | Geoff Hintoff | **Approved** | age 78, slender tall stooped elder build, long narrow face, age-78 creases and age spots, wispy silver-white thinning hair, arched brows of perpetual concern, knit oatmeal cardigan sweater with contrast button band and 4 horn buttons, pale blue Oxford shirt, charcoal wool trousers, brown walking shoes. |
 | ram | Ram Altman | **Review Ready** | age 41, trim athletic build, youthful oval jaw, wide intense blue eyes, close-cropped buzz cut (Hair_Buzzed), alert tech-founder rest expression, fitted charcoal tee with official OpenAI emblem & typography print, slim dark wash denim jeans, white sneakers. |
 | dario | Dario Amoday | **Review Ready** | age 43, measured scholar build, soft oval academic jaw, rounded chin, thoughtful broader nose, earnest contemplative brow furrow, handcrafted voluminous curly mop hair (Hair_CurlyMop) with 3D curl harmonics, ink navy fine-gauge knit crewneck pullover, pleated khaki cotton chinos, walnut brown leather dress shoes. |
-| demis, algorithm | | To do | earlier generic pass only (face sculpt, eyes, brows, age) |
+| demis | Demis Hasabist | **Review Ready** | age 50, compact athletic tactician build, defined oval jaw, straight nose, analytical dark brown eyes with focused calculating brow, grandmaster receding hair (Hair_RecedingGrandmaster), midnight navy European-cut suit with crisp open-collar white shirt and black oxfords. |
+| algorithm | The Algorithm | To do | final boss (kit rhea), neon cyber aesthetic, glowing bodysuit. |
 
 Suggested order: yann → geoff → ram → dario → demis → algorithm.
 Make each one **completely distinct** from the approved ones (silhouette, posture, hair, face
