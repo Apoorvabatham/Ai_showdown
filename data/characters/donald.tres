@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/aged/T_donald_skin.png" id="1_eil64"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Blue.png" id="2_eil64"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_wbv0g"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_TrumpPomp.tscn" id="3_eil64"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_eil64"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_couvb"]
 [ext_resource type="Resource" path="res://data/moves/donald/jab.tres" id="6_julv2"]
@@ -38,7 +38,7 @@ kit = &"valka"
 voice_fallback = &"brutus"
 portrait = ExtResource("25_eil64")
 model_scene = ExtResource("4_eil64")
-hair_scenes = Array[PackedScene]([ExtResource("3_wbv0g")])
+hair_scenes = Array[PackedScene]([ExtResource("3_eil64")])
 body_albedo = ExtResource("1_eil64")
 model_scale = 1.07
 hair_color = Color(0.88, 0.7, 0.38, 1)
@@ -80,8 +80,8 @@ face_shape = {
 &"pout": 0.004
 }
 brow_scale = Vector3(1, 0.7, 1)
-hair_scale = Vector3(1.18, 1.45, 1.22)
-hair_offset = Vector3(0, 0.012, 0.008)
+hair_scale = Vector3(1.12, 1.25, 1.15)
+hair_offset = Vector3(0, 0.008, 0.004)
 eye_texture = ExtResource("2_eil64")
 face_rest = {
 &"brow_down": 0.35,

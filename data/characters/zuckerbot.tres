@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/aged/T_zuckerbot_skin.png" id="1_8fbpp"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Blue.png" id="2_507e8"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_8fbpp"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Caesar.tscn" id="3_8fbpp"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="5_wyspr"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="6_e7n0n"]
 [ext_resource type="Resource" path="res://data/moves/zuckerbot/jab.tres" id="7_m6y5y"]
@@ -75,6 +75,8 @@ face_shape = {
 &"nose_width": 0.94
 }
 brow_scale = Vector3(1, 0.8, 1)
+hair_scale = Vector3(1.02, 1.05, 1.02)
+hair_offset = Vector3(0, 0.002, 0)
 eye_texture = ExtResource("2_507e8")
 face_rest = {
 &"brow_up": 0.35,
@@ -86,7 +88,6 @@ posture = {
 &"spine_02": Vector3(-3, 0, 0),
 &"spine_03": Vector3(-3, 0, 0)
 }
-accessories = Array[StringName]([&"curls"])
 intro_animation = &"fight/intro_beckon"
 intro_expression = &"smirk"
 intro_lines = PackedStringArray("Hello, fellow human. I, too, enjoy combat.", "Let\'s connect. With my fist.", "I\'ve been training. In real life, even.")

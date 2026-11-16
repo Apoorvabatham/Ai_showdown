@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/aged/T_geoff_skin.png" id="1_30nuw"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Grey.png" id="2_30nuw"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_o4s5d"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_ElderThinning.tscn" id="3_30nuw"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_30nuw"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_5ox4u"]
 [ext_resource type="Resource" path="res://data/moves/geoff/jab.tres" id="6_cioay"]
@@ -40,7 +40,7 @@ kit = &"aelia"
 voice_fallback = &"brutus"
 portrait = ExtResource("27_30nuw")
 model_scene = ExtResource("4_30nuw")
-hair_scenes = Array[PackedScene]([ExtResource("3_o4s5d")])
+hair_scenes = Array[PackedScene]([ExtResource("3_30nuw")])
 body_albedo = ExtResource("1_30nuw")
 model_scale = 1.04
 hair_color = Color(0.88, 0.88, 0.86, 1)
@@ -82,8 +82,8 @@ face_shape = {
 &"nose_width": 0.95
 }
 brow_scale = Vector3(1.02, 1.05, 1)
-hair_scale = Vector3(1.05, 1.13, 1.06)
-hair_offset = Vector3(0, 0.006, -0.002)
+hair_scale = Vector3(1.04, 1.08, 1.04)
+hair_offset = Vector3(0, 0.005, -0.002)
 eye_texture = ExtResource("2_30nuw")
 face_rest = {
 &"brow_down": 0.15,

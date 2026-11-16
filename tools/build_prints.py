@@ -147,11 +147,38 @@ def google(width_m=0.14):
     return res, width_m, width_m * 0.95
 
 
+def openai(width_m=0.15):
+    """OpenAI logo: official flower/spiral emblem over 'OpenAI' text."""
+    W = int(width_m * PX_PER_M)
+    H = int(width_m * 1.05 * PX_PER_M)
+    SS = 2
+    sw, sh = W * SS, H * SS
+
+    img = Image.new("RGBA", (sw, sh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+
+    emblem_path = os.path.join(ROOT, "tools", "prints", "openai_emblem.png")
+    emblem = Image.open(emblem_path).convert("RGBA")
+    emb_size = int(sw * 0.58)
+    emblem = emblem.resize((emb_size, emb_size), Image.Resampling.LANCZOS)
+    img.paste(emblem, ((sw - emb_size) // 2, int(sh * 0.05)), emblem)
+
+    font_size = int(sw * 0.17)
+    font = ImageFont.truetype(FONT_REG, font_size)
+    text = "OpenAI"
+    tw = d.textlength(text, font=font)
+    d.text(((sw - tw) / 2, int(sh * 0.72)), text, font=font, fill=(245, 245, 245, 255))
+
+    res = img.resize((W, H), Image.Resampling.LANCZOS)
+    return res, width_m, width_m * 1.05
+
+
 # id -> (output name, base colour (0..1), design, centre (x, y) on the chest, metres)
 PRINTS = {
     "tesla": ("tee", (0.05, 0.05, 0.06), occupy_mars, (0.0, 1.355)),
     "jensen": ("tee", (0.12, 0.12, 0.13), nvidia, (0.0, 1.365)),
     "sundar": ("tee", (0.12, 0.12, 0.13), google, (0.0, 1.355)),
+    "ram": ("tee", (0.12, 0.12, 0.13), openai, (0.0, 1.380)),
 }
 
 

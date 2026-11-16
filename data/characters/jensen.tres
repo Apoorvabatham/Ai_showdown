@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/aged/T_jensen_skin.png" id="1_i1kn0"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="2_i1kn0"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_n68sn"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SilverSweep.tscn" id="3_5ljcw"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_i1kn0"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_5ljcw"]
 [ext_resource type="Resource" path="res://data/moves/jensen/jab.tres" id="6_3fsju"]
@@ -40,7 +40,7 @@ kit = &"kenji"
 voice_fallback = &"kenji"
 portrait = ExtResource("26_i1kn0")
 model_scene = ExtResource("4_i1kn0")
-hair_scenes = Array[PackedScene]([ExtResource("3_n68sn")])
+hair_scenes = Array[PackedScene]([ExtResource("3_5ljcw")])
 body_albedo = ExtResource("1_i1kn0")
 model_scale = 0.97
 hair_color = Color(0.72, 0.72, 0.74, 1)
@@ -79,8 +79,8 @@ face_shape = {
 &"nose_width": 1.12
 }
 brow_scale = Vector3(1, 0.72, 1)
-hair_scale = Vector3(1.1, 1.22, 1.12)
-hair_offset = Vector3(0, 0.008, -0.008)
+hair_scale = Vector3(1.06, 1.15, 1.08)
+hair_offset = Vector3(0, 0.006, -0.006)
 eye_texture = ExtResource("2_i1kn0")
 face_rest = {
 &"smile": 0.45,

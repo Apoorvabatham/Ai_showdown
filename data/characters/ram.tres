@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/aged/T_ram_skin.png" id="1_2dtko"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Blue.png" id="3_64vk5"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_hvfva"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_hvfva"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_2dtko"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_hvfva"]
 [ext_resource type="Resource" path="res://data/moves/ram/jab.tres" id="6_64vk5"]
@@ -30,6 +30,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/ram_body.res" id="27_mxu0h"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/ram_outfit.res" id="28_2dtko"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/ram.png" id="29_2dtko"]
+[ext_resource type="Texture2D" path="res://assets/characters/prints/T_ram_tee.png" id="29_64vk5"]
 
 [resource]
 script = ExtResource("27_lrmgp")
@@ -49,9 +50,12 @@ alt_body_albedo = ExtResource("1_2dtko")
 alt_hair_color = Color(0.12, 0.1, 0.09, 1)
 outfit_mesh = ExtResource("28_2dtko")
 outfit_body_mesh = ExtResource("27_mxu0h")
-outfit_colors = PackedColorArray(0.32, 0.35, 0.38, 1, 0.24, 0.2625, 0.285, 1, 0.14, 0.18, 0.28, 1, 0.86, 0.86, 0.88, 1)
-outfit_fabrics = Array[StringName]([&"cotton", &"stretch", &"denim", &"leather"])
-alt_outfit_colors = PackedColorArray(0.14, 0.18, 0.28, 1, 0.105000004, 0.135, 0.21000001, 1, 0.1, 0.1, 0.12, 1, 0.3, 0.3, 0.32, 1)
+outfit_textures = {
+0: ExtResource("29_64vk5")
+}
+outfit_colors = PackedColorArray(0.12, 0.12, 0.13, 1, 0.8, 0.8, 0.78, 1, 0.14, 0.18, 0.28, 1, 0.08, 0.08, 0.09, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"denim", &"leather"])
+alt_outfit_colors = PackedColorArray(0.85, 0.85, 0.88, 1, 0.1, 0.1, 0.1, 1, 0.1, 0.1, 0.12, 1, 0.12, 0.12, 0.14, 1)
 detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_fist_pump", &"fight/victory_point"])
@@ -79,8 +83,8 @@ face_shape = {
 &"nose_width": 0.92
 }
 brow_scale = Vector3(0.95, 0.8, 1)
-hair_scale = Vector3(1.02, 1.08, 1.03)
-hair_offset = Vector3(0.001, 0.005, -0.002)
+hair_scale = Vector3(1.02, 1.05, 1.03)
+hair_offset = Vector3(0, 0.003, 0)
 eye_texture = ExtResource("3_64vk5")
 face_rest = {
 &"brow_up": 0.52,

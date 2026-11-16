@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_sjpdj"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_dc8o8"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="3_qlay1"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Buzzed.gltf" id="3_vaoro"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_RecedingGrandmaster.tscn" id="4_edjrd"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="5_qlay1"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="6_wxwb7"]
 [ext_resource type="Resource" path="res://data/moves/demis/jab.tres" id="7_3e7e4"]
@@ -40,7 +40,7 @@ kit = &"jin"
 voice_fallback = &"jin"
 portrait = ExtResource("27_edjrd")
 model_scene = ExtResource("5_qlay1")
-hair_scenes = Array[PackedScene]([ExtResource("3_vaoro")])
+hair_scenes = Array[PackedScene]([ExtResource("4_edjrd")])
 body_albedo = ExtResource("2_dc8o8")
 model_scale = 0.92
 hair_color = Color(0.1, 0.08, 0.07, 1)
@@ -62,6 +62,7 @@ body_shape = {
 &"upperarm": Vector3(0.86, 1, 0.86)
 }
 face_shape = {
+"age": 50,
 &"chin": -0.002,
 &"eye_open": 0.0008,
 &"fullness": -0.003,
@@ -69,6 +70,8 @@ face_shape = {
 &"nose_length": 0.002
 }
 brow_scale = Vector3(1, 0.85, 1)
+hair_scale = Vector3(1.01, 1.04, 1.02)
+hair_offset = Vector3(0, 0.003, 0)
 eye_texture = ExtResource("3_qlay1")
 face_rest = {
 &"brow_down": 0.2,

@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/aged/T_xi_skin.png" id="1_b1ku0"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="2_b1ku0"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_b1ku0"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_PolitburoPart.tscn" id="3_b1ku0"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_b1ku0"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_gpl0b"]
 [ext_resource type="Resource" path="res://data/moves/xi/jab.tres" id="6_l33eb"]
@@ -89,8 +89,8 @@ face_shape = {
 &"nose_width": 1.15
 }
 brow_scale = Vector3(1.04, 0.92, 1)
-hair_scale = Vector3(1.14, 1.15, 1.12)
-hair_offset = Vector3(0.002, 0.009, -0.005)
+hair_scale = Vector3(1.1, 1.12, 1.08)
+hair_offset = Vector3(0.002, 0.007, -0.004)
 eye_texture = ExtResource("2_b1ku0")
 face_rest = {
 &"smile": 0.28,
