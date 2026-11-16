@@ -183,6 +183,7 @@ func _build_mensa() -> void:
 	_cylinder(0.14, 0.45, Vector3(-8.8, 1.55, -4.5), _mat(Color(0.85, 0.9, 0.95, 0.6), 0.1))
 	for cy in 3:
 		_cylinder(0.05, 0.1, Vector3(-8.5, 1.48 + cy * 0.06, -4.4), _mat(Color(0.95, 0.95, 0.9)))
+	_ambience("res://assets/audio/ambience/market_chatter.ogg", -20.0)
 
 
 # --- Senate Hearing Room (the ring) ----------------------------------------------------
@@ -287,6 +288,7 @@ func _build_senate() -> void:
 	_light(Vector3(-5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 2.0, 8.0)
 	_light(Vector3(5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 2.0, 8.0)
 	_label("IN SESSION", Vector3(0, 2.75, -8.85), 0.22, Color(0.95, 0.25, 0.2), true)
+	_ambience("res://assets/audio/ambience/arena_crowd.ogg", -24.0)
 
 
 # --- Helpers ---------------------------------------------------------------------------

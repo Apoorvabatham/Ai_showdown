@@ -610,7 +610,12 @@ func _on_combo_changed(hits: int, label: Label) -> void:
 		label.pivot_offset = label.size / 2.0
 		label.scale = Vector2(1.28, 1.28)
 		label.modulate = Color(1.0, 0.45, 0.18) if hits >= 5 else Color(1.0, 0.88, 0.3)
+		if label.has_meta(&"combo_tween"):
+			var prev = label.get_meta(&"combo_tween")
+			if is_instance_valid(prev) and prev.is_running():
+				prev.kill()
 		var tw := label.create_tween()
+		label.set_meta(&"combo_tween", tw)
 		tw.tween_property(label, "scale", Vector2.ONE, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	else:
 		label.text = ""

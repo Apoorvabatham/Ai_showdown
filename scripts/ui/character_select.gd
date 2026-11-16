@@ -293,10 +293,20 @@ func _make_portrait_button(character: CharacterData) -> Button:
 	button.pivot_offset = Vector2(side * 0.5, side * 0.5)
 	button.focus_entered.connect(func() -> void:
 		_show_details(character)
+		if button.has_meta(&"scale_tween"):
+			var prev = button.get_meta(&"scale_tween")
+			if is_instance_valid(prev) and prev.is_running():
+				prev.kill()
 		var tw := button.create_tween()
+		button.set_meta(&"scale_tween", tw)
 		tw.tween_property(button, "scale", Vector2(1.04, 1.04), 0.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT))
 	button.focus_exited.connect(func() -> void:
+		if button.has_meta(&"scale_tween"):
+			var prev = button.get_meta(&"scale_tween")
+			if is_instance_valid(prev) and prev.is_running():
+				prev.kill()
 		var tw := button.create_tween()
+		button.set_meta(&"scale_tween", tw)
 		tw.tween_property(button, "scale", Vector2.ONE, 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN))
 	button.mouse_entered.connect(func() -> void:
 		if not _versus:
