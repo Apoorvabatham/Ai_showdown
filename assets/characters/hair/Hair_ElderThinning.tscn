@@ -201,8 +201,8 @@ bind/64/name = &"ball_leaf_r"
 bind/64/bone = -1
 bind/64/pose = Transform3D(-1, -1.2621747e-28, -2.1175776e-22, 2.3535266e-16, 5.9604514e-07, 0.99999774, 0, 1, 0, -0.0906, -0.13359971, -0.015200001)
 
-[node name="Hair_ElderThinning" type="Node3D" unique_id=1075717007]
+[node name="Hair_ElderThinning" type="Node3D" unique_id=864433322]
 
-[node name="Hair_ElderThinning" type="MeshInstance3D" parent="." unique_id=1887026757]
+[node name="Hair_ElderThinning" type="MeshInstance3D" parent="." unique_id=687066720]
 mesh = ExtResource("1_6psnd")
 skin = SubResource("Skin_gw14a")

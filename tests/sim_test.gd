@@ -4769,7 +4769,7 @@ func server_tests() -> void:
 
 # --- AI Showdown -----------------------------------------------------------------------
 
-const SHOWDOWN_IDS := [&"ram", &"tesla", &"dario", &"zuckerbot", &"jensen", &"demis", &"yann", &"geoff", &"sundar",
+const SHOWDOWN_IDS := [&"ram", &"tesla", &"dario", &"zuckerbot", &"jensen", &"yann", &"geoff", &"sundar",
 	&"donald", &"xi", &"algorithm"]
 
 
@@ -4781,7 +4781,7 @@ func showdown_tests() -> void:
 	gs.stages = gs.STAGES
 	gs.boss_stage = gs.SENATE_STAGE
 	var ids: Array = gs.roster.map(func(c: CharacterData) -> StringName: return c.id)
-	check("Showdown: all 12 fighters load, in select order", ids == SHOWDOWN_IDS, str(ids))
+	check("Showdown: all 11 fighters load, in select order", ids == SHOWDOWN_IDS, str(ids))
 	var kits := {}
 	for file in ResourceLoader.list_directory(gs.KIT_DIR):
 		if file.ends_with(".tres"):
@@ -4815,7 +4815,7 @@ func showdown_tests() -> void:
 				supers[c.id] = mv.name
 	check("Showdown: the supers are renamed for the parody", supers.ram == "Scaling Law" and supers.tesla == "Rocket Launch"
 		and supers.dario == "Constitutional Shield" and supers.zuckerbot == "Metaverse Trap" and supers.jensen == "GPU Rain"
-		and supers.demis == "Protein Fold" and supers.yann == "It's Just Autocomplete" and supers.geoff.begins_with("I Regret Nothing")
+		and supers.yann == "It's Just Autocomplete" and supers.geoff.begins_with("I Regret Nothing")
 		and supers.sundar == "Search Result" and supers.donald == "Shower of Tariffs" and supers.xi == "Great Firewall"
 		and supers.algorithm == "Engagement Loop", str(supers))
 	var jensen: CharacterData = gs.find_character(&"jensen")
@@ -4870,15 +4870,15 @@ func showdown_tests() -> void:
 			unfinished.append("%s vs %s" % [gs.player_character.id, gs.p2_character.id])
 	check("Showdown: a CPU-vs-CPU match finishes for every fighter (best of 3)", unfinished.is_empty(), str(unfinished))
 
-	# Arcade: The Algorithm is the final boss; picking it gives the shadow boss instead.
+	# Arcade: AGI is the final boss; picking it gives the shadow boss instead.
 	var algorithm: CharacterData = gs.find_character(gs.FINAL_BOSS)
 	var run := ArcadeRun.create(gs.roster[0], gs.roster, 1, 4, gs.arcade_arenas(), gs.boss_stage, algorithm)
-	check("Showdown: Arcade ends with The Algorithm in the Senate", run.stages[-1].character == algorithm and run.stages[-1].boss
+	check("Showdown: Arcade ends with AGI in the Senate", run.stages[-1].character == algorithm and run.stages[-1].boss
 		and run.stages[-1].stage_path == gs.SENATE_STAGE and run.stages.size() == gs.roster.size() - 1
-		and run.opponent_title(run.stages[-1]) == "THE ALGORITHM")
+		and run.opponent_title(run.stages[-1]) == "AGI")
 	run = ArcadeRun.create(algorithm, gs.roster, 1, 4, gs.arcade_arenas(), gs.boss_stage, algorithm)
-	check("Showdown: as The Algorithm, the boss is its shadow", run.stages[-1].character == algorithm
-		and run.opponent_title(run.stages[-1]) == "SHADOW THE ALGORITHM" and run.stages.size() == gs.roster.size())
+	check("Showdown: as AGI, the boss is its shadow", run.stages[-1].character == algorithm
+		and run.opponent_title(run.stages[-1]) == "SHADOW AGI" and run.stages.size() == gs.roster.size())
 
 	# Title and menu: the disclaimer, no Online entry.
 	change_scene_to_file("res://scenes/title.tscn")

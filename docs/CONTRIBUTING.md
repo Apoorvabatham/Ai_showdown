@@ -106,7 +106,7 @@ The `kit` decides moves, frame data, animations, combo trials, CPU personality a
 | `rhea` | Rushdown | Fastest walk and dash, low slide, frail. Used by tesla and algorithm. |
 | `brutus` | Power | Slow heavy hitter, shrugs off knockback, ground-pound shockwave. Used by yann. |
 | `valka` | Grappler | Command grabs, spins through fireballs. Used by zuckerbot and donald. |
-| `jin` | Kicker | Longest reach, overhead axe kick. Used by demis. |
+| `jin` | Kicker | Longest reach, overhead axe kick. |
 | `mira` | Brawler | Punch strings into flip kicks; Focus power-up stance. Used by ram. |
 | `lian` | Counter | Reversal stance that catches strikes and throws. Used by dario. |
 | `aelia` | Knight | Super armour on heavy moves. Used by geoff and xi. |
@@ -371,7 +371,7 @@ godot --headless --path . -s res://tools/build_showdown_roster.gd -- <id>
 2. Add an outfit spec in `_showdown_specs()` of `tools/build_outfits.gd`, keyed by the id.
    Use a helper: `_suit_spec`, `_sweater_spec`, `_tee_spec`, `_leather_jacket_spec`,
    `_hoodie_spec`, `_cardigan_spec` or `_bodysuit_spec` (read the doc comment above each
-   for its colour slots; copy a neighbour, e.g. `"demis"` for a suit). Outfits have a 5th
+   for its colour slots; copy a neighbour, e.g. `"donald"` for a suit). Outfits have a 5th
    slot, `Slot.DETAIL`, made of metal hardware (fabric `&"metal"`): zips, buttons and
    similar; `_leather_jacket_spec` and `_suit_spec` already use it for zips, collar, lapels
    and buttons. This step also bakes the fighter's `face` parameters into the body. Then

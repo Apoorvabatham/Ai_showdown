@@ -50,7 +50,12 @@ func _ready() -> void:
 	Audio.music(&"menu")
 	Audio.voice("choose_your_character")
 	_build_preview_stage()
-	roster_box.columns = _columns()
+	var cols := _columns()
+	roster_box.columns = cols
+	var rows := ceili(float(GameState.roster.size()) / cols)
+	if rows >= 6:
+		roster_box.add_theme_constant_override("h_separation", 12)
+		roster_box.add_theme_constant_override("v_separation", 12)
 	for character in GameState.roster:
 		roster_box.add_child(_make_portrait_button(character))
 		var model := FighterModel.new()
@@ -242,8 +247,10 @@ func _make_portrait_button(character: CharacterData) -> Button:
 	# Portraits shrink so the whole roster fits the column (240 px for three fighters);
 	# past five fighters they go two to a row.
 	var count := maxi(GameState.roster.size(), 1)
-	var rows := ceili(float(count) / _columns())
-	var side := clampf((760.0 - 18.0 * (rows - 1)) / rows, 140.0, 240.0)
+	var cols := _columns()
+	var rows := ceili(float(count) / cols)
+	var gap := 12.0 if rows >= 6 else 18.0
+	var side := clampf((780.0 - gap * (rows - 1)) / rows, 110.0, 240.0)
 	button.custom_minimum_size = Vector2(side, side)
 	button.clip_contents = true
 	# The portrait fills the tile inside the border, with the name over its lower edge. (As
@@ -259,7 +266,8 @@ func _make_portrait_button(character: CharacterData) -> Button:
 	var label := Label.new()
 	label.text = character.display_name
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 26)
+	var font_sz := clampi(int(side * 0.17), 16, 26)
+	label.add_theme_font_size_override("font_size", font_sz)
 	label.add_theme_constant_override("outline_size", 8)
 	label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -282,7 +290,14 @@ func _make_portrait_button(character: CharacterData) -> Button:
 	button.add_theme_stylebox_override("focus", focused)
 	_styles.append([normal, focused])
 
-	button.focus_entered.connect(_show_details.bind(character))
+	button.pivot_offset = Vector2(side * 0.5, side * 0.5)
+	button.focus_entered.connect(func() -> void:
+		_show_details(character)
+		var tw := button.create_tween()
+		tw.tween_property(button, "scale", Vector2(1.04, 1.04), 0.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT))
+	button.focus_exited.connect(func() -> void:
+		var tw := button.create_tween()
+		tw.tween_property(button, "scale", Vector2.ONE, 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN))
 	button.mouse_entered.connect(func() -> void:
 		if not _versus:
 			button.grab_focus())

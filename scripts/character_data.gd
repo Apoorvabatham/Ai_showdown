@@ -91,6 +91,8 @@ extends Resource
 @export var accessories: Array[StringName] = []
 ## Glasses frame colour.
 @export var accessory_color: Color = Color(0.05, 0.05, 0.06)
+## Skin colour for the receding hairline cap (accessory &"receding").
+@export var receding_color: Color = Color(0.69, 0.52, 0.35)
 
 @export_group("Intro and quotes")
 ## Pre-fight intro animation ("library/clip"), ending in the guard (FightIntro).

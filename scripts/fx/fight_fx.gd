@@ -102,23 +102,32 @@ func _on_hit_landed(attacker: Fighter, defender: Fighter, move: MoveData, result
 	match result:
 		Fighter.HitResult.BLOCKED:
 			spark(point, BLOCK_COLOR, 0.6)
+			_ring(point, BLOCK_COLOR, 0.65, false)
 			Audio.sfx(&"block", -2.0)
 			if defender.model:
 				defender.model.flash(BLOCK_COLOR, 0.12)
+			manager.camera.shake(0.08)
 		Fighter.HitResult.ARMORED:
 			# Clang: the strike glances off the plate and the move carries on.
 			spark(point, ARMOR_COLOR, 1.1)
+			_ring(point, ARMOR_COLOR, 1.0, false)
 			Audio.sfx(&"armor", 2.0, 0.7)
 			Audio.sfx(&"hit_light", -6.0)
 			if defender.model:
 				defender.model.flash(ARMOR_COLOR, 0.14)
+			manager.camera.shake(0.12)
 		Fighter.HitResult.COUNTER:
 			spark(point, COUNTER_COLOR, 1.6)
+			_ring(point, COUNTER_COLOR, 1.4, false)
 			Audio.sfx(&"hit_heavy", 2.0, 0.9)
 			if defender.model:
 				defender.model.flash(COUNTER_COLOR, 0.2)
+			manager.camera.shake(0.24)
 		_:
 			spark(point, HIT_COLOR, 1.3 if heavy else 0.85)
+			if heavy and move.projectile_speed == 0.0:
+				_ring(point, HIT_COLOR, 1.1, false)
+				manager.camera.shake(0.18)
 			Audio.sfx(&"hit_heavy" if heavy else &"hit_light", 0.0 if heavy else -2.0)
 			if defender.model:
 				defender.model.flash(Color.WHITE, 0.16 if heavy else 0.1)

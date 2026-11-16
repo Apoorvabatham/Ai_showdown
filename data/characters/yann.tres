@@ -34,7 +34,7 @@ id = &"yann"
 display_name = "Yann LeCant"
 archetype = "Power"
 description = "A heavyweight sceptic who insists none of this is real intelligence, then flattens you to prove the point. Posts the rebuttal mid-combo."
-select_order = 6
+select_order = 5
 kit = &"brutus"
 voice_fallback = &"brutus"
 portrait = ExtResource("26_bsh8p")
@@ -102,7 +102,7 @@ intro_expression = &"grin"
 intro_lines = PackedStringArray("Your fist has a weaker world model than a house cat.", "Doom? Please. My Roomba is more dangerous.", "Let me explain why you are wrong. Physically.")
 win_quotes = PackedStringArray("Not intelligent. Just effective.", "See? No existential risk. Only you, on the floor.", "I will post a long thread on why that worked.")
 rival_lines = {
-"demis": ["Your agent still can't load a dishwasher.", "Self-supervised that."],
+"algorithm": ["Your architecture lacks a world model.", "Autoregressive nonsense."],
 "geoff": ["Geoff, my old friend. You worry too much.", "Turing Award, round two: mine."]
 }
 combo_trials = Array[Dictionary]([{

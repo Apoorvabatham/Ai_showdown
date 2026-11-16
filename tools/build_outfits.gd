@@ -311,7 +311,7 @@ func _kit_specs() -> Dictionary:
 # --- AI Showdown outfits (all on the male base body) ----------------------------------
 
 ## The AI Showdown roster's clothes: suits, sweaters, a leather jacket, a hoodie, a
-## cardigan and The Algorithm's glowing bodysuit. Plain, generic garments: no logos.
+## cardigan and AGI's glowing bodysuit. Plain, generic garments: no logos.
 func _showdown_specs() -> Dictionary:
 	var navy := Color(0.07, 0.09, 0.2)
 	var white_shirt := Color(0.82, 0.82, 0.8)
@@ -321,13 +321,12 @@ func _showdown_specs() -> Dictionary:
 			Color(0.85, 0.85, 0.88), Color(0.10, 0.10, 0.12), Color(0.12, 0.12, 0.14)),
 		"tesla": _tee_spec(Color(0.05, 0.05, 0.06), Color(0.11, 0.13, 0.2), Color(0.06, 0.06, 0.06),
 			Color(0.75, 0.75, 0.75), Color(0.25, 0.27, 0.32), Color(0.8, 0.8, 0.78)),
-		"dario": _sweater_spec(Color(0.12, 0.18, 0.35), Color(0.70, 0.63, 0.50), Color(0.20, 0.13, 0.09), &"cotton",
-			Color(0.22, 0.22, 0.24), Color(0.35, 0.38, 0.30), Color(0.15, 0.10, 0.07)),
+		"dario": _tee_spec(Color(0.82, 0.33, 0.14), Color(0.14, 0.16, 0.22), Color(0.86, 0.86, 0.82),
+			Color(0.90, 0.88, 0.82), Color(0.10, 0.10, 0.12), Color(0.12, 0.12, 0.12)),
 		"zuckerbot": _hoodie_spec(Color(0.42, 0.43, 0.45), Color(0.15, 0.2, 0.32), Color(0.8, 0.8, 0.78),
 			Color(0.1, 0.18, 0.42), Color(0.08, 0.08, 0.1), Color(0.75, 0.75, 0.75)),
 		"jensen": _leather_jacket_spec(black_leather, Color(0.2, 0.2, 0.21), Color(0.08, 0.08, 0.09),
 			Color(0.3, 0.18, 0.1), Color(0.12, 0.12, 0.13), Color(0.2, 0.2, 0.22)),
-		"demis": _suit_spec(navy, white_shirt, null, Color(0.05, 0.05, 0.05), Color(0.25, 0.25, 0.27), Color(0.6, 0.7, 0.8)),
 		"yann": _blazer_spec(Color(0.16, 0.16, 0.18), Color(0.68, 0.74, 0.85), Color(0.11, 0.14, 0.22),
 			Color(0.24, 0.15, 0.10), Color(0.30, 0.32, 0.35), Color(0.10, 0.10, 0.12)),
 		"geoff": _cardigan_spec(Color(0.55, 0.47, 0.36), Color(0.28, 0.2, 0.13), Color(0.3, 0.3, 0.32), Color(0.66, 0.74, 0.82),
@@ -686,7 +685,7 @@ func _cardigan_spec(cardigan: Color, band: Color, trousers: Color, shirt: Color,
 	}
 
 
-## The Algorithm: a seamless bodysuit over everything, head included (a faceless
+## AGI: a seamless bodysuit over everything, head included (a faceless
 ## figure), with glowing lines down the sides, round the chest and down the front.
 ## Slots: suit, glowing lines (fabric "glow": emissive, FighterModel).
 func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color) -> Dictionary:

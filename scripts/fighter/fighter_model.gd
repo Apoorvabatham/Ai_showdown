@@ -25,7 +25,7 @@ const FABRICS := {
 	&"leather": ["res://assets/stages/ring/textures/fabric_leather_02_nor_gl_1k.jpg", "", 3.0, 0.55, 0.35],
 	# Zips, buttons and buckles: smooth metal (FighterModel makes it metallic).
 	&"metal": ["res://assets/characters/outfits/textures/bi_stretch_nor_gl_1k.jpg", "", 1.0, 0.3, 0.5],
-	# Glowing lines (The Algorithm's bodysuit): stretch fabric lit by its own colour.
+	# Glowing lines (AGI's bodysuit): stretch fabric lit by its own colour.
 	&"glow": ["res://assets/characters/outfits/textures/bi_stretch_nor_gl_1k.jpg", "", 8.0, 0.4, 0.5],
 }
 ## Glowing fabric's emission strength.
@@ -310,7 +310,7 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 	var eyes := _eye_in_head
 	var hair := StandardMaterial3D.new()
 	hair.albedo_color = hair_color
-	hair.roughness = 0.75
+	hair.roughness = 0.92
 	for piece: StringName in data.accessories:
 		match piece:
 			&"glasses":
@@ -341,11 +341,31 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 				var bridge := BoxMesh.new()
 				bridge.size = Vector3(0.024, 0.004, 0.004)
 				_piece(root, bridge, frame, eyes + Vector3(0, 0.006, 0.03))
+			&"thick_glasses":
+				# Big, dark, rounded-square frames (thick rims and a flat brow bar).
+				var frame := StandardMaterial3D.new()
+				frame.albedo_color = data.accessory_color
+				frame.roughness = 0.4
+				frame.metallic = 0.15
+				for side in [-1.0, 1.0]:
+					var center: Vector3 = eyes + Vector3(side * 0.036, 0.004, 0.030)
+					var ring := TorusMesh.new()
+					ring.inner_radius = 0.0205
+					ring.outer_radius = 0.026
+					ring.rings = 32
+					ring.ring_segments = 8
+					_piece(root, ring, frame, center, Vector3(PI / 2, 0, 0), Vector3(1.06, 0.88, 0.9))
+					var arm := BoxMesh.new()
+					arm.size = Vector3(0.005, 0.006, 0.09)
+					_piece(root, arm, frame, eyes + Vector3(side * 0.064, 0.006, -0.012), Vector3(0, side * 0.1, 0))
+				var bridge := BoxMesh.new()
+				bridge.size = Vector3(0.02, 0.006, 0.006)
+				_piece(root, bridge, frame, eyes + Vector3(0, 0.012, 0.032))
 			&"curls", &"tousled":
 				# Short curls (or bigger, looser tufts) over the top and back of the head.
 				var curly := piece == &"curls"
 				var ball := SphereMesh.new()
-				ball.radius = 0.011 if curly else 0.022
+				ball.radius = 0.0065 if curly else 0.022
 				ball.height = ball.radius * 2.0
 				ball.radial_segments = 6
 				ball.rings = 4
@@ -356,9 +376,9 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 				var rng := RandomNumberGenerator.new()
 				rng.seed = hash(data.id)
 				var center := eyes + Vector3(0, 0.035, -0.07)
-				for i in (320 if curly else 90):
+				for i in (520 if curly else 90):
 					# Fibonacci sphere, upper cap only (above the brow at the front).
-					var t := (i + 0.5) / (320.0 if curly else 90.0)
+					var t := (i + 0.5) / (520.0 if curly else 90.0)
 					var y := 1.0 - t * 1.1
 					var r := sqrt(maxf(1.0 - y * y, 0.0))
 					var a := i * 2.39996
@@ -398,9 +418,9 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 				cap.radius = 0.5
 				cap.height = 1.0
 				var skin_mat := StandardMaterial3D.new()
-				skin_mat.albedo_color = data.accessory_color
+				skin_mat.albedo_color = data.receding_color
 				skin_mat.roughness = 0.6
-				_piece(root, cap, skin_mat, eyes + Vector3(0.0, 0.07, -0.02), Vector3(-0.35, 0, 0), Vector3(0.17, 0.08, 0.17))
+				_piece(root, cap, skin_mat, eyes + Vector3(0.0, 0.072, -0.018), Vector3(-0.35, 0, 0), Vector3(0.158, 0.07, 0.155))
 
 
 func _piece(parent: Node3D, mesh: Mesh, material: Material, position_: Vector3, rotation_ := Vector3.ZERO,

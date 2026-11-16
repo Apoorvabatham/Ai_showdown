@@ -173,12 +173,52 @@ def openai(width_m=0.15):
     return res, width_m, width_m * 1.05
 
 
+def anthropic(width_m=0.22):
+    """Anthropic lockup: the A\\ symbol beside the ANTHROP\\C wordmark."""
+    W = int(width_m * PX_PER_M)
+    H = int(width_m * 0.41 * PX_PER_M)
+    SS = 4
+    sw, sh = W * SS, H * SS
+    img = Image.new("RGBA", (sw, sh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    ivory = (240, 239, 234, 255)
+
+    # The A\ symbol, from the 24x24 official mark.
+    size = sh * 0.84
+    ox, oy = 0.0, (sh - size) / 2
+    k = size / 24.0
+
+    def p(x, y):
+        return (ox + x * k, oy + y * k)
+
+    d.polygon([p(6.569, 3.52), p(10.336, 3.52), p(16.906, 20), p(13.232, 20),
+               p(11.889, 16.539), p(5.017, 16.539), p(3.673, 19.999), p(0, 19.999)], fill=ivory)
+    d.polygon([p(10.701, 13.479), p(8.453, 7.687), p(6.205, 13.48)], fill=(0, 0, 0, 0))
+    d.polygon([p(13.827, 3.52), p(17.43, 3.52), p(24, 20), p(20.397, 20)], fill=ivory)
+
+    font = ImageFont.truetype(FONT_REG, int(sh * 0.26))
+    text = "ANTHROP\\C"
+    spacing = int(sw * 0.005)
+    widths = [d.textlength(ch, font=font) for ch in text]
+    total = sum(widths) + spacing * (len(text) - 1)
+    x = size + sw * 0.018
+    if x + total > sw:
+        x = sw - total
+    for ch, w in zip(text, widths):
+        d.text((x, sh / 2), ch, font=font, fill=ivory, anchor="lm")
+        x += w + spacing
+
+    res = img.resize((W, H), Image.Resampling.LANCZOS)
+    return res, width_m, width_m * 0.41
+
+
 # id -> (output name, base colour (0..1), design, centre (x, y) on the chest, metres)
 PRINTS = {
     "tesla": ("tee", (0.05, 0.05, 0.06), occupy_mars, (0.0, 1.355)),
     "jensen": ("tee", (0.12, 0.12, 0.13), nvidia, (0.0, 1.365)),
     "sundar": ("tee", (0.12, 0.12, 0.13), google, (0.0, 1.355)),
     "ram": ("tee", (0.12, 0.12, 0.13), openai, (0.0, 1.380)),
+    "dario": ("tee", (0.82, 0.33, 0.14), anthropic, (0.0, 1.395)),
 }
 
 

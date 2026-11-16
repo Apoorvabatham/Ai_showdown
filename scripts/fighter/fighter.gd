@@ -1225,7 +1225,11 @@ func _update_model(delta: float) -> void:
 	model.set_gaze(gaze_target(), delta)
 	var shake := Vector3.ZERO
 	if frozen and state in [State.HITSTUN, State.BLOCKSTUN, State.AIR_HIT, State.KO, State.WALL_SPLAT]:
-		shake.x = randf_range(-0.03, 0.03)
+		shake.x = randf_range(-0.035, 0.035)
+		shake.y = randf_range(-0.018, 0.018)
+	elif frozen and state == State.ATTACK:
+		shake.x = randf_range(-0.012, 0.012)
+		shake.z = randf_range(-0.012, 0.012)
 	if state == State.WALL_SPLAT and edge_style == EdgeStyle.ROPES:
 		# Sinks back into the ropes before they fling it out.
 		var f := (float(state_frame) + Engine.get_physics_interpolation_fraction()) / ROPE_HOLD_FRAMES

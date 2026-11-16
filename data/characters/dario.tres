@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/characters/aged/T_dario_skin.png" id="1_gj4kt"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_CurlyMop.tscn" id="3_gj4kt"]
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="3_yl8gs"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Grey.png" id="2_30gwc"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_CurlyMop.tscn" id="3_30gwc"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="5_yl8gs"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="6_rfgtt"]
 [ext_resource type="Resource" path="res://data/moves/dario/jab.tres" id="7_a5uma"]
@@ -27,6 +27,7 @@
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="26_ab1ma"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/dario_body.res" id="26_gj4kt"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/dario_outfit.res" id="27_30gwc"]
+[ext_resource type="Texture2D" path="res://assets/characters/prints/T_dario_tee.png" id="27_yl8gs"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/dario.png" id="28_30gwc"]
 
 [resource]
@@ -40,7 +41,7 @@ kit = &"lian"
 voice_fallback = &"kenji"
 portrait = ExtResource("28_30gwc")
 model_scene = ExtResource("5_yl8gs")
-hair_scenes = Array[PackedScene]([ExtResource("3_gj4kt")])
+hair_scenes = Array[PackedScene]([ExtResource("3_30gwc")])
 body_albedo = ExtResource("1_gj4kt")
 model_scale = 0.99
 hair_color = Color(0.12, 0.09, 0.08, 1)
@@ -48,17 +49,21 @@ alt_body_albedo = ExtResource("1_gj4kt")
 alt_hair_color = Color(0.28, 0.2, 0.14, 1)
 outfit_mesh = ExtResource("27_30gwc")
 outfit_body_mesh = ExtResource("26_gj4kt")
-outfit_colors = PackedColorArray(0.12, 0.18, 0.35, 1, 0.089999996, 0.135, 0.2625, 1, 0.7, 0.63, 0.5, 1, 0.2, 0.13, 0.09, 1)
-outfit_fabrics = Array[StringName]([&"cotton", &"stretch", &"cotton", &"leather"])
-alt_outfit_colors = PackedColorArray(0.22, 0.22, 0.24, 1, 0.16499999, 0.16499999, 0.17999999, 1, 0.35, 0.38, 0.3, 1, 0.15, 0.1, 0.07, 1)
+outfit_textures = {
+0: ExtResource("27_yl8gs")
+}
+outfit_colors = PackedColorArray(0.82, 0.33, 0.14, 1, 0.8, 0.8, 0.78, 1, 0.14, 0.16, 0.22, 1, 0.86, 0.86, 0.82, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"denim", &"leather"])
+alt_outfit_colors = PackedColorArray(0.9, 0.88, 0.82, 1, 0.1, 0.1, 0.1, 1, 0.1, 0.1, 0.12, 1, 0.12, 0.12, 0.12, 1)
 detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_bow", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.85, 0.55, 0.3, 1)
 body_shape = {
+&"Head": Vector3(1.07, 1, 1.05),
 &"calf": Vector3(0.92, 1, 0.92),
 &"lowerarm": Vector3(0.9, 1, 0.9),
-&"neck_01": Vector3(0.95, 1, 0.95),
+&"neck_01": Vector3(0.94, 1, 0.94),
 &"spine_01": Vector3(0.96, 1, 0.96),
 &"spine_02": Vector3(0.94, 1, 0.94),
 &"spine_03": Vector3(0.92, 1, 0.92),
@@ -67,22 +72,35 @@ body_shape = {
 }
 face_shape = {
 "age": 43,
-&"chin_round": 0.006,
-&"eye_open": 0.0004,
-&"fullness": 0.003,
-&"jaw": 0.98,
-&"lips": 0.002,
-&"nose_bridge": 0.002,
-&"nose_width": 1.04
+&"brow": 0.002,
+&"cheekbones": 0.001,
+&"chin": -0.004,
+&"chin_forward": 0.0,
+&"chin_round": 0.012,
+&"double_chin": 0.004,
+&"eye_fold": 0.5,
+&"eye_open": -0.0009,
+&"eye_tilt": -0.0002,
+&"face_length": 0.96,
+&"fullness": 0.01,
+&"jaw": 1.04,
+&"jowls": 0.008,
+&"lips": 0.0035,
+&"mouth_width": 1.1,
+&"nose_bridge": 0.003,
+&"nose_length": 0.004,
+&"nose_width": 1.14,
+&"pout": 0.001
 }
-brow_scale = Vector3(1.02, 0.9, 1)
-hair_scale = Vector3(1.04, 1.08, 1.05)
-hair_offset = Vector3(0, 0.004, -0.002)
-eye_texture = ExtResource("3_yl8gs")
+brow_scale = Vector3(1, 0.72, 1)
+hair_scale = Vector3(1.08, 1.1, 1.08)
+hair_offset = Vector3(0, 0.006, -0.002)
+eye_texture = ExtResource("2_30gwc")
 face_rest = {
-&"brow_down": 0.15,
+&"brow_down": 0.0,
 &"brow_up": 0.45,
-&"smile": 0.14
+&"jaw_open": 0.08,
+&"smile": 0.45
 }
 posture = {
 &"Head": Vector3(-2, 0, 0),
@@ -90,6 +108,8 @@ posture = {
 &"spine_01": Vector3(1, 0, 0),
 &"spine_02": Vector3(1, 0, 0)
 }
+accessories = Array[StringName]([&"thick_glasses"])
+accessory_color = Color(0.06, 0.06, 0.07, 1)
 intro_animation = &"fight/intro_wing_chun"
 intro_lines = PackedStringArray("I\'d estimate a ten to twenty-five percent chance this goes badly. For you.", "Let\'s do this carefully.", "I wrote a fifteen-thousand-word essay on why I\'ll win.")
 win_quotes = PackedStringArray("Machines of loving grace. And one loving uppercut.", "That was a responsible scaling of force.", "I\'m sorry, I can\'t help you get up.")

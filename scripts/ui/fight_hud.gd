@@ -590,6 +590,8 @@ func _bind_health(fighter: Fighter, bar: ProgressBar, trail: ProgressBar) -> voi
 		bar.max_value = maximum
 		trail.max_value = maximum
 		bar.value = current
+		var fill_ratio := float(current) / float(maxi(maximum, 1))
+		bar.modulate = Color(1.0, 0.45, 0.45) if fill_ratio < 0.25 else Color.WHITE
 		if _trail_tweens.has(trail):
 			(_trail_tweens[trail] as Tween).kill()
 		if current >= trail.value:
@@ -603,7 +605,15 @@ func _bind_health(fighter: Fighter, bar: ProgressBar, trail: ProgressBar) -> voi
 
 
 func _on_combo_changed(hits: int, label: Label) -> void:
-	label.text = "%d HITS" % hits if hits >= 2 else ""
+	if hits >= 2:
+		label.text = "%d HITS" % hits
+		label.pivot_offset = label.size / 2.0
+		label.scale = Vector2(1.28, 1.28)
+		label.modulate = Color(1.0, 0.45, 0.18) if hits >= 5 else Color(1.0, 0.88, 0.3)
+		var tw := label.create_tween()
+		tw.tween_property(label, "scale", Vector2.ONE, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	else:
+		label.text = ""
 
 
 func _make_pip() -> Panel:

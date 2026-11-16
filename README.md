@@ -9,12 +9,12 @@ A parody 2-player 3D fighting game in which caricatures of AI-industry public pe
 
 ## Features
 
-- **12 fighters**: 11 AI-industry caricatures plus The Algorithm, the original boss. Each is built on one of the original fighters' movesets (see the roster below), with its own special names, super and outfit.
+- **11 fighters**: 10 AI-industry caricatures plus AGI, the final boss. Each is built on one of the original fighters' movesets (see the roster below), with its own special names, super and outfit.
 - **3 stages**: Server Farm, Mensa (a university cafeteria) and Senate Hearing Room.
 - **Modes**:
   - **Vs CPU** and **Versus** (2 local players);
   - **Training**;
-  - **Arcade**, a ladder that ends with The Algorithm as final boss in the Senate (pick The Algorithm and you get its shadow instead);
+  - **Arcade**, a ladder that ends with AGI as final boss in the Senate (pick AGI and you get its shadow instead);
   - **Demo** (two CPU fighters).
 - Best of 3 rounds. There is no story mode.
 - The Online menu is hidden (`SHOW_ONLINE = false` in `scripts/ui/main_menu.gd`) because `online/servers.json` still points at the original game's lobby server.
@@ -43,13 +43,12 @@ Fighters have individual builds (height, belly, slim or heavy), glasses and hair
 | dario | Dario Amoday | lian | Constitutional Shield (counter stance: Refusal Stance) |
 | zuckerbot | Mark Zuckerbot | valka | Metaverse Trap (grab) |
 | jensen | Jensen Wong | kenji | GPU Rain |
-| demis | Demis Hasabist | jin | Protein Fold |
 | yann | Yann LeCant | brutus | It's Just Autocomplete |
 | geoff | Geoff Hintoff | aelia (super armour) | I Regret Nothing... Wait |
 | sundar | Sundar Pickai | kenji (tankier, slower) | Search Result |
 | donald | Donald Tarrif | valka (heavier) | Shower of Tariffs |
 | xi | Xi Winping | aelia | Great Firewall |
-| algorithm | The Algorithm (original boss) | rhea | Engagement Loop |
+| algorithm | AGI (final boss) | rhea | Engagement Loop |
 
 ## Stages
 
@@ -77,7 +76,7 @@ The retheme code is `scripts/stages/stage_retheme.gd`; the scenes `scenes/stages
 
 Put one audio file per fighter at `assets/audio/voice/fighters/<id>_super_1.ogg` (`.wav` and `.mp3` also work). Extra takes `_2` to `_8` are picked at random.
 
-The 12 ids: `ram`, `tesla`, `dario`, `zuckerbot`, `jensen`, `demis`, `yann`, `geoff`, `sundar`, `donald`, `xi`, `algorithm`. For example `ram_super_1.ogg`, `tesla_super_1.ogg`, ... `algorithm_super_1.ogg`.
+The 11 ids: `ram`, `tesla`, `dario`, `zuckerbot`, `jensen`, `yann`, `geoff`, `sundar`, `donald`, `xi`, `algorithm`. For example `ram_super_1.ogg`, `tesla_super_1.ogg`, ... `algorithm_super_1.ogg`.
 
 - Open the project in the Godot editor (or run `godot --headless --path . --import`) so the file is imported.
 - Optional: `python tools/build_voice_envelopes.py` (needs ffmpeg) makes the mouth move with the voice.
@@ -115,7 +114,7 @@ Design notes for the original kits are in [docs/characters](docs/characters/READ
 godot --headless --path . -s res://tests/sim_test.gd   # exit code 1 on failure
 ```
 
-The suite runs the original engine tests on the kits plus AI Showdown checks: all 12 fighters load with moves and a super, a CPU-vs-CPU match finishes for each, the stages, and the disclaimer.
+The suite runs the original engine tests on the kits plus AI Showdown checks: all 11 fighters load with moves and a super, a CPU-vs-CPU match finishes for each, the stages, and the disclaimer.
 
 ## Build releases
 

@@ -7,7 +7,7 @@ extends RefCounted
 ## the final boss: the player's own "shadow" (alternate look, Hard AI, full super meter
 ## at the start of every round). Regular fights rotate through `arenas` (every stage
 ## but the boss's); the boss is fought on `boss_stage`. With a `final_boss` (AI Showdown:
-## The Algorithm), that fighter is the boss instead of the shadow, unless it is the
+## AGI), that fighter is the boss instead of the shadow, unless it is the
 ## player's own pick.
 ## Score: damage dealt × 10, per round won a time bonus (seconds left × 100), a life
 ## bonus (up to 5,000 at full health) and 10,000 for a perfect, plus 10,000 × stage

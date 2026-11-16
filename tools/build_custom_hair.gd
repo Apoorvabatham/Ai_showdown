@@ -14,7 +14,6 @@ func _initialize() -> void:
 	_build_trump_pomp("Hair_TrumpPomp")
 	_build_silver_sweep("Hair_SilverSweep")
 	_build_caesar("Hair_Caesar")
-	_build_receding("Hair_RecedingGrandmaster")
 	_build_politburo("Hair_PolitburoPart")
 	_build_academic_wave("Hair_AcademicWave")
 	_build_elder_thinning("Hair_ElderThinning")
@@ -24,7 +23,7 @@ func _initialize() -> void:
 func _load_male_scalp() -> void:
 	var body := (load(MALE_BODY) as PackedScene).instantiate()
 	for mi: MeshInstance3D in body.find_children("*", "MeshInstance3D", true, false):
-		if mi.name != "Superhero_Male":
+		if mi.name.to_lower() != "superhero_male":
 			continue
 		var arrays := mi.mesh.surface_get_arrays(0)
 		var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
@@ -36,9 +35,9 @@ func _load_male_scalp() -> void:
 	body.free()
 	print("Loaded male scalp: ", _male_scalp.size(), " vertices")
 
-## 1. Dario Amoday: Thick, unruly curly mop (from Hair_Long cut at ears/nape + 3D curl harmonics)
+## 1. Dario Amoday: Thick, voluminous unruly curly mop with prominent 3D curl spirals
 func _build_curly_mop(style: String) -> void:
-	var source := (load(HAIR_DIR + "Hair_Long.gltf") as PackedScene).instantiate()
+	var source := (load(HAIR_DIR + "Hair_Buzzed.gltf") as PackedScene).instantiate()
 	var mi := source.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D
 	var arrays := mi.mesh.surface_get_arrays(0)
 	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
@@ -48,46 +47,297 @@ func _build_curly_mop(style: String) -> void:
 	var weights: PackedFloat32Array = arrays[Mesh.ARRAY_WEIGHTS]
 	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
 
-	var cut_fn := func(p: Vector3) -> float:
-		var back := clampf((-p.z - 0.01) / 0.12, 0.0, 1.0)
-		# Cut around chin in front (1.62m) and slightly lower around back (1.58m)
-		return p.y - (1.61 - 0.03 * back)
-
 	var st := SurfaceTool.new()
 	st.set_skin_weight_count(SurfaceTool.SKIN_4_WEIGHTS)
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var kept := 0
+	var head_center := Vector3(0.0, 1.71, -0.01)
 
-	for t in indices.size() / 3:
-		var polygon: Array = []
+	# 1. Base scalp / dome underlayer (expanded outward to give dark, rounded mop volume)
+	var base_tri_count := indices.size() / 3
+	for t in base_tri_count:
 		for k in 3:
 			var c := indices[t * 3 + k]
-			polygon.append({p = verts[c], n = normals[c], uv = uvs[c],
-				bones = bones.slice(c * 4, c * 4 + 4), weights = weights.slice(c * 4, c * 4 + 4)})
-		polygon = _clip_poly(polygon, cut_fn)
-		for v: Dictionary in polygon:
-			# Apply 3D curly displacement harmonics
-			var p: Vector3 = v.p
-			var outward := Vector3(p.x, 0, p.z).normalized() * 0.010
-			var f1 := 52.0
-			var f2 := 34.0
-			var curl := Vector3(
-				sin(p.y * f1 + p.z * f2) * 0.007 + cos(p.z * f1) * 0.004,
-				cos(p.x * f2 + p.z * f1) * 0.004,
-				sin(p.x * f1 + p.y * f2) * 0.007 + cos(p.y * f1) * 0.004
-			)
-			v.p = p + outward + curl
-		for i in range(1, polygon.size() - 1):
-			for v: Dictionary in [polygon[0], polygon[i], polygon[i + 1]]:
-				st.set_normal(v.n)
-				st.set_uv(v.uv)
-				st.set_bones(v.bones)
-				st.set_weights(v.weights)
-				st.add_vertex(v.p)
-			kept += 1
+			var p := verts[c]
+			var rad := p - head_center
+			rad.y *= 0.80
+			var p_out := p + rad.normalized() * 0.020
+			st.set_normal(normals[c])
+			st.set_uv(uvs[c])
+			st.set_bones(bones.slice(c * 4, c * 4 + 4))
+			st.set_weights(weights.slice(c * 4, c * 4 + 4))
+			st.add_vertex(p_out)
 
-	_save_hair(st, mi, style, kept)
+	# 2. Rich 3D helical curly ribbons covering the head
+	var curl_tri_count := 0
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 314159
+
+	var locks: Array[Dictionary] = []
+
+	# A. Forehead bangs / fringe curls (tumbling forward and down right above the glasses)
+	for i in 30:
+		var frac := float(i) / 29.0
+		var x := lerpf(-0.065, 0.065, frac) + rng.randf_range(-0.006, 0.006)
+		var y := rng.randf_range(1.74, 1.78)
+		var z := rng.randf_range(0.055, 0.078)
+		var dir := Vector3(x * 0.45 + rng.randf_range(-0.1, 0.1), -0.42 + rng.randf_range(-0.08, 0.08), 0.78 + rng.randf_range(-0.08, 0.08)).normalized()
+		locks.append({
+			root = Vector3(x, y, z),
+			dir = dir,
+			length = rng.randf_range(0.042, 0.058),
+			turns = rng.randf_range(2.0, 2.8),
+			radius = rng.randf_range(0.011, 0.016),
+			width = rng.randf_range(0.015, 0.021),
+			phase = rng.randf_range(0.0, TAU),
+			sag = Vector3(0, -0.008, 0.004)
+		})
+
+	# B. Mid-front and frontal dome transition curls (filling the forehead-to-crown zone seamlessly)
+	for i in 25:
+		var x := rng.randf_range(-0.065, 0.065)
+		var z := rng.randf_range(0.015, 0.055)
+		var y := rng.randf_range(1.77, 1.81)
+		var dir := Vector3(x * 0.8 + rng.randf_range(-0.15, 0.15), 0.55 + rng.randf_range(-0.1, 0.15), 0.55 + rng.randf_range(-0.1, 0.15)).normalized()
+		locks.append({
+			root = Vector3(x, y, z),
+			dir = dir,
+			length = rng.randf_range(0.045, 0.062),
+			turns = rng.randf_range(1.8, 2.6),
+			radius = rng.randf_range(0.012, 0.017),
+			width = rng.randf_range(0.015, 0.022),
+			phase = rng.randf_range(0.0, TAU),
+			sag = Vector3(0, -0.008, 0.006)
+		})
+
+	# C. Crown and top mop volume (springy loops building high curly volume)
+	for i in 45:
+		var angle := rng.randf_range(0.0, TAU)
+		var r := sqrt(rng.randf_range(0.01, 1.0)) * 0.068
+		var x := cos(angle) * r
+		var z := sin(angle) * r - 0.01
+		var y := 1.77 + (1.0 - (r / 0.068)) * 0.038 + rng.randf_range(-0.008, 0.012)
+		var dir := Vector3(x * 1.3 + rng.randf_range(-0.15, 0.15), 0.85 + rng.randf_range(-0.15, 0.15), (z + 0.01) * 1.3 + rng.randf_range(-0.15, 0.15)).normalized()
+		locks.append({
+			root = Vector3(x, y, z),
+			dir = dir,
+			length = rng.randf_range(0.048, 0.068),
+			turns = rng.randf_range(1.8, 2.6),
+			radius = rng.randf_range(0.012, 0.018),
+			width = rng.randf_range(0.016, 0.022),
+			phase = rng.randf_range(0.0, TAU),
+			sag = Vector3(dir.x * 0.006, -0.006, dir.z * 0.006)
+		})
+
+	# D. Temples, sideburns and sides (framing ears with rounded curly mop silhouette)
+	for side_val in [-1.0, 1.0]:
+		var side: float = side_val
+		for i in 22:
+			var y := rng.randf_range(1.68, 1.78)
+			var z := rng.randf_range(-0.045, 0.045)
+			var x := side * (0.062 + rng.randf_range(0.0, 0.015))
+			var dir := Vector3(side * (0.85 + rng.randf_range(0.0, 0.2)), -0.28 + rng.randf_range(-0.1, 0.1), z * 0.45 + rng.randf_range(-0.1, 0.1)).normalized()
+			locks.append({
+				root = Vector3(x, y, z),
+				dir = dir,
+				length = rng.randf_range(0.046, 0.068),
+				turns = rng.randf_range(1.8, 2.6),
+				radius = rng.randf_range(0.012, 0.018),
+				width = rng.randf_range(0.015, 0.021),
+				phase = rng.randf_range(0.0, TAU),
+				sag = Vector3(0, -0.010, 0)
+			})
+
+	# E. Back and nape (curly cascade covering back of skull)
+	for i in 28:
+		var x := rng.randf_range(-0.06, 0.06)
+		var y := rng.randf_range(1.66, 1.77)
+		var z := -0.068 - rng.randf_range(0.0, 0.032)
+		var dir := Vector3(x * 0.45 + rng.randf_range(-0.1, 0.1), -0.48 + rng.randf_range(-0.1, 0.1), -0.75 + rng.randf_range(-0.1, 0.1)).normalized()
+		locks.append({
+			root = Vector3(x, y, z),
+			dir = dir,
+			length = rng.randf_range(0.050, 0.072),
+			turns = rng.randf_range(1.8, 2.6),
+			radius = rng.randf_range(0.012, 0.018),
+			width = rng.randf_range(0.015, 0.021),
+			phase = rng.randf_range(0.0, TAU),
+			sag = Vector3(0, -0.012, -0.006)
+		})
+
+	var head_bone := PackedInt32Array([6, 0, 0, 0])
+	var head_weight := PackedFloat32Array([1.0, 0.0, 0.0, 0.0])
+
+	for lock in locks:
+		var root: Vector3 = lock.root
+		var dir: Vector3 = lock.dir
+		var length: float = lock.length
+		var turns: float = lock.turns
+		var max_radius: float = lock.radius
+		var max_width: float = lock.width
+		var phase: float = lock.phase
+		var sag: Vector3 = lock.sag
+
+		var up := Vector3.UP if absf(dir.y) < 0.9 else Vector3.FORWARD
+		var norm1 := dir.cross(up).normalized()
+		var norm2 := dir.cross(norm1).normalized()
+
+		var num_steps := 16
+		var spine_pts: Array[Vector3] = []
+		var tangents: Array[Vector3] = []
+		var radial_vecs: Array[Vector3] = []
+
+		for s in (num_steps + 1):
+			var u := float(s) / float(num_steps)
+			var spine := root + dir * (length * u) + sag * (u * u)
+			var r_spiral := max_radius * sin(clampf(u * PI, 0.15, 1.0))
+			var angle := turns * TAU * u + phase
+			var r_vec := (norm1 * cos(angle) + norm2 * sin(angle))
+			var pt := spine + r_vec * r_spiral
+			spine_pts.append(pt)
+			radial_vecs.append(r_vec)
+
+		for s in (num_steps + 1):
+			var s_prev := maxi(s - 1, 0)
+			var s_next := mini(s + 1, num_steps)
+			var tan := (spine_pts[s_next] - spine_pts[s_prev]).normalized()
+			tangents.append(tan)
+
+		var prev_left := Vector3.ZERO
+		var prev_right := Vector3.ZERO
+		var prev_norm := Vector3.ZERO
+
+		for s in (num_steps + 1):
+			var u := float(s) / float(num_steps)
+			var pt := spine_pts[s]
+			var tan := tangents[s]
+			var r_vec := radial_vecs[s]
+
+			# Binormal along ribbon width
+			var binorm := tan.cross(r_vec).normalized()
+			if binorm.length_squared() < 0.1:
+				binorm = norm1
+			var norm := binorm.cross(tan).normalized()
+
+			var w := max_width * sin(clampf(u * PI, 0.2, 1.0))
+			var cur_left := pt - binorm * (w * 0.5)
+			var cur_right := pt + binorm * (w * 0.5)
+
+			if s > 0:
+				var uv_v0 := float(s - 1) / float(num_steps)
+				var uv_v1 := float(s) / float(num_steps)
+
+				# Front face
+				st.set_normal(prev_norm)
+				st.set_uv(Vector2(0.0, uv_v0))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(prev_left)
+
+				st.set_normal(norm)
+				st.set_uv(Vector2(0.0, uv_v1))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(cur_left)
+
+				st.set_normal(norm)
+				st.set_uv(Vector2(1.0, uv_v1))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(cur_right)
+
+				st.set_normal(prev_norm)
+				st.set_uv(Vector2(0.0, uv_v0))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(prev_left)
+
+				st.set_normal(norm)
+				st.set_uv(Vector2(1.0, uv_v1))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(cur_right)
+
+				st.set_normal(prev_norm)
+				st.set_uv(Vector2(1.0, uv_v0))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(prev_right)
+
+				# Back face (for full visibility from all viewing angles)
+				st.set_normal(-prev_norm)
+				st.set_uv(Vector2(0.0, uv_v0))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(prev_left)
+
+				st.set_normal(-norm)
+				st.set_uv(Vector2(1.0, uv_v1))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(cur_right)
+
+				st.set_normal(-norm)
+				st.set_uv(Vector2(0.0, uv_v1))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(cur_left)
+
+				st.set_normal(-prev_norm)
+				st.set_uv(Vector2(0.0, uv_v0))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(prev_left)
+
+				st.set_normal(-prev_norm)
+				st.set_uv(Vector2(1.0, uv_v0))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(prev_right)
+
+				st.set_normal(-norm)
+				st.set_uv(Vector2(1.0, uv_v1))
+				st.set_bones(head_bone)
+				st.set_weights(head_weight)
+				st.add_vertex(cur_right)
+
+				curl_tri_count += 4
+
+			prev_left = cur_left
+			prev_right = cur_right
+			prev_norm = norm
+
+	var total_tri_count := base_tri_count + curl_tri_count
+	_save_curly_hair(st, mi, style, total_tri_count)
 	source.free()
+
+func _save_curly_hair(st: SurfaceTool, source_mi: MeshInstance3D, style: String, tri_count: int) -> void:
+	st.index()
+	st.generate_tangents()
+	var mesh := st.commit()
+	var mat := source_mi.mesh.surface_get_material(0).duplicate() as StandardMaterial3D
+	mat.resource_name = "MI_Hair_2"
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.roughness = 0.92
+	mat.metallic = 0.0
+	mat.metallic_specular = 0.15
+	mesh.surface_set_material(0, mat)
+	var out_mesh := HAIR_DIR + style + "_mesh.res"
+	var out_scene := HAIR_DIR + style + ".tscn"
+	ResourceSaver.save(mesh, out_mesh)
+
+	var root := Node3D.new()
+	root.name = style
+	var piece := MeshInstance3D.new()
+	piece.name = style
+	piece.mesh = load(out_mesh)
+	piece.skin = source_mi.skin
+	root.add_child(piece)
+	piece.owner = root
+	var scene := PackedScene.new()
+	scene.pack(root)
+	var err := ResourceSaver.save(scene, out_scene)
+	print("%s: %d triangles, err=%d" % [style, tri_count, err])
+	root.free()
 
 ## 2. Donald Tarrif: Sweeping golden pompadour comb-over swoop
 func _build_trump_pomp(style: String) -> void:
@@ -197,42 +447,6 @@ func _build_caesar(style: String) -> void:
 		# Textured top
 		if p.y > 1.75:
 			p.y += sin(p.x * 60.0) * 0.003
-		verts[i] = p
-
-	for t in indices.size() / 3:
-		for k in 3:
-			var c := indices[t * 3 + k]
-			st.set_normal(normals[c])
-			st.set_uv(uvs[c])
-			st.set_bones(bones.slice(c * 4, c * 4 + 4))
-			st.set_weights(weights.slice(c * 4, c * 4 + 4))
-			st.add_vertex(verts[c])
-
-	_save_hair(st, mi, style, indices.size() / 3)
-	source.free()
-
-## 5. Demis Hassabis: Deeply receding M-shape temples, high forehead, close-cropped sides
-func _build_receding(style: String) -> void:
-	var source := (load(HAIR_DIR + "Hair_Buzzed.gltf") as PackedScene).instantiate()
-	var mi := source.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D
-	var arrays := mi.mesh.surface_get_arrays(0)
-	var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
-	var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
-	var bones: PackedInt32Array = arrays[Mesh.ARRAY_BONES]
-	var weights: PackedFloat32Array = arrays[Mesh.ARRAY_WEIGHTS]
-	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
-
-	var st := SurfaceTool.new()
-	st.set_skin_weight_count(SurfaceTool.SKIN_4_WEIGHTS)
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-
-	for i in verts.size():
-		var p := verts[i]
-		# Recede at the temples: pull hairline back and up
-		if p.z > 0.03 and absf(p.x) > 0.035 and absf(p.x) < 0.075 and p.y < 1.79:
-			p.z -= 0.015
-			p.y += 0.012
 		verts[i] = p
 
 	for t in indices.size() / 3:

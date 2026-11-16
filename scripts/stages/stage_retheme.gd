@@ -15,6 +15,9 @@ enum Look { SERVER_FARM, MENSA, SENATE }
 var _materials := {}
 ## Blinking rack lights: [material, base energy, rate, phase].
 var _blinkers: Array = []
+## Press camera flashes: [light, base energy].
+var _flashers: Array = []
+var _flash_timer := 0.0
 var _time := 0.0
 
 
@@ -26,7 +29,7 @@ func _ready() -> void:
 			_build_mensa()
 		Look.SENATE:
 			_build_senate()
-	set_process(not _blinkers.is_empty())
+	set_process(not _blinkers.is_empty() or not _flashers.is_empty())
 
 
 func _process(delta: float) -> void:
@@ -34,6 +37,15 @@ func _process(delta: float) -> void:
 	for blinker: Array in _blinkers:
 		var on := sin(_time * blinker[2] + blinker[3]) > -0.3
 		(blinker[0] as StandardMaterial3D).emission_energy_multiplier = blinker[1] if on else blinker[1] * 0.15
+	if not _flashers.is_empty():
+		_flash_timer -= delta
+		if _flash_timer <= 0.0:
+			_flash_timer = randf_range(1.6, 4.2)
+			var flasher: Array = _flashers[randi() % _flashers.size()]
+			var light: OmniLight3D = flasher[0]
+			light.light_energy = flasher[1] * 4.5
+			var tw := create_tween()
+			tw.tween_property(light, "light_energy", 0.0, 0.14).set_ease(Tween.EASE_OUT)
 
 
 # --- Server Farm (the rooftop) ---------------------------------------------------------
@@ -71,11 +83,29 @@ func _build_server_farm() -> void:
 		_label("RACK ROW %s" % ("A" if row_z > -6.0 else "B"), Vector3(-8.6, 2.6, row_z + 0.55), 0.18, Color(0.6, 0.9, 1.0))
 	# Overhead cable tray along the racks and cooling units at the sides.
 	_box(Vector3(17.5, 0.08, 0.5), Vector3(0, 2.75, -5.2), _mat(Color(0.25, 0.26, 0.28), 0.5, 0.7))
+	# High-density fiber conduit looms (cyan, caution yellow, amber)
+	_box(Vector3(17.5, 0.04, 0.05), Vector3(0, 2.85, -5.35), _mat(Color(0.05, 0.6, 0.9), 0.3))
+	_box(Vector3(17.5, 0.04, 0.05), Vector3(0, 2.85, -5.20), _mat(Color(0.9, 0.75, 0.1), 0.3))
+	_box(Vector3(17.5, 0.04, 0.05), Vector3(0, 2.85, -5.05), _mat(Color(0.9, 0.35, 0.1), 0.3))
+	var beacon_mat := _glow(Color(1.0, 0.6, 0.1), 4.0, true)
+	_blinkers.append([beacon_mat, 4.0, 4.0, 0.0])
 	for x in [-9.6, 9.6]:
 		_cylinder(0.75, 1.8, Vector3(x, 0.9, -3.5), _mat(Color(0.55, 0.57, 0.6), 0.4, 0.6))
 		_cylinder(0.6, 0.08, Vector3(x, 1.84, -3.5), _mat(Color(0.1, 0.1, 0.12)))
+		# Warning beacon light on top of cooling reservoirs
+		_cylinder(0.12, 0.22, Vector3(x, 1.99, -3.5), beacon_mat)
+		_light(Vector3(x, 2.2, -3.5), Color(0.2, 0.75, 1.0), 1.8, 6.0)
+		_steam(Vector3(x, 2.15, -3.5))
+	# Terminal diagnostic consoles at each flank
+	for cx in [-8.4, 8.4]:
+		_box(Vector3(0.9, 0.9, 0.6), Vector3(cx, 0.45, -3.6), _mat(Color(0.18, 0.2, 0.22), 0.4, 0.5))
+		_box(Vector3(0.55, 0.35, 0.04), Vector3(cx, 1.15, -3.5), _mat(Color(0.08, 0.08, 0.1), 0.2))
+		_box(Vector3(0.5, 0.3, 0.01), Vector3(cx, 1.15, -3.47), _glow(Color(0.1, 0.85, 0.95), 2.2))
+		_label("NODE STATUS: 99.8%%\nTEMP: 62°C NOMINAL", Vector3(cx, 1.15, -3.45), 0.065, Color(0.9, 1.0, 1.0))
 	_label("WARNING: LIQUID COOLING\nDO NOT FIGHT NEAR THE RACKS", Vector3(5.5, 2.6, -4.65), 0.13, Color(1.0, 0.85, 0.2), true)
-	_light(Vector3(0, 3.2, -3.8), Color(0.55, 0.8, 1.0), 2.5, 9.0)
+	_light(Vector3(0, 3.2, -3.8), Color(0.55, 0.8, 1.0), 2.8, 10.0)
+	_light(Vector3(-5.0, 2.8, -2.5), Color(0.2, 0.7, 1.0), 1.5, 7.0)
+	_light(Vector3(5.0, 2.8, -2.5), Color(0.15, 0.85, 0.7), 1.5, 7.0)
 
 
 # --- Mensa (the dojo) ------------------------------------------------------------------
@@ -105,14 +135,29 @@ func _build_mensa() -> void:
 	_board("TODAY'S MENU\nPasta Pomodoro ........ 2,80\nVegan Lentil Curry .... 3,10\nCurrywurst & Fries .... 2,50\nAlignment Soup .... ask staff",
 		Vector3(-3.6, 2.3, -9.75))
 	_board("EXAM SEASON\nFree coffee for anyone\nwho can explain\nbackpropagation", Vector3(3.6, 2.3, -9.75))
+	_board("NEURIPS NOTICE\nRegistration full.\nPlease do not spar\nover poster slots.\nCoffee for authors only.", Vector3(-7.5, 2.3, -9.75))
+	_board("LOST & FOUND\n1x Quantum State\nAnswers to 'Schrodinger'\nReward: 8x H100 GPU hours", Vector3(7.5, 2.3, -9.75))
+	# Espresso machine and mug stacks on the counter
+	_box(Vector3(0.65, 0.5, 0.45), Vector3(3.8, 1.2, -8.6), steel)
+	_cylinder(0.04, 0.15, Vector3(3.6, 1.15, -8.35), _mat(Color(0.2, 0.2, 0.2), 0.3))
+	_cylinder(0.06, 0.18, Vector3(4.0, 1.05, -8.4), _mat(Color(0.95, 0.95, 0.92), 0.3))
 	# Long tables with trays at the back and the sides, people having lunch.
 	var table_mat := _mat(Color(0.85, 0.83, 0.78), 0.5)
 	var chair_colors := [Color(0.9, 0.45, 0.1), Color(0.1, 0.55, 0.6), Color(0.85, 0.75, 0.15)]
 	var shirt_colors := [Color(0.2, 0.3, 0.6), Color(0.6, 0.2, 0.2), Color(0.25, 0.5, 0.3), Color(0.5, 0.5, 0.52), Color(0.7, 0.6, 0.3)]
+	var lamp_mat := _mat(Color(0.15, 0.16, 0.18), 0.3, 0.7)
+	var bulb_mat := _glow(Color(1.0, 0.9, 0.72), 3.5)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	for spot: Vector3 in [Vector3(-4.5, 0, -6.0), Vector3(0.0, 0, -6.0), Vector3(4.5, 0, -6.0), Vector3(-7.0, 0, -2.0), Vector3(7.0, 0, -2.0)]:
 		_box(Vector3(3.2, 0.05, 1.0), spot + Vector3(0, 0.75, 0), table_mat)
+		# Hanging pendant lamp over each table
+		_cylinder(0.01, 1.6, spot + Vector3(0, 2.7, 0), lamp_mat)
+		_cylinder(0.22, 0.14, spot + Vector3(0, 1.9, 0), lamp_mat)
+		_cylinder(0.08, 0.04, spot + Vector3(0, 1.83, 0), bulb_mat)
+		_light(spot + Vector3(0, 1.8, 0), Color(1.0, 0.92, 0.75), 1.6, 4.5)
+		# Table condiment caddy
+		_box(Vector3(0.12, 0.14, 0.12), spot + Vector3(0, 0.82, 0), steel)
 		for lx in [-1.45, 1.45]:
 			_box(Vector3(0.06, 0.74, 0.8), spot + Vector3(lx, 0.37, 0), steel)
 		for k in 4:
@@ -124,6 +169,15 @@ func _build_mensa() -> void:
 				_cylinder(0.11, 0.02, spot + Vector3(-1.25 + k * 0.8, 0.8, side * 0.25), _mat(Color(0.95, 0.95, 0.92), 0.3))
 				if rng.randf() < 0.55:
 					_person(seat + Vector3(0, 0.47, side * 0.05), shirt_colors[rng.randi() % shirt_colors.size()], rng)
+
+
+	# Tray return trolley and water station at the flank
+	_box(Vector3(1.1, 1.4, 0.65), Vector3(-8.8, 0.7, -4.5), steel)
+	for ty in [0.4, 0.75, 1.1]:
+		_box(Vector3(0.9, 0.03, 0.5), Vector3(-8.8, ty, -4.5), _mat(Color(0.2, 0.25, 0.35)))
+	_cylinder(0.14, 0.45, Vector3(-8.8, 1.55, -4.5), _mat(Color(0.85, 0.9, 0.95, 0.6), 0.1))
+	for cy in 3:
+		_cylinder(0.05, 0.1, Vector3(-8.5, 1.48 + cy * 0.06, -4.4), _mat(Color(0.95, 0.95, 0.9)))
 
 
 # --- Senate Hearing Room (the ring) ----------------------------------------------------
@@ -178,15 +232,94 @@ func _build_senate() -> void:
 		_label(names[i], Vector3(x, 0.97, -6.57), 0.09, Color(0.1, 0.1, 0.1))
 		_cylinder(0.012, 0.35, Vector3(x + 0.3, 1.05, -6.85), _mat(Color(0.1, 0.1, 0.1), 0.3, 0.8))
 		_box(Vector3(0.7, 1.3, 0.25), Vector3(x, 1.05, -8.1), leather)
+	# Chairman's brass gavel and solid walnut sound block
+	var brass := _mat(Color(0.85, 0.72, 0.32), 0.25, 0.85)
+	_box(Vector3(0.24, 0.04, 0.24), Vector3(0.42, 0.90, -6.8), _mat(Color(0.25, 0.12, 0.05), 0.3))
+	_cylinder(0.02, 0.26, Vector3(0.42, 0.95, -6.8), _mat(Color(0.3, 0.15, 0.07), 0.3))
+	_cylinder(0.035, 0.12, Vector3(0.42, 0.97, -6.7), brass)
+	# C-SPAN witness table just outside the railing
+	var witness_wood := _mat(Color(0.28, 0.14, 0.06), 0.4)
+	_box(Vector3(2.4, 0.85, 0.9), Vector3(0, 0.425, -4.95), witness_wood)
+	_box(Vector3(0.65, 0.14, 0.04), Vector3(0, 0.92, -4.55), _mat(Color(0.95, 0.93, 0.88), 0.5))
+	_label("WITNESS", Vector3(0, 0.92, -4.52), 0.08, Color(0.1, 0.1, 0.1))
+	for mx in [-0.22, 0.22]:
+		_cylinder(0.008, 0.30, Vector3(mx, 0.98, -4.8), _mat(Color(0.1, 0.1, 0.1), 0.3, 0.8))
+	_cylinder(0.08, 0.22, Vector3(-0.6, 0.95, -4.85), _mat(Color(0.85, 0.92, 1.0, 0.4), 0.05))
+	# Stacks of hearing briefing binders
+	_box(Vector3(0.32, 0.12, 0.26), Vector3(0.65, 0.91, -4.85), _mat(Color(0.12, 0.2, 0.45), 0.6))
+	# Broadcast television cameras on the flank wings with flash lights
+	var tally_mat := _glow(Color(1.0, 0.12, 0.12), 4.5)
+	var rng_senate := RandomNumberGenerator.new()
+	rng_senate.seed = 42
+	for cam_x in [-6.4, 6.4]:
+		_cylinder(0.025, 1.3, Vector3(cam_x, 0.65, -3.8), _mat(Color(0.2, 0.2, 0.22), 0.4, 0.6))
+		_box(Vector3(0.32, 0.35, 0.55), Vector3(cam_x, 1.45, -3.8), _mat(Color(0.1, 0.1, 0.12), 0.3, 0.5))
+		_cylinder(0.09, 0.32, Vector3(cam_x, 1.45, -3.45), _mat(Color(0.05, 0.05, 0.06), 0.2, 0.8))
+		_cylinder(0.03, 0.05, Vector3(cam_x, 1.66, -3.7), tally_mat)
+		# Camera operator standing behind the rig
+		_person(Vector3(cam_x, 0.0, -4.25), Color(0.12, 0.12, 0.14), rng_senate)
+		# C-SPAN camera flash unit
+		var flash_light := OmniLight3D.new()
+		flash_light.position = Vector3(cam_x, 1.8, -3.3)
+		flash_light.light_color = Color(0.9, 0.95, 1.0)
+		flash_light.light_energy = 0.0
+		flash_light.omni_range = 6.0
+		add_child(flash_light)
+		_flashers.append([flash_light, 3.5])
+	# Flanking public gallery benches with observers and aides
+	var bench_wood := _mat(Color(0.32, 0.16, 0.08), 0.45)
+	for gx in [-7.2, 7.2]:
+		for gz in [-1.5, 0.5, 2.5]:
+			_box(Vector3(1.4, 0.48, 0.42), Vector3(gx, 0.24, gz), bench_wood)
+			_box(Vector3(1.4, 0.45, 0.05), Vector3(gx, 0.65, gz - 0.2), bench_wood)
+			_person(Vector3(gx - 0.35, 0.26, gz), Color(0.15, 0.16, 0.22), rng_senate)
+			_person(Vector3(gx + 0.35, 0.26, gz), Color(0.25, 0.25, 0.28), rng_senate)
 	_box(Vector3(16.0, 5.0, 0.2), Vector3(0, 1.5, -9.0), _mat(Color(0.7, 0.64, 0.54), 0.8))
 	for x in [-7.0, -5.6, 5.6, 7.0]:
 		_box(Vector3(0.9, 3.0, 0.04), Vector3(x, 2.2, -8.85), _mat(Color(0.12, 0.18, 0.45) if absf(x) > 6.0 else Color(0.6, 0.1, 0.12), 0.8))
 	_label("SUBCOMMITTEE ON ARTIFICIAL INTELLIGENCE", Vector3(0, 3.4, -8.85), 0.36, Color(0.95, 0.78, 0.35), true)
 	_light(Vector3(0, 3.0, -5.0), Color(1.0, 0.9, 0.75), 3.0, 10.0)
+	_light(Vector3(-5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 2.0, 8.0)
+	_light(Vector3(5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 2.0, 8.0)
 	_label("IN SESSION", Vector3(0, 2.75, -8.85), 0.22, Color(0.95, 0.25, 0.2), true)
 
 
 # --- Helpers ---------------------------------------------------------------------------
+
+func _steam(pos: Vector3) -> GPUParticles3D:
+	var particles := GPUParticles3D.new()
+	var mat := ParticleProcessMaterial.new()
+	mat.direction = Vector3.UP
+	mat.spread = 18.0
+	mat.initial_velocity_min = 0.6
+	mat.initial_velocity_max = 1.4
+	mat.gravity = Vector3(0, 0.05, 0)
+	mat.scale_min = 0.25
+	mat.scale_max = 0.65
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.85, 0.92, 1.0, 0.0))
+	grad.add_point(0.25, Color(0.85, 0.92, 1.0, 0.28))
+	grad.set_color(1, Color(0.85, 0.92, 1.0, 0.0))
+	var ramp := GradientTexture1D.new()
+	ramp.gradient = grad
+	mat.color_ramp = ramp
+	particles.process_material = mat
+	particles.amount = 14
+	particles.lifetime = 1.8
+	var sphere := SphereMesh.new()
+	sphere.radius = 0.16
+	sphere.height = 0.32
+	sphere.radial_segments = 6
+	sphere.rings = 3
+	var smat := StandardMaterial3D.new()
+	smat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	smat.albedo_color = Color(0.85, 0.92, 1.0, 0.2)
+	sphere.material = smat
+	particles.draw_pass_1 = sphere
+	particles.position = pos
+	add_child(particles)
+	return particles
 
 func _mat(color: Color, roughness := 0.7, metallic := 0.0) -> StandardMaterial3D:
 	var key := "%s/%s/%s" % [color, roughness, metallic]

@@ -78,7 +78,7 @@ All visual renders and baked assets have been generated, imported with VRAM comp
     - *"Thank you, thank you. Now, about pricing..."*
   - Rivalries:
     - Sundar: *"Your data centres run on my chips. / Please, order more."*
-    - The Algorithm: *"Who do you think trains you? / Running on my hardware, losing on my hardware."*
+    - AGI: *"Who do you think trains you? / Running on my hardware, losing on my hardware."*
 
 ---
 

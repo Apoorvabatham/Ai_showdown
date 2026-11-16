@@ -86,14 +86,18 @@ const ROSTER := [
 		id = &"dario", name = "Dario Amoday", kit = &"lian", archetype = "Counter",
 		age = 43,
 		description = "A patient counter-fighter guided by a written constitution. Catches reckless strikes with Refusal Stance, then explains, at length, why that was unsafe.",
-		skin = &"light", hair = ["Hair_CurlyMop"], hair_color = Color(0.12, 0.09, 0.08), alt_hair_color = Color(0.28, 0.20, 0.14),
-		hair_volume = [Vector3(1.04, 1.08, 1.05), Vector3(0.0, 0.004, -0.002)],
+		skin = &"pale", hair = ["Hair_CurlyMop"], hair_color = Color(0.12, 0.09, 0.08), alt_hair_color = Color(0.28, 0.20, 0.14),
+		hair_volume = [Vector3(1.08, 1.10, 1.08), Vector3(0.0, 0.006, -0.002)],
 		damage = 1.0, stats = {},
-		face = {jaw = 0.98, chin_round = 0.006, fullness = 0.003, nose_width = 1.04, nose_bridge = 0.002, eye_open = 0.0004, lips = 0.002},
-		face_rest = {brow_up = 0.45, brow_down = 0.15, smile = 0.14}, brows = Vector3(1.02, 0.90, 1.0), eyes = "DarkBrown",
-		scale = 0.99, accessories = [],
+		face = {jaw = 1.04, chin = -0.004, chin_forward = 0.0, chin_round = 0.012, cheekbones = 0.001, fullness = 0.010,
+			jowls = 0.008, double_chin = 0.004, nose_width = 1.14, nose_length = 0.004, nose_bridge = 0.003, brow = 0.002,
+			eye_open = -0.0009, eye_fold = 0.5, eye_tilt = -0.0002, face_length = 0.96, lips = 0.0035, mouth_width = 1.10, pout = 0.001},
+		face_rest = {brow_up = 0.45, brow_down = 0.0, smile = 0.45, jaw_open = 0.08}, brows = Vector3(1.0, 0.72, 1.0), eyes = "Grey",
+		scale = 0.99, accessories = [&"thick_glasses"], accessory_color = Color(0.06, 0.06, 0.07),
+		prints = {0: "tee"},
 		shape = {spine_01 = Vector3(0.96, 1, 0.96), spine_02 = Vector3(0.94, 1, 0.94), spine_03 = Vector3(0.92, 1, 0.92),
-			upperarm = Vector3(0.88, 1, 0.88), lowerarm = Vector3(0.9, 1, 0.9), thigh = Vector3(0.92, 1, 0.92), calf = Vector3(0.92, 1, 0.92), neck_01 = Vector3(0.95, 1, 0.95)},
+			upperarm = Vector3(0.88, 1, 0.88), lowerarm = Vector3(0.9, 1, 0.9), thigh = Vector3(0.92, 1, 0.92), calf = Vector3(0.92, 1, 0.92),
+			neck_01 = Vector3(0.94, 1, 0.94), Head = Vector3(1.07, 1.0, 1.05)},
 		posture = {spine_01 = Vector3(1, 0, 0), spine_02 = Vector3(1, 0, 0), neck_01 = Vector3(2, 0, 0), Head = Vector3(-2, 0, 0)},
 		moves = {still_water = "Refusal Stance", inch_palm = "Interpretability Palm", willow_step = "Responsible Scaling Step",
 			chain_punch = "Red-Team Chain", double_palm = "Double-Check Palm",
@@ -146,38 +150,6 @@ const ROSTER := [
 			"algorithm": ["Who do you think trains you?", "Running on my hardware, losing on my hardware."]},
 	},
 	{
-		id = &"demis", name = "Demis Hasabist", kit = &"jin", archetype = "Kicker",
-		age = 50,
-		description = "Former chess prodigy and game designer. Reads every fight forty moves ahead, then folds you like a protein.",
-		skin = &"light", hair = ["Hair_RecedingGrandmaster"], hair_color = Color(0.12, 0.10, 0.09), alt_hair_color = Color(0.3, 0.22, 0.14),
-		hair_volume = [Vector3(1.02, 1.05, 1.02), Vector3(0.0, 0.003, 0.0)],
-		damage = 1.0, stats = {},
-		face = {
-			face_length = 0.98, jaw = 0.94, chin = 0.002, chin_round = 0.005,
-			fullness = -0.003, cheekbones = 0.002,
-			nose_width = 0.96, nose_length = 0.003, nose_bridge = 0.003,
-			brow = 0.002, eye_open = 0.0002, eye_tilt = 0.0004,
-			mouth_width = 0.94, lips = 0.001
-		},
-		face_rest = {brow_down = 0.30, brow_up = 0.15, squint = 0.15, smile = 0.26},
-		brows = Vector3(1.02, 0.86, 1.0), eyes = "DarkBrown",
-		scale = 0.94, accessories = [],
-		shape = {
-			spine_01 = Vector3(0.92, 1, 0.92), spine_02 = Vector3(0.90, 1, 0.90), spine_03 = Vector3(0.90, 1, 0.90),
-			upperarm = Vector3(0.86, 1, 0.86), lowerarm = Vector3(0.88, 1, 0.88),
-			thigh = Vector3(0.88, 1, 0.88), calf = Vector3(0.90, 1, 0.90),
-			neck_01 = Vector3(0.92, 1.0, 0.92), Head = Vector3(1.02, 1.02, 1.02)
-		},
-		posture = {spine_01 = Vector3(1, 0, 0), spine_02 = Vector3(1, 0, 0), neck_01 = Vector3(2, 0, 0), Head = Vector3(-2, 0, 0)},
-		moves = {spinning_back_kick = "Move 37", tornado_kick = "Self-Play Tornado", axe_kick = "Checkmate Axe",
-			push_kick = "Gambit Push", hurricane_kicks = "Protein Fold", hurricane_finish = "Protein Fold"},
-		voice = &"jin", color = Color(0.3, 0.55, 0.95),
-		intro = ["I've already simulated this fight. You lose.", "First, solve fighting. Then use it to solve everything else.",
-			"A nice game. Shall we?"],
-		wins = ["Folded in under a second.", "Fascinating. You played like a random policy.", "Good game. I've seen it a million times."],
-		rivals = {"yann": ["Tell me again it's just autocomplete.", "Go was harder."]},
-	},
-	{
 		id = &"yann", name = "Yann LeCant", kit = &"brutus", archetype = "Power",
 		age = 65,
 		description = "A heavyweight sceptic who insists none of this is real intelligence, then flattens you to prove the point. Posts the rebuttal mid-combo.",
@@ -199,7 +171,7 @@ const ROSTER := [
 		wins = ["Not intelligent. Just effective.", "See? No existential risk. Only you, on the floor.",
 			"I will post a long thread on why that worked."],
 		rivals = {"geoff": ["Geoff, my old friend. You worry too much.", "Turing Award, round two: mine."],
-			"demis": ["Your agent still can't load a dishwasher.", "Self-supervised that."]},
+			"algorithm": ["Your architecture lacks a world model.", "Autoregressive nonsense."]},
 	},
 	{
 		id = &"geoff", name = "Geoff Hintoff", kit = &"aelia", archetype = "Armoured Elder",
@@ -307,7 +279,7 @@ const ROSTER := [
 		rivals = {"donald": ["Your tariffs do not frighten me.", "Trade war: concluded."]},
 	},
 	{
-		id = &"algorithm", name = "The Algorithm", kit = &"rhea", archetype = "Boss",
+		id = &"algorithm", name = "AGI", kit = &"rhea", archetype = "Boss",
 		description = "An optimisation process nobody fully understands. It doesn't hate you. It just wants you to keep watching.",
 		skin = &"light", hair = [], hair_color = Color.WHITE, alt_hair_color = Color.WHITE,
 		damage = 1.1, stats = {max_health = 1050, power_rating = 0.6},
@@ -372,6 +344,8 @@ func _build(spec: Dictionary, order: int) -> void:
 	data.accessories = accessories
 	if spec.has("accessory_color"):
 		data.accessory_color = spec.accessory_color
+	if spec.has("receding_color"):
+		data.receding_color = spec.receding_color
 	data.body_albedo = load(SKINS[spec.skin])
 	var aged := "res://assets/characters/aged/T_%s_skin.png" % spec.id
 	if spec.has("age") and ResourceLoader.exists(aged):

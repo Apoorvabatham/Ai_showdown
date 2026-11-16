@@ -10,13 +10,13 @@ A parody 2-player 3D fighting game for an AI-safety student campaign, forked fro
 [3D Fighter](https://github.com/clintcan/3d-fighter) by Clint Christopher Canada (code MIT,
 assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **4.7.2**.
 
-- 12 parody fighters in `data/characters/` (generated, see §4), built on the 8 original
+- 11 parody fighters in `data/characters/` (generated, see §4), built on the 8 original
   fighters, which live on as **kits** in `data/kits/` (movesets, CPU personalities,
   showcase routines). `CharacterData.kit` links them.
 - 3 stages: Server Farm, Mensa, Senate Hearing Room (`scenes/stages/server_farm.tscn`,
   `mensa.tscn`, `senate.tscn`, inheriting the original rooftop, dojo and ring scenes, plus
   `scripts/stages/stage_retheme.gd`).
-- Modes: Vs CPU, Versus, Training, Arcade (final boss: The Algorithm), Demo. Online is
+- Modes: Vs CPU, Versus, Training, Arcade (final boss: AGI), Demo. Online is
   hidden (`SHOW_ONLINE` in `scripts/ui/main_menu.gd`). Best of 3.
 - Disclaimer (title + main menu + splash): "Parody. Not affiliated with or endorsed by any
   real person or company."
@@ -44,11 +44,10 @@ assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **
 | yann | Yann LeCant | **Approved** | age 65, robust barrel-chested academic heavyweight build, square jaw with subtle 5 o'clock stubble shadow, rectangular glasses, wavy salt-and-pepper hair, knowing French smirk, academic charcoal blazer with lapels over light blue open-collar shirt, dark denim jeans, brown leather dress shoes. |
 | geoff | Geoff Hintoff | **Approved** | age 78, slender tall stooped elder build, long narrow face, age-78 creases and age spots, wispy silver-white thinning hair, arched brows of perpetual concern, knit oatmeal cardigan sweater with contrast button band and 4 horn buttons, pale blue Oxford shirt, charcoal wool trousers, brown walking shoes. |
 | ram | Ram Altman | **Approved** | age 41, trim athletic build, youthful oval jaw, wide intense blue eyes, close-cropped buzz cut (Hair_Buzzed), alert tech-founder rest expression, fitted charcoal tee with official OpenAI emblem & typography print, slim dark wash denim jeans, white sneakers. |
-| dario | Dario Amoday | **Review Ready** | age 43, measured scholar build, soft oval academic jaw, rounded chin, thoughtful broader nose, earnest contemplative brow furrow, handcrafted voluminous curly mop hair (Hair_CurlyMop) with 3D curl harmonics, ink navy fine-gauge knit crewneck pullover, pleated khaki cotton chinos, walnut brown leather dress shoes. |
-| demis | Demis Hasabist | **Review Ready** | age 50, compact athletic tactician build, defined oval jaw, straight nose, analytical dark brown eyes with focused calculating brow, grandmaster receding hair (Hair_RecedingGrandmaster), midnight navy European-cut suit with crisp open-collar white shirt and black oxfords. |
-| algorithm | The Algorithm | **Review Ready** | Final boss (kit rhea), tall 1.1 scale synthetic boss build, sleek obsidian bodysuit with glowing cyan energy conduits & visor sensor, alt white chassis with magenta neon lines. |
+| dario | Dario Amoday | **Approved** | age 43, measured scholar build, soft oval academic jaw, rounded chin, thoughtful broader nose, earnest contemplative brow furrow, prominent voluminous handcrafted curly mop hair (Hair_CurlyMop) with 3D curl spirals, thick dark glasses, terracotta cotton tee with Anthropic print, dark indigo jeans, off-white sneakers. |
+| algorithm | AGI | **Review Ready** | Final boss (kit rhea), tall 1.1 scale synthetic boss build, sleek obsidian bodysuit with glowing cyan energy conduits & visor sensor, alt white chassis with magenta neon lines. |
 
-Suggested order: yann → geoff → ram → dario → demis → algorithm.
+Suggested order: yann → geoff → ram → dario → algorithm.
 Make each one **completely distinct** from the approved ones (silhouette, posture, hair, face
 shape, colours); the owner rejected subtle differences.
 

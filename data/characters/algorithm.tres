@@ -30,10 +30,10 @@
 [resource]
 script = ExtResource("23_4wtgs")
 id = &"algorithm"
-display_name = "The Algorithm"
+display_name = "AGI"
 archetype = "Boss"
 description = "An optimisation process nobody fully understands. It doesn't hate you. It just wants you to keep watching."
-select_order = 11
+select_order = 10
 kit = &"rhea"
 voice_fallback = &"jin"
 portrait = ExtResource("25_soqyl")
