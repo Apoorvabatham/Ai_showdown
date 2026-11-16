@@ -328,8 +328,8 @@ func _showdown_specs() -> Dictionary:
 		"jensen": _leather_jacket_spec(black_leather, Color(0.2, 0.2, 0.21), Color(0.08, 0.08, 0.09),
 			Color(0.3, 0.18, 0.1), Color(0.12, 0.12, 0.13), Color(0.2, 0.2, 0.22)),
 		"demis": _suit_spec(navy, white_shirt, null, Color(0.05, 0.05, 0.05), Color(0.25, 0.25, 0.27), Color(0.6, 0.7, 0.8)),
-		"yann": _suit_spec(Color(0.16, 0.16, 0.17), Color(0.55, 0.65, 0.8), null, Color(0.05, 0.05, 0.05),
-			Color(0.3, 0.22, 0.14), white_shirt),
+		"yann": _blazer_spec(Color(0.16, 0.16, 0.18), Color(0.68, 0.74, 0.85), Color(0.11, 0.14, 0.22),
+			Color(0.24, 0.15, 0.10), Color(0.30, 0.32, 0.35), Color(0.10, 0.10, 0.12)),
 		"geoff": _cardigan_spec(Color(0.55, 0.47, 0.36), Color(0.28, 0.2, 0.13), Color(0.3, 0.3, 0.32), Color(0.66, 0.74, 0.82),
 			Color(0.2, 0.26, 0.2), Color(0.12, 0.12, 0.12)),
 		"sundar": _tee_spec(Color(0.12, 0.12, 0.13), Color(0.18, 0.22, 0.28), Color(0.08, 0.08, 0.08),
@@ -388,6 +388,48 @@ func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit:
 		colors = [suit, shoes, tie if tie != null else shirt, shirt, suit.darkened(0.5)],
 		alt_colors = [alt_suit, Color(0.2, 0.12, 0.06), alt_tie, Color(0.85, 0.85, 0.83), alt_suit.darkened(0.5)],
 		fabrics = [&"cotton", &"leather", &"stretch", &"cotton", &"leather"],
+	}
+
+
+## Academic blazer over an open-collared shirt with dark denim jeans and leather shoes.
+## Slots: blazer (MAIN), shoes (TRIM), jeans (ACCENT), shirt (EXTRA), button (DETAIL).
+func _blazer_spec(blazer: Color, shirt: Color, jeans: Color, shoes: Color,
+		alt_blazer: Color, alt_jeans: Color) -> Dictionary:
+	var pieces := func(L: Dictionary) -> Array:
+		var v_bottom: float = (L.chest + L.waist) * 0.5 - 0.02
+		var hem: float = L.hip - 0.10
+		var jacket := func(p, n): return minf(_top(p, L, hem, L.wrist - 0.045), -_v_cut(p, n, L, v_bottom, 0.10))
+		var shirt_region := func(p: Vector3, n: Vector3) -> float:
+			var band := minf(minf(p.y - (L.waist - 0.06), (L.neck + 0.022) - p.y), (L.wrist - 0.03) - absf(p.x))
+			var throat_v := _v_cut(p, n, L, L.neck - 0.04, 0.042)
+			return minf(band, -throat_v)
+		return [
+			# Blazer to below the hips, long sleeves, open in a broad V
+			{slot = Slot.MAIN, offset = 0.022, region = jacket},
+			# Lapels: a raised band along both edges of the V
+			{slot = Slot.MAIN, offset = 0.028, hide = false, stitches = false, region = func(p, n):
+				return minf(jacket.call(p, n), _v_cut(p, n, L, v_bottom, 0.10) + 0.032)},
+			# Horn button below the V
+			{slot = Slot.DETAIL, offset = 0.026, hide = false, stitches = false, region = func(p, n):
+				if p.z <= 0.0 or n.z < 0.5:
+					return -1.0
+				var b1 := 0.009 - Vector2(p.x, p.y - (v_bottom - 0.04)).length()
+				return b1},
+			# Open-collar dress shirt
+			{slot = Slot.EXTRA, offset = 0.008, region = shirt_region},
+			# Dark denim jeans
+			{slot = Slot.ACCENT, offset = 0.013, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.03),
+				drape = _pants_drape(L, {base = 0.013, flare = 0.01, hem = L.ankle + 0.03, amount = 0.6, cover = hem, cover_max = 0.016,
+					pin = func(p: Vector3) -> bool: return p.y > hem})},
+			# Brown leather shoes
+			{slot = Slot.TRIM, offset = 0.016, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},
+		]
+	return {
+		detailed = true,
+		pieces = pieces,
+		colors = [blazer, shoes, jeans, shirt, Color(0.12, 0.11, 0.10)],
+		alt_colors = [alt_blazer, Color(0.12, 0.1, 0.08), alt_jeans, Color(0.85, 0.85, 0.88), Color(0.2, 0.2, 0.2)],
+		fabrics = [&"cotton", &"leather", &"denim", &"cotton", &"leather"],
 	}
 
 

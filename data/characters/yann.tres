@@ -1,7 +1,6 @@
 [gd_resource type="Resource" script_class="CharacterData" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Dark.png" id="1_f3xt4"]
-[ext_resource type="Texture2D" path="res://assets/characters/base/T_Superhero_Male_Light.png" id="2_fvbhp"]
+[ext_resource type="Texture2D" path="res://assets/characters/aged/T_yann_skin.png" id="1_bsh8p"]
 [ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_8thui"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Grey.png" id="3_c3rmk"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_bsh8p"]
@@ -41,40 +40,63 @@ voice_fallback = &"brutus"
 portrait = ExtResource("26_bsh8p")
 model_scene = ExtResource("4_bsh8p")
 hair_scenes = Array[PackedScene]([ExtResource("3_8thui")])
-body_albedo = ExtResource("2_fvbhp")
-hair_color = Color(0.32, 0.31, 0.3, 1)
-alt_body_albedo = ExtResource("1_f3xt4")
-alt_hair_color = Color(0.12, 0.1, 0.09, 1)
+body_albedo = ExtResource("1_bsh8p")
+hair_color = Color(0.24, 0.23, 0.23, 1)
+alt_body_albedo = ExtResource("1_bsh8p")
+alt_hair_color = Color(0.48, 0.47, 0.46, 1)
 outfit_mesh = ExtResource("25_bsh8p")
 outfit_body_mesh = ExtResource("24_8thui")
-outfit_colors = PackedColorArray(0.16, 0.16, 0.17, 1, 0.05, 0.05, 0.05, 1, 0.55, 0.65, 0.8, 1, 0.55, 0.65, 0.8, 1, 0.08, 0.08, 0.085, 1)
-outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton", &"leather"])
-alt_outfit_colors = PackedColorArray(0.3, 0.22, 0.14, 1, 0.2, 0.12, 0.06, 1, 0.82, 0.82, 0.8, 1, 0.85, 0.85, 0.83, 1, 0.15, 0.11, 0.07, 1)
+outfit_colors = PackedColorArray(0.16, 0.16, 0.18, 1, 0.24, 0.15, 0.1, 1, 0.11, 0.14, 0.22, 1, 0.68, 0.74, 0.85, 1, 0.12, 0.11, 0.1, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"denim", &"cotton", &"leather"])
+alt_outfit_colors = PackedColorArray(0.3, 0.32, 0.35, 1, 0.12, 0.1, 0.08, 1, 0.1, 0.1, 0.12, 1, 0.85, 0.85, 0.88, 1, 0.2, 0.2, 0.2, 1)
 detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_flex", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.6, 0.3, 0.85, 1)
 body_shape = {
-&"Head": Vector3(1.04, 1.02, 1.03),
-&"neck_01": Vector3(1.1, 1, 1.1),
-&"pelvis": Vector3(1.08, 1, 1.1),
-&"spine_01": [Vector3(1.18, 1, 1.25), Vector3(0, 0, 0.015)],
-&"spine_02": Vector3(1.1, 1, 1.15)
+&"Head": Vector3(1.05, 1.02, 1.04),
+&"calf": Vector3(1.08, 1, 1.08),
+&"lowerarm": Vector3(1.12, 1, 1.12),
+&"neck_01": Vector3(1.12, 1, 1.12),
+&"pelvis": Vector3(1.1, 1, 1.12),
+&"spine_01": [Vector3(1.22, 1, 1.25), Vector3(0, 0, 0.02)],
+&"spine_02": Vector3(1.18, 1, 1.2),
+&"spine_03": Vector3(1.2, 1, 1.22),
+&"thigh": Vector3(1.1, 1, 1.1),
+&"upperarm": Vector3(1.16, 1, 1.16)
 }
 face_shape = {
-&"brow": 0.002,
-&"chin": 0.001,
-&"eye_open": -0.0005,
-&"fullness": 0.005,
-&"jaw": 1.08,
-&"nose_width": 1.12
+"age": 65,
+&"brow": 0.003,
+&"chin": 0.004,
+&"chin_forward": 0.003,
+&"eye_open": -0.0004,
+&"eye_tilt": 0.0002,
+&"fullness": 0.004,
+&"jaw": 1.1,
+&"jowls": 0.003,
+&"nose_bridge": 0.003,
+&"nose_length": 0.004,
+&"nose_width": 1.1
 }
+brow_scale = Vector3(1.1, 1.08, 1)
+hair_scale = Vector3(1.12, 1.18, 1.14)
+hair_offset = Vector3(0.002, 0.008, -0.003)
 eye_texture = ExtResource("3_c3rmk")
 face_rest = {
-&"brow_down": 0.45,
-&"grimace": 0.15
+&"brow_down": 0.32,
+&"brow_up": 0.12,
+&"grimace": 0.1,
+&"smile": 0.28
+}
+posture = {
+&"Head": Vector3(-4, 0, 0),
+&"neck_01": Vector3(3, 0, 0),
+&"spine_01": Vector3(2, 0, 0),
+&"spine_02": Vector3(2, 0, 0)
 }
 accessories = Array[StringName]([&"glasses"])
+accessory_color = Color(0.12, 0.12, 0.14, 1)
 intro_animation = &"fight/intro_knuckles"
 intro_expression = &"grin"
 intro_lines = PackedStringArray("Your fist has a weaker world model than a house cat.", "Doom? Please. My Roomba is more dangerous.", "Let me explain why you are wrong. Physically.")

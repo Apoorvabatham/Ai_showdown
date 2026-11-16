@@ -120,6 +120,50 @@ def paint_sundar_beard(out, L, mapper, W, H):
     return out * (1.0 - b_arr * 0.72) + stubble_col * (b_arr * 0.72)
 
 
+def paint_yann_stubble(out, L, mapper, W, H):
+    """Paints Yann LeCun's signature light 5 o'clock stubble shadow around the jaw, chin, and upper lip."""
+    b_mask = Image.new("L", (W * SS, H * SS), 0)
+    b_draw = ImageDraw.Draw(b_mask)
+    seam = L["seam"]
+
+    # 1. Upper lip mustache shadow
+    m_pts = []
+    for xi in np.linspace(-0.024, 0.024, 25):
+        m_pts.append((xi, seam + 0.003 + 0.003 * (1.0 - (xi / 0.024)**2)))
+    for xi in np.linspace(0.022, -0.022, 25):
+        m_pts.append((xi, seam + 0.016 + 0.003 * (1.0 - (xi / 0.022)**2)))
+    uv_m = mapper([p[0] for p in m_pts], [p[1] for p in m_pts])
+    b_draw.polygon([(u * W * SS, v * H * SS) for u, v in uv_m], fill=130)
+
+    # 2. Chin & soul patch stubble
+    c_poly = []
+    for xi in np.linspace(-0.035, 0.035, 25):
+        c_poly.append((xi, seam - 0.010))
+    for xi in np.linspace(0.042, -0.042, 30):
+        c_poly.append((xi, seam - 0.052 - 0.01 * (1.0 - (xi / 0.042)**2)))
+    uv_c = mapper([p[0] for p in c_poly], [p[1] for p in c_poly])
+    b_draw.polygon([(u * W * SS, v * H * SS) for u, v in uv_c], fill=150)
+
+    # 3. Jawline shadow
+    for s in [-1, 1]:
+        strap = [
+            (s * 0.028, seam - 0.022),
+            (s * 0.050, seam - 0.005),
+            (s * 0.058, seam + 0.015),
+            (s * 0.048, seam + 0.018),
+            (s * 0.040, seam - 0.002),
+            (s * 0.024, seam - 0.028)
+        ]
+        uv_strap = mapper([p[0] for p in strap], [p[1] for p in strap])
+        b_draw.polygon([(u * W * SS, v * H * SS) for u, v in uv_strap], fill=120)
+
+    b_mask = b_mask.resize((W, H), Image.Resampling.LANCZOS).filter(ImageFilter.GaussianBlur(3.5))
+    b_arr = np.asarray(b_mask, np.float32)[..., None] / 255.0
+
+    stubble_col = np.array([45, 42, 44], dtype=np.float32)
+    return out * (1.0 - b_arr * 0.32) + stubble_col * (b_arr * 0.32)
+
+
 def paint(skin_path, L, mapper, age, seed, fighter_id=""):
     img = Image.open(skin_path).convert("RGB")
     W, H = img.size
@@ -148,6 +192,11 @@ def paint(skin_path, L, mapper, age, seed, fighter_id=""):
     if fighter_id == "sundar":
         # Keep warm golden undertone, avoid washing out with pale grey
         out = paint_sundar_beard(out, L, mapper, W, H)
+    elif fighter_id == "yann":
+        out = paint_yann_stubble(out, L, mapper, W, H)
+        grey = out.mean(-1, keepdims=True)
+        out = out + (grey - out) * 0.06 * k
+        out = out + (np.array([250, 238, 228]) - out) * 0.04 * k
     else:
         # Older skin: slightly paler and less saturated.
         grey = out.mean(-1, keepdims=True)
