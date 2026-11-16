@@ -201,8 +201,8 @@ bind/64/name = &"ball_leaf_r"
 bind/64/bone = -1
 bind/64/pose = Transform3D(-1, -1.2621747e-28, -2.1175776e-22, 2.3535266e-16, 5.9604514e-07, 0.99999774, 0, 1, 0, -0.0906, -0.13359971, -0.015200001)
 
-[node name="Hair_UndercutPomp" type="Node3D" unique_id=252796294]
+[node name="Hair_UndercutPomp" type="Node3D" unique_id=164366946]
 
-[node name="Hair_UndercutPomp" type="MeshInstance3D" parent="." unique_id=1821457307]
+[node name="Hair_UndercutPomp" type="MeshInstance3D" parent="." unique_id=436101015]
 mesh = ExtResource("1_lf6na")
 skin = SubResource("Skin_gw14a")

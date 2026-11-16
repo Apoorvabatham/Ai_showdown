@@ -44,7 +44,12 @@ func _process(delta: float) -> void:
 			var flasher: Array = _flashers[randi() % _flashers.size()]
 			var light: OmniLight3D = flasher[0]
 			light.light_energy = flasher[1] * 4.5
+			if light.has_meta(&"flash_tween"):
+				var prev_tw = light.get_meta(&"flash_tween")
+				if is_instance_valid(prev_tw) and prev_tw.is_running():
+					prev_tw.kill()
 			var tw := create_tween()
+			light.set_meta(&"flash_tween", tw)
 			tw.tween_property(light, "light_energy", 0.0, 0.14).set_ease(Tween.EASE_OUT)
 
 
@@ -437,3 +442,18 @@ func _remove(stage: Node, node_name: String) -> void:
 	var node := stage.get_node_or_null(node_name)
 	if node:
 		node.queue_free()
+
+
+func _ambience(stream_path: String, volume_db: float) -> void:
+	if not ResourceLoader.exists(stream_path):
+		return
+	var stream: AudioStream = load(stream_path)
+	if stream is AudioStreamOggVorbis:
+		stream = stream.duplicate()
+		(stream as AudioStreamOggVorbis).loop = true
+	var player := AudioStreamPlayer.new()
+	player.stream = stream
+	player.bus = &"Ambience"
+	player.volume_db = volume_db
+	add_child(player)
+	player.play()

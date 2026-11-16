@@ -347,6 +347,10 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 				frame.albedo_color = data.accessory_color
 				frame.roughness = 0.4
 				frame.metallic = 0.15
+				var lens := StandardMaterial3D.new()
+				lens.albedo_color = Color(0.75, 0.85, 0.95, 0.18)
+				lens.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				lens.roughness = 0.05
 				for side in [-1.0, 1.0]:
 					var center: Vector3 = eyes + Vector3(side * 0.036, 0.004, 0.030)
 					var ring := TorusMesh.new()
@@ -355,6 +359,11 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 					ring.rings = 32
 					ring.ring_segments = 8
 					_piece(root, ring, frame, center, Vector3(PI / 2, 0, 0), Vector3(1.06, 0.88, 0.9))
+					var glass := CylinderMesh.new()
+					glass.top_radius = 0.022
+					glass.bottom_radius = 0.022
+					glass.height = 0.002
+					_piece(root, glass, lens, center, Vector3(PI / 2, 0, 0), Vector3(1.06, 0.88, 1.0))
 					var arm := BoxMesh.new()
 					arm.size = Vector3(0.005, 0.006, 0.09)
 					_piece(root, arm, frame, eyes + Vector3(side * 0.064, 0.006, -0.012), Vector3(0, side * 0.1, 0))
