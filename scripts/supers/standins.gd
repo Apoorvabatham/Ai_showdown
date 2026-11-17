@@ -82,6 +82,34 @@ static func rocket() -> Node3D:
 	return root
 
 
+## A flag on a ~2.5 m pole; `Cloth` carries `text` on both sides.
+static func flag(text: String, cloth_color: Color, text_color: Color) -> Node3D:
+	var root := Node3D.new()
+	root.name = "Flag"
+	var pole := MeshInstance3D.new()
+	var rod := CylinderMesh.new()
+	rod.top_radius = 0.03
+	rod.bottom_radius = 0.03
+	rod.height = 2.6
+	pole.mesh = rod
+	pole.material_override = metal(Color(0.8, 0.8, 0.82), 0.9, 0.3)
+	pole.position.y = 1.3
+	root.add_child(pole)
+	var cloth := box(Vector3(1.3, 0.8, 0.02), Vector3(0.68, 2.15, 0), metal(cloth_color, 0.0, 0.8), "Cloth")
+	root.add_child(cloth)
+	for side in [1.0, -1.0]:
+		var label := Label3D.new()
+		label.text = text
+		label.font_size = 64
+		label.pixel_size = 0.004
+		label.modulate = text_color
+		label.outline_size = 0
+		label.position = Vector3(0, 0, 0.012 * side)
+		label.rotation.y = 0.0 if side > 0.0 else PI
+		cloth.add_child(label)
+	return root
+
+
 ## Exhaust: a glowing cone pointing down plus fire and smoke particles.
 static func flame_node(size: float) -> Node3D:
 	var root := Node3D.new()

@@ -12,6 +12,7 @@ func _initialize() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(DIR))
 	_write("launch_pad", _launch_pad())
 	_write("space", _space())
+	_write("mars", _mars())
 	quit()
 
 
@@ -101,6 +102,35 @@ func _space() -> Node3D:
 	_marker(root, "Reentry_Start", Vector3(1, 7, 2))
 	_marker(root, "Reentry_End", Vector3(-1, -9, -2))
 	_marker(root, "Cam_Space", Vector3(0, 3, 18))
+	return root
+
+
+# tesla man's victory: a dusty red plain on Mars. He walks from the landed rocket
+# (`Rocket`) to `Flag` and plants it; `Winner` is where he ends up.
+func _mars() -> Node3D:
+	var root := Node3D.new()
+	var env := _sky(Color(0.75, 0.55, 0.45), Color(0.95, 0.7, 0.5), Color(0.4, 0.2, 0.12))
+	env.fog_enabled = true
+	env.fog_light_color = Color(0.85, 0.55, 0.4)
+	env.fog_density = 0.012
+	root.add_child(_environment(env, 0.8))
+	root.add_child(_sun(Vector3(-30, -50, 0), Color(1.0, 0.85, 0.7), 1.2))
+	root.add_child(_plane(Vector2(200, 200), Vector3.ZERO, _mat(Color(0.62, 0.3, 0.17), 0.95)))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 11
+	for i in 40:
+		var spot := Vector3(rng.randf_range(-40, 40), 0, rng.randf_range(-45, 8))
+		if spot.length() < 6.0:
+			continue
+		var size := rng.randf_range(0.3, 1.6)
+		root.add_child(_sphere(size, spot + Vector3(0, size * 0.3, 0), _mat(Color(0.45, 0.22, 0.13), 0.9)))
+	for i in 3: # far hills
+		root.add_child(_sphere(25.0, Vector3(-60 + 60 * i, -14, -90), _mat(Color(0.55, 0.28, 0.17), 1.0)))
+	_marker(root, "Rocket", Vector3(-5, 0, -4))
+	_marker(root, "Winner", Vector3(0, 0, 0))
+	_marker(root, "Flag", Vector3(1.1, 0, -0.4))
+	_marker(root, "Cam_Wide", Vector3(5, 2.4, 8))
+	_marker(root, "Cam_Hero", Vector3(1.2, 0.6, 3.2))
 	return root
 
 

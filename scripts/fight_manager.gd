@@ -23,6 +23,8 @@ signal projectile_reflected(reflector: Fighter, point: Vector3)
 ## A super with a scene (MoveData.cinematic) hit: the fight is frozen for its
 ## cinematic_ticks while SuperScenePlayer plays the scene (cosmetic).
 signal cinematic_started(attacker: Fighter, defender: Fighter, move: MoveData)
+## The match is won (cosmetic hook: VictoryScenePlayer plays the winner's victory scene).
+signal match_won(winner: Fighter)
 ## A fighter's move stole super meter from the opponent (MoveData.drain_meter).
 signal meter_drained(attacker: Fighter, amount: int)
 
@@ -170,6 +172,10 @@ func _ready() -> void:
 	scenes.name = "SuperScenePlayer"
 	add_child(scenes)
 	scenes.setup(self)
+	var victories := VictoryScenePlayer.new()
+	victories.name = "VictoryScenePlayer"
+	add_child(victories)
+	victories.setup(self)
 	_waiting_for_screen = not is_online() and DisplayServer.get_name() != "headless"
 	if _waiting_for_screen:
 		_start_when_on_screen()
@@ -445,6 +451,8 @@ func _after_round() -> void:
 ## title and result menu follow on the tick (see _tick_round).
 func _start_victory(winner: Fighter) -> void:
 	match_winner = winner
+	if not resimulating:
+		match_won.emit(winner)
 	var clips := winner.data.victory_animations
 	winner.start_victory(clips[_cosmetic_rng.randi() % clips.size()] if not clips.is_empty() else &"")
 	if resimulating:

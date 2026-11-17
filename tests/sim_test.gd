@@ -1213,7 +1213,8 @@ func replay_tests() -> void:
 	# Rematch in the same scene: the second recording must start from a clean state too.
 	var end_b := _cpu_match(fight, 777)
 	var second: Replay = fight.recorder.saved
-	check("Replays: a rematch is saved as a second replay", second != first and Replay.list().size() == 2)
+	check("Replays: a rematch is saved as a second replay", second != first and Replay.list().size() == 2,
+		"same %s, %d listed, phase %d, wins %s" % [second == first, Replay.list().size(), fight.phase, fight.round_wins])
 
 	var loaded := Replay.load_file(first.path)
 	check("Replays: the file round-trips (inputs, checksums, meta)", loaded != null and loaded.p1 == first.p1 and loaded.p2 == first.p2
@@ -5069,6 +5070,17 @@ func showdown_tests() -> void:
 	await process_frame; await process_frame
 	check("Super scene: the fight resumes after the scene", scenes.scene == null and sf.stage.visible and rp1.visible
 		and sf.freeze_ticks == 0 and rp2.health == hp_after_hit and sf.camera.current, "freeze %d" % sf.freeze_ticks)
+
+	# Victory scene: tesla man's Mars flag plays when he wins the match, until a new match.
+	var victories = sf.get_node("VictoryScenePlayer")
+	sf.phase = sf.Phase.MATCH_OVER
+	sf._start_victory(rp1)
+	await process_frame; await process_frame
+	check("Victory scene: tesla man plants his flag on Mars", victories.scene != null
+		and victories.scene.find_child("mars", true, false) != null and not sf.stage.visible)
+	sf.start_match()
+	await process_frame
+	check("Victory scene: ends when a new match starts", victories.scene == null and sf.stage.visible)
 
 	# Arcade: AGI is the final boss; picking it gives the shadow boss instead.
 	var algorithm: CharacterData = gs.find_character(gs.FINAL_BOSS)
