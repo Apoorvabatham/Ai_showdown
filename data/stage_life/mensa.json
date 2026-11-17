@@ -1,0 +1,58 @@
+{
+  "actors": [
+    {"npc": "cook", "pos": [0.0, 0.0, -9.0], "yaw": 0, "pose": "work", "reacts": ["point", "cheer", "bang_table"], "role": "staff"},
+    {"npc": "cashier", "pos": [4.2, 0.0, -8.4], "yaw": -20, "pose": "work", "reacts": ["gasp", "cheer", "point"], "role": "staff"},
+    {"npc": "student_1", "pos": [-4.5, 0.0, -5.3], "yaw": 0, "pose": "sit", "reacts": ["cheer", "gasp", "stand_up"], "role": "crowd"},
+    {"npc": "student_2", "pos": [-3.7, 0.0, -6.7], "yaw": 180, "pose": "sit", "reacts": ["bang_table", "cheer", "clap"], "role": "crowd"},
+    {"npc": "student_3", "pos": [-0.8, 0.0, -5.3], "yaw": 0, "pose": "sit", "reacts": ["point", "gasp", "cheer"], "role": "crowd"},
+    {"npc": "student_4", "pos": [0.8, 0.0, -6.7], "yaw": 180, "pose": "sit", "reacts": ["clap", "cheer", "stand_up"], "role": "crowd"},
+    {"npc": "student_5", "pos": [3.7, 0.0, -5.3], "yaw": 0, "pose": "sit", "reacts": ["gasp", "point", "cheer"], "role": "crowd"},
+    {"npc": "student_6", "pos": [4.5, 0.0, -6.7], "yaw": 180, "pose": "sit", "reacts": ["bang_table", "cheer", "clap"], "role": "crowd"},
+    {"npc": "student_7", "pos": [-7.0, 0.0, -3.2], "yaw": 30, "pose": "stand", "reacts": ["gasp", "point", "cheer"], "role": "crowd"},
+    {"npc": "student_8", "pos": [-8.2, 0.0, -4.0], "yaw": 45, "pose": "stand", "reacts": ["cheer", "clap"], "role": "crowd"},
+    {"npc": "student_9", "pos": [7.0, 0.0, -3.2], "yaw": -30, "pose": "stand", "reacts": ["point", "cheer", "clap"], "role": "crowd"},
+    {"npc": "student_10", "pos": [8.0, 0.0, -4.0], "yaw": -45, "pose": "lean", "reacts": ["gasp", "point"], "role": "crowd"},
+    {"npc": "grad_student", "pos": [-2.5, 0.0, -7.5], "yaw": 15, "pose": "stand", "reacts": ["gasp", "point", "stand_up"], "role": "crowd"}
+  ],
+  "shouts": {
+    "round_start": [
+      "Lunch break is on!",
+      "Clear the cafeteria!",
+      "Two entering, one gets dessert!",
+      "Fight for the last schnitzel!"
+    ],
+    "big_hit": [
+      "My soup!",
+      "Clean up on table four!",
+      "That's coming out of your stipend!",
+      "Did you see that tray fly?!"
+    ],
+    "super": [
+      "FOOD FIGHT!",
+      "Quantum leap in action!",
+      "Check their learning rate!",
+      "Call campus security!"
+    ],
+    "ko": [
+      "Down goes the postdoc!",
+      "Check please!",
+      "Tab is settled!",
+      "Paper rejected with prejudice!"
+    ],
+    "throw": [
+      "Watch the salad bar!",
+      "Direct hit on the tray stack!"
+    ],
+    "wall_hit": [
+      "Rattled the vending machine!",
+      "Watch the menu board!"
+    ]
+  },
+  "events": {
+    "round_start": ["food_fight"],
+    "super": ["food_fight", "sparks"],
+    "ko": ["food_fight"],
+    "throw": ["food_fight"],
+    "wall_hit": ["steam_burst"]
+  }
+}
