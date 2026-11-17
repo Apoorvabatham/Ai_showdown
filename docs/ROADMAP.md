@@ -140,8 +140,9 @@ How it is built (Claude, C7–C8):
   the stage, with its own camera, puppets of both fighters (their real models, scaled or
   posed), props, effects and sounds. It never touches the simulation.
 - Victory scenes: `scripts/supers/victory/<id>.gd`, played when the match is won.
-- Props: built in code first (like the search bar and GPU); OpenCode (O2) can replace them
-  with better models in `assets/props/supers/<id>/`.
+- Looks: Claude builds simple stand-ins; **OpenCode** makes props and people look real
+  (`assets/props/supers/<id>/`), **Gemini** makes the sets look real (`scenes/supers/sets/`,
+  TASKS.md §3.5).
 
 ## 3. Living, realistic stages
 
@@ -197,7 +198,9 @@ sounds.
   Idle_TalkingPhone, Dance, Yes / No, Sitting_*...).
 - New fight clips are authored in code with the pose/IK toolkit in
   `tools/build_fight_animations.gd` (output `assets/animations/fight_anims.res`, library `fight/`).
-- New clips for movesets and supers: Claude. NPC clips come straight from UAL.
+- New per-fighter clips (fighting styles, power moves, super poses): **OpenCode**, in their
+  own library `style/` (TASKS.md §3.6); Claude wires them into moves. NPC clips come straight
+  from UAL.
 - More CC0 packs (Quaternius) may be added; Mixamo needs a manual download by the owner.
 
 ## 7. Order of work

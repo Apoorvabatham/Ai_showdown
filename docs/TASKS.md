@@ -5,9 +5,13 @@ and traps are in [HANDOFF.md](HANDOFF.md). **Read both before your first task.**
 
 | Agent | Strength | Owns |
 |---|---|---|
-| **Claude** (Claude Code) | Fast; orchestrator | Core code: fight engine, moves, supers, AI, stage-life framework, modes, tests, this board |
-| **OpenCode** (DeepSeek) | Character design | Fighter looks (likeness pass), NPC character models, super props |
-| **Gemini** | Steady, thorough | Stage realism and dressing, CC0 asset sourcing, stage sounds, story writing, docs |
+| **Claude** (Claude Code) | Fast; orchestrator | Core code and logic: fight engine, moves, supers' gameplay and choreography, AI, frameworks, modes, tests, this board. Visuals only as **simple stand-ins** |
+| **OpenCode** (DeepSeek) | Character design | **Everything about how people and objects look**: fighter looks (likeness pass), NPCs, super props, fight animations' poses |
+| **Gemini** | Steady, thorough | **Everything about how places look**: stages, super-scene sets, victory-scene sets, lighting and post-processing; assets, sounds, story, docs |
+
+**Rule of thumb (owner, Nov 2026):** making things *look real* (characters, maps, sets, props,
+lighting, materials, animation poses) is OpenCode's or Gemini's job. Claude builds the logic
+and a simple stand-in, then hands the look over through a contract (§3).
 
 The owner (the human) approves fighter looks, movesets and anything visual, and decides
 what is next.
@@ -52,6 +56,8 @@ what is next.
 | `assets/characters/**`, `assets/ui/portraits/**`, `assets/ui/cutins/**` | OpenCode |
 | `tools/build_npcs.gd`, `data/npcs/**`, `tools/build_super_props.gd`, `assets/props/**` | OpenCode |
 | `scripts/stages/**` (incl. `stage_retheme.gd`), `scenes/stages/**` | Gemini |
+| `scenes/supers/sets/**` (super- and victory-scene sets, contract §3.5; Claude creates each stand-in first) | Gemini |
+| `tools/build_style_animations.gd`, `assets/animations/style_anims.res` (contract §3.6) | OpenCode |
 | `assets/stage_props/**`, `assets/audio/stage/**`, `data/stage_life/**`, `data/story/**` | Gemini |
 | `assets/CREDITS.md`, `LICENSE-ASSETS.md` | anyone adding assets (append only) |
 | `README.md`, `docs/**` (except this board, ROADMAP and status files) | Gemini for prose; anyone may fix facts |
@@ -108,6 +114,25 @@ Poses: `stand`, `sit`, `lean`, `work`. Reactions: `cheer`, `gasp`, `clap`, `poin
 Coordinates: stage space, fight area is about x ∈ [-6, 6], z ∈ [-2, 2]; keep actors outside
 it and out of the camera's way.
 
+### 3.5 Super- and victory-scene sets (Claude stand-in → Gemini makes it real)
+- One scene file per set: `scenes/supers/sets/<set>.tscn` (e.g. `launch_pad`, `space`,
+  `mars`, `oval_office_desk`, `metaverse`, `browser`), root `Node3D`, no scripts.
+- It holds the **place**: floor, walls, sky / `WorldEnvironment`, lights, static dressing.
+- It must keep the **Marker3D anchors** Claude's stand-in has (names like `Attacker`,
+  `Opponent`, `Prop_Rocket`, `Cam_1`, `Cam_2`...): Claude's scene script puts the fighters,
+  props and cameras on them. Move them if needed; don't rename or delete them.
+- The set sits far from the stage (Claude places it); keep it within about 30 × 30 m.
+- Claude adds the task to §4 when a stand-in exists ("G8: dress `<set>`").
+
+### 3.6 Fight animations (OpenCode → Claude)
+- New per-fighter punches, kicks, movement, power-move and super poses go in their own
+  library: `tools/build_style_animations.gd` builds `assets/animations/style_anims.res`
+  (library name `style`, clips `style/<fighter_id>_<move>`), with the same pose/IK toolkit as
+  `tools/build_fight_animations.gd` (copy what you need; don't edit that file).
+- For each clip, write in `docs/status/opencode.md`: its length and the time (s) the strike
+  lands (`animation_impact`). Claude wires clips into the moves and tunes the frame data.
+- Claude asks for clips per fighter in §4 (task O6).
+
 ### 3.4 Story script (Gemini → Claude's story mode)
 `data/story/<fighter_id>.json`:
 ```json
@@ -162,6 +187,8 @@ Start with O2a, then O5, then O3. All can start now (no dependency on Claude's c
 | O2e | **Sundar** props: `sundar/browser_window` (giant browser window frame ~4 × 3 m: title bar, address bar, close/min buttons, blank page area) | — | todo |
 | O3 | NPC models for the stages (contract §3.2), made-up people: `chair` (senior committee chair), `senator_1..3`, `stenographer`, `press_1..2`, `student_1..6`, `cook`, `cashier`, `technician_1..3` (bunny suits), `sysadmin_1..2` | — | todo |
 | O4 | AGI phase looks: material/colour variants for phase 2 and 3 (glitch, red), as alt outfits on `algorithm` | — | todo |
+| O6 | **Fighting-style animations** (contract §3.6), one fighter at a time when Claude lists the clips. First: `style/tesla_*` (fast, jumpy kicks) and `style/donald_*` (slow, heavy swings, a big shove) | C4 lists clips | blocked |
+| O7 | Make the **modelled power-move shots look real**: replace Claude's code-built looks in `scripts/supers/projectile_looks.gd` (search bar, graphics card) with props `sundar/search_bar` and `jensen/gpu_card` (contract §3.1; Claude swaps them in) | — | todo |
 | O5 | **Xi's super helpers** (NPCs, contract §3.2): `helper_qwen`, `helper_alibaba`, `helper_kimi`: three made-up young engineers in T-shirts with the words **Qwen**, **Alibaba** and **Kimi** printed on the chest (owner's request), different builds and hair, sneakers | — | todo |
 
 ### Gemini (stages, assets, writing) — branch `gemini/work`
@@ -176,6 +203,9 @@ Start with G1 and G2 now; G3 after G2. G4 and G6 wait for Claude's stage-life fr
 | G4 | Stage-life content: `data/stage_life/<stage>.json` (actor placement, shout lines, events) for each stage | C9, O3 | blocked |
 | G5 | Stage sounds (CC0): gavel, camera shutter, tray clatter, welding, sparks, alarms, crowd cheers/gasps per stage, in `assets/audio/stage/<stage>/` | — | todo |
 | G6 | Voices for the stage shout lines (contract §3.3 naming): an offline TTS with a licence that allows use in a game (e.g. Piper with a permissively licensed voice; note the licence in `assets/CREDITS.md`), several different voices per stage (chair, students, press...), OGG, normalised, short | G4 | blocked |
+| G8 | **Dress the super-scene sets** (contract §3.5) so they look real, one at a time as Claude adds them: `launch_pad`, `space` (stars, Earth below), then the rest | C7 stand-ins | blocked |
+| G9 | **Dress the victory-scene sets**: `mars` (red terrain, dust, sky) first, then the others | C7 stand-ins | blocked |
+| G10 | **Fight look**: lighting, `WorldEnvironment` (glow, tonemap, fog, SSAO/SSR where cheap) per stage so fights look less flat; keep 60 fps on mid hardware | — | todo |
 | G7 | Super and victory sounds (CC0), in `assets/audio/supers/<fighter_id>/`: tesla (truck engine, chain rattle, rocket launch roar, space whoosh, re-entry burn, flag plant), Donald (container crash, giant stamp thud, paper flutter, crowd "USA" chant), Jensen (whoosh / wind tornado), Zuckerbot (VR power-up, digital glitch), Sundar (keyboard typing, error beep), Xi (running footsteps, punch flurry) | — | todo |
 
 ## 5. Requests (cross-owner changes)
