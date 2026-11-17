@@ -5265,6 +5265,49 @@ func showdown_tests() -> void:
 	await process_frame
 	check("Victory scene: Donald's ends when a new match starts", dvictories.scene == null and df.stage.visible)
 
+	# Super scene: Mark Zuckerbot's Metaverse Trap (a command grab) plays its scene on connect,
+	# and his victory changes the map to the metaverse.
+	gs.player_character = gs.find_character(&"zuckerbot")
+	gs.p2_character = gs.find_character(&"jensen")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	sf = current_scene
+	sf.set_physics_process(false)
+	sf.start_match(); sf.start_fight_immediately()
+	var zp1: Fighter = sf.fighters[0]
+	var zp2: Fighter = sf.fighters[1]
+	zp2.controller = sf.dummy
+	sf.dummy.mode = DummyController.Mode.STAND
+	zp1.position.x = -0.5; zp2.position.x = 0.5
+	zp1.add_meter(Fighter.MAX_METER)
+	scenes = sf.get_node("SuperScenePlayer")
+	started[0] = false
+	sf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: started[0] = true)
+	zp1._start_move(zp1._move_for_input("236236P"), false)
+	guard = 0
+	while not started[0] and guard < 300:
+		sf._physics_process(1.0 / 60.0); guard += 1
+	await process_frame; await process_frame
+	check("Super scene: Metaverse Trap connects, freezes the fight and plays its scene", started[0] and sf.freeze_ticks > 360
+		and scenes.scene != null and scenes.scene.find_child("metaverse", true, false) != null and not sf.stage.visible,
+		"started %s, freeze %d" % [started[0], sf.freeze_ticks])
+	hp_after_hit = zp2.health
+	for i in 400:
+		sf._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame; await process_frame
+	check("Super scene: the fight resumes after the Metaverse Trap", scenes.scene == null and sf.stage.visible and zp1.visible
+		and sf.freeze_ticks == 0 and zp2.health == hp_after_hit and sf.camera.current, "freeze %d" % sf.freeze_ticks)
+	victories = sf.get_node("VictoryScenePlayer")
+	sf.phase = sf.Phase.MATCH_OVER
+	sf._start_victory(zp1)
+	await process_frame; await process_frame
+	check("Victory scene: Zuckerbot's win changes the map to the metaverse", victories.scene != null
+		and victories.scene.find_child("metaverse", true, false) != null and not sf.stage.visible)
+	sf.start_match()
+	await process_frame
+	check("Victory scene: the metaverse ends when a new match starts", victories.scene == null and sf.stage.visible)
+
 	# Arcade: AGI is the final boss; picking it gives the shadow boss instead.
 	var algorithm: CharacterData = gs.find_character(gs.FINAL_BOSS)
 	var run := ArcadeRun.create(gs.roster[0], gs.roster, 1, 4, gs.arcade_arenas(), gs.boss_stage, algorithm)
