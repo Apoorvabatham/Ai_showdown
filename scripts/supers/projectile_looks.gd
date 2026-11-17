@@ -17,6 +17,8 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _search_bar(color)
 		&"gpu":
 			return _gpu(color)
+		&"container":
+			return _container(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
@@ -24,9 +26,11 @@ static func build(look: StringName, color: Color) -> Node3D:
 ## Starting rotation: a search bar faces the camera (animate keeps it so); a GPU starts
 ## tumbled at an angle picked from `seed_value` (cosmetic).
 static func orient(look: StringName, _direction: Vector3, seed_value: int) -> Basis:
-	if look == &"gpu":
+	if look == &"gpu" or look == &"container":
 		var rng := RandomNumberGenerator.new()
 		rng.seed = seed_value
+		if look == &"container":
+			return Basis.from_euler(Vector3(0.0, 0.0, rng.randf() * TAU))
 		return Basis.from_euler(Vector3(rng.randf_range(-0.6, 0.6), rng.randf() * TAU, rng.randf_range(-0.6, 0.6)))
 	return Basis.IDENTITY
 
@@ -42,6 +46,9 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 				if away.length_squared() > 0.001:
 					node.global_basis = Basis.looking_at(away.normalized()) * Basis(Vector3.FORWARD, 0.08 * sin(age * 9.0))
 			node.scale = Vector3.ONE * lerpf(0.3, 1.0, pop)
+		&"container":
+			# Tumbles end over end along its flight.
+			node.rotate(Vector3(0, 0, 1), -5.0 * delta)
 		&"gpu":
 			# Tumbles as it falls; the fans spin.
 			var axis: Vector3 = node.get_meta(&"tumble_axis", Vector3.RIGHT)
@@ -50,6 +57,40 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 				var fan := node.get_node_or_null(NodePath(fan_name)) as Node3D
 				if fan:
 					fan.rotate_object_local(Vector3.FORWARD, 30.0 * delta)
+
+
+# --- Shipping container ----------------------------------------------------------
+
+static func _container(color: Color) -> Node3D:
+	var root := Node3D.new()
+	root.name = "Container"
+	var body_color := color
+	root.add_child(_box(Vector3(1.0, 0.45, 0.45), Vector3.ZERO, _metal(body_color, 0.3)))
+	# Thin raised ridges along the long sides.
+	for i in 7:
+		var x := -0.42 + 0.14 * i
+		for z in [-0.228, 0.228]:
+			root.add_child(_box(Vector3(0.03, 0.43, 0.012), Vector3(x, 0, z), _metal(body_color.darkened(0.15), 0.3)))
+	# Darker door end with a locking bar pair.
+	var door_color := body_color.darkened(0.45)
+	root.add_child(_box(Vector3(0.02, 0.44, 0.44), Vector3(0.5, 0, 0), _metal(door_color, 0.4)))
+	for y in [-0.08, 0.08]:
+		root.add_child(_box(Vector3(0.03, 0.02, 0.36), Vector3(0.51, y, 0), _metal(Color(0.6, 0.6, 0.62), 0.8)))
+	# "IMPORTS" on both long sides.
+	for side in [1.0, -1.0]:
+		var text := Label3D.new()
+		text.text = "IMPORTS"
+		text.font_size = 64
+		text.pixel_size = 0.0022
+		text.modulate = Color(0.97, 0.95, 0.9)
+		text.outline_size = 4
+		text.outline_modulate = body_color.darkened(0.6)
+		text.shaded = false
+		text.double_sided = false
+		text.position = Vector3(-0.05, 0.0, 0.236 * side)
+		text.rotation.y = 0.0 if side > 0.0 else PI
+		root.add_child(text)
+	return root
 
 
 # --- Search bar ------------------------------------------------------------------

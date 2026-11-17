@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="1_h3q7g"]
+
+[resource]
+script = ExtResource("1_h3q7g")
+name = "Build the Wall"
+input = "214P"
+animation = &"fight/palm_blast"
+animation_end = 0.65
+startup = 16
+active = 1
+recovery = 28
+damage = 0
+hitstun = 18
+blockstun = 14
+hitstop = 7
+knockback = Vector2(1.8, 0)
+projectile_lifetime = 180
+projectile_color = Color(0.85, 0.7, 0.4, 1)
+barrier = true
+hitbox_offset = Vector3(0, 1.2, -0.6)
+camera_intensity = 0.1

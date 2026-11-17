@@ -120,6 +120,13 @@ const SHOWDOWN_PERSONALITIES := {
 		weights = {fireball = 2.0, ground_special = 1.2, rush = 0.3, dash = 0.3, jump = 0.4, throw = 0.6,
 			poke = 1.1, retreat = 2.2, approach = 0.4},
 	},
+	&"donald": {
+		name = "Tycoon", blurb = "walks forward behind armour and walls, throws containers at range", preferred_range = 1.0,
+		aggression = 0.1, block = 0.05, punish = 0.05, anti_air = 0.15,
+		rising_anti_air = 0.7, pressure = 0.5, far_punish = 0.0,
+		weights = {fireball = 1.6, ground_special = 1.4, rush = 1.5, grab = 1.8, approach = 2.0, dash = 0.3, jump = 0.3,
+			throw = 1.2, poke = 0.8, wait = 0.5, retreat = 0.2, sidestep = 0.3},
+	},
 }
 const DEFAULT_PERSONALITY := {
 	name = "Balanced", blurb = "a bit of everything", preferred_range = 1.6,
