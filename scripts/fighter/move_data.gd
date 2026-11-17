@@ -95,7 +95,7 @@ enum HitLevel { HIGH, MID, LOW, OVERHEAD }
 @export var projectile_look: StringName = &""
 ## Cosmetic: the SuperFX show played when this super starts (scripts/supers/).
 @export var super_fx: StringName = &""
-## Super scene: when this move hits (not blocked), the fight freezes for
+## Super scene: when this move hits (not blocked) or its command grab connects, the fight freezes for
 ## `cinematic_ticks` and the scene `scripts/supers/scenes/<cinematic>.gd` plays (cosmetic;
 ## the freeze is part of the simulation, so it stays deterministic).
 @export var cinematic: StringName = &""

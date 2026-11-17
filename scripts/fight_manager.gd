@@ -654,6 +654,10 @@ func _resolve_throws() -> void:
 			if grab.drain_meter > 0:
 				_drain_meter(attacker, target, grab)
 			throw_landed.emit(attacker, target)
+			if grab.cinematic != &"" and grab.cinematic_ticks > 0: # a grab super with a scene
+				_set_freeze(grab.cinematic_ticks)
+				if not resimulating:
+					cinematic_started.emit(attacker, target, grab)
 	if a.is_throw_grab_frame() and b.is_throw_grab_frame():
 		a.tech_apart()
 		b.tech_apart()
