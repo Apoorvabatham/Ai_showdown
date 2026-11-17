@@ -163,7 +163,7 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 | C2 | New engine features: multi-shot / burst / sky projectiles, barriers, reflect, teleport, meter drain, `super_fx` id (MoveData fields; all in saved state; tests in `engine_feature_tests()`) | C1 | done |
 | C2b | New fight animations for the new moves (toolkit in `build_fight_animations.gd`, unused UAL clips) | C1 | todo |
 | C3 | Sundar moveset (ROADMAP §1.2): Trapper CPU style, showcase, 6 trials | C2 | review |
-| C4 | Donald moveset | C2 | todo |
+| C4 | Donald moveset: Trade War containers (236P, power move), Build the Wall (214P barrier), armoured Executive Order and Trade War Tackle, You're Fired grab, Tycoon CPU style, 6 trials; balance ~51% | C2 | review |
 | C5 | Xi moveset; Zuckerbot, Jensen and tesla changes | C2 | todo |
 | C6 | AGI boss kit | C2 | todo |
 | C7 | Super-scene framework (`scripts/supers/`: SuperScene, ScenePuppet, SuperScenePlayer, SuperStandins; `MoveData.cinematic` + `cinematic_ticks` freeze) and the first scene: tesla man's Rocket Launch with stand-in sets `launch_pad`, `space` (`tools/build_super_sets.gd`). Next: victory-scene framework | — | in progress (claude) |
