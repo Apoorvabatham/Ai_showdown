@@ -14,6 +14,13 @@ const SKY_HEIGHT := 4.5
 ## Barrier wall size (m): half its width across the fight axis, and its height.
 const BARRIER_HALF_WIDTH := 0.9
 const BARRIER_HEIGHT := 2.2
+## "around" shots start this far from the opponent's chest.
+const AROUND_RADIUS := 3.2
+## Height (m) of the point sky and around shots aim at.
+const AIM_HEIGHT := 1.2
+## Angles (degrees above the fight axis, 0 = straight behind the opponent, 180 = in front)
+## of successive "around" shots.
+const AROUND_ANGLES := [30.0, 150.0, 90.0, 60.0, 120.0, 15.0, 165.0]
 
 var owner_fighter: Fighter
 var move: MoveData
@@ -28,6 +35,8 @@ var _mesh: MeshInstance3D
 var _light: OmniLight3D
 var _trail: GPUParticles3D
 var _age := 0.0
+## A modelled shot (MoveData.projectile_look) instead of the orb.
+var _look: Node3D
 
 
 ## `spawn` / `flight`: start position and direction (default: the fighter's hand, its facing).
@@ -48,6 +57,13 @@ func _ready() -> void:
 	if move.barrier:
 		_build_barrier(color)
 		return
+	if move.projectile_look != &"":
+		_look = ProjectileLooks.build(move.projectile_look, color)
+		add_child(_look)
+		_look.basis = ProjectileLooks.orient(move.projectile_look, direction, get_instance_id())
+		_add_trail(color, 0.5)
+		reset_physics_interpolation()
+		return
 	# White-hot core inside two additive glow shells.
 	_mesh = _sphere(radius * 0.45, Color(1.0, 1.0, 1.0), false)
 	_mesh.add_child(_sphere(radius * 0.75, Color(color.lightened(0.3), 0.55), true))
@@ -60,6 +76,11 @@ func _ready() -> void:
 	_light.omni_range = 2.5
 	add_child(_light)
 
+	_add_trail(color, radius * 1.2)
+	reset_physics_interpolation()
+
+
+func _add_trail(color: Color, size: float) -> void:
 	var process := ParticleProcessMaterial.new()
 	process.direction = Vector3.ZERO
 	process.spread = 180.0
@@ -75,7 +96,7 @@ func _ready() -> void:
 	ramp.gradient = fade
 	process.color_ramp = ramp
 	var quad := QuadMesh.new()
-	quad.size = Vector2.ONE * radius * 1.2
+	quad.size = Vector2.ONE * size
 	var quad_material := StandardMaterial3D.new()
 	quad_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	quad_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -90,7 +111,6 @@ func _ready() -> void:
 	_trail.lifetime = 0.35
 	_trail.local_coords = false
 	add_child(_trail)
-	reset_physics_interpolation()
 
 
 ## Placeholder wall look until a SuperFX show dresses it: a glowing translucent slab.
@@ -140,7 +160,9 @@ func tick(bounds_half_extent: float, bounds_depth: float = bounds_half_extent) -
 	position += direction * speed * Fighter.DT
 	ticks_left -= 1
 	if position.y < 0.0:
-		return false # a sky shot reached the floor
+		return false # a sky or around shot reached the floor
+	if move and move.projectile_origin != &"":
+		return ticks_left > 0 # they start outside the stage and fly in
 	return ticks_left > 0 and absf(position.x) <= bounds_half_extent + 0.5 and absf(position.z) <= bounds_depth + 0.5
 
 
@@ -170,6 +192,9 @@ func is_threatening(target: Fighter) -> bool:
 
 func _process(delta: float) -> void:
 	_age += delta
+	if _look:
+		ProjectileLooks.animate(_look, move.projectile_look, direction, _age, delta)
+		return
 	if _mesh and barrier:
 		_mesh.position.y = BARRIER_HEIGHT * 0.5
 		_mesh.basis = Basis.looking_at(direction)

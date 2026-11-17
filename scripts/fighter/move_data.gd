@@ -71,8 +71,10 @@ enum HitLevel { HIGH, MID, LOW, OVERHEAD }
 ## axis for sky shots.
 @export var projectile_spread: float = 0.0
 ## Where shots start: &"" = from the hand, flying forward; &"sky" = above the opponent,
-## falling (projectile_speed = fall speed). Sky shots aim where the opponent is when
-## they are fired, shifted by `projectile_sky_offset` (m, along the fight axis).
+## falling (projectile_speed = fall speed); &"around" = on a half circle around the
+## opponent (behind, above, in front: shot by shot), flying in at them. Sky and around
+## shots aim where the opponent is when they are fired; sky shots are shifted by
+## `projectile_sky_offset` (m, along the fight axis).
 @export var projectile_origin: StringName = &""
 @export var projectile_sky_offset: float = 0.0
 ## The "projectile" is a barrier: a wall that deals no damage, destroys the opponent's
@@ -88,6 +90,9 @@ enum HitLevel { HIGH, MID, LOW, OVERHEAD }
 ## Super meter taken from the opponent (and given to the attacker) when the move hits
 ## or its command grab connects.
 @export var drain_meter: int = 0
+## Cosmetic: what the shots look like (scripts/supers/projectile_looks.gd): &"" = the
+## glowing orb, &"search_bar", &"gpu".
+@export var projectile_look: StringName = &""
 ## Cosmetic: the SuperFX show played when this super starts (scripts/supers/).
 @export var super_fx: StringName = &""
 

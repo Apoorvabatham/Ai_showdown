@@ -746,7 +746,7 @@ func _resolve_hits() -> void:
 		var projectile: Projectile = hit[4] if hit.size() > 4 else null
 		var push_dir := attacker.forward
 		if projectile:
-			push_dir = projectile.direction if absf(projectile.direction.y) < 0.5 else attacker.forward
+			push_dir = projectile.direction if projectile.move.projectile_origin == &"" else attacker.forward
 		var health_before := defender.health
 		var result := defender.receive_hit(attacker, move, push_dir, hit[3])
 		if is_arcade() and attacker == fighters[0]:

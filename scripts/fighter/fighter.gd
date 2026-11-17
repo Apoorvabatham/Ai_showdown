@@ -681,6 +681,13 @@ func _fire_projectile(move: MoveData) -> void:
 	var lane := float(shot_index % maxi(count, 1)) - (count - 1) * 0.5
 	if move.barrier:
 		p.setup(self, move, _flat(global_transform * Vector3(0.0, 0.0, Projectile.SPAWN_OFFSET.z)))
+	elif move.projectile_origin == &"around":
+		# On a half circle around the opponent, behind / in front / above, flying in.
+		var angles: Array = Projectile.AROUND_ANGLES
+		var angle := deg_to_rad(angles[shot_index % angles.size()])
+		var aim := _flat(opponent.position) + Vector3.UP * Projectile.AIM_HEIGHT
+		var start := aim + (forward * cos(angle) + Vector3.UP * sin(angle)) * Projectile.AROUND_RADIUS
+		p.setup(self, move, start, (aim - start).normalized())
 	elif move.projectile_origin == &"sky":
 		# Sky shots of a burst cycle centre / behind / past the opponent's position.
 		var cycle: float = [0.0, -1.0, 1.0][shot_index % 3] if move.projectile_interval > 0 else lane
