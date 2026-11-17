@@ -288,3 +288,17 @@ Gemini finished G4 (crowd content, all 4 stages), G6 (voices), G7b (sounds), G10
 start. **Kilo Code** now works on `gemini/work` and takes everything in "Remaining work" above,
 starting with the three `wip/*` branches, then G8 / G9 (dress the sets). New stage screenshots
 after G10/G12 were not saved: render fresh ones into `docs/review/kilo/` first.
+
+### Update 2: three agents, three branches (no shared files)
+| Agent (model) | Branch | Takes |
+|---|---|---|
+| Kilo Code (Nemotron 3 Ultra) | `gemini/work` | **Code**: §7 "Remaining work" steps 1–7 (the wip/* branches, victory scenes, AGI boss, story mode, style clip lists, balance). Not the set dressing. |
+| Cline (Nemotron 3.5 Super VL) | `cline/work` | **Visuals**: G8 / G9 (make the sets in `scenes/supers/sets/` look real, keep every Marker3D), fresh stage screenshots after G10/G12 and any fixes they show (`scripts/stages/**`, `scenes/stages/**`). Status `docs/status/cline.md`, screenshots `docs/review/cline/`. |
+| OpenCode | `opencode/work` | **Only** O2a (tesla props), O2b (Donald props), O5 (Xi's three helpers). The rest of O2/O3/O4/O6/O7 waits. |
+
+Ownership: Cline owns `scenes/supers/sets/**`, `scripts/stages/**`, `scenes/stages/**`, `assets/stage_props/**`,
+`docs/status/cline.md`, `docs/review/cline/**`. Kilo owns everything else Claude owned (and must not
+edit those set/stage files; new sets it needs: add the builder in `tools/super_sets/` and run
+`tools/build_super_sets.gd`, then tell Cline in its status file). Each merges the others' branches
+only through main: the owner merges `gemini/work`, `cline/work`, `opencode/work` into
+`claude/brave-rubin-b43he7` when a task is done.
