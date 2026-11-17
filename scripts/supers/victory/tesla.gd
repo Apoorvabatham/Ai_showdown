@@ -41,7 +41,7 @@ func run() -> void:
 	look.y = winner.global_position.y
 	winner.look_at(look)
 	winner.play(&"ual1/Walk")
-	sound("footsteps")
+	sound("victory")
 	var walk := create_tween()
 	walk.tween_property(winner, "global_position", spot, 1.4)
 	await wait(1.4)

@@ -120,17 +120,17 @@ Design details are agreed with the owner **before** building.
 
 | Fighter | Power move | Super scene | Victory scene | Status |
 |---|---|---|---|---|
-| Sundar | **Search Result**: search bars with funny queries fly in from every side | Opponent trapped in a giant browser window, "404 NOT FOUND", pixelated away | proposed | power + super approved |
+| Sundar | **Search Result**: search bars with funny queries fly in from every side (done) | Opponent trapped in a giant browser window, "404 NOT FOUND", pixelated away | The sky turns into a giant search results page: "Winner: Sundar" | approved |
 | Zuckerbot | "Like" thumbs-up bombs | VR goggles on the opponent, cut to a cartoon metaverse, their legs disappear, Zuck's avatar punches them | The map turns into the metaverse | approved |
 | tesla man | Small rockets launched at the opponent | Drives up in an angular steel pickup (own design, no logo); opponent chained to a rocket, launched into space, re-enters and burns up cartoon-style (soot and smoke, no gore) | Flies to Mars and plants a flag: "CAPTURED" | approved |
 | Donald | **Trade War**: shipping containers stamped "IMPORTS" tumble across the floor at the opponent | Office room, Donald grows giant, tiny opponent on the desk, giant "TARIFF" stamp slams down | Golden Donald statues appear around the map, USA flags everywhere | approved |
-| Xi | Something Chinese (proposed: a paper dragon-dance charge) | Three made-up helpers in T-shirts printed **Qwen**, **Alibaba** and **Kimi** run in and beat the opponent up | proposed | super approved |
-| Jensen | GPU Rain: graphics cards with spinning fans fall from the sky | **Leather Jacket Tornado**: he whips off his leather jacket, it spins into a tornado that flings the opponent around | proposed | power + super approved |
-| Dario | Glowing rulebook shield reflects attacks | A giant constitution scroll wraps the opponent, sealed with a "SAFE" stamp | proposed | proposed |
-| Yann | Word tokens fly ("the", "next", "token") | Opponent in a giant text box; autocomplete types "you lose", heavy letters fall | proposed | proposed |
-| Geoff | Neural-net node zaps | VHS rewind; lecture hall; the neural net zaps the opponent; Geoff looks regretful | proposed | proposed |
-| Ram | Money bags rain ("Funding Round") | Opponent rides a giant exponential "Scaling Law" line off the chart and falls | proposed | proposed |
-| AGI | Feed cards spin around the opponent | Opponent sucked into a giant phone, endless scroll, spat out | proposed | proposed |
+| Xi | **Paper Dragon Dance**: a paper festival dragon charges along the floor at the opponent | Three made-up helpers in T-shirts printed **Qwen**, **Alibaba** and **Kimi** run in and beat the opponent up | Red lanterns rise and fireworks fill the sky | approved |
+| Jensen | GPU Rain: graphics cards with spinning fans fall from the sky (done) | **Leather Jacket Tornado**: he whips off his leather jacket, it spins into a tornado that flings the opponent around | He signs his own leather jacket while GPUs rain down like confetti | approved |
+| Dario | Glowing rulebook shield reflects attacks | A giant constitution scroll wraps the opponent, sealed with a "SAFE" stamp | A golden scroll unrolls: "Safe and helpful victory" | victory approved; power + super proposed |
+| Yann | Word tokens fly ("the", "next", "token") | Opponent in a giant text box; autocomplete types "you lose", heavy letters fall | A giant cat walks across the map and sits next to him | victory approved; power + super proposed |
+| Geoff | Neural-net node zaps | VHS rewind; lecture hall; the neural net zaps the opponent; Geoff looks regretful | A medal ceremony on a podium, but he looks worried | victory approved; power + super proposed |
+| Ram | Money bags rain ("Funding Round") | Opponent rides a giant exponential "Scaling Law" line off the chart and falls | A huge "AGI ACHIEVED" banner with fireworks | victory approved; power + super proposed |
+| AGI | Feed cards spin around the opponent | Opponent sucked into a giant phone, endless scroll, spat out | Every screen on the map shows its glowing eye, the stage turns digital | victory approved; power + super proposed |
 
 How it is built (Claude, C7–C8):
 - **Gameplay** (simulation): the super move connects like any move. On a hit,

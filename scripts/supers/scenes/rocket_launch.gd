@@ -43,7 +43,7 @@ func build() -> void:
 func run() -> void:
 	show_set("launch_pad")
 	shot("launch_pad", "Cam_Wide", rocket.global_position + Vector3(0, 3, 0))
-	sound("engine")
+	sound("truck_engine")
 	_wheels_spinning = true
 	var drive := create_tween()
 	drive.tween_property(truck, "global_position", marker("launch_pad", "Truck_Stop").origin, DRIVE_TIME) \
@@ -60,7 +60,7 @@ func run() -> void:
 	elon.play(&"fight/victory_point")
 	elon.face = &"grin"
 	shot("launch_pad", "Cam_Attacker", elon.global_position + Vector3(0, 1.5, 0))
-	sound("chain")
+	sound("chain_rattle")
 	await wait(POINT_TIME)
 
 	# 3, 2, 1.
@@ -74,7 +74,7 @@ func run() -> void:
 	if flame:
 		flame.visible = true
 	big_text("LIFTOFF!", rocket.global_position + Vector3(0, 9, 3), Color(1, 0.6, 0.2), 1.0, 0.8)
-	sound("launch")
+	sound("rocket_launch_roar")
 	shot("launch_pad", "Cam_Launch")
 	track = rocket
 	track_offset = Vector3(0, 3, 0)
@@ -95,7 +95,7 @@ func run() -> void:
 	shot("space", "Cam_Space")
 	track = rocket
 	track_offset = Vector3.ZERO
-	sound("whoosh")
+	sound("space_whoosh")
 	var cross := create_tween()
 	cross.tween_property(rocket, "global_position", end.origin, SPACE_TIME)
 	await wait(SPACE_TIME)
@@ -111,7 +111,7 @@ func run() -> void:
 	fire.position = Vector3(0, -0.5, 0)
 	var smoke := SuperStandins.smoke_particles(1.5, 1.5)
 	victim.add_child(smoke)
-	sound("burn")
+	sound("reentry_burn")
 	track = victim
 	track_offset = Vector3.ZERO
 	var fall := create_tween()

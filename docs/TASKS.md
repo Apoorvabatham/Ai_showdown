@@ -201,20 +201,23 @@ Start with O2a, then O5, then O3. All can start now (no dependency on Claude's c
 
 ### Gemini (stages, assets, writing) — branch `gemini/work`
 
-Start with G1 and G2 now; G3 after G2. G4 and G6 wait for Claude's stage-life framework (C9).
+Next, in this order: **G4** (Senate first), **G12** (Foundry + Server Farm), **G8/G9** (sets ready
+now), **G10**, **G7b**, then G6 once G4 is in. One task at a time, screenshots for each.
 
 | ID | Task | Depends | Status |
 |---|---|---|---|
-| G1 | Story scripts for all 11 fighters (contract §3.4). Start with `ram`, then the rest | — | todo |
-| G2 | Find CC0 models/textures for the 4 stages (Kenney, Quaternius, Poly Haven, ambientCG); put them in `assets/stage_props/<pack>/`, credit them in `assets/CREDITS.md`, keep the download small (models < 5 MB, textures ≤ 2K) | — | todo |
-| G3 | Realism pass per stage in `scripts/stages/stage_retheme.gd`: replace box props with real models, PBR materials, lighting, fog, reflection probes. One stage at a time (Mensa first), screenshots for the owner | G2 | todo |
+| G1 | Story scripts for all 11 fighters (`data/story/`) | — | done |
+| G2 | CC0 models/textures for the 4 stages (`assets/stage_props/`) | — | done |
+| G3 | Realism pass for the 4 stages (props, PBR, reflection probes, fog) | G2 | review (owner) |
 | G4 | Stage-life content: `data/stage_life/<stage>.json` (actor placement, shout lines, events) for each stage, Senate first (example: `tests/fixtures/stage_life_example.json`). Stand-in people appear until O3's NPCs exist | C9 | todo |
-| G5 | Stage sounds (CC0): gavel, camera shutter, tray clatter, welding, sparks, alarms, crowd cheers/gasps per stage, in `assets/audio/stage/<stage>/` | — | todo |
+| G5 | Stage sounds for the 4 stages (`assets/audio/stage/`) | — | done |
 | G6 | Voices for the stage shout lines (contract §3.3 naming): an offline TTS with a licence that allows use in a game (e.g. Piper with a permissively licensed voice; note the licence in `assets/CREDITS.md`), several different voices per stage (chair, students, press...), OGG, normalised, short | G4 | blocked |
 | G8 | **Dress the super-scene sets** (contract §3.5) so they look real, one at a time: `launch_pad` (sunset rocket launch site: real pad, tower, floodlights, distant buildings) and `space` (stars, a real-looking Earth with clouds and atmosphere) are ready now; keep every Marker3D | C7 stand-ins | todo |
 | G9 | **Dress the victory-scene sets**: `mars` is ready now (red rocky plain, dusty pink sky, far hills: make it look like real Mars); keep every Marker3D | C7 stand-ins | todo |
 | G10 | **Fight look**: lighting, `WorldEnvironment` (glow, tonemap, fog, SSAO/SSR where cheap) per stage so fights look less flat; keep 60 fps on mid hardware | — | todo |
-| G7 | Super and victory sounds (CC0), in `assets/audio/supers/<fighter_id>/`: tesla (truck engine, chain rattle, rocket launch roar, space whoosh, re-entry burn, flag plant), Donald (container crash, giant stamp thud, paper flutter, crowd "USA" chant), Jensen (whoosh / wind tornado), Zuckerbot (VR power-up, digital glitch), Sundar (keyboard typing, error beep), Xi (running footsteps, punch flurry) | — | todo |
+| G7 | Super and victory sounds for tesla, Donald, Jensen, Zuckerbot, Sundar, Xi (`assets/audio/supers/`) | — | done |
+| G7b | Sounds for the newly approved moves and scenes, same folder layout: Xi `dragon_drums.wav` (paper dragon dance), Donald `statue_rise.wav` + `fanfare.wav` (golden statues victory), Zuckerbot `metaverse_ambience.wav`, Sundar `page_load.wav`, Jensen `marker_squeak.wav`, Dario/Yann/Geoff/Ram/algorithm one `victory.wav` each (scroll unroll, cat purr, applause, fireworks, digital hum) | — | todo |
+| G12 | **Stage realism, round 2** (G3 follow-up): the **Foundry** is washed out (too white, flat): lower the exposure, add contrast, colour and depth (darker machinery, coloured warning lights, glossy floor reflections). The **Server Farm** barely changed: make it read as a real rooftop data centre (rack detail, cable trays, cooling units, wet reflective floor, steam). Compare before/after screenshots | G3 | todo |
 
 ## 5. Requests (cross-owner changes)
 
