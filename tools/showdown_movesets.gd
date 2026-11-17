@@ -67,6 +67,8 @@ const MOVESETS := {
 	},
 	# Jensen Wong: Tensor Blast (kit fireball) plus the GPU Rain power move.
 	&"jensen": {
+		# The super's finisher plays the "Leather Jacket Tornado" scene when it hits.
+		tweak = {dragon_finish = {cinematic = &"jacket_tornado", cinematic_ticks = 320}},
 		add = {
 			# Power move: four graphics cards fall on and around the opponent.
 			gpu_rain = {from = "kenji/ki_blast", set = {name = "GPU Rain", input = "214P",
@@ -108,7 +110,8 @@ const MOVESETS := {
 				projectile_origin = &"sky", projectile_speed = 20.0, projectile_lifetime = 60, hitbox_radius = 0.65,
 				damage = 290, chip_damage = 45, hit_level = 3, hitstun = 0, blockstun = 24, hitstop = 14,
 				knockback = Vector2(1.5, 0.0), knockdown = true, startup = 5, active = 1, recovery = 40,
-				invuln_frames = 8, camera_intensity = 0.6, super_fx = &"search_result"}},
+				invuln_frames = 8, camera_intensity = 0.6, super_fx = &"search_result",
+				cinematic = &"not_found", cinematic_ticks = 320}},
 		},
 		trials = [
 			{name = "Jab String", steps = ["LP", "LP", "HP"], corner = false,

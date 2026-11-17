@@ -5308,6 +5308,54 @@ func showdown_tests() -> void:
 	await process_frame
 	check("Victory scene: the metaverse ends when a new match starts", victories.scene == null and sf.stage.visible)
 
+	# Super and victory scenes of Sundar ("404 Not Found") and Jensen ("Leather Jacket Tornado").
+	for case: Array in [[&"sundar", "BrowserWindow", "404 Not Found", false], [&"jensen", "Tornado", "Leather Jacket Tornado", true]]:
+		gs.player_character = gs.find_character(case[0])
+		gs.p2_character = gs.find_character(&"tesla")
+		change_scene_to_file("res://scenes/fight.tscn")
+		await process_frame; await process_frame
+		var cf = current_scene
+		cf.set_physics_process(false)
+		cf.start_match(); cf.start_fight_immediately()
+		var c1: Fighter = cf.fighters[0]
+		var c2: Fighter = cf.fighters[1]
+		c2.controller = cf.dummy
+		cf.dummy.mode = DummyController.Mode.STAND
+		c1.position.x = -0.5; c2.position.x = 0.5
+		c1.add_meter(Fighter.MAX_METER)
+		var cscenes = cf.get_node("SuperScenePlayer")
+		var cstarted := [false]
+		cf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: cstarted[0] = true)
+		c1._start_move(c1._move_for_input("236236P"), false)
+		var cguard := 0
+		while not cstarted[0] and cguard < 600:
+			cf._physics_process(1.0 / 60.0); cguard += 1
+		await process_frame; await process_frame
+		check("Super scene: %s connects, freezes the fight and plays its scene" % case[2], cstarted[0] and cf.freeze_ticks > 300
+			and cscenes.scene != null and cscenes.scene.find_child(case[1], true, false) != null and not cf.stage.visible,
+			"started %s, freeze %d" % [cstarted[0], cf.freeze_ticks])
+		var chp := c2.health
+		for i in 360:
+			cf._physics_process(1.0 / 60.0)
+			if i % 30 == 0: await process_frame
+		await process_frame; await process_frame
+		check("Super scene: the fight resumes after %s" % case[2], cscenes.scene == null and cf.stage.visible and c1.visible
+			and cf.freeze_ticks == 0 and c2.health == chp and cf.camera.current, "freeze %d" % cf.freeze_ticks)
+		var cvictories = cf.get_node("VictoryScenePlayer")
+		cf.phase = cf.Phase.MATCH_OVER
+		cf._start_victory(c1)
+		await process_frame; await process_frame
+		var own_set: bool = case[3]
+		check("Victory scene: %s starts" % case[0], cvictories.scene != null and cvictories.scene.own_set == own_set
+			and (cvictories.scene.find_child("keynote_stage", true, false) != null if own_set else cvictories.scene.find_child("ResultsPage", true, false) != null)
+			and cf.stage.visible != own_set)
+		for i in 180:
+			cf._physics_process(1.0 / 60.0)
+			if i % 30 == 0: await process_frame
+		cf.start_match()
+		await process_frame
+		check("Victory scene: %s ends when a new match starts" % case[0], cvictories.scene == null and cf.stage.visible)
+
 	# Arcade: AGI is the final boss; picking it gives the shadow boss instead.
 	var algorithm: CharacterData = gs.find_character(gs.FINAL_BOSS)
 	var run := ArcadeRun.create(gs.roster[0], gs.roster, 1, 4, gs.arcade_arenas(), gs.boss_stage, algorithm)
