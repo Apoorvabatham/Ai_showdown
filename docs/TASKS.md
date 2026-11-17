@@ -81,6 +81,10 @@ what is next.
   "events": {"ko": ["food_fight"], "super": ["camera_flashes"]}
 }
 ```
+Shout lines are **shown as speech bubbles and spoken**. Voice file for line *n* (0-based) of a
+shout key: `assets/audio/stage/<stage>/voice/<key>_<n>.ogg` (e.g. `senate/voice/ko_0.ogg`).
+A line without a voice file still shows its bubble.
+
 Poses: `stand`, `sit`, `lean`, `work`. Reactions: `cheer`, `gasp`, `clap`, `point`,
 `stand_up`, `bang_table`, `gavel`, `photo`. Events are implemented by Claude (list in C9).
 Coordinates: stage space, fight area is about x ∈ [-6, 6], z ∈ [-2, 2]; keep actors outside
@@ -124,7 +128,7 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 | C9 | Stage-life framework: StageActor, StageCrowd, ShoutBubble, events (food_fight, camera_flashes, gavel, sparks, spark_shower, steam_burst, alarm) + `data/stage_life` loader | — | todo |
 | C10 | AGI phases + mimicry + phase transitions | C6 | todo |
 | C11 | Story mode screens and flow | G1 (one fighter is enough to start) | todo |
-| C12 | 1v1 mode | owner defines it | blocked |
+| C12 | 1v1 Quick Match: player vs a random CPU, random stage, one round (`GameState.Mode.QUICK`) | — | done |
 
 ### OpenCode (character design)
 
@@ -144,6 +148,7 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 | G3 | Realism pass per stage in `scripts/stages/stage_retheme.gd`: replace box props with real models, PBR materials, lighting, fog, reflection probes. One stage at a time (Mensa first), screenshots for the owner | G2 | todo |
 | G4 | Stage-life content: `data/stage_life/<stage>.json` (actor placement, shout lines, events) for each stage | C9, O3 | todo |
 | G5 | Stage sounds (CC0): gavel, camera shutter, tray clatter, welding, sparks, alarms, crowd cheers/gasps per stage, in `assets/audio/stage/<stage>/` | — | todo |
+| G6 | Voices for the stage shout lines (contract §3.3 naming): an offline TTS with a licence that allows use in a game (e.g. Piper with a permissively licensed voice; note the licence in `assets/CREDITS.md`), several different voices per stage (chair, students, press...), OGG, normalised, short | G4 | todo |
 
 ## 5. Requests (cross-owner changes)
 
@@ -153,5 +158,4 @@ Add a line: `- [from <agent> to <agent>] what and why`. The owner of the file do
 
 ## 6. Open questions for the owner
 
-- What exactly is the **1v1 mode** (online? quick 1v1 against a chosen CPU? something else)?
-- Voice lines for stage shouts: recordings, TTS or text bubbles only?
+- (none: 1v1 = Quick Match, one round vs CPU, done; stage shouts = bubbles **and** voices)

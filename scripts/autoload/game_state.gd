@@ -62,12 +62,13 @@ const FINAL_BOSS := &"algorithm"
 const ROUNDS_TO_WIN := 2
 const ROUND_TIME_SECONDS := 99
 
-enum Mode { VS_CPU, VERSUS, TRAINING, ARCADE, ONLINE, DEMO, REPLAY }
+enum Mode { VS_CPU, VERSUS, TRAINING, ARCADE, ONLINE, DEMO, REPLAY, QUICK }
 
 var roster: Array[CharacterData] = []
 ## VS_CPU: P2 is the AI. VERSUS: P2 is a second local player. TRAINING: P2 is the
 ## training dummy (see scripts/training/training_mode.gd). ARCADE: a ladder of CPU
 ## opponents (see `arcade`). DEMO: two CPU fighters with no end (start_demo).
+## QUICK: 1v1 quick match: the player against a random CPU on a random stage, one round.
 var mode: Mode = Mode.VS_CPU
 var player_character: CharacterData
 ## P2's character (the CPU in VS_CPU mode, the second player in VERSUS).
@@ -265,6 +266,11 @@ func stage_name(path: String) -> String:
 		if stage.path == path:
 			return stage.name
 	return ""
+
+
+## Rounds a fighter needs to win the match: one in a quick match, else best of 3.
+func rounds_to_win() -> int:
+	return 1 if mode == Mode.QUICK else ROUNDS_TO_WIN
 
 
 func is_arcade() -> bool:

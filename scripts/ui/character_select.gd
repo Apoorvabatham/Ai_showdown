@@ -399,4 +399,8 @@ func _select(character: CharacterData) -> void:
 		return
 	GameState.player_character = character
 	GameState.p2_character = GameState.pick_random_cpu()
+	if GameState.mode == GameState.Mode.QUICK: # 1v1 quick match: random stage, straight in
+		GameState.stage_path = (GameState.stages.pick_random() as Dictionary).path
+		get_tree().change_scene_to_file(VS_SCENE)
+		return
 	get_tree().change_scene_to_file(STAGE_SELECT_SCENE)

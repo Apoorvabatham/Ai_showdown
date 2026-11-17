@@ -13,6 +13,7 @@ A parody 2-player 3D fighting game in which caricatures of AI-industry public pe
 - **4 stages**: Server Farm, Mensa (a university cafeteria), Senate Hearing Room and GPU Foundry.
 - **Modes**:
   - **Vs CPU** and **Versus** (2 local players);
+  - **1v1 Quick Match**: you against a random CPU on a random stage, one round;
   - **Training**;
   - **Arcade**, a ladder that ends with AGI as final boss in the Senate (pick AGI and you get its shadow instead);
   - **Demo** (two CPU fighters).

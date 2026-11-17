@@ -129,7 +129,7 @@ func _ready() -> void:
 		fighter.super_started.connect(_on_super_started)
 		fighter.wall_hit.connect(cosmetic(_on_wall_hit))
 
-	hud.setup(p1, p2, GameState.ROUNDS_TO_WIN, "P2" if is_versus() else "Dummy" if is_training() else "CPU")
+	hud.setup(p1, p2, GameState.rounds_to_win(), "P2" if is_versus() else "Dummy" if is_training() else "CPU")
 	if is_demo():
 		hud.p1_name.text = "%s (CPU)" % p1.data.display_name
 	if is_arcade():
@@ -236,7 +236,7 @@ func is_replay() -> bool:
 
 ## Offline matches that are saved as replays.
 func records_replays() -> bool:
-	return ReplayRecorder.enabled and GameState.mode in [GameState.Mode.VS_CPU, GameState.Mode.VERSUS, GameState.Mode.ARCADE]
+	return ReplayRecorder.enabled and GameState.mode in [GameState.Mode.VS_CPU, GameState.Mode.VERSUS, GameState.Mode.ARCADE, GameState.Mode.QUICK]
 
 
 ## P2 starts every round with a full meter: the Arcade boss (and its replays).
@@ -307,7 +307,7 @@ func _start_round() -> void:
 
 
 func _announce_round() -> void:
-	var final := round_wins[0] == GameState.ROUNDS_TO_WIN - 1 and round_wins[1] == GameState.ROUNDS_TO_WIN - 1
+	var final := round_wins[0] == GameState.rounds_to_win() - 1 and round_wins[1] == GameState.rounds_to_win() - 1
 	hud.announce("FINAL ROUND" if final else "ROUND %d" % round_number)
 	Audio.voice("final_round" if final else "round_%d" % clampi(round_number, 1, 5))
 
@@ -411,8 +411,8 @@ func _finish_round(winner: Fighter, reason: String) -> void:
 
 
 func _after_round() -> void:
-	var p1_won := round_wins[0] >= GameState.ROUNDS_TO_WIN
-	var p2_won := round_wins[1] >= GameState.ROUNDS_TO_WIN
+	var p1_won := round_wins[0] >= GameState.rounds_to_win()
+	var p2_won := round_wins[1] >= GameState.rounds_to_win()
 	if p1_won or p2_won or round_number >= MAX_ROUNDS:
 		phase = Phase.MATCH_OVER
 		phase_ticks = 0

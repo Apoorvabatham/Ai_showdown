@@ -4871,6 +4871,20 @@ func showdown_tests() -> void:
 			unfinished.append("%s vs %s" % [gs.player_character.id, gs.p2_character.id])
 	check("Showdown: a CPU-vs-CPU match finishes for every fighter (best of 3)", unfinished.is_empty(), str(unfinished))
 
+	# 1v1 Quick Match: one round decides it.
+	var old_mode = gs.mode
+	gs.mode = gs.Mode.QUICK
+	gs.player_character = gs.roster[0]
+	gs.p2_character = gs.roster[1]
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var quick = current_scene
+	quick.set_physics_process(false)
+	_cpu_match(quick, 77)
+	check("Showdown: a 1v1 quick match is over after one round", gs.rounds_to_win() == 1 and quick.phase == quick.Phase.MATCH_OVER
+		and maxi(quick.round_wins[0], quick.round_wins[1]) == 1, "round %d, wins %s" % [quick.round_number, quick.round_wins])
+	gs.mode = old_mode
+
 	# Arcade: AGI is the final boss; picking it gives the shadow boss instead.
 	var algorithm: CharacterData = gs.find_character(gs.FINAL_BOSS)
 	var run := ArcadeRun.create(gs.roster[0], gs.roster, 1, 4, gs.arcade_arenas(), gs.boss_stage, algorithm)
@@ -4892,8 +4906,8 @@ func showdown_tests() -> void:
 		await process_frame
 		frames += 1
 	await process_frame
-	check("Showdown: main menu keeps Vs CPU, Versus and Training, hides Online, shows the disclaimer",
-		current_scene.find_child("StartButton", true, false) != null and current_scene.find_child("VersusButton", true, false) != null
+	check("Showdown: main menu keeps Vs CPU, 1v1 Quick Match, Versus and Training, hides Online, shows the disclaimer",
+		current_scene.find_child("StartButton", true, false) != null and current_scene.find_child("QuickButton", true, false) != null and current_scene.find_child("VersusButton", true, false) != null
 		and current_scene.find_child("TrainingButton", true, false) != null and current_scene.find_child("OnlineButton", true, false) == null
 		and current_scene.find_child("Disclaimer", true, false) != null)
 	check("Showdown: best of 3 rounds", gs.ROUNDS_TO_WIN == 2)

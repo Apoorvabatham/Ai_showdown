@@ -20,7 +20,7 @@ assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **
   (`scenes/stages/server_farm.tscn`, `mensa.tscn`, `senate.tscn`, `foundry.tscn`,
   inheriting the original rooftop, dojo, ring and market scenes, plus
   `scripts/stages/stage_retheme.gd`).
-- Modes: Vs CPU, Versus, Training, Arcade (final boss: AGI), Demo. Online is
+- Modes: Vs CPU, 1v1 Quick Match (one round), Versus, Training, Arcade (final boss: AGI), Demo. Online is
   hidden (`SHOW_ONLINE` in `scripts/ui/main_menu.gd`). Best of 3.
 - Disclaimer (title + main menu + splash): "Parody. Not affiliated with or endorsed by any
   real person or company."

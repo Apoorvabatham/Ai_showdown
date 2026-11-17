@@ -46,6 +46,12 @@ func _ready() -> void:
 	_add_wallpaper()
 	_use_logo($Center/VBox/Title as Label)
 	start_button.pressed.connect(_start.bind(GameState.Mode.VS_CPU))
+	var quick_button := start_button.duplicate(0) as Button # 0: without Vs CPU's signal connections
+	quick_button.name = "QuickButton"
+	quick_button.unique_name_in_owner = false
+	quick_button.text = "1v1 Quick Match"
+	start_button.add_sibling(quick_button)
+	quick_button.pressed.connect(_start.bind(GameState.Mode.QUICK))
 	arcade_button.pressed.connect(_start.bind(GameState.Mode.ARCADE))
 	versus_button.pressed.connect(_start.bind(GameState.Mode.VERSUS))
 	training_button.pressed.connect(_start.bind(GameState.Mode.TRAINING))
