@@ -175,7 +175,7 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 | C5 | Xi moveset; Zuckerbot, Jensen and tesla changes | C2 | todo |
 | C6 | AGI boss kit | C2 | todo |
 | C7 | Super- and victory-scene frameworks (`scripts/supers/`: SuperScene, VictoryScene, ScenePuppet, SuperScenePlayer, VictoryScenePlayer, SuperStandins; `MoveData.cinematic` + `cinematic_ticks`; `FightManager.match_won`). First scenes: tesla man's Rocket Launch super and Mars victory; stand-in sets `launch_pad`, `space`, `mars` (`tools/build_super_sets.gd`) | — | done |
-| C8 | Per fighter: power move + super scene + victory scene (ROADMAP §2), owner approves each design first | C7, O2 per prop | todo |
+| C8 | Per fighter: power move + super scene + victory scene (ROADMAP §2), owner approves each design first. Done: power moves for tesla (Rocket Barrage 214K), Jensen (GPU Rain 214P), Sundar (Search Result 63214P), Donald (Trade War 236P); tesla's super and victory scenes. Supers renamed: Jensen "Leather Jacket Tornado", Sundar "404 Not Found" (scenes to come) | C7, O2 per prop | in progress (claude) |
 | C9 | Stage-life framework (`scripts/stage_life/`: StageCrowd, StageActor, ShoutBubble, StageEvents; loads `data/stage_life/<stage>.json`, cosmetic and rollback-safe; test fixture `tests/fixtures/stage_life_example.json`) | — | done |
 | C10 | AGI phases + mimicry + phase transitions | C6 | todo |
 | C11 | Story mode screens and flow | G1 (one fighter is enough to start) | todo |

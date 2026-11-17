@@ -61,7 +61,7 @@ func _ready() -> void:
 		_look = ProjectileLooks.build(move.projectile_look, color)
 		add_child(_look)
 		_look.basis = ProjectileLooks.orient(move.projectile_look, direction, get_instance_id())
-		_add_trail(color, 0.5)
+		_add_trail(color, 0.22, 12, 0.35) # a faint wisp: the object itself is the show
 		reset_physics_interpolation()
 		return
 	# White-hot core inside two additive glow shells.
@@ -80,7 +80,7 @@ func _ready() -> void:
 	reset_physics_interpolation()
 
 
-func _add_trail(color: Color, size: float) -> void:
+func _add_trail(color: Color, size: float, amount := 40, strength := 0.9) -> void:
 	var process := ParticleProcessMaterial.new()
 	process.direction = Vector3.ZERO
 	process.spread = 180.0
@@ -90,7 +90,7 @@ func _add_trail(color: Color, size: float) -> void:
 	process.scale_min = 0.5
 	process.scale_max = 1.0
 	var fade := Gradient.new()
-	fade.set_color(0, Color(color.lightened(0.4), 0.9))
+	fade.set_color(0, Color(color.lightened(0.4), strength))
 	fade.set_color(1, Color(color, 0.0))
 	var ramp := GradientTexture1D.new()
 	ramp.gradient = fade
@@ -103,11 +103,12 @@ func _add_trail(color: Color, size: float) -> void:
 	quad_material.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 	quad_material.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	quad_material.vertex_color_use_as_albedo = true
+	quad_material.albedo_texture = SuperStandins.soft_dot()
 	quad.material = quad_material
 	_trail = GPUParticles3D.new()
 	_trail.process_material = process
 	_trail.draw_pass_1 = quad
-	_trail.amount = 40
+	_trail.amount = amount
 	_trail.lifetime = 0.35
 	_trail.local_coords = false
 	add_child(_trail)
