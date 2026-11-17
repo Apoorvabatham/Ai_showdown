@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[sub_resource type="Environment" id="Environment_my4qo"]
+background_mode = 1
+background_color = Color(0.1, 0.11, 0.14, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.55, 0.58, 0.65, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eq222"]
+albedo_color = Color(0.55, 0.57, 0.62, 1)
+roughness = 0.8
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_f4fmd"]
+size = Vector2(40, 40)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7213b"]
+albedo_color = Color(0.3, 0.32, 0.38, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_om47n"]
+size = Vector3(14, 6, 0.3)
+
+[node name="vr_lobby" type="Node3D" unique_id=364757190]
+
+[node name="@WorldEnvironment@2" type="WorldEnvironment" parent="." unique_id=912699055]
+environment = SubResource("Environment_my4qo")
+
+[node name="@DirectionalLight3D@3" type="DirectionalLight3D" parent="." unique_id=569769601]
+transform = Transform3D(0.8660254, 0.35355338, -0.35355338, 0, 0.70710677, 0.70710677, 0.5, -0.6123724, 0.6123724, 0, 0, 0)
+shadow_enabled = true
+
+[node name="@MeshInstance3D@4" type="MeshInstance3D" parent="." unique_id=116350467]
+material_override = SubResource("StandardMaterial3D_eq222")
+mesh = SubResource("PlaneMesh_f4fmd")
+
+[node name="@MeshInstance3D@5" type="MeshInstance3D" parent="." unique_id=996155763]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -4)
+material_override = SubResource("StandardMaterial3D_7213b")
+mesh = SubResource("BoxMesh_om47n")
+
+[node name="Victim" type="Marker3D" parent="." unique_id=1922242700]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.7, 0, 0)
+
+[node name="Attacker" type="Marker3D" parent="." unique_id=1649724666]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.9, 0, 0)
+
+[node name="Cam_Face" type="Marker3D" parent="." unique_id=2112684333]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.55, 3.2)
+
+[node name="Cam_Wide" type="Marker3D" parent="." unique_id=743497036]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 4.6)

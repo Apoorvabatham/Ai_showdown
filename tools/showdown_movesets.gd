@@ -36,6 +36,10 @@ const MOVESETS := {
 				hitstun = 18, blockstun = 13}},
 		},
 	},
+	# Mark Zuckerbot: the Metaverse Trap (command grab) plays its scene when it connects.
+	&"zuckerbot": {
+		tweak = {thunder_valkyrie = {cinematic = &"metaverse_trap", cinematic_ticks = 390}},
+	},
 	# Jensen Wong: Tensor Blast (kit fireball) plus the GPU Rain power move.
 	&"jensen": {
 		add = {
