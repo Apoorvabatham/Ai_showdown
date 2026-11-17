@@ -2,69 +2,273 @@
 
 [sub_resource type="Environment" id="Environment_l8u28"]
 background_mode = 1
-background_color = Color(0, 0, 0.01, 1)
+background_color = Color(0.005, 0.003, 0.01, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.25, 0.27, 0.35, 1)
+ambient_light_color = Color(0.1, 0.1, 0.15, 1)
+ambient_light_energy = 0.15
 glow_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2yoog"]
+[sub_resource type="StandardMaterial3D" id="Mat_Star"]
 shading_mode = 0
+albedo_color = Color(1, 1, 1, 1)
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 1.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_7mybr"]
-material = SubResource("StandardMaterial3D_2yoog")
+[sub_resource type="SphereMesh" id="Mesh_Star"]
 radius = 0.12
 height = 0.24
 radial_segments = 6
 rings = 3
 
-[sub_resource type="MultiMesh" id="MultiMesh_3wvp6"]
+[sub_resource type="MultiMesh" id="MultiMesh_Stars"]
 transform_format = 1
-instance_count = 500
-mesh = SubResource("SphereMesh_7mybr")
+instance_count = 2000
+mesh = SubResource("Mesh_Star")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b81vj"]
-albedo_color = Color(0.12, 0.3, 0.7, 1)
-roughness = 0.6
-emission_enabled = true
-emission = Color(0.05, 0.15, 0.4, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_EarthLand"]
+albedo_color = Color(0.25, 0.3, 0.18, 1)
+roughness = 0.9
+metallic = 0.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_osb8l"]
-radius = 40.0
-height = 80.0
+[sub_resource type="StandardMaterial3D" id="Mat_EarthOcean"]
+albedo_color = Color(0.05, 0.12, 0.25, 1)
+roughness = 0.05
+metallic = 0.8
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sspgv"]
+[sub_resource type="StandardMaterial3D" id="Mat_EarthClouds"]
+albedo_color = Color(1, 1, 1, 1)
+roughness = 0.7
+metallic = 0.0
 transparency = 1
 blend_mode = 1
-shading_mode = 0
-albedo_color = Color(0.4, 0.7, 1, 0.25)
 
-[sub_resource type="SphereMesh" id="SphereMesh_ms8b1"]
-radius = 41.5
-height = 83.0
+[sub_resource type="StandardMaterial3D" id="Mat_Atmosphere"]
+albedo_color = Color(0.3, 0.5, 0.9, 1)
+roughness = 0.2
+metallic = 0.0
+transparency = 1
+blend_mode = 1
+cull_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_SunGlow"]
+shading_mode = 0
+albedo_color = Color(1, 0.9, 0.7, 1)
+emission_enabled = true
+emission = Color(1, 0.9, 0.7, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_RocketBody"]
+albedo_color = Color(0.95, 0.95, 0.95, 1)
+roughness = 0.15
+metallic = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Mat_RocketDetail"]
+albedo_color = Color(0.15, 0.15, 0.18, 1)
+roughness = 0.3
+metallic = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Mat_RocketEngine"]
+albedo_color = Color(0.3, 0.3, 0.35, 1)
+roughness = 0.4
+metallic = 0.7
+
+[sub_resource type="StandardMaterial3D" id="Mat_Flame"]
+shading_mode = 0
+albedo_color = Color(1, 0.6, 0.1, 1)
+emission_enabled = true
+emission = Color(1, 0.6, 0.1, 1)
+emission_energy_multiplier = 8.0
+
+[sub_resource type="SphereMesh" id="Mesh_EarthCore"
+    radius = 40.0
+    height = 80.0
+    radial_segments = 64
+    rings = 32
+]
+
+[sub_resource type="SphereMesh" id="Mesh_Clouds"
+    radius = 41.2
+    height = 82.4
+    radial_segments = 64
+    rings = 32
+]
+
+[sub_resource type="SphereMesh" id="Mesh_Atmosphere"
+    radius = 42.5
+    height = 85.0
+    radial_segments = 64
+    rings = 32
+]
+
+[sub_resource type="CylinderMesh" id="Mesh_RocketBody"
+    height = 40.0
+    top_radius = 1.8
+    bottom_radius = 2.5
+    radial_segments = 24
+]
+
+[sub_resource type="CylinderMesh" id="Mesh_RocketNose"
+    height = 6.0
+    top_radius = 0.1
+    bottom_radius = 1.8
+    radial_segments = 24
+]
+
+[sub_resource type="BoxMesh" id="Mesh_Fin"
+    size = Vector3(0.1, 5.0, 2.5)
+]
+
+[sub_resource type="CylinderMesh" id="Mesh_EngineBell"
+    height = 3.0
+    top_radius = 1.5
+    bottom_radius = 2.2
+    radial_segments = 24
+]
+
+[sub_resource type="CylinderMesh" id="Mesh_EngineCluster"
+    height = 2.0
+    top_radius = 2.5
+    bottom_radius = 2.5
+    radial_segments = 24
+]
+
+[sub_resource type="SphereMesh" id="Mesh_Sun"
+    radius = 8.0
+    height = 16.0
+    radial_segments = 32
+    rings = 16
+]
 
 [node name="space" type="Node3D" unique_id=444229787]
 
 [node name="@WorldEnvironment@12" type="WorldEnvironment" parent="." unique_id=791910980]
 environment = SubResource("Environment_l8u28")
 
-[node name="@DirectionalLight3D@13" type="DirectionalLight3D" parent="." unique_id=1801420255]
-transform = Transform3D(0.49999997, -0.29619813, 0.8137977, 0, 0.9396926, 0.34202012, -0.86602545, -0.17101005, 0.46984628, 0, 0, 0)
-light_color = Color(1, 0.97, 0.92, 1)
-light_energy = 1.6
+[node name="Stars" type="MultiMeshInstance3D" parent="." unique_id=1846065377]
+multimesh = SubResource("MultiMesh_Stars")
+material_override = SubResource("Mat_Star")
+
+[node name="Sun" type="MeshInstance3D" parent="." unique_id=2001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 80, -120)
+material_override = SubResource("Mat_SunGlow")
+mesh = SubResource("Mesh_Sun")
+
+[node name="SunLight" type="DirectionalLight3D" parent="." unique_id=2002]
+transform = Transform3D(-0.8, -0.4, 0.45, 0, 0.9, 0.4, -0.45, 0.4, -0.8, 0, 0, 0)
+light_color = Color(1, 0.98, 0.92, 1)
+light_energy = 3.5
 shadow_enabled = true
+shadow_max_distance = 300
+shadow_normal_bias = 0.1
+shadow_bias = 0.005
 
-[node name="@MultiMeshInstance3D@14" type="MultiMeshInstance3D" parent="." unique_id=1846065377]
-multimesh = SubResource("MultiMesh_3wvp6")
-
-[node name="@MeshInstance3D@15" type="MeshInstance3D" parent="." unique_id=233360428]
+[node name="EarthCore" type="MeshInstance3D" parent="." unique_id=2004]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -52, -30)
-material_override = SubResource("StandardMaterial3D_b81vj")
-mesh = SubResource("SphereMesh_osb8l")
+material_override = SubResource("Mat_EarthLand")
+mesh = SubResource("Mesh_EarthCore")
 
-[node name="@MeshInstance3D@16" type="MeshInstance3D" parent="." unique_id=1883160378]
+[node name="Clouds" type="MeshInstance3D" parent="." unique_id=2005]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -52, -30)
-material_override = SubResource("StandardMaterial3D_sspgv")
-mesh = SubResource("SphereMesh_ms8b1")
+material_override = SubResource("Mat_EarthClouds")
+mesh = SubResource("Mesh_Clouds")
+
+[node name="Atmosphere" type="MeshInstance3D" parent="." unique_id=2006]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -52, -30)
+material_override = SubResource("Mat_Atmosphere")
+mesh = SubResource("Mesh_Atmosphere")
+
+[node name="EarthGlow" type="OmniLight3D" parent="." unique_id=2007]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -52, -30)
+light_color = Color(0.3, 0.5, 1, 1)
+light_energy = 0.3
+omni_range = 100
+omni_attenuation = 1.0
+
+[node name="RocketBody" type="MeshInstance3D" parent="." unique_id=2009]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 22, 0)
+material_override = SubResource("Mat_RocketBody")
+mesh = SubResource("Mesh_RocketBody")
+
+[node name="RocketNose" type="MeshInstance3D" parent="." unique_id=2010]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 45, 0)
+material_override = SubResource("Mat_RocketBody")
+mesh = SubResource("Mesh_RocketNose")
+
+[node name="Fin1" type="MeshInstance3D" parent="." unique_id=2012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 7, 2.6)
+material_override = SubResource("Mat_RocketDetail")
+mesh = SubResource("Mesh_Fin")
+
+[node name="Fin2" type="MeshInstance3D" parent="." unique_id=2013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 7, -2.6)
+material_override = SubResource("Mat_RocketDetail")
+mesh = SubResource("Mesh_Fin")
+
+[node name="Fin3" type="MeshInstance3D" parent="." unique_id=2014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.4, 7, 0)
+material_override = SubResource("Mat_RocketDetail")
+mesh = SubResource("Mesh_Fin")
+
+[node name="Fin4" type="MeshInstance3D" parent="." unique_id=2015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.6, 7, 0)
+material_override = SubResource("Mat_RocketDetail")
+mesh = SubResource("Mesh_Fin")
+
+[node name="EngineCluster" type="MeshInstance3D" parent="." unique_id=2016]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 1, 0)
+material_override = SubResource("Mat_RocketEngine")
+mesh = SubResource("Mesh_EngineCluster")
+
+[node name="Engine1" type="MeshInstance3D" parent="." unique_id=2018]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, -2, 0)
+material_override = SubResource("Mat_RocketEngine")
+mesh = SubResource("Mesh_EngineBell")
+
+[node name="Engine2" type="MeshInstance3D" parent="." unique_id=2019]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.1, -2, 0.9)
+material_override = SubResource("Mat_RocketEngine")
+mesh = SubResource("Mesh_EngineBell")
+
+[node name="Engine3" type="MeshInstance3D" parent="." unique_id=2020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.9, -2, 0.9)
+material_override = SubResource("Mat_RocketEngine")
+mesh = SubResource("Mesh_EngineBell")
+
+[node name="Engine4" type="MeshInstance3D" parent="." unique_id=2021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.9, -2, -0.9)
+material_override = SubResource("Mat_RocketEngine")
+mesh = SubResource("Mesh_EngineBell")
+
+[node name="Engine5" type="MeshInstance3D" parent="." unique_id=2022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.1, -2, -0.9)
+material_override = SubResource("Mat_RocketEngine")
+mesh = SubResource("Mesh_EngineBell")
+
+[node name="Flame1" type="MeshInstance3D" parent="." unique_id=2024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, -3.5, 0)
+material_override = SubResource("Mat_Flame")
+mesh = SubResource("Mesh_EngineBell")
+
+[node name="Flame2" type="MeshInstance3D" parent="." unique_id=2025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.1, -3.5, 0.9)
+material_override = SubResource("Mat_Flame")
+mesh = SubResource("Mesh_EngineBell")
+
+[node name="Flame3" type="MeshInstance3D" parent="." unique_id=2026]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.9, -3.5, 0.9)
+material_override = SubResource("Mat_Flame")
+mesh = SubResource("Mesh_EngineBell")
+
+[node name="Flame4" type="MeshInstance3D" parent="." unique_id=2027]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.9, -3.5, -0.9)
+material_override = SubResource("Mat_Flame")
+mesh = SubResource("Mesh_EngineBell")
+
+[node name="Flame5" type="MeshInstance3D" parent="." unique_id=2028]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.1, -3.5, -0.9)
+material_override = SubResource("Mat_Flame")
+mesh = SubResource("Mesh_EngineBell")
 
 [node name="Rocket_Start" type="Marker3D" parent="." unique_id=434392035]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 2, 0)
