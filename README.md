@@ -1,6 +1,6 @@
 # AI Showdown
 
-A parody 2-player 3D fighting game in which caricatures of AI-industry public personas settle the future of AI in the ring. Built in **Godot 4.7** for an AI-safety student campaign, forked from [clintcan/3d-fighter](https://github.com/clintcan/3d-fighter).
+A parody 2-player 3D fighting game in which caricatures of AI-industry public personas settle the future of AI in the ring. A fun parody project built in **Godot 4.7**, forked from [clintcan/3d-fighter](https://github.com/clintcan/3d-fighter).
 
 ![AI Showdown key art](assets/ui/splash.png)
 

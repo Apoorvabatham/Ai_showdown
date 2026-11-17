@@ -12,7 +12,7 @@ const SPEED := 90.0 # pixels per second
 const CREDITS := [
 	["AI SHOWDOWN", ""],
 	["", ""],
-	["A parody fighting game", "Made for an AI-safety student campaign.\nParody. Not affiliated with or endorsed by any real person or company."],
+	["A parody fighting game", "Made for fun.\nParody. Not affiliated with or endorsed by any real person or company."],
 	["Based on 3D Fighter, created by", "Clint Christopher Canada"],
 	["3D Fighter", "github.com/clintcan/3d-fighter\nCode: MIT  ·  Original assets: CC BY 4.0"],
 	["AI Showdown changes", "Parody roster, outfits, rethemed stages (Server Farm, Mensa,\nSenate Hearing Room), title art and logo"],

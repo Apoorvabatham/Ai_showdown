@@ -4,9 +4,12 @@ Status of the work, how to run everything, and the traps that cost time. Read th
 changing anything. Companion docs: [README](../README.md) (overview, controls, credits) and
 [CONTRIBUTING](CONTRIBUTING.md) (field-by-field reference for fighters, stages, outfits).
 
+**Season 2 (multi-agent):** the design is in [ROADMAP](ROADMAP.md) and the work, file
+ownership and agent contracts are in [TASKS](TASKS.md).
+
 ## 1. What this is
 
-A parody 2-player 3D fighting game for an AI-safety student campaign, forked from
+A fun parody 2-player 3D fighting game, forked from
 [3D Fighter](https://github.com/clintcan/3d-fighter) by Clint Christopher Canada (code MIT,
 assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **4.7.2**.
 

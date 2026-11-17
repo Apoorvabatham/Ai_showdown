@@ -1,12 +1,13 @@
-# Notes for AI assistants working on this repo
+# Notes for Gemini
 
-Read [docs/HANDOFF.md](docs/HANDOFF.md) first: project status (which fighters are approved),
-setup, the rebuild order for a fighter, and known traps. Field reference:
-[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+Read [AGENTS.md](AGENTS.md) first: it lists the docs to read and the shared rules.
 
-Rules:
-- Godot 4.7.2. After any change run `godot --headless --path . -s res://tests/sim_test.gd`;
-  it must print `0 failure(s)`.
-- One fighter at a time; the owner approves each before the next.
-- Parody only: made-up names, no real logos, no humiliating, sexual or ethnic-caricature content.
-- Keep the credit "Based on 3D Fighter by Clint Christopher Canada (MIT / CC BY 4.0)".
+Your area (see the Gemini tasks in [docs/TASKS.md](docs/TASKS.md) §4):
+- **Stages**: the realism pass (`scripts/stages/stage_retheme.gd`, `scenes/stages/`), CC0
+  props in `assets/stage_props/`, stage sounds in `assets/audio/stage/`, crowd content in
+  `data/stage_life/`.
+- **Writing**: story scripts in `data/story/`, docs prose.
+
+Work on one stage (or one fighter's story) at a time, take screenshots for the owner
+(`tools/render_screenshots.gd`, `tools/render_stage_thumbs.gd`, needs a display or xvfb),
+and keep the tests at `0 failure(s)`.
