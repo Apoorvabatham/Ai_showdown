@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_y0an5")
-name = "Great Firewall"
+name = "Open-Source Squad"
 input = "~oath_finish"
 animation = &"ual2/OverhandThrow"
 animation_impact = 0.4
@@ -19,6 +19,9 @@ hitstop = 16
 knockback = Vector2(2.5, 0)
 knockdown = true
 chip_damage = 16
+super_fx = &"open_source_squad"
+cinematic = &"open_source_squad"
+cinematic_ticks = 310
 impact_fx = &"shockwave"
 hitbox_radius = 0.42
 hitbox_offset = Vector3(0.2, 0.8, -0.95)

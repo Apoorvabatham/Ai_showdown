@@ -695,7 +695,10 @@ func _fire_projectile(move: MoveData) -> void:
 		p.setup(self, move, target + Vector3.UP * Projectile.SKY_HEIGHT, Vector3.DOWN)
 	else:
 		var height := lane * move.projectile_spread if move.projectile_interval == 0 else 0.0
-		p.setup(self, move, global_transform * Projectile.SPAWN_OFFSET + Vector3.UP * height)
+		var spawn := global_transform * Projectile.SPAWN_OFFSET
+		if move.projectile_height >= 0.0:
+			spawn.y = move.projectile_height
+		p.setup(self, move, spawn + Vector3.UP * height)
 	shot_index += 1
 	projectiles.append(p)
 	add_sibling(p)

@@ -24,6 +24,31 @@ extends RefCounted
 ## its id: CharacterData.lookup() prefers the fighter's entry over the kit's.
 
 const MOVESETS := {
+	# Xi Winping: fortress / control (was a copy of Geoff's armoured kit): no armour, long
+	# wall-carrying rush, a low shockwave, a reflect stance and the paper dragon.
+	&"xi": {
+		stats = {archetype = "Fortress"},
+		tweak = {
+			shield_rush = {armor_hits = 0, travel = 7.5, knockback = Vector2(4.0, 0.0), damage = 85},
+			hammerfall = {armor_hits = 0, hit_level = 2, animation = &"fight/ground_pound", animation_impact = 0.33,
+				animation_end = 0.85, impact_fx = &"shockwave", hitbox_offset = Vector3(0, 0.2, -1.1), hitbox_radius = 0.6,
+				knockdown = true, damage = 100},
+			rising_gauntlet = {armor_hits = 0, invuln_frames = 5},
+			gauntlet_drive = {armor_hits = 0},
+			# Super finisher: the squad scene (scripts/supers/scenes/open_source_squad.gd, 5 s).
+			oath_finish = {cinematic = &"open_source_squad", cinematic_ticks = 310, super_fx = &"open_source_squad"},
+		},
+		add = {
+			# Censorship: a short stance that sends the opponent's shots back.
+			censorship = {from = "lian/still_water", set = {name = "Censorship", input = "214K", reversal = false,
+				reflect_projectiles = true, damage = 0, startup = 3, active = 18, recovery = 18, camera_intensity = 0.0}},
+			# Power move: a paper festival dragon weaving along the floor (jump it or block low).
+			paper_dragon = {from = "kenji/ki_blast", set = {name = "Paper Dragon Dance", input = "63214P",
+				projectile_look = &"paper_dragon", projectile_height = 0.55, projectile_speed = 4.5, projectile_lifetime = 120,
+				hitbox_radius = 0.5, damage = 75, chip_damage = 9, hit_level = 2, knockdown = true, hitstun = 0,
+				startup = 16, recovery = 30, projectile_color = Color(0.92, 0.15, 0.1)}},
+		},
+	},
 	# tesla man: the super's finisher plays the "Rocket Launch" scene when it hits.
 	&"tesla": {
 		tweak = {tempest_finish = {cinematic = &"rocket_launch", cinematic_ticks = 405, super_fx = &"rocket_launch"}},

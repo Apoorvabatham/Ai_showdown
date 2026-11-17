@@ -5037,7 +5037,7 @@ func showdown_tests() -> void:
 	check("Showdown: the supers are renamed for the parody", supers.ram == "Scaling Law" and supers.tesla == "Rocket Launch"
 		and supers.dario == "Constitutional Shield" and supers.zuckerbot == "Metaverse Trap" and supers.jensen == "Leather Jacket Tornado"
 		and supers.yann == "It's Just Autocomplete" and supers.geoff.begins_with("I Regret Nothing")
-		and supers.sundar == "404 Not Found" and supers.donald == "Shower of Tariffs" and supers.xi == "Great Firewall"
+		and supers.sundar == "404 Not Found" and supers.donald == "Shower of Tariffs" and supers.xi == "Open-Source Squad"
 		and supers.algorithm == "Engagement Loop", str(supers))
 	var jensen: CharacterData = gs.find_character(&"jensen")
 	var sundar: CharacterData = gs.find_character(&"sundar")
@@ -5079,6 +5079,18 @@ func showdown_tests() -> void:
 		and donald.max_health > zuck.max_health and donald.weight > zuck.weight and donald.walk_speed < zuck.walk_speed
 		and donald.combo_trials.size() == 6 and donald.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Tycoon"
 		and FighterShowcase.ROUTINES.has(&"donald") and zuck.moves.all(func(mv: MoveData) -> bool: return not mv.barrier and mv.armor_hits == 0))
+
+	var xi: CharacterData = gs.find_character(&"xi")
+	var geoff: CharacterData = gs.find_character(&"geoff")
+	var xi_moves := {}
+	for mv: MoveData in xi.moves:
+		xi_moves[mv.input] = mv
+	check("Showdown: Xi is a fortress, not a copy of Geoff's armoured kit", xi_moves.has("63214P")
+		and (xi_moves["63214P"] as MoveData).projectile_look == &"paper_dragon" and (xi_moves["63214P"] as MoveData).hit_level == MoveData.HitLevel.LOW
+		and xi_moves.has("214K") and (xi_moves["214K"] as MoveData).reflect_projectiles
+		and xi.moves.all(func(mv: MoveData) -> bool: return mv.armor_hits == 0)
+		and geoff.moves.any(func(mv: MoveData) -> bool: return mv.armor_hits > 0)
+		and xi.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Fortress" and FighterShowcase.ROUTINES.has(&"xi"))
 
 	# Voices: a fighter without its own shouts borrows its fallback's, except for the super
 	# (the drop-in <id>_super_1.ogg/.wav names the move).
@@ -5182,6 +5194,34 @@ func showdown_tests() -> void:
 	sf.start_match()
 	await process_frame
 	check("Victory scene: ends when a new match starts", victories.scene == null and sf.stage.visible)
+
+	# Xi's super: the squad scene plays when the finisher connects.
+	gs.player_character = gs.find_character(&"xi")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var xf = current_scene
+	xf.set_physics_process(false)
+	xf.start_match(); xf.start_fight_immediately()
+	var xp1: Fighter = xf.fighters[0]
+	xf.fighters[1].controller = xf.dummy
+	xf.dummy.mode = DummyController.Mode.STAND
+	xp1.position.x = -0.5; xf.fighters[1].position.x = 0.5
+	xp1.add_meter(Fighter.MAX_METER)
+	var xi_started := [false]
+	xf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: xi_started[0] = true)
+	xp1._start_move(xp1._move_for_input("236236P"), false)
+	var xg := 0
+	while not xi_started[0] and xg < 300:
+		xf._physics_process(1.0 / 60.0); xg += 1
+	await process_frame; await process_frame
+	var xscene = xf.get_node("SuperScenePlayer").scene
+	check("Super scene: Xi's Open-Source Squad runs in (Qwen, Alibaba, Kimi)", xi_started[0] and xscene != null
+		and xscene.helpers.size() == 3 and xf.freeze_ticks > 200)
+	for i in 330:
+		xf._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: Xi's scene ends and the fight resumes", xf.get_node("SuperScenePlayer").scene == null and xf.stage.visible)
 
 	# Arcade: AGI is the final boss; picking it gives the shadow boss instead.
 	var algorithm: CharacterData = gs.find_character(gs.FINAL_BOSS)

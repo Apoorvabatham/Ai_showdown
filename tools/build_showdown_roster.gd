@@ -276,7 +276,7 @@ const ROSTER := [
 		posture = {spine_02 = Vector3(-2, 0, 0), spine_03 = Vector3(-3, 0, 0), neck_01 = Vector3(1, 0, 0), Head = Vector3(-1, 0, 0), upperarm = Vector3(18, 0, -15), lowerarm = Vector3(-25, 0, 0), clavicle = Vector3(0, 3, -3)},
 		moves = {shield_rush = "Belt and Road Rush", rising_gauntlet = "Five-Year Plan", hammerfall = "Social Credit Hammer",
 			gauntlet_drive = "State Media Drive", spur_rake = "Censor Sweep",
-			emerald_oath = "Great Firewall", oath_finish = "Great Firewall"},
+			emerald_oath = "Open-Source Squad", oath_finish = "Open-Source Squad"},
 		voice = &"brutus", color = Color(0.8, 0.12, 0.12),
 		intro = ["This fight has been approved in advance.", "Search results for your victory: none found.", "Harmony will be restored."],
 		wins = ["This match did not happen.", "Your defeat is trending. Officially.", "Stability maintained."],
