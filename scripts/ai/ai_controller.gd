@@ -515,7 +515,8 @@ func _decide(fighter: Fighter, seen: Dictionary, dist: float) -> void:
 	var options: Array = []
 	# Shots, fastest first: the fastest is the fireball, a slower second one a trap.
 	var shots: Array = _moves.values().filter(func(m: MoveData) -> bool:
-		return m.is_special() and _is_attack(m) and m.projectile_speed > 0.0 and not m.super_move)
+		return (m.is_special() and _is_attack(m) and m.projectile_speed > 0.0 and not m.super_move
+			and m.projectile_origin != &"sky" and m.projectile_origin != &"around"))
 	shots.sort_custom(func(x: MoveData, y: MoveData) -> bool: return x.projectile_speed > y.projectile_speed)
 	var projectile_move: MoveData = shots[0] if not shots.is_empty() else null
 	var trap: MoveData = shots[-1] if shots.size() > 1 else null
@@ -524,6 +525,11 @@ func _decide(fighter: Fighter, seen: Dictionary, dist: float) -> void:
 	var ground_special := _special_with(func(m: MoveData) -> bool: return m.motion() == "214")
 	var grab := _special_with(func(m: MoveData) -> bool: return m.command_grab and not m.super_move)
 	var can_fireball := projectile_move != null and fighter.projectile == null
+	# Power move: a volley from the sky or from all sides (not the fireball, not a super).
+	var power := _special_any(func(m: MoveData) -> bool:
+		return (_is_attack(m) and m.projectile_speed > 0.0 and not m.super_move
+			and (m.projectile_origin == &"sky" or m.projectile_origin == &"around")))
+	var can_power := power != null and fighter.projectile == null
 	var stance := _stance(fighter)
 	var reversal := _reversal_move()
 	var glide := _special_any(func(m: MoveData) -> bool: return m.projectile_immune and m.travel > 0.0 and not _is_attack(m))
@@ -531,6 +537,7 @@ func _decide(fighter: Fighter, seen: Dictionary, dist: float) -> void:
 		options = [
 			[2.5 * _w("fireball") if can_fireball else 0.0, func() -> void: _queue_special(projectile_move)],
 			[1.0 * _w("trap") if trap and can_fireball else 0.0, func() -> void: _queue_special(trap)],
+			[1.2 * _w("power") if can_power else 0.0, func() -> void: _queue_special(power)],
 			[0.4 * _w("teleport") if teleport else 0.0, func() -> void: _queue_special(teleport)],
 			[1.0 * _w("stance") if stance else 0.0, func() -> void: _queue_special(stance)],
 			[1.0 * aggression * _w("rush") if rush and dist <= reach(rush) else 0.0, func() -> void: _queue_special(rush)],
@@ -547,6 +554,7 @@ func _decide(fighter: Fighter, seen: Dictionary, dist: float) -> void:
 			[1.2 * aggression if _signature_in_range(dist) else 0.0, func() -> void: _queue_press(HP, 6)],
 			[1.0 * aggression * _w("rush") if rush and dist <= reach(rush) else 0.0, func() -> void: _queue_special(rush)],
 			[0.8 * _w("fireball") if can_fireball else 0.0, func() -> void: _queue_special(projectile_move)],
+			[0.6 * _w("power") if can_power else 0.0, func() -> void: _queue_special(power)],
 			[0.6 * _w("teleport") if teleport else 0.0, func() -> void: _queue_special(teleport)],
 			[1.5 * aggression * _w("jump"), func() -> void: _queue_jump_in()],
 			[1.0 * _w("sidestep"), func() -> void: _queue_sidestep()],

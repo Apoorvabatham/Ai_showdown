@@ -25,6 +25,7 @@
 [ext_resource type="Resource" path="res://data/moves/tesla/tempest_finish.tres" id="23_a04um"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/tesla_body.res" id="24_6fbjv"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="24_qwdk6"]
+[ext_resource type="Resource" path="res://data/moves/tesla/rocket_barrage.tres" id="24_x12v2"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/tesla_outfit.res" id="25_vefoe"]
 [ext_resource type="Texture2D" path="res://assets/characters/prints/T_tesla_tee.png" id="26_3qv4n"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/tesla.png" id="26_vefoe"]
@@ -145,4 +146,4 @@ weight = 0.85
 throw_damage = 100
 power_rating = 0.35
 speed_rating = 0.9
-moves = Array[ExtResource("5_3qv4n")]([ExtResource("6_x12v2"), ExtResource("7_hv3ia"), ExtResource("8_0mg7i"), ExtResource("9_7632y"), ExtResource("10_xtxww"), ExtResource("11_tl328"), ExtResource("12_dx0na"), ExtResource("13_cu6di"), ExtResource("14_eewrn"), ExtResource("15_2dfjp"), ExtResource("16_1n8w8"), ExtResource("17_qh14i"), ExtResource("18_7147x"), ExtResource("19_uf7q6"), ExtResource("20_e5gxr"), ExtResource("21_x7p23"), ExtResource("22_wmn3i"), ExtResource("23_a04um")])
+moves = Array[ExtResource("5_3qv4n")]([ExtResource("6_x12v2"), ExtResource("7_hv3ia"), ExtResource("8_0mg7i"), ExtResource("9_7632y"), ExtResource("10_xtxww"), ExtResource("11_tl328"), ExtResource("12_dx0na"), ExtResource("13_cu6di"), ExtResource("14_eewrn"), ExtResource("15_2dfjp"), ExtResource("16_1n8w8"), ExtResource("17_qh14i"), ExtResource("18_7147x"), ExtResource("19_uf7q6"), ExtResource("20_e5gxr"), ExtResource("21_x7p23"), ExtResource("22_wmn3i"), ExtResource("23_a04um"), ExtResource("24_x12v2")])

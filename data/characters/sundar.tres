@@ -27,6 +27,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/sundar_body.res" id="23_hj4g3"]
 [ext_resource type="Resource" path="res://data/moves/sundar/search_result.tres" id="24_gqhry"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/sundar_outfit.res" id="24_p7qgi"]
+[ext_resource type="Resource" path="res://data/moves/sundar/not_found.tres" id="25_ebf8y"]
 [ext_resource type="Texture2D" path="res://assets/characters/prints/T_sundar_tee.png" id="26_ibel8"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/sundar.png" id="26_ksgio"]
 
@@ -130,7 +131,7 @@ combo_trials = Array[Dictionary]([{
 &"tip": "A roundhouse near the edge splats them: walk in and follow up."
 }, {
 &"corner": false,
-&"name": "Search Result",
+&"name": "404 Not Found",
 &"steps": PackedStringArray("LP", "HP", "236236P"),
 &"tip": "With a full meter, cancel the straight into the super: block it standing!"
 }])
@@ -140,4 +141,4 @@ back_walk_speed = 1.5
 weight = 1.1
 power_rating = 0.4
 speed_rating = 0.45
-moves = Array[ExtResource("4_p7qgi")]([ExtResource("5_ksgio"), ExtResource("6_qiyug"), ExtResource("7_ibel8"), ExtResource("8_ebf8y"), ExtResource("9_gqhry"), ExtResource("10_n8ahd"), ExtResource("11_5kjqn"), ExtResource("12_mccji"), ExtResource("13_w7k45"), ExtResource("14_voawu"), ExtResource("15_lgv4l"), ExtResource("16_2f78i"), ExtResource("17_a8b6e"), ExtResource("18_q1cn5"), ExtResource("19_4nbj0"), ExtResource("20_w5kka"), ExtResource("22_ibel8"), ExtResource("23_ebf8y"), ExtResource("24_gqhry")])
+moves = Array[ExtResource("4_p7qgi")]([ExtResource("5_ksgio"), ExtResource("6_qiyug"), ExtResource("7_ibel8"), ExtResource("8_ebf8y"), ExtResource("9_gqhry"), ExtResource("10_n8ahd"), ExtResource("11_5kjqn"), ExtResource("12_mccji"), ExtResource("13_w7k45"), ExtResource("14_voawu"), ExtResource("15_lgv4l"), ExtResource("16_2f78i"), ExtResource("17_a8b6e"), ExtResource("18_q1cn5"), ExtResource("19_4nbj0"), ExtResource("20_w5kka"), ExtResource("22_ibel8"), ExtResource("23_ebf8y"), ExtResource("24_gqhry"), ExtResource("25_ebf8y")])
