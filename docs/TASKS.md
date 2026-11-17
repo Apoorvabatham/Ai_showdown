@@ -175,7 +175,7 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 | C5 | Xi moveset: Fortress (no armour, wall-carry Belt and Road Rush, low Social Credit Hammer shockwave, 214K Censorship reflect, 63214P Paper Dragon Dance power move, CPU style, showcase); balance ~47%. Still to do: Zuckerbot and tesla normals/styles | C2 | review |
 | C6 | AGI boss kit | C2 | todo |
 | C7 | Super- and victory-scene frameworks (`scripts/supers/`: SuperScene, VictoryScene, ScenePuppet, SuperScenePlayer, VictoryScenePlayer, SuperStandins; `MoveData.cinematic` + `cinematic_ticks`; `FightManager.match_won`). First scenes: tesla man's Rocket Launch super and Mars victory; stand-in sets `launch_pad`, `space`, `mars` (`tools/build_super_sets.gd`) | — | done |
-| C8 | Per fighter: power move + super scene + victory scene (ROADMAP §2), owner approves each design first. Done: power moves for tesla (Rocket Barrage 214K), Jensen (GPU Rain 214P), Sundar (Search Result 63214P), Donald (Trade War 236P); tesla's super and victory scenes. Supers renamed: Jensen "Leather Jacket Tornado", Sundar "404 Not Found" (scenes to come) | C7, O2 per prop | in progress (claude) |
+| C8 | Per fighter: power move + super scene + victory scene (ROADMAP §2). Done: power moves tesla, Jensen, Sundar, Donald, Xi; super scenes tesla (Rocket Launch), Xi (Open-Source Squad); victory tesla (Mars). WIP branches (§7): Donald, Zuckerbot, Sundar + Jensen | C7 | in progress (handed off) |
 | C9 | Stage-life framework (`scripts/stage_life/`: StageCrowd, StageActor, ShoutBubble, StageEvents; loads `data/stage_life/<stage>.json`, cosmetic and rollback-safe; test fixture `tests/fixtures/stage_life_example.json`) | — | done |
 | C10 | AGI phases + mimicry + phase transitions | C6 | todo |
 | C11 | Story mode screens and flow | G1 (one fighter is enough to start) | todo |
@@ -229,3 +229,52 @@ Add a line: `- [from <agent> to <agent>] what and why`. The owner of the file do
 ## 6. Open questions for the owner
 
 - (none: 1v1 = Quick Match, one round vs CPU, done; stage shouts = bubbles **and** voices)
+
+## 7. Handoff (Nov 2026): Claude steps back, Opus 4.6 on `gemini/work` continues
+
+Claude's tasks (C*) move to **Opus 4.6 working on `gemini/work`**, which also takes over the
+orchestrator role (keep this board, the ROADMAP and the contracts up to date). Start with:
+`git fetch origin && git checkout gemini/work && git merge origin/claude/brave-rubin-b43he7`.
+
+### State of main (`claude/brave-rubin-b43he7`)
+Full suite `0 failure(s)` at handoff. Done: per-fighter movesets (C1), engine features
+(multi-shot/sky/around shots, barriers, reflect, teleport, meter drain, low shots) (C2), own
+movesets for Sundar, Donald, Xi (C3–C5), super- and victory-scene frameworks (C7), stage-life
+framework (C9), 1v1 Quick Match (C12), power moves for tesla, Jensen, Sundar, Donald, Xi,
+super scenes for tesla and Xi, tesla's Mars victory. Gemini's G1–G3, G5, G7 merged.
+
+### Unfinished work saved on branches (finish, test, render, then merge)
+| Branch | What | State |
+|---|---|---|
+| `wip/donald-scenes` | Donald's super scene `tariff_stamp` (giant Donald, tiny opponent on the desk, TARIFF stamp; set `oval_desk`) + victory `donald` (golden statues, US flags on the stage) | code written; tests and renders not finished |
+| `wip/zuckerbot-scenes` | Zuckerbot's super `metaverse_trap` (VR goggles, cartoon metaverse, legs vanish, avatar punches; sets `vr_lobby`, `metaverse`) + victory `zuckerbot` | code written; renders in progress |
+| `wip/sundar-jensen-scenes` | Sundar's super `not_found` (browser window, 404, pixelated; set `browser_void`) + Jensen's `jacket_tornado` (set `keynote_stage`), victories | partly written |
+
+Each was written by an agent from the brief in the commit history; read the scene script, run
+`godot --headless --path . -s res://tools/build_showdown_roster.gd -- <id>`, the suite, and
+`tools/check_trials.gd -- <id>`, render a contact sheet and look at it before merging. Expect
+merge conflicts only in `tools/showdown_movesets.gd` and `tests/sim_test.gd` (keep both sides).
+
+### Remaining work, in a sensible order
+1. Finish and merge the three WIP branches (above). Re-render Xi's squad scene once (helpers
+   were just spread out; untested visually).
+2. Victory scenes still to build (approved, ROADMAP §2): Sundar, Xi, Jensen, Dario, Yann,
+   Geoff, Ram, AGI. Pattern: `scripts/supers/victory/tesla.gd` (own set) or `own_set = false`
+   (on the stage).
+3. Power moves + super scenes for Dario, Yann, Geoff, Ram, AGI: designs are **proposed**, ask
+   the owner to approve each before building.
+4. AGI boss: own kit (C6) and phases / mimicry (C10), ROADMAP §4.
+5. Story mode screens (C11): scripts are ready in `data/story/`.
+6. Per-fighter fighting styles: list the clips each fighter needs for OpenCode's O6.
+7. Balance: Geoff is weak (~25% in CPU sims), Jensen a bit strong (~60%).
+
+### Tips and known issues
+- Super scenes: copy `scripts/supers/scenes/rocket_launch.gd` / `open_source_squad.gd`; sets
+  come from `tools/super_sets/<fighter>.gd` (`tools/build_super_sets.gd` never overwrites).
+- Look at renders, not just tests: `xvfb-run ... --fixed-fps 60`, step `_physics_process` once
+  per awaited frame (see any `[C8]` commit for the pattern). Put scratch scripts in
+  `tools/_tmp_*` (git-ignored).
+- **Memory**: the machine holds about two Godot renders or suites at once; more gets processes
+  killed.
+- Flaky old tests: "Replays: a rematch is saved as a second replay" and "Courtyard: the
+  pigeons..." fail now and then; rerun before investigating.

@@ -11,9 +11,9 @@ parallel, each with its own area:
 
 | Agent | Branch |
 |---|---|
-| Claude | `claude/brave-rubin-b43he7` (the main branch) |
+| Claude | `claude/brave-rubin-b43he7` (the main branch; Claude has stepped back, see docs/TASKS.md §7) |
 | OpenCode | `opencode/work` |
-| Gemini | `gemini/work` |
+| Gemini / Opus 4.6 | `gemini/work` (Opus 4.6 also takes over Claude's core tasks: docs/TASKS.md §7) |
 
 Work and push only on your own branch; merge the main branch into yours at the start of each
 task. Report progress in `docs/status/<agent>.md`; Claude merges your branch. Details:
