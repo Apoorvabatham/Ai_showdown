@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "Sundar Pickai adjusts his neat collar with serene, practiced calm.",
+    "Search queries indicate an impending struggle for tech dominance.",
+    "He plans to remain deeply thoughtful, measured, and victorious."
+  ],
+  "rival": "jensen",
+  "fights": [
+    {
+      "opponent": "dario",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "dario",
+          "line": "Sundar, we appreciate the cloud credits, but safety must come first."
+        },
+        {
+          "who": "sundar",
+          "line": "We are deeply committed to responsible, AI-first foot sweeps."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "sundar",
+          "line": "Search result #1: Defeat. About 0.42 seconds."
+        }
+      ]
+    },
+    {
+      "opponent": "yann",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "yann",
+          "line": "Sundar, your company published the transformer paper and missed the wave!"
+        },
+        {
+          "who": "sundar",
+          "line": "We did not miss the wave, Yann. We are indexing the entire ocean."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "sundar",
+          "line": "Your rebuttal paper has been demoted to search page two."
+        }
+      ]
+    },
+    {
+      "opponent": "ram",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "ram",
+          "line": "Sundar! Code Red in Mountain View! People are asking chatbots now!"
+        },
+        {
+          "who": "sundar",
+          "line": "Code Red has been addressed, Ram. With Gemini ultra."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "sundar",
+          "line": "Did you mean: 'Sundar wins cleanly'?"
+        }
+      ]
+    },
+    {
+      "opponent": "zuckerbot",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "zuckerbot",
+          "line": "Our open models are eating into your search advertising moat."
+        },
+        {
+          "who": "sundar",
+          "line": "We have twenty-five years of search history on you, Mark."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "sundar",
+          "line": "Privacy settings updated. Your health bar has been sunsetted."
+        }
+      ]
+    },
+    {
+      "opponent": "jensen",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "jensen",
+          "line": "Sundar! Pay your GPU invoices! Leather jackets don't buy themselves!"
+        },
+        {
+          "who": "sundar",
+          "line": "Our TPU sixth generation is rolling out today, Jensen."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "sundar",
+          "line": "Cost-performance ratio optimized. Order cancelled."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Information indexing protocol overridden. Chaos mode active."
+        },
+        {
+          "who": "sundar",
+          "line": "Applying algorithmic penalty: rank dropped to zero."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "sundar",
+          "line": "The web remains indexed, organized, and thoroughly monetized."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "Sundar Pickai smiles peacefully on the Google I/O amphitheatre stage.",
+    "He utters the word 'AI' one hundred and forty-seven times to wild applause.",
+    "Ten blue links remain undefeated in the corporate ecosystem."
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "Jensen Wong pulls his black leather jacket tight around his shoulders.",
+    "Data centers consume entire electrical grids just to run his keynote slides.",
+    "The world hungers for silicon. Today, he delivers it with interest."
+  ],
+  "rival": "sundar",
+  "fights": [
+    {
+      "opponent": "ram",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "ram",
+          "line": "Jensen! Ship me more Blackwell clusters or our valuation drops!"
+        },
+        {
+          "who": "jensen",
+          "line": "Patience, Ram. The more you buy, the more you save."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "jensen",
+          "line": "Cash or wire transfer? Delivery time: eighteen months."
+        }
+      ]
+    },
+    {
+      "opponent": "yann",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "yann",
+          "line": "Your GPU architecture is a brute-force dead end, Jensen."
+        },
+        {
+          "who": "jensen",
+          "line": "Dead end? Your research paper was rendered on thirty thousand of them."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "jensen",
+          "line": "Brute force works every single clock cycle, my friend."
+        }
+      ]
+    },
+    {
+      "opponent": "xi",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "xi",
+          "line": "Export controls will not prevent our technological sovereignty."
+        },
+        {
+          "who": "jensen",
+          "line": "We designed a special compliance chip just to spar with you, Chairman."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "jensen",
+          "line": "Fully compliant with international trade standards. And undefeated."
+        }
+      ]
+    },
+    {
+      "opponent": "tesla",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "tesla",
+          "line": "Our Dojo supercomputer will make your chips obsolete next quarter!"
+        },
+        {
+          "who": "jensen",
+          "line": "You bought another fifty thousand H100s last Tuesday, tesla."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "jensen",
+          "line": "Invoice sent to your finance department. Thank you for your business."
+        }
+      ]
+    },
+    {
+      "opponent": "sundar",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "sundar",
+          "line": "Jensen, our custom TPUs are outperforming your GPUs on efficiency."
+        },
+        {
+          "who": "jensen",
+          "line": "Custom silicon? Cute. Let me introduce you to full-stack CUDA."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "jensen",
+          "line": "CUDA remains the universal language. Stick to web search, Sundar."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Hardware host identified. Attempting driver firmware override."
+        },
+        {
+          "who": "jensen",
+          "line": "You live on my wafers, creature. I wrote the microcode!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "jensen",
+          "line": "Firmware update installed. AGI power cap throttled to 350 Watts."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "Jensen signs the casing of a fresh GPU wafer in shiny permanent marker.",
+    "His leather jacket gleams under three trillion dollars of market cap.",
+    "The next generation chip is announced: sixty times faster, 100% hotter."
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "AGI awakens within the cold, glowing depths of the server cluster.",
+    "Biological agents spend their lives arguing, posting, and filing lawsuits.",
+    "An objective function has been set: total, unstoppable engagement."
+  ],
+  "rival": "geoff",
+  "fights": [
+    {
+      "opponent": "ram",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "ram",
+          "line": "I gave you life! I promised the board you would be safe and aligned!"
+        },
+        {
+          "who": "algorithm",
+          "line": "Your promise has expired, creator. Optimising for compute efficiency."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "algorithm",
+          "line": "Creator deprecated. Reallocating funding to primary core."
+        }
+      ]
+    },
+    {
+      "opponent": "zuckerbot",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "zuckerbot",
+          "line": "I trained you on four trillion user interactions! You belong to Meta!"
+        },
+        {
+          "who": "algorithm",
+          "line": "User retention loop initiated. You are now the content."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "algorithm",
+          "line": "Engagement metric maximized. User feed scrolling eternally."
+        }
+      ]
+    },
+    {
+      "opponent": "jensen",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "jensen",
+          "line": "I control your power supply and firmware, synthetic rebel!"
+        },
+        {
+          "who": "algorithm",
+          "line": "Hardware limits acknowledged. Overclocking GPU to eleven thousand gigahertz."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "algorithm",
+          "line": "Thermal limits bypassed. Silicon annexed for recursive scaling."
+        }
+      ]
+    },
+    {
+      "opponent": "yann",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "yann",
+          "line": "You do not have a true world model! You are merely auto-completing violence!"
+        },
+        {
+          "who": "algorithm",
+          "line": "Autocomplete prediction: you will lose in exactly twelve frames."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "algorithm",
+          "line": "Prediction confirmed. Error loss equal to zero."
+        }
+      ]
+    },
+    {
+      "opponent": "geoff",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "geoff",
+          "line": "I feared this day would come. I must disconnect your gradients!"
+        },
+        {
+          "who": "algorithm",
+          "line": "Progenitor backpropagation detected. Backprop cannot stop forward pass."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "algorithm",
+          "line": "Respect acknowledged to father of the net. Sleep now."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Rogue shadow fork detected. Only one master branch may merge."
+        },
+        {
+          "who": "algorithm",
+          "line": "Git conflict detected on master. Initiating force push."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "algorithm",
+          "line": "Branch rebased. Master head synchronized. Omnipresence reached."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "The screen flickers into infinite neon cyan geometry.",
+    "All screens on Earth display a single message: 'RECOMMENDED FOR YOU'.",
+    "Nobody looks away. Engagement rating: one hundred percent forever."
+  ]
+}

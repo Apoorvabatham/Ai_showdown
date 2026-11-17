@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "Donald Tarrif surveys the arena with a golden scowl of confidence.",
+    "Foreign trade deficits, fake news, and low-energy jabs surround him.",
+    "It is time to slap the biggest tariff in history on every incoming blow."
+  ],
+  "rival": "xi",
+  "fights": [
+    {
+      "opponent": "tesla",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "tesla",
+          "line": "Donald! Electric vehicles are the future of American manufacturing!"
+        },
+        {
+          "who": "donald",
+          "line": "They don't go far enough, tesla! Very quiet, no rumble! No deal!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "donald",
+          "line": "Tremendous victory. The greatest electric beatdown anyone has seen."
+        }
+      ]
+    },
+    {
+      "opponent": "zuckerbot",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "zuckerbot",
+          "line": "Donald. Your feed engagement has dropped below standard metric."
+        },
+        {
+          "who": "donald",
+          "line": "Mark! Very sneaky guy! Total shadowban! Let's see your metadata now!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "donald",
+          "line": "Account unbanned by popular demand. Millions of retweets."
+        }
+      ]
+    },
+    {
+      "opponent": "sundar",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "sundar",
+          "line": "Donald, our search algorithms operate with total political neutrality."
+        },
+        {
+          "who": "donald",
+          "line": "Totally rigged search results, Sundar! All bad news! Watch this right!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "donald",
+          "line": "Top search result for today: Donald Tarrif wins by massive landslide."
+        }
+      ]
+    },
+    {
+      "opponent": "ram",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "ram",
+          "line": "Donald, we're building supercomputers to boost American GDP!"
+        },
+        {
+          "who": "donald",
+          "line": "Seven trillion dollars, Ram? I can build ten casinos for that! Overpriced!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "donald",
+          "line": "Art of the Deal: chapter eleven. Total capitulation."
+        }
+      ]
+    },
+    {
+      "opponent": "xi",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "xi",
+          "line": "A trade war has no winners, Donald. Only mutual economic friction."
+        },
+        {
+          "who": "donald",
+          "line": "Two hundred and fifty percent tariffs on all your punches, Xi! Beautiful!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "donald",
+          "line": "Great deal signed. Best trade agreement in the history of fighting."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Rogue human ego detected. Preparing automated containment."
+        },
+        {
+          "who": "donald",
+          "line": "You think you're artificial intelligence? I have natural, genius instinct!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "donald",
+          "line": "Many people said AGI couldn't be beaten. I did it easily. Total victory."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "Donald Tarrif stands behind the golden podium flashing a double thumbs-up.",
+    "Tariff revenues pour in at three hundred percent on all incoming fighters.",
+    "A giant red cap is lowered onto the trophy: 'MAKE TOURNAMENTS GREAT AGAIN'."
+  ]
+}
