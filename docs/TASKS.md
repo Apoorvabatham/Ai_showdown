@@ -172,7 +172,7 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 | C2b | New fight animations for the new moves (toolkit in `build_fight_animations.gd`, unused UAL clips) | C1 | todo |
 | C3 | Sundar moveset (ROADMAP §1.2): Trapper CPU style, showcase, 6 trials | C2 | review |
 | C4 | Donald moveset: Trade War containers (236P, power move), Build the Wall (214P barrier), armoured Executive Order and Trade War Tackle, You're Fired grab, Tycoon CPU style, 6 trials; balance ~51% | C2 | review |
-| C5 | Xi moveset; Zuckerbot, Jensen and tesla changes | C2 | todo |
+| C5 | Xi moveset: Fortress (no armour, wall-carry Belt and Road Rush, low Social Credit Hammer shockwave, 214K Censorship reflect, 63214P Paper Dragon Dance power move, CPU style, showcase); balance ~47%. Still to do: Zuckerbot and tesla normals/styles | C2 | review |
 | C6 | AGI boss kit | C2 | todo |
 | C7 | Super- and victory-scene frameworks (`scripts/supers/`: SuperScene, VictoryScene, ScenePuppet, SuperScenePlayer, VictoryScenePlayer, SuperStandins; `MoveData.cinematic` + `cinematic_ticks`; `FightManager.match_won`). First scenes: tesla man's Rocket Launch super and Mars victory; stand-in sets `launch_pad`, `space`, `mars` (`tools/build_super_sets.gd`) | — | done |
 | C8 | Per fighter: power move + super scene + victory scene (ROADMAP §2), owner approves each design first. Done: power moves for tesla (Rocket Barrage 214K), Jensen (GPU Rain 214P), Sundar (Search Result 63214P), Donald (Trade War 236P); tesla's super and victory scenes. Supers renamed: Jensen "Leather Jacket Tornado", Sundar "404 Not Found" (scenes to come) | C7, O2 per prop | in progress (claude) |
@@ -197,6 +197,7 @@ Start with O2a, then O5, then O3. All can start now (no dependency on Claude's c
 | O4 | AGI phase looks: material/colour variants for phase 2 and 3 (glitch, red), as alt outfits on `algorithm` | — | todo |
 | O6 | **Fighting-style animations** (contract §3.6), one fighter at a time when Claude lists the clips. First: `style/tesla_*` (fast, jumpy kicks) and `style/donald_*` (slow, heavy swings, a big shove) | C4 lists clips | blocked |
 | O7 | Make the **modelled power-move shots look real**: replace Claude's code-built looks in `scripts/supers/projectile_looks.gd` (search bar, graphics card) with props `sundar/search_bar` and `jensen/gpu_card` (contract §3.1; Claude swaps them in) | — | todo |
+| O2f | **Xi** prop: `xi/paper_dragon` (festival paper dragon facing -Z: big red-and-gold head with horns, eyes, whiskers; 7 body segments as children `Segment1`..`Segment7` trailing along +Z so Claude can weave them; ~2.6 m long, ~0.5 m tall; replaces the code look in `scripts/supers/projectile_looks.gd`) | — | todo |
 | O5 | **Xi's super helpers** (NPCs, contract §3.2): `helper_qwen`, `helper_alibaba`, `helper_kimi`: three made-up young engineers in T-shirts with the words **Qwen**, **Alibaba** and **Kimi** printed on the chest (owner's request), different builds and hair, sneakers | — | todo |
 
 ### Gemini (stages, assets, writing) — branch `gemini/work`

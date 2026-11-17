@@ -21,6 +21,8 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _container(color)
 		&"mini_rocket":
 			return _mini_rocket(color)
+		&"paper_dragon":
+			return _paper_dragon(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
@@ -28,6 +30,9 @@ static func build(look: StringName, color: Color) -> Node3D:
 ## Starting rotation: a search bar faces the camera (animate keeps it so); a GPU starts
 ## tumbled at an angle picked from `seed_value` (cosmetic).
 static func orient(look: StringName, direction: Vector3, seed_value: int) -> Basis:
+	if look == &"paper_dragon":
+		var flat := Vector3(direction.x, 0.0, direction.z)
+		return Basis.looking_at(flat.normalized()) if flat.length_squared() > 0.001 else Basis.IDENTITY
 	if look == &"mini_rocket":
 		# Nose (-Z) along the flight direction.
 		return Basis.looking_at(direction.normalized() if direction.length_squared() > 0.001 else Vector3.FORWARD)
@@ -59,6 +64,13 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 		&"container":
 			# Tumbles end over end along its flight.
 			node.rotate(Vector3(0, 0, 1), -5.0 * delta)
+		&"paper_dragon":
+			# The body weaves up and down behind the head like dancers carrying it.
+			for part: Node in node.get_children():
+				if part is Node3D and part.has_meta(&"segment"):
+					var k: int = part.get_meta(&"segment")
+					part.position.y = float(part.get_meta(&"rest_y")) + 0.16 * sin(age * 11.0 - k * 0.9)
+					part.position.x = 0.08 * sin(age * 6.0 - k * 0.7)
 		&"gpu":
 			# Tumbles as it falls; the fans spin.
 			var axis: Vector3 = node.get_meta(&"tumble_axis", Vector3.RIGHT)
@@ -170,6 +182,47 @@ static func _search_bar(color: Color) -> Node3D:
 	light.light_color = color
 	light.light_energy = 2.0
 	light.omni_range = 2.5
+	root.add_child(light)
+	return root
+
+
+# --- Paper dragon (Xi's power move) ----------------------------------------------
+
+## A festival paper dragon facing -Z: a big red-and-gold head and a weaving body.
+static func _paper_dragon(color: Color) -> Node3D:
+	var root := Node3D.new()
+	root.name = "PaperDragon"
+	var red := _metal(color, 0.0)
+	var gold := _glow(Color(1.0, 0.78, 0.2), 1.5)
+	var head := Node3D.new()
+	head.set_meta(&"segment", 0)
+	head.set_meta(&"rest_y", 0.0)
+	head.add_child(_box(Vector3(0.5, 0.42, 0.6), Vector3(0, 0.05, 0), red))
+	head.add_child(_box(Vector3(0.44, 0.12, 0.4), Vector3(0, -0.2, -0.18), red))
+	head.add_child(_box(Vector3(0.52, 0.04, 0.62), Vector3(0, -0.13, 0), gold))
+	for side: float in [-1.0, 1.0]:
+		head.add_child(_box(Vector3(0.1, 0.1, 0.06), Vector3(0.15 * side, 0.17, -0.31), gold))
+		var horn := _box(Vector3(0.05, 0.3, 0.05), Vector3(0.14 * side, 0.38, 0.12), gold)
+		horn.rotation.x = -0.5
+		head.add_child(horn)
+		var whisker := _box(Vector3(0.3, 0.02, 0.02), Vector3(0.35 * side, -0.05, -0.28), gold)
+		whisker.rotation.z = 0.4 * side
+		head.add_child(whisker)
+	root.add_child(head)
+	for i in 7:
+		var segment := Node3D.new()
+		var rest_y := -0.02 * i
+		segment.set_meta(&"segment", i + 1)
+		segment.set_meta(&"rest_y", rest_y)
+		segment.position = Vector3(0, rest_y, 0.45 + 0.3 * i)
+		var size := 0.4 - 0.025 * i
+		segment.add_child(_box(Vector3(size, size, 0.26), Vector3.ZERO, red))
+		segment.add_child(_box(Vector3(size + 0.02, 0.05, 0.27), Vector3(0, size * 0.5, 0), gold))
+		root.add_child(segment)
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 1.2
+	light.omni_range = 2.0
 	root.add_child(light)
 	return root
 

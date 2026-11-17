@@ -113,6 +113,13 @@ const PERSONALITIES := {
 }
 ## AI Showdown fighters that diverged from their kit (tools/showdown_movesets.gd).
 const SHOWDOWN_PERSONALITIES := {
+	&"xi": {
+		name = "Fortress", blurb = "holds the middle, sends your shots back and carries you to the wall", preferred_range = 1.8,
+		aggression = 0.0, block = 0.15, punish = 0.15, anti_air = 0.2,
+		rising_anti_air = 0.8, pressure = 0.35, far_punish = 0.5,
+		weights = {fireball = 1.3, rush = 1.4, ground_special = 1.3, poke = 1.2, string = 1.0, wait = 1.0,
+			approach = 1.0, retreat = 0.6, jump = 0.4, throw = 1.0},
+	},
 	&"sundar": {
 		name = "Trapper", blurb = "fills the screen with links and ads, then vanishes behind you", preferred_range = 3.0,
 		aggression = -0.1, block = 0.1, punish = 0.0, anti_air = 0.25,

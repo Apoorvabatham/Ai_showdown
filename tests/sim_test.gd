@@ -5080,6 +5080,18 @@ func showdown_tests() -> void:
 		and donald.combo_trials.size() == 6 and donald.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Tycoon"
 		and FighterShowcase.ROUTINES.has(&"donald") and zuck.moves.all(func(mv: MoveData) -> bool: return not mv.barrier and mv.armor_hits == 0))
 
+	var xi: CharacterData = gs.find_character(&"xi")
+	var geoff: CharacterData = gs.find_character(&"geoff")
+	var xi_moves := {}
+	for mv: MoveData in xi.moves:
+		xi_moves[mv.input] = mv
+	check("Showdown: Xi is a fortress, not a copy of Geoff's armoured kit", xi_moves.has("63214P")
+		and (xi_moves["63214P"] as MoveData).projectile_look == &"paper_dragon" and (xi_moves["63214P"] as MoveData).hit_level == MoveData.HitLevel.LOW
+		and xi_moves.has("214K") and (xi_moves["214K"] as MoveData).reflect_projectiles
+		and xi.moves.all(func(mv: MoveData) -> bool: return mv.armor_hits == 0)
+		and geoff.moves.any(func(mv: MoveData) -> bool: return mv.armor_hits > 0)
+		and xi.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Fortress" and FighterShowcase.ROUTINES.has(&"xi"))
+
 	# Voices: a fighter without its own shouts borrows its fallback's, except for the super
 	# (the drop-in <id>_super_1.ogg/.wav names the move).
 	var audio = root.get_node("Audio")

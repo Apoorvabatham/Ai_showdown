@@ -25,8 +25,10 @@
 [ext_resource type="Resource" path="res://data/moves/xi/emerald_oath.tres" id="23_e7u8o"]
 [ext_resource type="Resource" path="res://data/moves/xi/oath_finish.tres" id="24_vpirn"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="25_5bxqi"]
+[ext_resource type="Resource" path="res://data/moves/xi/censorship.tres" id="25_l33eb"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/xi_body.res" id="25_lj6x7"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/xi_outfit.res" id="26_b1ku0"]
+[ext_resource type="Resource" path="res://data/moves/xi/paper_dragon.tres" id="26_ktcae"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/xi.png" id="27_b1ku0"]
 
 [resource]
@@ -146,4 +148,4 @@ weight = 1.35
 throw_damage = 140
 power_rating = 0.8
 speed_rating = 0.35
-moves = Array[ExtResource("5_gpl0b")]([ExtResource("6_l33eb"), ExtResource("7_ktcae"), ExtResource("8_l0i1m"), ExtResource("9_d5xip"), ExtResource("10_2liso"), ExtResource("11_54v0a"), ExtResource("12_f21ct"), ExtResource("13_r04e0"), ExtResource("14_2qotp"), ExtResource("15_8syq5"), ExtResource("16_3sbm7"), ExtResource("17_xed31"), ExtResource("18_c58bn"), ExtResource("19_tuvdf"), ExtResource("20_3k5wm"), ExtResource("21_kr8ja"), ExtResource("22_qox8r"), ExtResource("23_e7u8o"), ExtResource("24_vpirn")])
+moves = Array[ExtResource("5_gpl0b")]([ExtResource("6_l33eb"), ExtResource("7_ktcae"), ExtResource("8_l0i1m"), ExtResource("9_d5xip"), ExtResource("10_2liso"), ExtResource("11_54v0a"), ExtResource("12_f21ct"), ExtResource("13_r04e0"), ExtResource("14_2qotp"), ExtResource("15_8syq5"), ExtResource("16_3sbm7"), ExtResource("17_xed31"), ExtResource("18_c58bn"), ExtResource("19_tuvdf"), ExtResource("20_3k5wm"), ExtResource("21_kr8ja"), ExtResource("22_qox8r"), ExtResource("23_e7u8o"), ExtResource("24_vpirn"), ExtResource("25_l33eb"), ExtResource("26_ktcae")])

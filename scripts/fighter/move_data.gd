@@ -77,6 +77,9 @@ enum HitLevel { HIGH, MID, LOW, OVERHEAD }
 ## `projectile_sky_offset` (m, along the fight axis).
 @export var projectile_origin: StringName = &""
 @export var projectile_sky_offset: float = 0.0
+## Height (m) hand shots start at; < 0 = the hand (Projectile.SPAWN_OFFSET). Low values make
+## a shot travel along the floor (jump it or block low).
+@export var projectile_height: float = -1.0
 ## The "projectile" is a barrier: a wall that deals no damage, destroys the opponent's
 ## projectiles that touch it, and pushes the opponent out of it (it travels at
 ## projectile_speed, 0 = stays put, for projectile_lifetime ticks). One at a time.
