@@ -786,7 +786,7 @@ func attach(fighter: Fighter) -> void:
 	_moves.clear()
 	for move in fighter.data.moves:
 		_moves[move.input] = move
-	personality = PERSONALITIES.get(fighter.data.kit_id(), DEFAULT_PERSONALITY)
+	personality = fighter.data.lookup(PERSONALITIES, DEFAULT_PERSONALITY)
 	_apply_profile()
 
 

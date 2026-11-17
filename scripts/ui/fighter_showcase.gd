@@ -85,7 +85,7 @@ func _init(fighter_model: FighterModel, character: CharacterData, turntable: Nod
 
 
 func restart() -> void:
-	_steps = (ROUTINES.get(data.kit_id(), [["idle", 999.0]]) as Array).duplicate(true)
+	_steps = (data.lookup(ROUTINES, [["idle", 999.0]]) as Array).duplicate(true)
 	_index = 0
 	_focus = 0
 	_begin_step()
@@ -188,7 +188,7 @@ func _next() -> void:
 	var step: Array = _steps[_index]
 	# A super step rewritten to its finisher goes back to the super for the next loop.
 	if step[0] == "move" and String(step[1]).begins_with("~"):
-		_steps[_index] = ROUTINES[data.kit_id()][_index].duplicate()
+		_steps[_index] = (data.lookup(ROUTINES) as Array)[_index].duplicate()
 	_index = (_index + 1) % _steps.size()
 	if _index == 0:
 		loops += 1

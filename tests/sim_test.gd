@@ -4795,7 +4795,7 @@ func showdown_tests() -> void:
 			problems.append("%s: unknown kit %s" % [c.id, c.kit])
 		if c.moves.size() < 15 or supers.size() != 1 or specials.is_empty() or not own_moves:
 			problems.append("%s: %d moves, %d supers, %d specials, own folder %s" % [c.id, c.moves.size(), supers.size(), specials.size(), own_moves])
-		if not AIController.PERSONALITIES.has(c.kit_id()) or not FighterShowcase.ROUTINES.has(c.kit_id()):
+		if c.lookup(AIController.PERSONALITIES) == null or c.lookup(FighterShowcase.ROUTINES) == null:
 			problems.append("%s: no CPU personality or showcase for kit %s" % [c.id, c.kit])
 		if c.portrait == null or c.outfit_mesh == null or c.outfit_body_mesh == null or not c.uses_base_body():
 			problems.append("%s: portrait/outfit/body missing" % c.id)

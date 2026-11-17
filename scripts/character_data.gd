@@ -141,3 +141,12 @@ func uses_base_body() -> bool:
 ## The id used for kit-based lookups (CPU personality, showcase routine).
 func kit_id() -> StringName:
 	return kit if kit != &"" else id
+
+
+## A per-fighter entry of a table keyed by fighter id (CPU personalities, showcase
+## routines), falling back to the kit's entry, then to `fallback`. Lets a fighter that
+## diverged from its kit (tools/showdown_movesets.gd) get its own CPU style and routine.
+func lookup(table: Dictionary, fallback: Variant = null) -> Variant:
+	if table.has(id):
+		return table[id]
+	return table.get(kit_id(), fallback)

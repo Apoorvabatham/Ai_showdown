@@ -22,6 +22,8 @@ const MOVES_DIR := "res://data/moves/"
 const PORTRAIT_DIR := "res://assets/ui/portraits/"
 const MALE_BODY := "res://assets/characters/base/Superhero_Male_FullBody.gltf"
 const HAIR_DIR := "res://assets/characters/hair/"
+## Per-fighter moveset overrides (remove / tweak / add moves, stats, trials).
+const MOVESETS: Dictionary = preload("res://tools/showdown_movesets.gd").MOVESETS
 const SKINS := {
 	&"light": "res://assets/characters/base/T_Superhero_Male_Light.png",
 	&"light_alt": "res://assets/characters/base/T_Superhero_Male_Dark.png",
@@ -376,27 +378,64 @@ func _build(spec: Dictionary, order: int) -> void:
 	data.win_quotes = PackedStringArray(spec.wins)
 	data.rival_lines = spec.rivals.duplicate(true)
 
-	# Moves: the kit's, copied into data/moves/<id>/, specials renamed, damage scaled.
+	# Moves: the kit's, copied into data/moves/<id>/, specials renamed, damage scaled,
+	# then the fighter's own overrides (tools/showdown_movesets.gd).
+	var overrides: Dictionary = MOVESETS.get(spec.id, {})
+	for key: String in overrides.get("stats", {}):
+		data.set(key, overrides.stats[key])
 	var renames := {} # old name -> new name, for the combo trial tips
 	var dir := MOVES_DIR + String(spec.id) + "/"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dir))
-	var moves: Array[MoveData] = []
+	var built := {} # move file -> MoveData, in order
 	for kit_move in kit.moves:
 		var file := kit_move.resource_path.get_file().get_basename()
+		if file in overrides.get("remove", []):
+			continue
 		var move := kit_move.duplicate() as MoveData
 		if spec.moves.has(file):
 			renames[kit_move.name] = spec.moves[file]
 			move.name = spec.moves[file]
 		move.damage = roundi(kit_move.damage * spec.damage)
 		move.chip_damage = roundi(kit_move.chip_damage * spec.damage)
+		built[file] = move
+	var tweaks: Dictionary = overrides.get("tweak", {})
+	for file: String in tweaks:
+		assert(built.has(file), "%s: tweak of unknown move %s" % [spec.id, file])
+		for field: String in tweaks[file]:
+			built[file].set(field, tweaks[file][field])
+	var additions: Dictionary = overrides.get("add", {})
+	for file: String in additions:
+		var add: Dictionary = additions[file]
+		var source := load(MOVES_DIR + add.from + ".tres") as MoveData
+		assert(source != null, "%s: no move %s to clone" % [spec.id, add.from])
+		var move := source.duplicate() as MoveData
+		move.damage = roundi(source.damage * spec.damage)
+		move.chip_damage = roundi(source.chip_damage * spec.damage)
+		for field: String in add.get("set", {}):
+			move.set(field, add.set[field])
+		built[file] = move
+	var moves: Array[MoveData] = []
+	for file: String in built:
+		var move: MoveData = built[file]
 		if spec.has("projectile_color") and move.projectile_speed > 0.0:
 			move.projectile_color = spec.projectile_color
 		var move_path := dir + file + ".tres"
 		ResourceSaver.save(move, move_path)
 		moves.append(load(move_path))
+	for stale in DirAccess.get_files_at(dir): # moves dropped since the last build
+		if stale.ends_with(".tres") and not built.has(stale.get_basename()):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(dir + stale))
 	data.moves = moves
+	var inputs := {}
+	for move in moves:
+		inputs[move.input] = true
 	var trials: Array[Dictionary] = []
-	for trial in kit.combo_trials:
+	if overrides.has("trials"):
+		trials.assign(overrides.trials)
+	for trial in kit.combo_trials if not overrides.has("trials") else []:
+		var steps: PackedStringArray = trial.steps
+		if not Array(steps).all(func(s: String) -> bool: return s == "WALL" or inputs.has(s) or inputs.has(s.trim_prefix("6"))):
+			continue # uses a move this fighter no longer has
 		var copy := trial.duplicate(true)
 		for key in copy.keys():
 			if String(key) == "name" or String(key) == "tip":
