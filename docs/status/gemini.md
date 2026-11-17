@@ -25,12 +25,12 @@ and any requests for other agents.
 
 ## G3: Realism pass for the 4 stages (Mensa first, Senate, Foundry, Server Farm)
 - **State**: review
-- **Summary**: Overhauled visual fidelity across all 4 stages in `scripts/stages/stage_retheme.gd`.
+- **Summary**: Overhauled visual fidelity across all 4 stages in `scripts/stages/stage_retheme.gd` with PBR materials, real CC0 props, reflection probes, and custom stage atmosphere / fog passes.
 - **Details**:
-  - **Mensa**: Added `MensaReflectionProbe` for realistic linoleum floor specular highlights. Applied Poly Haven PBR `floor_tiles_06` texture with normal and roughness maps. Replaced box chairs with Kenney dining chairs (`chair.glb`, `chairRounded.glb`). Populated cafeteria tables and service counter with real plates, bowls, coffee cups, and condiment bottles.
-  - **Senate**: Added `SenateReflectionProbe` for mahogany and brass reflections. Replaced blocky dais chairs with Kenney executive swivel chairs (`chairDesk.glb`). Added reading lamp (`lampRoundTable.glb`) and witness chair to the witness stand.
-  - **Foundry**: Added `FoundryReflectionProbe` for specular cleanroom floor and chamber glass. Placed articulated robotic arms (`robot-arm-a.glb`, `robot-arm-b.glb`) tending the 300mm wafer load port. Added wafer track conveyors, lithography machines on flanks, and overhead cryogenic fluid pipelines.
-  - **Server Farm**: Added `ServerFarmReflectionProbe`. Placed overhead high-density cooling pipes, wall structure panels, and real diagnostic monitor terminals (`computer-screen.glb`).
+  - **Mensa**: Added `MensaReflectionProbe` for realistic linoleum floor specular highlights. Applied Poly Haven PBR `floor_tiles_06` texture with normal and roughness maps. Replaced box chairs with Kenney dining chairs (`chair.glb`, `chairRounded.glb`). Populated cafeteria tables and service counter with real plates, bowls, coffee cups, and condiment bottles. Configured bright warm indoor fog (`volumetric_fog_albedo = Color(0.95, 0.92, 0.88)`).
+  - **Senate**: Added `SenateReflectionProbe` for mahogany and brass reflections. Replaced blocky dais chairs with Kenney executive swivel chairs (`chairDesk.glb`). Added reading lamp (`lampRoundTable.glb`) and witness chair to the witness stand. Configured stately chamber atmosphere fog (`volumetric_fog_albedo = Color(0.9, 0.85, 0.75)`).
+  - **Foundry**: Added `FoundryReflectionProbe` for specular cleanroom floor and chamber glass. Placed articulated robotic arms (`robot-arm-a.glb`, `robot-arm-b.glb`) tending the 300mm wafer load port. Added wafer track conveyors, lithography machines on flanks, and overhead cryogenic fluid pipelines. Configured high-tech cleanroom lighting, neutral saturation, and cyan cleanroom haze (`volumetric_fog_albedo = Color(0.7, 0.85, 1.0)`). Eliminated null material errors by properly preserving Jeepney mesh instance overrides.
+  - **Server Farm**: Added `ServerFarmReflectionProbe`. Placed overhead high-density cooling pipes, wall structure panels, and real diagnostic monitor terminals (`computer-screen.glb`). Configured cool datacenter airflow haze (`volumetric_fog_albedo = Color(0.6, 0.75, 0.95)`).
 - **Screenshots**:
   - Mensa: `docs/review/gemini/mensa.png`
   - Server Farm: `docs/review/gemini/server_farm.png`
@@ -39,12 +39,12 @@ and any requests for other agents.
 
 ## G5: Stage interaction and ambient sounds
 - **State**: done
-- **Summary**: Generated CC0 44.1kHz 16-bit PCM WAV stage audio in `assets/audio/stage/<stage>/`.
+- **Summary**: Generated CC0 44.1kHz 16-bit PCM WAV stage audio in `assets/audio/stage/<stage>/` for all 4 stages, including interaction effects and crowd reaction sounds (cheers and gasps) per stage.
 - **Details**:
   - `mensa`: `tray_clatter.wav`, `dishes_clink.wav`, `cafeteria_chatter.wav`, `cheer.wav`, `gasp.wav`.
   - `senate`: `gavel.wav` (solid mahogany sound block strike), `camera_shutter.wav` (DSLR press shutter), `flash_pop.wav`, `hearing_chatter.wav`, `cheer.wav`, `gasp.wav`.
-  - `server_farm`: `fan_whir.wav` (server blower drone), `alarm.wav` (rack fault siren), `terminal_beep.wav`, `steam_hiss.wav`.
-  - `foundry`: `welding.wav` (electrical arc sizzle), `sparks.wav` (plasma ejection pops), `air_shower.wav` (cleanroom entry blast), `euv_laser.wav` (pulsed 13.5nm core discharge), `alarm.wav`.
+  - `server_farm`: `fan_whir.wav` (server blower drone), `alarm.wav` (rack fault siren), `terminal_beep.wav`, `steam_hiss.wav`, `cheer.wav`, `gasp.wav`.
+  - `foundry`: `welding.wav` (electrical arc sizzle), `sparks.wav` (plasma ejection pops), `air_shower.wav` (cleanroom entry blast), `euv_laser.wav` (pulsed 13.5nm core discharge), `alarm.wav`, `cheer.wav`, `gasp.wav`.
   - Procedural sound generator tool: `tools/build_audio_assets.py`. Credited in `assets/CREDITS.md`.
 
 ## G7: Super and victory sounds

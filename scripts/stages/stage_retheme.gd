@@ -63,6 +63,14 @@ func _build_server_farm() -> void:
 	_relabel(stage, "NeonFight", "GPU FARM")
 	_relabel(stage, "NeonNight", "ZONE 7")
 
+	# Environment atmosphere pass: cool datacenter airflow haze
+	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if we and we.environment:
+		we.environment = we.environment.duplicate()
+		we.environment.volumetric_fog_enabled = true
+		we.environment.volumetric_fog_albedo = Color(0.6, 0.75, 0.95)
+		we.environment.volumetric_fog_density = 0.005
+
 	# Reflection probe for raised floor, metallic racks and LED lights
 	var probe := ReflectionProbe.new()
 	probe.name = "ServerFarmReflectionProbe"
@@ -139,6 +147,15 @@ func _build_mensa() -> void:
 	for name in ["ScrollKanji", "ScrollSeal", "TaikoDrum", "TaikoSkin1", "TaikoSkin2", "Students0", "Students1", "Students3",
 			"IncenseSmoke", "Lantern00", "Lantern01", "Lantern10", "Lantern11"]:
 		_remove(stage, name)
+
+	# Environment atmosphere pass: bright cafeteria lighting and warm indoor fog
+	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if we and we.environment:
+		we.environment = we.environment.duplicate()
+		we.environment.volumetric_fog_enabled = true
+		we.environment.volumetric_fog_albedo = Color(0.95, 0.92, 0.88)
+		we.environment.volumetric_fog_density = 0.003
+		we.environment.ambient_light_color = Color(0.62, 0.58, 0.52)
 
 	# Reflection probe for realistic linoleum specular floor and cafeteria surfaces
 	var probe := ReflectionProbe.new()
@@ -264,6 +281,14 @@ func _build_senate() -> void:
 			if banner:
 				banner.text = banners[i]
 
+	# Environment atmosphere pass: stately hearing room fog
+	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if we and we.environment:
+		we.environment = we.environment.duplicate()
+		we.environment.volumetric_fog_enabled = true
+		we.environment.volumetric_fog_albedo = Color(0.9, 0.85, 0.75)
+		we.environment.volumetric_fog_density = 0.004
+
 	# Reflection probe for polished mahogany and brass specular reflections
 	var probe := ReflectionProbe.new()
 	probe.name = "SenateReflectionProbe"
@@ -369,6 +394,9 @@ func _build_senate() -> void:
 func _build_foundry() -> void:
 	var stage := get_parent()
 	# Strip market props, stalls, street food, vehicles, and audio.
+	# Note: Jeepney0 and Jeepney1 use jeepney.res whose 11 surfaces rely on mesh instance
+	# material overrides. Calling queue_free() clears those overrides during frame capture,
+	# so we hide and sink them to avoid null material errors during ReflectionProbe updates.
 	for node_name in [
 		"Jeepney0", "JeepneyRoute0", "JeepneyName0L", "JeepneyName0R",
 		"Jeepney1", "JeepneyRoute1", "JeepneyName1L", "JeepneyName1R",
@@ -376,12 +404,27 @@ func _build_foundry() -> void:
 		"GrillFlicker", "NeonOpen", "NeonCross", "NeonGlow", "Ambience",
 		"Sound", "StreetShadows"
 	]:
-		_remove(stage, node_name)
+		if node_name in ["Jeepney0", "Jeepney1"]:
+			var j = stage.get_node_or_null(node_name) as VisualInstance3D
+			if j:
+				j.visible = false
+				j.position.y = -200.0
+		else:
+			_remove(stage, node_name)
 	for i in 11:
 		_remove(stage, "ShopSign%d" % i)
 	for i in 6:
 		_remove(stage, "StallSign%d" % i)
 		_remove(stage, "StallLight%d" % i)
+
+	# Environment atmosphere pass: high-tech cleanroom lighting and subtle cyan-tinted haze
+	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if we and we.environment:
+		we.environment = we.environment.duplicate()
+		we.environment.volumetric_fog_enabled = true
+		we.environment.volumetric_fog_albedo = Color(0.7, 0.85, 1.0)
+		we.environment.volumetric_fog_density = 0.004
+		we.environment.adjustment_saturation = 1.0
 
 	# 1. High-tech raised cleanroom airflow floor over the street asphalt.
 	# Reflection probe for cleanroom specular floor, metallic chambers and laser reflections
