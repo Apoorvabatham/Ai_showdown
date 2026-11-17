@@ -17,8 +17,9 @@ const RUN_TIME := 0.9
 const BEAT_TIME := 2.1
 const FINISH_TIME := 1.2
 const LENGTH := CALL_TIME + RUN_TIME + BEAT_TIME + FINISH_TIME
-## Where the helpers stand around the opponent (angle in degrees around them, 0 = Xi's side).
-const RING := [150.0, 210.0, 270.0]
+## Where the helpers stand around the opponent, in the set's space: on the far side of
+## them from the cameras (+Z), so their shirts face the camera.
+const RING := [Vector3(-1.4, 0, -0.75), Vector3(0.15, 0, -1.3), Vector3(1.55, 0, -0.7)]
 const PUNCHES := [&"ual1/Punch_Jab", &"ual1/Punch_Cross", &"fight/front_kick", &"fight/backfist"]
 
 var xi: ScenePuppet
@@ -106,10 +107,7 @@ func run() -> void:
 
 ## A helper's place in the ring around the opponent.
 func _ring_spot(i: int) -> Vector3:
-	var to_xi := xi.global_position - victim.global_position
-	to_xi.y = 0.0
-	var dir := to_xi.normalized().rotated(Vector3.UP, deg_to_rad(RING[i]))
-	return victim.global_position + dir * 1.1
+	return victim.global_position + (RING[i] as Vector3)
 
 
 func _face(p: ScenePuppet, target: Vector3) -> void:
@@ -124,11 +122,11 @@ func _shirt_word(helper: ScenePuppet, word: String, color: Color) -> void:
 	var label := Label3D.new()
 	label.text = word
 	label.font_size = 72
-	label.pixel_size = 0.0035
+	label.pixel_size = 0.0045
 	label.modulate = color.lightened(0.5)
 	label.outline_size = 14
 	label.outline_modulate = Color(0.05, 0.05, 0.05)
-	label.position = Vector3(0, 1.32, -0.24)
+	label.position = Vector3(0, 1.3, -0.26)
 	label.rotation.y = PI
 	label.shaded = false
 	helper.add_child(label)

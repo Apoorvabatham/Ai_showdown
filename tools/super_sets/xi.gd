@@ -33,6 +33,6 @@ static func xi_plaza() -> Node3D:
 	K._marker(root, "Helper_2_Start", Vector3(12, 0, 3))
 	K._marker(root, "Helper_3_Start", Vector3(0, 0, -14))
 	K._marker(root, "Cam_Wide", Vector3(0.5, 2.6, 8.5))
-	K._marker(root, "Cam_Close", Vector3(2.2, 1.4, 3.2))
+	K._marker(root, "Cam_Close", Vector3(0.4, 1.5, 3.4))
 	K._marker(root, "Cam_Low", Vector3(-1.0, 0.35, 4.0))
 	return root
