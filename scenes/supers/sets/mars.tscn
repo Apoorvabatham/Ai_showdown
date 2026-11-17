@@ -1,607 +1,404 @@
 [gd_scene format=3]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e3m16"]
-sky_top_color = Color(0.75, 0.55, 0.45, 1)
-sky_horizon_color = Color(0.95, 0.7, 0.5, 1)
-ground_bottom_color = Color(0.4, 0.2, 0.12, 1)
-ground_horizon_color = Color(0.66499996, 0.48999998, 0.35, 1)
+[sub_resource type="ProceduralSkyMaterial" id="Sky_Mars"]
+sky_top_color = Color(0.45, 0.3, 0.22, 1)
+sky_horizon_color = Color(0.85, 0.55, 0.4, 1)
+ground_bottom_color = Color(0.35, 0.18, 0.1, 1)
+ground_horizon_color = Color(0.6, 0.35, 0.25, 1)
+sun_color = Color(1, 0.85, 0.7, 1)
+sun_latitude = 0.35
+sun_longitude = 0.15
 
-[sub_resource type="Sky" id="Sky_kcebh"]
-sky_material = SubResource("ProceduralSkyMaterial_e3m16")
+[sub_resource type="Sky" id="Sky_Node"]
+sky_material = SubResource("Sky_Mars")
 
-[sub_resource type="Environment" id="Environment_rrhvp"]
+[sub_resource type="Environment" id="Env_Mars"]
 background_mode = 2
-sky = SubResource("Sky_kcebh")
+sky = SubResource("Sky_Node")
 ambient_light_source = 3
-ambient_light_energy = 0.8
+ambient_light_energy = 0.5
 tonemap_mode = 2
 glow_enabled = true
 fog_enabled = true
-fog_light_color = Color(0.85, 0.55, 0.4, 1)
-fog_density = 0.012
+fog_light_color = Color(0.8, 0.5, 0.35, 1)
+fog_density = 0.008
+fog_height = 10.0
+fog_height_density = 0.15
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kai4e"]
-albedo_color = Color(0.62, 0.3, 0.17, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_MarsGround"]
+albedo_color = Color(0.55, 0.28, 0.15, 1)
 roughness = 0.95
+metallic = 0.0
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_f75mr"]
-size = Vector2(200, 200)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6yyuo"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_MarsRock"]
+albedo_color = Color(0.5, 0.25, 0.13, 1)
 roughness = 0.9
+metallic = 0.05
 
-[sub_resource type="SphereMesh" id="SphereMesh_nr8ji"]
-radius = 0.6836748
-height = 1.3673496
+[sub_resource type="StandardMaterial3D" id="Mat_MarsRockDark"]
+albedo_color = Color(0.35, 0.18, 0.1, 1)
+roughness = 0.85
+metallic = 0.02
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_40gbj"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_MarsRockLight"]
+albedo_color = Color(0.65, 0.35, 0.22, 1)
 roughness = 0.9
+metallic = 0.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_bvt5x"]
-radius = 0.9207161
-height = 1.8414322
+[sub_resource type="StandardMaterial3D" id="Mat_MarsSand"]
+albedo_color = Color(0.62, 0.35, 0.2, 1)
+roughness = 0.98
+metallic = 0.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_moijv"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_DistantHill"]
+albedo_color = Color(0.45, 0.25, 0.18, 1)
+roughness = 0.95
+metallic = 0.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_CraterRim"]
+albedo_color = Color(0.4, 0.2, 0.12, 1)
 roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_4wp4m"]
-radius = 1.3169987
-height = 2.6339974
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xiivb"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_py88x"]
-radius = 0.6890825
-height = 1.378165
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5r2ae"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_nsd1s"]
-radius = 1.2918179
-height = 2.5836358
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_suqia"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_8l7dv"]
-radius = 0.49169195
-height = 0.9833839
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cb6mr"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_ysdnb"]
-radius = 1.4917939
-height = 2.9835877
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_trlt5"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_e1eaw"]
-radius = 1.5579543
-height = 3.1159086
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2loa1"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_l75i0"]
-radius = 0.37674013
-height = 0.75348026
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xvucb"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_pisoh"]
-radius = 0.52650857
-height = 1.0530171
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vm6li"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_eks5j"]
-radius = 0.9766368
-height = 1.9532737
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wnlp5"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_ashag"]
-radius = 0.6653387
-height = 1.3306774
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3txr6"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_fr7ni"]
-radius = 0.843302
-height = 1.686604
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d14th"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_bi1sx"]
-radius = 1.0226552
-height = 2.0453105
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjmpg"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_2d11x"]
-radius = 0.9466751
-height = 1.8933502
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a12t5"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_ucnr2"]
-radius = 0.445368
-height = 0.890736
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_syfnt"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_7vpyl"]
-radius = 0.5269546
-height = 1.0539092
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e1p0y"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_0v5js"]
-radius = 0.38684565
-height = 0.7736913
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f76gp"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_q0g03"]
-radius = 1.359374
-height = 2.718748
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yewg1"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_qo4es"]
-radius = 0.4071932
-height = 0.8143864
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_84x4o"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_j7qss"]
-radius = 1.1901016
-height = 2.3802032
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qaxfp"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_2geea"]
-radius = 1.1612008
-height = 2.3224015
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4fl6h"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_ksdg5"]
-radius = 1.3479242
-height = 2.6958485
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yahws"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_6dl06"]
-radius = 1.3787463
-height = 2.7574925
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a5k67"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_ni0ba"]
-radius = 0.5748292
-height = 1.1496584
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vlihl"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_aj64l"]
-radius = 0.5227367
-height = 1.0454735
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rbipc"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_vg5n1"]
-radius = 0.5472237
-height = 1.0944474
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eh8x5"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_34f04"]
-radius = 0.7119162
-height = 1.4238324
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gtvem"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_3wqf3"]
-radius = 1.3890457
-height = 2.7780914
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_itmyt"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_fahyy"]
-radius = 0.5446329
-height = 1.0892658
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5df4t"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_owshl"]
-radius = 1.5922017
-height = 3.1844034
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3qq3o"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_tk6ft"]
-radius = 1.4146268
-height = 2.8292537
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p7rsw"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_f5iw3"]
-radius = 1.4610624
-height = 2.9221249
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kelrq"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_ayyii"]
-radius = 1.1578649
-height = 2.3157299
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yl52k"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_7ye3a"]
-radius = 1.0050668
-height = 2.0101335
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ono1o"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_fwnic"]
-radius = 0.9922108
-height = 1.9844216
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lxcri"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_wpkm4"]
-radius = 1.2643569
-height = 2.5287137
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8aj22"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_x82lv"]
-radius = 0.9161792
-height = 1.8323584
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_luqu2"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_kou4u"]
-radius = 0.77404946
-height = 1.5480989
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8u1as"]
-albedo_color = Color(0.45, 0.22, 0.13, 1)
-roughness = 0.9
-
-[sub_resource type="SphereMesh" id="SphereMesh_woy7l"]
-radius = 0.8191666
-height = 1.6383332
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cmgcw"]
-albedo_color = Color(0.55, 0.28, 0.17, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_py4s2"]
-radius = 25.0
-height = 50.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fkeha"]
-albedo_color = Color(0.55, 0.28, 0.17, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_t10kh"]
-radius = 25.0
-height = 50.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sovfg"]
-albedo_color = Color(0.55, 0.28, 0.17, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_85oqu"]
-radius = 25.0
-height = 50.0
+metallic = 0.0
+
+[sub_resource type="PlaneMesh" id="Mesh_Ground"
+    size = Vector2(500, 500)
+    subdivision_width = 50
+    subdivision_depth = 50
+]
+
+[sub_resource type="SphereMesh" id="Mesh_RockSmall"
+    radius = 0.4
+    height = 0.8
+    radial_segments = 8
+    rings = 4
+]
+
+[sub_resource type="SphereMesh" id="Mesh_RockMedium"
+    radius = 0.8
+    height = 1.6
+    radial_segments = 10
+    rings = 5
+]
+
+[sub_resource type="SphereMesh" id="Mesh_RockLarge"
+    radius = 1.5
+    height = 3.0
+    radial_segments = 12
+    rings = 6
+]
+
+[sub_resource type="SphereMesh" id="Mesh_Boulder"
+    radius = 3.0
+    height = 6.0
+    radial_segments = 16
+    rings = 8
+]
+
+[sub_resource type="CylinderMesh" id="Mesh_HillSmall"
+    height = 15.0
+    top_radius = 8.0
+    bottom_radius = 15.0
+    radial_segments = 16
+]
+
+[sub_resource type="CylinderMesh" id="Mesh_HillMedium"
+    height = 30.0
+    top_radius = 15.0
+    bottom_radius = 30.0
+    radial_segments = 16
+]
+
+[sub_resource type="CylinderMesh" id="Mesh_HillLarge"
+    height = 50.0
+    top_radius = 25.0
+    bottom_radius = 50.0
+    radial_segments = 20
+]
+
+[sub_resource type="CylinderMesh" id="Mesh_Crater"
+    height = 8.0
+    top_radius = 12.0
+    bottom_radius = 18.0
+    radial_segments = 24
+]
+
+[sub_resource type="CylinderMesh" id="Mesh_CraterLarge"
+    height = 15.0
+    top_radius = 25.0
+    bottom_radius = 40.0
+    radial_segments = 32
+]
+
+[sub_resource type="BoxMesh" id="Mesh_Plateau"
+    size = Vector3(40, 8, 60)
+]
 
 [node name="mars" type="Node3D" unique_id=552239914]
 
 [node name="@WorldEnvironment@17" type="WorldEnvironment" parent="." unique_id=40739167]
-environment = SubResource("Environment_rrhvp")
+environment = SubResource("Env_Mars")
 
 [node name="@DirectionalLight3D@18" type="DirectionalLight3D" parent="." unique_id=1378773758]
 transform = Transform3D(0.64278764, 0.38302222, -0.66341394, 0, 0.8660254, 0.5, 0.76604444, -0.32139382, 0.5566704, 0, 0, 0)
-light_color = Color(1, 0.85, 0.7, 1)
-light_energy = 1.2
+light_color = Color(1, 0.88, 0.75, 1)
+light_energy = 1.8
 shadow_enabled = true
+shadow_max_distance = 300
+shadow_normal_bias = 0.2
+shadow_bias = 0.01
 
-[node name="@MeshInstance3D@19" type="MeshInstance3D" parent="." unique_id=1033057883]
-material_override = SubResource("StandardMaterial3D_kai4e")
-mesh = SubResource("PlaneMesh_f75mr")
+[node name="MarsGround" type="MeshInstance3D" parent="." unique_id=3002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+material_override = SubResource("Mat_MarsGround")
+mesh = SubResource("Mesh_Ground")
 
-[node name="@MeshInstance3D@20" type="MeshInstance3D" parent="." unique_id=71456489]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.129593, 0.20510244, -23.288416)
-material_override = SubResource("StandardMaterial3D_6yyuo")
-mesh = SubResource("SphereMesh_nr8ji")
+[node name="Rock_1" type="MeshInstance3D" parent="." unique_id=3004]
+transform = Transform3D(0.98, 0, -0.2, 0, 1, 0, 0.2, 0, 0.98, -12.3, 0.2, -8.7)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@21" type="MeshInstance3D" parent="." unique_id=907143943]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.348858, 0.27621484, -40.00507)
-material_override = SubResource("StandardMaterial3D_40gbj")
-mesh = SubResource("SphereMesh_bvt5x")
+[node name="Rock_2" type="MeshInstance3D" parent="." unique_id=3005]
+transform = Transform3D(0.7, 0, 0.7, 0, 1, 0, -0.7, 0, 0.7, 15.6, 0.15, -22.4)
+material_override = SubResource("Mat_MarsRockDark")
+mesh = SubResource("Mesh_RockLarge")
 
-[node name="@MeshInstance3D@22" type="MeshInstance3D" parent="." unique_id=900878262]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.540436, 0.3950996, -10.0804825)
-material_override = SubResource("StandardMaterial3D_moijv")
-mesh = SubResource("SphereMesh_4wp4m")
+[node name="Rock_3" type="MeshInstance3D" parent="." unique_id=3006]
+transform = Transform3D(0.5, 0, -0.87, 0, 1, 0, 0.87, 0, 0.5, -28.9, 0.4, 14.2)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_Boulder")
 
-[node name="@MeshInstance3D@23" type="MeshInstance3D" parent="." unique_id=1113590609]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6661453, 0.20672475, -28.637154)
-material_override = SubResource("StandardMaterial3D_xiivb")
-mesh = SubResource("SphereMesh_py88x")
+[node name="Rock_4" type="MeshInstance3D" parent="." unique_id=3007]
+transform = Transform3D(0.92, 0, 0.38, 0, 1, 0, -0.38, 0, 0.92, 35.2, 0.2, 9.8)
+material_override = SubResource("Mat_MarsRockLight")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@24" type="MeshInstance3D" parent="." unique_id=1898972078]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.501564, 0.38754538, -5.0993996)
-material_override = SubResource("StandardMaterial3D_5r2ae")
-mesh = SubResource("SphereMesh_nsd1s")
+[node name="Rock_5" type="MeshInstance3D" parent="." unique_id=3008]
+transform = Transform3D(0.17, 0, -0.98, 0, 1, 0, 0.98, 0, 0.17, -42.1, 0.1, -5.6)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockSmall")
 
-[node name="@MeshInstance3D@25" type="MeshInstance3D" parent="." unique_id=772407723]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.760912, 0.14750758, -17.104181)
-material_override = SubResource("StandardMaterial3D_suqia")
-mesh = SubResource("SphereMesh_8l7dv")
+[node name="Rock_6" type="MeshInstance3D" parent="." unique_id=3009]
+transform = Transform3D(0.8, 0, -0.6, 0, 1, 0, 0.6, 0, 0.8, 8.4, 0.3, 28.7)
+material_override = SubResource("Mat_MarsRockDark")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@26" type="MeshInstance3D" parent="." unique_id=1350110814]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.34287, 0.44753817, 5.3861084)
-material_override = SubResource("StandardMaterial3D_cb6mr")
-mesh = SubResource("SphereMesh_ysdnb")
+[node name="Rock_7" type="MeshInstance3D" parent="." unique_id=3010]
+transform = Transform3D(0.6, 0, 0.8, 0, 1, 0, -0.8, 0, 0.6, -18.5, 0.15, 35.2)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockLarge")
 
-[node name="@MeshInstance3D@27" type="MeshInstance3D" parent="." unique_id=1381922208]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.452703, 0.4673863, -7.016262)
-material_override = SubResource("StandardMaterial3D_trlt5")
-mesh = SubResource("SphereMesh_e1eaw")
+[node name="Rock_8" type="MeshInstance3D" parent="." unique_id=3011]
+transform = Transform3D(0.95, 0, -0.3, 0, 1, 0, 0.3, 0, 0.95, 22.8, 0.25, -32.1)
+material_override = SubResource("Mat_MarsRockLight")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@28" type="MeshInstance3D" parent="." unique_id=1339815267]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.740898, 0.11302204, -6.198963)
-material_override = SubResource("StandardMaterial3D_2loa1")
-mesh = SubResource("SphereMesh_l75i0")
+[node name="Rock_9" type="MeshInstance3D" parent="." unique_id=3012]
+transform = Transform3D(0.3, 0, -0.95, 0, 1, 0, 0.95, 0, 0.3, -38.6, 0.1, -18.9)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockSmall")
 
-[node name="@MeshInstance3D@29" type="MeshInstance3D" parent="." unique_id=1146065973]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.029554, 0.15795258, -36.026817)
-material_override = SubResource("StandardMaterial3D_xvucb")
-mesh = SubResource("SphereMesh_pisoh")
+[node name="Rock_10" type="MeshInstance3D" parent="." unique_id=3013]
+transform = Transform3D(0.7, 0, 0.7, 0, 1, 0, -0.7, 0, 0.7, 45.3, 0.2, -24.5)
+material_override = SubResource("Mat_MarsRockDark")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@30" type="MeshInstance3D" parent="." unique_id=876605213]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.7109, 0.29299104, -34.151634)
-material_override = SubResource("StandardMaterial3D_vm6li")
-mesh = SubResource("SphereMesh_eks5j")
+[node name="Rock_11" type="MeshInstance3D" parent="." unique_id=3014]
+transform = Transform3D(0.87, 0, -0.5, 0, 1, 0, 0.5, 0, 0.87, -25.7, 0.3, 41.8)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockLarge")
 
-[node name="@MeshInstance3D@31" type="MeshInstance3D" parent="." unique_id=1984499057]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.527267, 0.1996016, -29.840345)
-material_override = SubResource("StandardMaterial3D_wnlp5")
-mesh = SubResource("SphereMesh_ashag")
+[node name="Rock_12" type="MeshInstance3D" parent="." unique_id=3015]
+transform = Transform3D(0.4, 0, 0.92, 0, 1, 0, -0.92, 0, 0.4, 30.1, 0.15, -40.2)
+material_override = SubResource("Mat_MarsRockLight")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@32" type="MeshInstance3D" parent="." unique_id=453669628]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.356745, 0.2529906, -7.4687004)
-material_override = SubResource("StandardMaterial3D_3txr6")
-mesh = SubResource("SphereMesh_fr7ni")
+[node name="Rock_13" type="MeshInstance3D" parent="." unique_id=3016]
+transform = Transform3D(0.99, 0, 0.1, 0, 1, 0, -0.1, 0, 0.99, -8.2, 0.2, 48.5)
+material_override = SubResource("Mat_MarsRockDark")
+mesh = SubResource("Mesh_RockSmall")
 
-[node name="@MeshInstance3D@33" type="MeshInstance3D" parent="." unique_id=1692632960]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.727768, 0.30679658, -31.024826)
-material_override = SubResource("StandardMaterial3D_d14th")
-mesh = SubResource("SphereMesh_bi1sx")
+[node name="Rock_14" type="MeshInstance3D" parent="." unique_id=3017]
+transform = Transform3D(0.2, 0, -0.98, 0, 1, 0, 0.98, 0, 0.2, 52.6, 0.1, -12.3)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@34" type="MeshInstance3D" parent="." unique_id=2032423482]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6217194, 0.28400254, -13.685036)
-material_override = SubResource("StandardMaterial3D_yjmpg")
-mesh = SubResource("SphereMesh_2d11x")
+[node name="Rock_15" type="MeshInstance3D" parent="." unique_id=3018]
+transform = Transform3D(0.8, 0, 0.6, 0, 1, 0, -0.6, 0, 0.8, -33.4, 0.25, 55.1)
+material_override = SubResource("Mat_MarsRockLight")
+mesh = SubResource("Mesh_RockLarge")
 
-[node name="@MeshInstance3D@35" type="MeshInstance3D" parent="." unique_id=206741902]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.617088, 0.1336104, -38.377357)
-material_override = SubResource("StandardMaterial3D_a12t5")
-mesh = SubResource("SphereMesh_ucnr2")
+[node name="Rock_16" type="MeshInstance3D" parent="." unique_id=3019]
+transform = Transform3D(0.6, 0, -0.8, 0, 1, 0, 0.8, 0, 0.6, 12.7, 0.15, -45.8)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@36" type="MeshInstance3D" parent="." unique_id=1500383963]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.389515, 0.15808637, 4.2704277)
-material_override = SubResource("StandardMaterial3D_syfnt")
-mesh = SubResource("SphereMesh_7vpyl")
+[node name="Rock_17" type="MeshInstance3D" parent="." unique_id=3020]
+transform = Transform3D(0.9, 0, 0.43, 0, 1, 0, -0.43, 0, 0.9, -15.8, 0.2, -52.4)
+material_override = SubResource("Mat_MarsRockDark")
+mesh = SubResource("Mesh_RockSmall")
 
-[node name="@MeshInstance3D@37" type="MeshInstance3D" parent="." unique_id=2010093215]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.328629, 0.11605369, -27.981186)
-material_override = SubResource("StandardMaterial3D_e1p0y")
-mesh = SubResource("SphereMesh_0v5js")
+[node name="Rock_18" type="MeshInstance3D" parent="." unique_id=3021]
+transform = Transform3D(0.3, 0, 0.95, 0, 1, 0, -0.95, 0, 0.3, 40.2, 0.1, 22.6)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@38" type="MeshInstance3D" parent="." unique_id=1134622500]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.477577, 0.4078122, -26.031185)
-material_override = SubResource("StandardMaterial3D_f76gp")
-mesh = SubResource("SphereMesh_q0g03")
+[node name="Rock_19" type="MeshInstance3D" parent="." unique_id=3022]
+transform = Transform3D(0.75, 0, -0.66, 0, 1, 0, 0.66, 0, 0.75, -48.3, 0.3, -15.2)
+material_override = SubResource("Mat_MarsRockLight")
+mesh = SubResource("Mesh_RockLarge")
 
-[node name="@MeshInstance3D@39" type="MeshInstance3D" parent="." unique_id=9576958]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.849148, 0.12215796, 6.676407)
-material_override = SubResource("StandardMaterial3D_yewg1")
-mesh = SubResource("SphereMesh_qo4es")
+[node name="Rock_20" type="MeshInstance3D" parent="." unique_id=3023]
+transform = Transform3D(0.55, 0, 0.83, 0, 1, 0, -0.83, 0, 0.55, 18.9, 0.2, 48.7)
+material_override = SubResource("Mat_MarsRockDark")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@40" type="MeshInstance3D" parent="." unique_id=1516133845]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.676336, 0.35703048, -6.7963715)
-material_override = SubResource("StandardMaterial3D_84x4o")
-mesh = SubResource("SphereMesh_j7qss")
+[node name="Rock_21" type="MeshInstance3D" parent="." unique_id=3024]
+transform = Transform3D(0.85, 0, -0.52, 0, 1, 0, 0.52, 0, 0.85, -5.4, 0.15, 8.9)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockSmall")
 
-[node name="@MeshInstance3D@41" type="MeshInstance3D" parent="." unique_id=1138848737]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.364822, 0.34836024, -1.8141289)
-material_override = SubResource("StandardMaterial3D_qaxfp")
-mesh = SubResource("SphereMesh_2geea")
+[node name="Rock_22" type="MeshInstance3D" parent="." unique_id=3025]
+transform = Transform3D(0.15, 0, -0.99, 0, 1, 0, 0.99, 0, 0.15, 28.4, 0.1, 38.2)
+material_override = SubResource("Mat_MarsRockLight")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@42" type="MeshInstance3D" parent="." unique_id=675320684]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6617203, 0.40437728, -8.7746315)
-material_override = SubResource("StandardMaterial3D_4fl6h")
-mesh = SubResource("SphereMesh_ksdg5")
+[node name="Rock_23" type="MeshInstance3D" parent="." unique_id=3026]
+transform = Transform3D(0.97, 0, 0.24, 0, 1, 0, -0.24, 0, 0.97, -22.6, 0.25, -41.5)
+material_override = SubResource("Mat_MarsRockDark")
+mesh = SubResource("Mesh_RockLarge")
 
-[node name="@MeshInstance3D@43" type="MeshInstance3D" parent="." unique_id=1413061284]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.41204453, 0.41362387, -22.377405)
-material_override = SubResource("StandardMaterial3D_yahws")
-mesh = SubResource("SphereMesh_6dl06")
+[node name="Rock_24" type="MeshInstance3D" parent="." unique_id=3027]
+transform = Transform3D(0.45, 0, -0.89, 0, 1, 0, 0.89, 0, 0.45, 36.8, 0.15, -3.4)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@44" type="MeshInstance3D" parent="." unique_id=170801896]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.154331, 0.17244877, -14.264629)
-material_override = SubResource("StandardMaterial3D_a5k67")
-mesh = SubResource("SphereMesh_ni0ba")
+[node name="Rock_25" type="MeshInstance3D" parent="." unique_id=3028]
+transform = Transform3D(0.8, 0, 0.6, 0, 1, 0, -0.6, 0, 0.8, -44.1, 0.2, 26.3)
+material_override = SubResource("Mat_MarsRockLight")
+mesh = SubResource("Mesh_RockSmall")
 
-[node name="@MeshInstance3D@45" type="MeshInstance3D" parent="." unique_id=1288470621]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.500237, 0.15682101, 0.355587)
-material_override = SubResource("StandardMaterial3D_vlihl")
-mesh = SubResource("SphereMesh_aj64l")
+[node name="Rock_26" type="MeshInstance3D" parent="." unique_id=3029]
+transform = Transform3D(0.3, 0, -0.95, 0, 1, 0, 0.95, 0, 0.3, 55.2, 0.1, -28.7)
+material_override = SubResource("Mat_MarsRockDark")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@46" type="MeshInstance3D" parent="." unique_id=968933309]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.6928177, 0.1641671, -42.22007)
-material_override = SubResource("StandardMaterial3D_rbipc")
-mesh = SubResource("SphereMesh_vg5n1")
+[node name="Rock_27" type="MeshInstance3D" parent="." unique_id=3030]
+transform = Transform3D(0.68, 0, 0.73, 0, 1, 0, -0.73, 0, 0.68, -12.4, 0.2, 62.8)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockLarge")
 
-[node name="@MeshInstance3D@47" type="MeshInstance3D" parent="." unique_id=1497511742]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35.62613, 0.21357486, -8.341251)
-material_override = SubResource("StandardMaterial3D_eh8x5")
-mesh = SubResource("SphereMesh_34f04")
+[node name="Rock_28" type="MeshInstance3D" parent="." unique_id=3031]
+transform = Transform3D(0.92, 0, -0.38, 0, 1, 0, 0.38, 0, 0.92, 41.5, 0.25, 33.9)
+material_override = SubResource("Mat_MarsRockLight")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@48" type="MeshInstance3D" parent="." unique_id=1747459543]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9548264, 0.4167137, -28.627298)
-material_override = SubResource("StandardMaterial3D_gtvem")
-mesh = SubResource("SphereMesh_3wqf3")
+[node name="Rock_29" type="MeshInstance3D" parent="." unique_id=3032]
+transform = Transform3D(0.5, 0, -0.87, 0, 1, 0, 0.87, 0, 0.5, -30.7, 0.15, -58.2)
+material_override = SubResource("Mat_MarsRockDark")
+mesh = SubResource("Mesh_RockSmall")
 
-[node name="@MeshInstance3D@49" type="MeshInstance3D" parent="." unique_id=926219909]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5698395, 0.16338988, -35.720757)
-material_override = SubResource("StandardMaterial3D_itmyt")
-mesh = SubResource("SphereMesh_fahyy")
+[node name="Rock_30" type="MeshInstance3D" parent="." unique_id=3033]
+transform = Transform3D(0.77, 0, 0.64, 0, 1, 0, -0.64, 0, 0.77, 24.3, 0.2, -55.6)
+material_override = SubResource("Mat_MarsRock")
+mesh = SubResource("Mesh_RockMedium")
 
-[node name="@MeshInstance3D@50" type="MeshInstance3D" parent="." unique_id=1011214859]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.082102, 0.4776605, -23.558147)
-material_override = SubResource("StandardMaterial3D_5df4t")
-mesh = SubResource("SphereMesh_owshl")
+[node name="Hill_1" type="MeshInstance3D" parent="." unique_id=3035]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -120, 7.5, -180)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillLarge")
 
-[node name="@MeshInstance3D@51" type="MeshInstance3D" parent="." unique_id=467253381]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.854301, 0.42438805, -13.336033)
-material_override = SubResource("StandardMaterial3D_3qq3o")
-mesh = SubResource("SphereMesh_tk6ft")
+[node name="Hill_2" type="MeshInstance3D" parent="." unique_id=3036]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 140, 15, -160)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillLarge")
 
-[node name="@MeshInstance3D@52" type="MeshInstance3D" parent="." unique_id=868172657]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.58965, 0.43831873, 1.8338089)
-material_override = SubResource("StandardMaterial3D_p7rsw")
-mesh = SubResource("SphereMesh_f5iw3")
+[node name="Hill_3" type="MeshInstance3D" parent="." unique_id=3037]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -180, 7.5, 150)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillMedium")
 
-[node name="@MeshInstance3D@53" type="MeshInstance3D" parent="." unique_id=135337055]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.94307, 0.34735948, -32.6775)
-material_override = SubResource("StandardMaterial3D_kelrq")
-mesh = SubResource("SphereMesh_ayyii")
+[node name="Hill_4" type="MeshInstance3D" parent="." unique_id=3038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 160, 7.5, 200)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillMedium")
 
-[node name="@MeshInstance3D@54" type="MeshInstance3D" parent="." unique_id=793976379]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.376877, 0.30152002, -24.661314)
-material_override = SubResource("StandardMaterial3D_yl52k")
-mesh = SubResource("SphereMesh_7ye3a")
+[node name="Hill_5" type="MeshInstance3D" parent="." unique_id=3039]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 7.5, -220)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillSmall")
 
-[node name="@MeshInstance3D@55" type="MeshInstance3D" parent="." unique_id=2100185859]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.068497, 0.29766324, -15.016058)
-material_override = SubResource("StandardMaterial3D_ono1o")
-mesh = SubResource("SphereMesh_fwnic")
+[node name="Hill_6" type="MeshInstance3D" parent="." unique_id=3040]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 7.5, -80)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillSmall")
 
-[node name="@MeshInstance3D@56" type="MeshInstance3D" parent="." unique_id=550944426]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.077446, 0.37930706, -12.356052)
-material_override = SubResource("StandardMaterial3D_lxcri")
-mesh = SubResource("SphereMesh_wpkm4")
+[node name="Hill_7" type="MeshInstance3D" parent="." unique_id=3041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -140, 7.5, 240)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillMedium")
 
-[node name="@MeshInstance3D@57" type="MeshInstance3D" parent="." unique_id=287562143]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.548363, 0.27485377, -14.935633)
-material_override = SubResource("StandardMaterial3D_8aj22")
-mesh = SubResource("SphereMesh_x82lv")
+[node name="Hill_8" type="MeshInstance3D" parent="." unique_id=3042]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, 7.5, 220)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillSmall")
 
-[node name="@MeshInstance3D@58" type="MeshInstance3D" parent="." unique_id=1809813245]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.530836, 0.23221484, -17.68937)
-material_override = SubResource("StandardMaterial3D_luqu2")
-mesh = SubResource("SphereMesh_kou4u")
+[node name="Hill_9" type="MeshInstance3D" parent="." unique_id=3043]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -220, 7.5, -60)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillMedium")
 
-[node name="@MeshInstance3D@59" type="MeshInstance3D" parent="." unique_id=717550245]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.658405, 0.24574998, -12.838722)
-material_override = SubResource("StandardMaterial3D_8u1as")
-mesh = SubResource("SphereMesh_woy7l")
+[node name="Hill_10" type="MeshInstance3D" parent="." unique_id=3044]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 7.5, 180)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillSmall")
 
-[node name="@MeshInstance3D@60" type="MeshInstance3D" parent="." unique_id=1893277941]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, -14, -90)
-material_override = SubResource("StandardMaterial3D_cmgcw")
-mesh = SubResource("SphereMesh_py4s2")
+[node name="Hill_11" type="MeshInstance3D" parent="." unique_id=3045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 7.5, 80)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillSmall")
 
-[node name="@MeshInstance3D@61" type="MeshInstance3D" parent="." unique_id=483833784]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -14, -90)
-material_override = SubResource("StandardMaterial3D_fkeha")
-mesh = SubResource("SphereMesh_t10kh")
+[node name="Hill_12" type="MeshInstance3D" parent="." unique_id=3046]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 180, 7.5, 60)
+material_override = SubResource("Mat_DistantHill")
+mesh = SubResource("Mesh_HillMedium")
 
-[node name="@MeshInstance3D@62" type="MeshInstance3D" parent="." unique_id=447044952]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, -14, -90)
-material_override = SubResource("StandardMaterial3D_sovfg")
-mesh = SubResource("SphereMesh_85oqu")
+[node name="Crater_1" type="MeshInstance3D" parent="." unique_id=3048]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, -3.5, -120)
+material_override = SubResource("Mat_CraterRim")
+mesh = SubResource("Mesh_Crater")
+
+[node name="Crater_2" type="MeshInstance3D" parent="." unique_id=3049]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, -3.5, 80)
+material_override = SubResource("Mat_CraterRim")
+mesh = SubResource("Mesh_CraterLarge")
+
+[node name="Crater_3" type="MeshInstance3D" parent="." unique_id=3050]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -150, -3.5, 40)
+material_override = SubResource("Mat_CraterRim")
+mesh = SubResource("Mesh_Crater")
+
+[node name="Crater_4" type="MeshInstance3D" parent="." unique_id=3051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, -3.5, -180)
+material_override = SubResource("Mat_CraterRim")
+mesh = SubResource("Mesh_Crater")
+
+[node name="Crater_5" type="MeshInstance3D" parent="." unique_id=3052]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, -3.5, -60)
+material_override = SubResource("Mat_CraterRim")
+mesh = SubResource("Mesh_Crater")
+
+[node name="FogLight1" type="OmniLight3D" parent="." unique_id=3054]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
+light_color = Color(0.8, 0.5, 0.35, 1)
+light_energy = 0.2
+omni_range = 200
+omni_attenuation = 0.5
 
 [node name="Rocket" type="Marker3D" parent="." unique_id=419273132]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -4)
 
 [node name="Winner" type="Marker3D" parent="." unique_id=1849708047]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Flag" type="Marker3D" parent="." unique_id=1615769794]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0, -0.4)

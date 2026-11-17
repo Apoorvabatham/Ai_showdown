@@ -1,147 +1,710 @@
 [gd_scene format=3]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_yyfox"]
-sky_top_color = Color(0.25, 0.35, 0.6, 1)
-sky_horizon_color = Color(0.95, 0.55, 0.3, 1)
-ground_bottom_color = Color(0.25, 0.2, 0.18, 1)
-ground_horizon_color = Color(0.66499996, 0.385, 0.21000001, 1)
+[sub_resource type="ProceduralSkyMaterial" id="sky_mat"]
+sky_top_color = Color(0.15, 0.1, 0.25, 1)
+sky_horizon_color = Color(0.95, 0.45, 0.2, 1)
+ground_bottom_color = Color(0.1, 0.08, 0.06, 1)
+ground_horizon_color = Color(0.4, 0.2, 0.12, 1)
 
-[sub_resource type="Sky" id="Sky_djgo8"]
-sky_material = SubResource("ProceduralSkyMaterial_yyfox")
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
 
-[sub_resource type="Environment" id="Environment_tfo5a"]
+[sub_resource type="Environment" id="env"]
 background_mode = 2
-sky = SubResource("Sky_djgo8")
+sky = SubResource("sky")
 ambient_light_source = 3
-ambient_light_energy = 0.6
+ambient_light_energy = 0.4
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tre08"]
-albedo_color = Color(0.32, 0.31, 0.3, 1)
+[sub_resource type="StandardMaterial3D" id="mat_pad_concrete"]
+albedo_color = Color(0.35, 0.33, 0.3, 1)
+roughness = 0.85
+metallic = 0.05
+
+[sub_resource type="StandardMaterial3D" id="mat_tower_steel"]
+albedo_color = Color(0.45, 0.45, 0.48, 1)
+roughness = 0.3
+metallic = 0.85
+
+[sub_resource type="StandardMaterial3D" id="mat_tower_dark"]
+albedo_color = Color(0.25, 0.25, 0.28, 1)
+roughness = 0.4
+metallic = 0.7
+
+[sub_resource type="StandardMaterial3D" id="mat_floodlight"]
+albedo_color = Color(0.15, 0.15, 0.18, 1)
+roughness = 0.2
+metallic = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_floodlight_glass"]
+albedo_color = Color(1, 0.95, 0.85, 1)
+roughness = 0.05
+metallic = 0.0
+transparency = 1
+blend_mode = 1
+
+[sub_resource type="StandardMaterial3D" id="mat_building_concrete"]
+albedo_color = Color(0.4, 0.38, 0.35, 1)
 roughness = 0.9
+metallic = 0.0
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_v5hrd"]
-size = Vector2(120, 120)
+[sub_resource type="StandardMaterial3D" id="mat_building_window"]
+albedo_color = Color(0.2, 0.25, 0.35, 1)
+roughness = 0.02
+metallic = 0.95
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s2vgx"]
-albedo_color = Color(0.5, 0.5, 0.5, 1)
-roughness = 0.7
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_y1shn"]
-top_radius = 4.0
-bottom_radius = 4.0
-height = 0.3
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_khera"]
-albedo_color = Color(0.55, 0.18, 0.12, 1)
+[sub_resource type="StandardMaterial3D" id="mat_flame_duct"]
+albedo_color = Color(0.2, 0.2, 0.22, 1)
 roughness = 0.6
+metallic = 0.5
 
-[sub_resource type="BoxMesh" id="BoxMesh_qgo2i"]
-size = Vector3(1.2, 16, 1.2)
+[sub_resource type="StandardMaterial3D" id="mat_emission_orange"]
+albedo_color = Color(1, 0.5, 0.1, 1)
+emission_enabled = true
+emission = Color(1, 0.5, 0.1, 1)
+emission_energy_multiplier = 3.0
+roughness = 0.3
+metallic = 0.1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovjuw"]
-albedo_color = Color(0.55, 0.18, 0.12, 1)
-roughness = 0.6
+[sub_resource type="StandardMaterial3D" id="mat_emission_red"]
+albedo_color = Color(1, 0.2, 0.05, 1)
+emission_enabled = true
+emission = Color(1, 0.2, 0.05, 1)
+emission_energy_multiplier = 2.0
+roughness = 0.4
+metallic = 0.1
 
-[sub_resource type="BoxMesh" id="BoxMesh_rjypl"]
-size = Vector3(2.6, 0.3, 0.4)
+[sub_resource type="BoxMesh" id="mesh_pad_base"]
+size = Vector3(60, 2, 60)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iqia8"]
-albedo_color = Color(0.4, 0.42, 0.45, 1)
-roughness = 0.8
+[sub_resource type="CylinderMesh" id="mesh_flame_trench"]
+height = 3
+top_radius = 6
+bottom_radius = 8
 
-[sub_resource type="BoxMesh" id="BoxMesh_n2e1q"]
-size = Vector3(3, 2.5, 3)
+[sub_resource type="BoxMesh" id="mesh_tower_leg"]
+size = Vector3(1.2, 80, 1.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_paxra"]
-albedo_color = Color(0.4, 0.42, 0.45, 1)
-roughness = 0.8
+[sub_resource type="BoxMesh" id="mesh_tower_crossbeam"]
+size = Vector3(18, 0.8, 1.2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_onw7b"]
-size = Vector3(3, 2.5, 3)
+[sub_resource type="BoxMesh" id="mesh_tower_floor"]
+size = Vector3(16, 0.5, 10)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qxbtp"]
-albedo_color = Color(0.4, 0.42, 0.45, 1)
-roughness = 0.8
+[sub_resource type="BoxMesh" id="mesh_tower_platform"]
+size = Vector3(12, 0.6, 12)
 
-[sub_resource type="BoxMesh" id="BoxMesh_reo7u"]
-size = Vector3(3, 2.5, 3)
+[sub_resource type="BoxMesh" id="mesh_elevator_shaft"]
+size = Vector3(3, 80, 3)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7xl2g"]
-albedo_color = Color(0.4, 0.42, 0.45, 1)
-roughness = 0.8
+[sub_resource type="BoxMesh" id="mesh_floodlight_body"]
+size = Vector3(1.5, 0.8, 1.5)
 
-[sub_resource type="BoxMesh" id="BoxMesh_xuktn"]
-size = Vector3(3, 2.5, 3)
+[sub_resource type="BoxMesh" id="mesh_floodlight_lens"]
+size = Vector3(1.2, 0.15, 1.2)
 
-[node name="launch_pad" type="Node3D" unique_id=873011581]
+[sub_resource type="BoxMesh" id="mesh_floodlight_mount"]
+size = Vector3(0.4, 2, 0.4)
 
-[node name="@WorldEnvironment@2" type="WorldEnvironment" parent="." unique_id=1674110996]
-environment = SubResource("Environment_tfo5a")
+[sub_resource type="BoxMesh" id="mesh_hangar_body"]
+size = Vector3(30, 15, 40)
 
-[node name="@DirectionalLight3D@3" type="DirectionalLight3D" parent="." unique_id=1475122257]
+[sub_resource type="BoxMesh" id="mesh_hangar_door"]
+size = Vector3(24, 12, 0.5)
+
+[sub_resource type="BoxMesh" id="mesh_vab_body"]
+size = Vector3(50, 60, 30)
+
+[sub_resource type="BoxMesh" id="mesh_water_tower"]
+size = Vector3(10, 15, 10)
+
+[sub_resource type="CylinderMesh" id="mesh_water_tank"]
+height = 10
+top_radius = 5
+bottom_radius = 5
+
+[sub_resource type="BoxMesh" id="mesh_gantry_arm"]
+size = Vector3(0.8, 0.8, 25)
+
+[sub_resource type="BoxMesh" id="mesh_holddown_post"]
+size = Vector3(1.5, 4, 1.5)
+
+[sub_resource type="CapsuleMesh" id="mesh_stack_vent"]
+radius = 0.8
+height = 6
+
+[sub_resource type="CylinderMesh" id="mesh_round_tank"]
+height = 12
+top_radius = 2.5
+bottom_radius = 2.5
+
+[sub_resource type="BoxMesh" id="mesh_building_window"]
+size = Vector3(8, 6, 0.2)
+
+[node name="launch_pad" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.81915206, 0.24240388, -0.5198368, 0, 0.90630776, 0.42261827, 0.57357645, -0.34618863, 0.74240386, 0, 0, 0)
-light_color = Color(1, 0.8, 0.6, 1)
-light_energy = 1.3
+light_color = Color(1, 0.7, 0.5, 1)
+light_energy = 2.0
 shadow_enabled = true
+shadow_max_distance = 200
 
-[node name="@MeshInstance3D@4" type="MeshInstance3D" parent="." unique_id=1781509096]
-material_override = SubResource("StandardMaterial3D_tre08")
-mesh = SubResource("PlaneMesh_v5hrd")
+[node name="PadBase" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+material_override = SubResource("mat_pad_concrete")
+mesh = SubResource("mesh_pad_base")
 
-[node name="@MeshInstance3D@5" type="MeshInstance3D" parent="." unique_id=943416459]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
-material_override = SubResource("StandardMaterial3D_s2vgx")
-mesh = SubResource("CylinderMesh_y1shn")
+[node name="FlameTrench" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.4, 0)
+material_override = SubResource("mat_flame_duct")
+mesh = SubResource("mesh_flame_trench")
 
-[node name="@MeshInstance3D@6" type="MeshInstance3D" parent="." unique_id=1725576081]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 8, -1.6)
-material_override = SubResource("StandardMaterial3D_khera")
-mesh = SubResource("BoxMesh_qgo2i")
+[node name="HolddownPost1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, -4)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_holddown_post")
 
-[node name="@MeshInstance3D@7" type="MeshInstance3D" parent="." unique_id=254230429]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1, 9.5, -1.6)
-material_override = SubResource("StandardMaterial3D_ovjuw")
-mesh = SubResource("BoxMesh_rjypl")
+[node name="HolddownPost2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, -4)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_holddown_post")
 
-[node name="@MeshInstance3D@8" type="MeshInstance3D" parent="." unique_id=1417355859]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1.25, -28)
-material_override = SubResource("StandardMaterial3D_iqia8")
-mesh = SubResource("BoxMesh_n2e1q")
+[node name="HolddownPost3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2, 4)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_holddown_post")
 
-[node name="@MeshInstance3D@9" type="MeshInstance3D" parent="." unique_id=1255436087]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 1.25, -28)
-material_override = SubResource("StandardMaterial3D_paxra")
-mesh = SubResource("BoxMesh_onw7b")
+[node name="HolddownPost4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, 4)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_holddown_post")
 
-[node name="@MeshInstance3D@10" type="MeshInstance3D" parent="." unique_id=926108378]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -28)
-material_override = SubResource("StandardMaterial3D_qxbtp")
-mesh = SubResource("BoxMesh_reo7u")
+[node name="Leg1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 40, 4)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_leg")
 
-[node name="@MeshInstance3D@11" type="MeshInstance3D" parent="." unique_id=470632066]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 1.25, -28)
-material_override = SubResource("StandardMaterial3D_7xl2g")
-mesh = SubResource("BoxMesh_xuktn")
+[node name="Leg2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 40, 4)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_leg")
 
-[node name="Rocket" type="Marker3D" parent="." unique_id=249597105]
+[node name="Leg3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 40, 20)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_leg")
+
+[node name="Leg4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 40, 20)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_leg")
+
+[node name="Crossbeam1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 12)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_tower_crossbeam")
+
+[node name="Crossbeam2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 12)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_tower_crossbeam")
+
+[node name="Crossbeam3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 12)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_tower_crossbeam")
+
+[node name="Crossbeam4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 40, 12)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_tower_crossbeam")
+
+[node name="Crossbeam5" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 12)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_tower_crossbeam")
+
+[node name="Crossbeam6" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 60, 12)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_tower_crossbeam")
+
+[node name="Crossbeam7" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 70, 12)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_tower_crossbeam")
+
+[node name="Floor1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_floor")
+
+[node name="Floor2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_floor")
+
+[node name="Floor3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_floor")
+
+[node name="Floor4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 40, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_floor")
+
+[node name="Floor5" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_floor")
+
+[node name="Floor6" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 60, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_floor")
+
+[node name="Floor7" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 70, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_floor")
+
+[node name="ElevatorShaft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 40, 12)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_elevator_shaft")
+
+[node name="TopPlatform" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 80.3, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_tower_platform")
+
+[node name="GantryArm1" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9659, 0, -0.2588, 0, 1, 0, 0.2588, 0, 0.9659, -12.4, 35, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_gantry_arm")
+
+[node name="GantryArm2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9659, 0, 0.2588, 0, 1, 0, -0.2588, 0, 0.9659, 12.4, 35, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_gantry_arm")
+
+[node name="GantryArm3" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9397, 0, -0.342, 0, 1, 0, 0.342, 0, 0.9397, -12.4, 55, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_gantry_arm")
+
+[node name="GantryArm4" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9397, 0, 0.342, 0, 1, 0, -0.342, 0, 0.9397, 12.4, 55, 12)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_gantry_arm")
+
+[node name="StackVent1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 50, 2)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_stack_vent")
+
+[node name="StackVent2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 50, 2)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_stack_vent")
+
+[node name="StackVent3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 50, 22)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_stack_vent")
+
+[node name="StackVent4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 50, 22)
+material_override = SubResource("mat_tower_dark")
+mesh = SubResource("mesh_stack_vent")
+
+[node name="TowerLight1" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 15, 4)
+light_color = Color(1, 0.5, 0.2, 1)
+light_energy = 0.8
+omni_range = 25
+omni_attenuation = 1.5
+
+[node name="TowerLight2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 15, 4)
+light_color = Color(1, 0.5, 0.2, 1)
+light_energy = 0.8
+omni_range = 25
+omni_attenuation = 1.5
+
+[node name="TowerLight3" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 15, 20)
+light_color = Color(1, 0.5, 0.2, 1)
+light_energy = 0.8
+omni_range = 25
+omni_attenuation = 1.5
+
+[node name="TowerLight4" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 15, 20)
+light_color = Color(1, 0.5, 0.2, 1)
+light_energy = 0.8
+omni_range = 25
+omni_attenuation = 1.5
+
+[node name="TowerLight5" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 45, 4)
+light_color = Color(1, 0.5, 0.2, 1)
+light_energy = 0.8
+omni_range = 25
+omni_attenuation = 1.5
+
+[node name="TowerLight6" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 45, 4)
+light_color = Color(1, 0.5, 0.2, 1)
+light_energy = 0.8
+omni_range = 25
+omni_attenuation = 1.5
+
+[node name="TowerLight7" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 45, 20)
+light_color = Color(1, 0.5, 0.2, 1)
+light_energy = 0.8
+omni_range = 25
+omni_attenuation = 1.5
+
+[node name="TowerLight8" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 45, 20)
+light_color = Color(1, 0.5, 0.2, 1)
+light_energy = 0.8
+omni_range = 25
+omni_attenuation = 1.5
+
+[node name="TowerLight9" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 75, 4)
+light_color = Color(1, 0.3, 0.1, 1)
+light_energy = 1.0
+omni_range = 30
+omni_attenuation = 1.5
+
+[node name="TowerLight10" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 75, 4)
+light_color = Color(1, 0.3, 0.1, 1)
+light_energy = 1.0
+omni_range = 30
+omni_attenuation = 1.5
+
+[node name="FL1_Mount" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 1, -30)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_mount")
+
+[node name="FL1_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 3.4, -30)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_body")
+
+[node name="FL1_Lens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 3.875, -30)
+material_override = SubResource("mat_floodlight_glass")
+mesh = SubResource("mesh_floodlight_lens")
+
+[node name="FL1_Light" type="SpotLight3D" parent="."]
+transform = Transform3D(0.8, 0, -0.6, 0, 1, 0, 0.6, 0, 0.8, -25, 3.875, -30)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+spot_angle = 45
+spot_attenuation = 1.5
+spot_range = 60
+
+[node name="FL2_Mount" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 1, -30)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_mount")
+
+[node name="FL2_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3.4, -30)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_body")
+
+[node name="FL2_Lens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3.875, -30)
+material_override = SubResource("mat_floodlight_glass")
+mesh = SubResource("mesh_floodlight_lens")
+
+[node name="FL2_Light" type="SpotLight3D" parent="."]
+transform = Transform3D(0.8, 0, -0.6, 0, 1, 0, 0.6, 0, 0.8, 25, 3.875, -30)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+spot_angle = 45
+spot_attenuation = 1.5
+spot_range = 60
+
+[node name="FL3_Mount" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 1, 30)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_mount")
+
+[node name="FL3_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 3.4, 30)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_body")
+
+[node name="FL3_Lens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 3.875, 30)
+material_override = SubResource("mat_floodlight_glass")
+mesh = SubResource("mesh_floodlight_lens")
+
+[node name="FL3_Light" type="SpotLight3D" parent="."]
+transform = Transform3D(0.8, 0, -0.6, 0, 1, 0, 0.6, 0, 0.8, -25, 3.875, 30)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+spot_angle = 45
+spot_attenuation = 1.5
+spot_range = 60
+
+[node name="FL4_Mount" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 1, 30)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_mount")
+
+[node name="FL4_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3.4, 30)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_body")
+
+[node name="FL4_Lens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3.875, 30)
+material_override = SubResource("mat_floodlight_glass")
+mesh = SubResource("mesh_floodlight_lens")
+
+[node name="FL4_Light" type="SpotLight3D" parent="."]
+transform = Transform3D(0.8, 0, -0.6, 0, 1, 0, 0.6, 0, 0.8, 25, 3.875, 30)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+spot_angle = 45
+spot_attenuation = 1.5
+spot_range = 60
+
+[node name="FL5_Mount" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, -15)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_mount")
+
+[node name="FL5_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 3.4, -15)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_body")
+
+[node name="FL5_Lens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 3.875, -15)
+material_override = SubResource("mat_floodlight_glass")
+mesh = SubResource("mesh_floodlight_lens")
+
+[node name="FL5_Light" type="SpotLight3D" parent="."]
+transform = Transform3D(0.6, 0, -0.8, 0, 1, 0, 0.8, 0, 0.6, -30, 3.875, -15)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+spot_angle = 45
+spot_attenuation = 1.5
+spot_range = 60
+
+[node name="FL6_Mount" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, -15)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_mount")
+
+[node name="FL6_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 3.4, -15)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_body")
+
+[node name="FL6_Lens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 3.875, -15)
+material_override = SubResource("mat_floodlight_glass")
+mesh = SubResource("mesh_floodlight_lens")
+
+[node name="FL6_Light" type="SpotLight3D" parent="."]
+transform = Transform3D(0.6, 0, -0.8, 0, 1, 0, 0.8, 0, 0.6, 30, 3.875, -15)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+spot_angle = 45
+spot_attenuation = 1.5
+spot_range = 60
+
+[node name="FL7_Mount" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 1, 15)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_mount")
+
+[node name="FL7_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 3.4, 15)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_body")
+
+[node name="FL7_Lens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 3.875, 15)
+material_override = SubResource("mat_floodlight_glass")
+mesh = SubResource("mesh_floodlight_lens")
+
+[node name="FL7_Light" type="SpotLight3D" parent="."]
+transform = Transform3D(0.6, 0, -0.8, 0, 1, 0, 0.8, 0, 0.6, -30, 3.875, 15)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+spot_angle = 45
+spot_attenuation = 1.5
+spot_range = 60
+
+[node name="FL8_Mount" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1, 15)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_mount")
+
+[node name="FL8_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 3.4, 15)
+material_override = SubResource("mat_floodlight")
+mesh = SubResource("mesh_floodlight_body")
+
+[node name="FL8_Lens" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 3.875, 15)
+material_override = SubResource("mat_floodlight_glass")
+mesh = SubResource("mesh_floodlight_lens")
+
+[node name="FL8_Light" type="SpotLight3D" parent="."]
+transform = Transform3D(0.6, 0, -0.8, 0, 1, 0, 0.8, 0, 0.6, 30, 3.875, 15)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 3.0
+spot_angle = 45
+spot_attenuation = 1.5
+spot_range = 60
+
+[node name="Hangar1_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 7.5, -45)
+material_override = SubResource("mat_building_concrete")
+mesh = SubResource("mesh_hangar_body")
+
+[node name="Hangar1_Door" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 7.5, -24.75)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_hangar_door")
+
+[node name="Hangar2_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 7.5, -45)
+material_override = SubResource("mat_building_concrete")
+mesh = SubResource("mesh_hangar_body")
+
+[node name="Hangar2_Door" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 7.5, -24.75)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_hangar_door")
+
+[node name="VAB_Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 60)
+material_override = SubResource("mat_building_concrete")
+mesh = SubResource("mesh_vab_body")
+
+[node name="VAB_Window1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.5, 40, 75.1)
+material_override = SubResource("mat_building_window")
+mesh = SubResource("mesh_building_window")
+
+[node name="VAB_Window2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.5, 40, 75.1)
+material_override = SubResource("mat_building_window")
+mesh = SubResource("mesh_building_window")
+
+[node name="VAB_Window3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.5, 60, 75.1)
+material_override = SubResource("mat_building_window")
+mesh = SubResource("mesh_building_window")
+
+[node name="VAB_Window4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.5, 60, 75.1)
+material_override = SubResource("mat_building_window")
+mesh = SubResource("mesh_building_window")
+
+[node name="WT_Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 7.5, 40)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_water_tower")
+
+[node name="WT_Tank" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 17.5, 40)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_water_tank")
+
+[node name="RoundTank1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 6, 35)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_round_tank")
+
+[node name="RoundTank2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 6, 35)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_round_tank")
+
+[node name="RoundTank3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 6, 42)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_round_tank")
+
+[node name="RoundTank4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 6, 42)
+material_override = SubResource("mat_tower_steel")
+mesh = SubResource("mesh_round_tank")
+
+[node name="RedLight1" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 82, 4)
+light_color = Color(1, 0.1, 0.05, 1)
+light_energy = 1.5
+omni_range = 20
+omni_attenuation = 2.0
+
+[node name="RedLight2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 82, 4)
+light_color = Color(1, 0.1, 0.05, 1)
+light_energy = 1.5
+omni_range = 20
+omni_attenuation = 2.0
+
+[node name="RedLight3" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 82, 20)
+light_color = Color(1, 0.1, 0.05, 1)
+light_energy = 1.5
+omni_range = 20
+omni_attenuation = 2.0
+
+[node name="RedLight4" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 82, 20)
+light_color = Color(1, 0.1, 0.05, 1)
+light_energy = 1.5
+omni_range = 20
+omni_attenuation = 2.0
+
+[node name="RedLight5" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 82, 22)
+light_color = Color(1, 0.1, 0.05, 1)
+light_energy = 1.5
+omni_range = 20
+omni_attenuation = 2.0
+
+[node name="Rocket" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 
-[node name="Truck_Start" type="Marker3D" parent="." unique_id=953384098]
+[node name="Truck_Start" type="Marker3D" parent="."]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -18, 0, 6)
 
-[node name="Truck_Stop" type="Marker3D" parent="." unique_id=2128630007]
+[node name="Truck_Stop" type="Marker3D" parent="."]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.5, 0, 6)
 
-[node name="Attacker" type="Marker3D" parent="." unique_id=248799650]
+[node name="Attacker" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0, 3.6)
 
-[node name="Cam_Wide" type="Marker3D" parent="." unique_id=1557088954]
+[node name="Cam_Wide" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 3.5, 15)
 
-[node name="Cam_Attacker" type="Marker3D" parent="." unique_id=2133547201]
+[node name="Cam_Attacker" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 1.8, 7)
 
-[node name="Cam_Launch" type="Marker3D" parent="." unique_id=931286956]
+[node name="Cam_Launch" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, 13)

@@ -1,0 +1,245 @@
+extends SceneTree
+## Builds every super prop in docs/TASKS.md tasks O2a-O2f and O7.
+## Run: godot --headless --path . -s res://tools/build_super_props.gd
+## Writes res://assets/props/supers/<fighter_id>/<prop>.tscn
+## Contract §3.1: root Node3D, no scripts, metres, origin at bottom centre,
+## front faces -Z. Child names match the task contract exactly.
+
+const PROP_DIR := "res://assets/props/supers/"
+
+func _initialize() -> void:
+	_build_tesla_props()
+	quit()
+
+# --- Materials ---------------------------------------------------------------
+
+func _metal(color: Color, metallic: float, roughness: float) -> StandardMaterial3D:
+	var m: StandardMaterial3D = StandardMaterial3D.new()
+	m.albedo_color = color
+	m.metallic = metallic
+	m.roughness = roughness
+	return m
+
+func _rubber(color: Color) -> StandardMaterial3D:
+	return _metal(color, 0.05, 0.9)
+
+func _cloth(color: Color) -> StandardMaterial3D:
+	return _metal(color, 0.0, 0.95)
+
+func _glow(color: Color, energy: float) -> StandardMaterial3D:
+	var m: StandardMaterial3D = StandardMaterial3D.new()
+	m.albedo_color = color
+	m.emission_enabled = true
+	m.emission = color
+	m.emission_energy_multiplier = energy
+	return m
+
+func _pastel(color: Color) -> StandardMaterial3D:
+	var m: StandardMaterial3D = StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = color
+	return m
+
+# --- Mesh helpers ------------------------------------------------------------
+
+func _mesh(mesh: Mesh, position: Vector3, material: Material, name: String = "",
+		rotation: Vector3 = Vector3.ZERO) -> MeshInstance3D:
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.mesh = mesh
+	mi.position = position
+	mi.material_override = material
+	mi.rotation = rotation
+	if name != "":
+		mi.name = name
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mi
+
+func _box(size: Vector3, position: Vector3, material: Material, name: String = "") -> MeshInstance3D:
+	var box: BoxMesh = BoxMesh.new()
+	box.size = size
+	return _mesh(box, position, material, name)
+
+func _cylinder(top: float, bottom: float, height: float, position: Vector3,
+		material: Material, name: String = "", rotation: Vector3 = Vector3.ZERO) -> MeshInstance3D:
+	var cyl: CylinderMesh = CylinderMesh.new()
+	cyl.top_radius = top
+	cyl.bottom_radius = bottom
+	cyl.height = height
+	cyl.radial_segments = 16
+	return _mesh(cyl, position, material, name, rotation)
+
+func _sphere(radius: float, position: Vector3, material: Material, name: String = "") -> MeshInstance3D:
+	var sphere: SphereMesh = SphereMesh.new()
+	sphere.radius = radius
+	sphere.radial_segments = 16
+	return _mesh(sphere, position, material, name)
+
+# =============================================================================
+# O2a - tesla man props
+# =============================================================================
+
+func _build_tesla_props() -> void:
+	_dir_for("tesla")
+	_steel_pickup()
+	_rocket()
+	_mini_rocket()
+	_mars_flag()
+
+## Angular stainless-steel pickup truck (our own design, no badge).
+## ~5.6 m long, front = -Z. Wheels: Wheel_FL, Wheel_FR, Wheel_RL, Wheel_RR.
+## Child Headlights: emissive strip at the front.
+func _steel_pickup() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "SteelPickup"
+	var steel := _metal(Color(0.74, 0.76, 0.79), 0.85, 0.25)
+	var steel_dark := _metal(Color(0.50, 0.52, 0.55), 0.90, 0.20)
+	var glass := _metal(Color(0.06, 0.08, 0.10), 0.15, 0.15)
+	var headlight := _glow(Color(1.0, 1.0, 1.0), 9.0)
+	var taillight := _glow(Color(1.0, 0.08, 0.08), 6.0)
+	var tyre := _rubber(Color(0.03, 0.03, 0.04))
+	var spoke_metal := _metal(Color(0.55, 0.56, 0.58), 0.85, 0.3)
+
+	root.add_child(_box(Vector3(2.05, 0.5, 5.2), Vector3(0, 0.75, 0), steel))            # chassis
+	root.add_child(_box(Vector3(1.9, 1.55, 2.0), Vector3(0, 1.9, -1.15), steel))          # cab
+	root.add_child(_box(Vector3(2.0, 0.65, 1.5), Vector3(0, 1.3, -2.5), steel))           # hood
+	root.add_child(_box(Vector3(1.8, 0.45, 1.4), Vector3(0, 2.65, -1.15), steel))         # roof
+	root.add_child(_box(Vector3(1.75, 0.55, 0.05), Vector3(0, 2.25, -3.08), glass))        # windscreen
+	root.add_child(_box(Vector3(1.7, 0.08, 0.05), Vector3(0, 1.1, -3.09), headlight, "Headlights"))
+	root.add_child(_box(Vector3(1.7, 0.08, 0.05), Vector3(0, 1.1, 3.09), taillight))
+	root.add_child(_box(Vector3(2.15, 0.35, 0.12), Vector3(0, 0.9, -3.18), steel_dark))   # front bumper
+	root.add_child(_box(Vector3(2.15, 0.35, 0.12), Vector3(0, 0.9, 3.18), steel_dark))    # rear bumper
+	root.add_child(_box(Vector3(1.85, 0.12, 2.4), Vector3(0, 0.8, 1.5), steel))            # bed floor
+	root.add_child(_box(Vector3(2.05, 0.8, 0.1), Vector3(0, 1.2, 2.72), steel))            # tailgate
+	root.add_child(_box(Vector3(0.1, 0.8, 2.6), Vector3(-0.975, 1.2, 1.5), steel))        # bed rail left
+	root.add_child(_box(Vector3(0.1, 0.8, 2.6), Vector3(0.975, 1.2, 1.5), steel))         # bed rail right
+	# Fenders + wheels: front corners at -Z, rear at +Z.
+	for corner in [[-1, -1], [1, -1], [-1, 1], [1, 1]]:
+		var side: float = corner[0]
+		var rear: float = corner[1]
+		var wx: float = 0.92 * side
+		var wz: float = 1.75 * rear
+		var wheel_name: String = "Wheel_FL" if side < 0 and rear < 0 else "Wheel_FR" if side > 0 and rear < 0 else "Wheel_RL" if side < 0 else "Wheel_RR"
+		root.add_child(_box(Vector3(0.75, 0.4, 0.6), Vector3(wx, 0.85, wz), steel_dark))  # fender
+		var wheel := _cylinder(0.45, 0.45, 0.38, Vector3(wx, 0.45, wz), tyre, "", Vector3(0.0, 0.0, PI * 0.5))
+		wheel.name = wheel_name
+		root.add_child(wheel)
+		var spoke := _box(Vector3(0.55, 0.42, 0.1), Vector3.ZERO, spoke_metal)
+		spoke.rotation.z = PI * 0.2
+		wheel.add_child(spoke)
+
+	_save(root, PROP_DIR + "tesla/steel_pickup.tscn")
+
+## ~8 m rocket, nose up. `Flame` at the nozzle (hidden until lit); `ChainPoint`
+## Marker3D on its +Z side where a fighter is chained.
+func _rocket() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "Rocket"
+	var hull := _metal(Color(0.9, 0.9, 0.92), 0.45, 0.3)
+	var hull_dark := _metal(Color(0.6, 0.62, 0.65), 0.6, 0.35)
+	var band := _glow(Color(0.2, 0.5, 1.0), 3.0)
+	var flame_outer := _glow(Color(1.0, 0.45, 0.08), 2.0)
+	var flame_inner := _glow(Color(1.0, 0.85, 0.45), 3.0)
+
+	var body := _cylinder(0.52, 0.57, 6.0, Vector3(0, 3.0, 0), hull, "", Vector3.ZERO)   # stands on Y, bottom at y=0
+	root.add_child(body)
+	var nose := _cylinder(0.0, 0.52, 1.9, Vector3(0, 6.95, 0), hull, "", Vector3.ZERO)   # wide end at y=6.0, tip near 7.9
+	root.add_child(nose)
+	root.add_child(_box(Vector3(1.7, 0.04, 0.04), Vector3(0, 6.0, 0), band))  # blue band at the joint
+	for i in 3:
+		var angle := TAU * i / 3.0
+		var fin := _box(Vector3(0.08, 1.05, 0.85), Vector3.ZERO, hull_dark)
+		fin.position = Vector3(0, 1.1, 0.72) + Vector3(0, 0, 0.72).rotated(Vector3.UP, angle)
+		fin.rotation.y = angle
+		root.add_child(fin)
+	var flame := Node3D.new()
+	flame.name = "Flame"
+	flame.position = Vector3(0, 0.2, 0)
+	flame.visible = false
+	flame.add_child(_cylinder(0.0, 0.055, 0.4, Vector3(0, 0.2, 0), flame_outer))   # nozzle flame, hangs down
+	flame.add_child(_cylinder(0.0, 0.03, 0.25, Vector3(0, 0.125, 0), flame_inner))
+	root.add_child(flame)
+	var chain_point := Marker3D.new()
+	chain_point.name = "ChainPoint"
+	chain_point.position = Vector3(0, 1.6, 0.85)
+	root.add_child(chain_point)
+
+	_save(root, PROP_DIR + "tesla/rocket.tscn")
+
+## ~0.6 m power-move rocket shot. Nose toward -Z, `Flame` at the back (+Z).
+func _mini_rocket() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "MiniRocket"
+	var shift := 0.065   # so the bottom sits at y=0
+	var white := _metal(Color(0.9, 0.9, 0.92), 0.1, 0.4)
+	var red := _metal(Color(0.85, 0.15, 0.12), 0.2, 0.4)
+	var dark := _metal(Color(0.12, 0.12, 0.14), 0.3, 0.4)
+	var flame_outer := _glow(Color(1.0, 0.45, 0.08), 2.5)
+	var flame_inner := _glow(Color(1.0, 0.85, 0.45), 3.0)
+
+	root.add_child(_cylinder(0.065, 0.065, 0.38, Vector3(0, shift, 0), white, "", Vector3(PI * 0.5, 0.0, 0.0)))      # body
+	root.add_child(_cylinder(0.0, 0.065, 0.18, Vector3(0, shift, -0.28), red, "", Vector3(-PI * 0.5, 0.0, 0.0)))  # nose cone
+	root.add_child(_cylinder(0.068, 0.068, 0.04, Vector3(0, shift, -0.06), dark, "", Vector3(PI * 0.5, 0.0, 0.0)))   # tip ring
+	for i in 3:
+		var angle := TAU * i / 3.0
+		var fin := _box(Vector3(0.015, 0.11, 0.13), Vector3.ZERO, red)
+		fin.position = Vector3(0, 0.09 + shift, 0.15).rotated(Vector3.FORWARD, angle)
+		fin.rotation.z = -angle
+		root.add_child(fin)
+	var flame := Node3D.new()
+	flame.name = "Flame"
+	flame.position = Vector3(0, shift, 0.19)
+	flame.add_child(_cylinder(0.0, 0.055, 0.26, Vector3(0, shift, 0.32), flame_outer, "", Vector3(PI * 0.5, 0.0, 0.0)))
+	flame.add_child(_cylinder(0.0, 0.03, 0.16, Vector3(0, shift, 0.24), flame_inner, "", Vector3(PI * 0.5, 0.0, 0.0)))
+	root.add_child(flame)
+	var light := OmniLight3D.new()
+	light.light_color = Color(1.0, 0.6, 0.2)
+	light.light_energy = 0.35
+	light.omni_range = 1.0
+	light.position = Vector3(0, shift, 0.5)
+	root.add_child(light)
+
+	_save(root, PROP_DIR + "tesla/mini_rocket.tscn")
+
+## ~2.5 m pole with a white `Cloth` child (blank space for "CAPTURED").
+func _mars_flag() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "MarsFlag"
+	var pole := _metal(Color(0.55, 0.57, 0.6), 0.6, 0.35)
+	var gold := _glow(Color(1.0, 0.8, 0.25), 2.0)
+	var cloth := _cloth(Color(0.96, 0.97, 1.0))
+
+	root.add_child(_cylinder(0.025, 0.025, 2.5, Vector3(0, 1.25, 0), pole, "", Vector3.ZERO))   # pole stands on y=0
+	root.add_child(_sphere(0.045, Vector3(0, 2.57, 0), gold))                  # finial
+	var flag := Node3D.new()
+	flag.name = "Cloth"
+	flag.position = Vector3(0.72, 2.05, 0)
+	flag.rotation.y = 0.15
+	flag.add_child(_box(Vector3(1.4, 0.85, 0.02), Vector3.ZERO, cloth))
+	root.add_child(flag)
+
+	_save(root, PROP_DIR + "tesla/mars_flag.tscn")
+
+## Makes sure every node below `root` is owned by `root` so PackedScene.pack()
+## keeps the whole subtree (see tools/build_custom_hair.gd).
+func _claim_ownership(root: Node) -> void:
+	var stack: Array[Node] = [root]
+	while stack.size() > 0:
+		var node: Node = stack.pop_front()
+		for child: Node in node.get_children():
+			child.owner = root
+			stack.append(child)
+
+func _save(root: Node3D, path: String) -> void:
+	_claim_ownership(root)
+	var scene: PackedScene = PackedScene.new()
+	scene.pack(root)
+	var err: Error = ResourceSaver.save(scene, path)
+	if err != OK:
+		push_error("build_super_props: failed to save %s: %d" % [path, err])
+	else:
+		print("saved %s" % path)
+
+func _dir_for(fighter: String) -> String:
+	var dir: String = PROP_DIR + fighter + "/"
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dir))
+	return dir
