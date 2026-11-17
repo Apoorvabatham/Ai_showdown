@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" path="res://assets/characters/aged/T_zuckerbot_skin.png" id="1_8fbpp"]
 [ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Blue.png" id="2_507e8"]
-[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Caesar.tscn" id="3_8fbpp"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_ShortCurls.tscn" id="3_8fbpp"]
 [ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="5_wyspr"]
 [ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="6_e7n0n"]
 [ext_resource type="Resource" path="res://data/moves/zuckerbot/jab.tres" id="7_m6y5y"]
@@ -41,14 +41,14 @@ model_scene = ExtResource("5_wyspr")
 hair_scenes = Array[PackedScene]([ExtResource("3_8fbpp")])
 body_albedo = ExtResource("1_8fbpp")
 model_scale = 0.92
-hair_color = Color(0.28, 0.19, 0.12, 1)
+hair_color = Color(0.25, 0.17, 0.11, 1)
 alt_body_albedo = ExtResource("1_8fbpp")
-alt_hair_color = Color(0.12, 0.09, 0.07, 1)
+alt_hair_color = Color(0.12, 0.09, 0.06, 1)
 outfit_mesh = ExtResource("25_507e8")
 outfit_body_mesh = ExtResource("24_8fbpp")
-outfit_colors = PackedColorArray(0.42, 0.43, 0.45, 1, 0.357, 0.3655, 0.3825, 1, 0.15, 0.2, 0.32, 1, 0.8, 0.8, 0.78, 1)
-outfit_fabrics = Array[StringName]([&"cotton", &"cotton", &"denim", &"leather"])
-alt_outfit_colors = PackedColorArray(0.1, 0.18, 0.42, 1, 0.085, 0.15300001, 0.357, 1, 0.08, 0.08, 0.1, 1, 0.75, 0.75, 0.75, 1)
+outfit_colors = PackedColorArray(0.42, 0.43, 0.45, 1, 0.3444, 0.3526, 0.369, 1, 0.15, 0.2, 0.32, 1, 0.8, 0.8, 0.78, 1, 0.82, 0.82, 0.78, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"cotton", &"denim", &"leather", &"cotton"])
+alt_outfit_colors = PackedColorArray(0.1, 0.18, 0.42, 1, 0.082, 0.14760001, 0.3444, 1, 0.08, 0.08, 0.1, 1, 0.75, 0.75, 0.75, 1, 0.86, 0.86, 0.82, 1)
 detailed_textures = true
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_flex", &"fight/victory_fist_pump"])
@@ -62,25 +62,25 @@ body_shape = {
 }
 face_shape = {
 "age": 42,
-&"brow": -0.0015,
+&"brow": 0.0,
 &"cheekbones": 0.0015,
 &"chin": -0.002,
-&"chin_forward": 0.003,
-&"eye_open": 0.0024,
-&"face_length": 0.97,
+&"chin_forward": 0.004,
+&"eye_open": 0.0012,
+&"face_length": 1.0,
 &"fullness": -0.002,
-&"jaw": 0.9,
+&"jaw": 0.93,
 &"lips": -0.001,
-&"mouth_width": 0.88,
-&"nose_width": 0.94
+&"mouth_width": 0.92,
+&"nose_bridge": 0.002,
+&"nose_length": 0.004,
+&"nose_width": 0.98
 }
-brow_scale = Vector3(1, 0.8, 1)
-hair_scale = Vector3(1.02, 1.05, 1.02)
-hair_offset = Vector3(0, 0.002, 0)
+brow_scale = Vector3(1.05, 0.95, 1)
 eye_texture = ExtResource("2_507e8")
 face_rest = {
-&"brow_up": 0.35,
-&"smile": 0.12
+&"brow_up": 0.25,
+&"smile": 0.18
 }
 posture = {
 &"Head": Vector3(4, 0, 0),

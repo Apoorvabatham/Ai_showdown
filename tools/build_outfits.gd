@@ -626,38 +626,60 @@ func _leather_jacket_spec(jacket: Color, tee: Color, jeans: Color, alt_jacket: C
 	}
 
 
-## Pullover hoodie (the hood lying on the back of the neck, a kangaroo pocket), jeans and
-## sneakers. Slots: hoodie, pocket, jeans, shoes.
+## Pullover hoodie (the hood bunched behind the neck, a kangaroo pocket, drawstrings),
+## jeans and sneakers. Slots: hoodie, hood and pocket, jeans, shoes, drawstrings.
 func _hoodie_spec(hoodie: Color, jeans: Color, shoes: Color, alt_hoodie: Color, alt_jeans: Color, alt_shoes: Color) -> Dictionary:
 	return {
 		detailed = true,
 		pieces = func(L: Dictionary) -> Array:
 			var hem: float = L.hip - 0.06
 			var cuff: float = L.wrist - 0.02
+			var front := func(p: Vector3, n: Vector3) -> bool: return p.z > 0.03 and n.z > 0.25
 			return [
-				{slot = Slot.MAIN, offset = 0.022, trim_slot = Slot.TRIM,
-					region = func(p, n): return _top(p, L, hem, cuff),
-					trim = func(p, n):
-						if p.z <= 0.03 or n.z < 0.35:
-							return -1.0
-						return minf(minf(p.y - (L.hip + 0.0), (L.waist - 0.01) - p.y), 0.12 - absf(p.x)),
-				},
-				# The hood, folded down behind the neck on the upper back.
-				{slot = Slot.MAIN, offset = 0.028, hide = false, stitches = false, region = func(p, n):
-					var y_band: float = minf(p.y - (L.neck - 0.14), (L.neck - 0.01) - p.y)
-					var x_band: float = 0.11 - absf(p.x)
-					var z_back: float = (L.neck_z - 0.035) - p.z
-					return minf(minf(y_band, x_band), z_back)},
+				# Hoodie body and sleeves, with a snug crew neckline.
+				{slot = Slot.MAIN, offset = 0.022, region = func(p, n): return _top(p, L, hem, cuff, 0.84)},
+				# Ribbed crew collar, closing the neckline seam.
+				{slot = Slot.TRIM, offset = 0.027, hide = false, stitches = false, region = func(p, n):
+					var d := Vector2(p.x, (p.z - L.neck_z) * 1.06).length()
+					var ring := minf(d - 0.055, 0.083 - d)
+					var y_band := minf(p.y - (L.neck - 0.040), (L.neck + 0.008) - p.y)
+					return minf(ring, y_band)},
+				# The hood lying folded on the upper back: a soft raised panel (the bunched
+				# roll itself is a solid rounded form, added through `hood_roll`).
+				{slot = Slot.TRIM, offset = 0.030, hide = false, stitches = false, region = func(p, n):
+					var dx: float = p.x / 0.108
+					var dy: float = (p.y - (L.neck - 0.105)) / 0.095
+					var panel: float = 1.0 - Vector2(dx, dy).length()
+					var behind: float = (L.neck_z - 0.010) - p.z
+					return minf(panel, behind)},
+				# Kangaroo pocket on the belly.
+				{slot = Slot.TRIM, offset = 0.030, hide = false, stitches = false, region = func(p, n):
+					if not front.call(p, n):
+						return -1.0
+					var y0: float = L.hip + 0.035
+					var y1: float = L.waist - 0.005
+					var half: float = lerpf(0.096, 0.116, clampf((p.y - y0) / (y1 - y0), 0.0, 1.0))
+					return minf(minf(p.y - y0, y1 - p.y), half - absf(p.x))},
+				# Drawstrings hanging from the collar down the chest.
+				{slot = Slot.DETAIL, offset = 0.031, hide = false, stitches = false, region = func(p, n):
+					if not front.call(p, n):
+						return -1.0
+					var cord: float = 0.0055 - absf(absf(p.x) - 0.030)
+					var y_band: float = minf(p.y - (L.neck - 0.195), (L.neck - 0.055) - p.y)
+					return minf(cord, y_band)},
+				# Jeans.
 				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, hem + 0.03),
 					drape = _pants_drape(L, {base = 0.011, flare = 0.008, hem = L.ankle + 0.05, amount = 0.7, cover = hem, cover_max = 0.014,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
-				{slot = Slot.EXTRA, offset = 0.017, flat_soles = true, trim_slot = Slot.TRIM,
+				# Sneakers, pale soles.
+				{slot = Slot.EXTRA, offset = 0.017, flat_soles = true, trim_slot = Slot.DETAIL,
 					region = func(p, n): return _legs(p, -1.0, L.ankle + 0.07),
 					trim = func(p, n): return 0.026 - p.y},
 			],
-		colors = [hoodie, hoodie.darkened(0.15), jeans, shoes],
-		alt_colors = [alt_hoodie, alt_hoodie.darkened(0.15), alt_jeans, alt_shoes],
-		fabrics = [&"cotton", &"cotton", &"denim", &"leather"],
+		hood_roll = {slot = Slot.TRIM},
+		colors = [hoodie, hoodie.darkened(0.18), jeans, shoes, Color(0.82, 0.82, 0.78)],
+		alt_colors = [alt_hoodie, alt_hoodie.darkened(0.18), alt_jeans, alt_shoes, Color(0.86, 0.86, 0.82)],
+		fabrics = [&"cotton", &"cotton", &"denim", &"leather", &"cotton"],
 	}
 
 
@@ -727,9 +749,10 @@ func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color) -> Dictionary:
 
 ## A top with sleeves: from `y0` up over the shoulders to the base of the head, sleeves
 ## ending at |x| = `sleeve_end` (arms run along X in the T-pose), with a neck hole.
-func _top(p: Vector3, L: Dictionary, y0: float, sleeve_end: float) -> float:
+## `neck` scales the collar opening: below 1 it hugs the neck (a crew neck).
+func _top(p: Vector3, L: Dictionary, y0: float, sleeve_end: float, neck := 1.0) -> float:
 	var band := minf(minf(p.y - y0, (L.neck + 0.03) - p.y), sleeve_end - absf(p.x))
-	return minf(band, -_neck_hole(p, L))
+	return minf(band, -_neck_hole(p, L, neck))
 
 
 ## A sleeveless top from `y0`: armholes at |x| = `armhole` above the armpits, full width
@@ -746,9 +769,10 @@ func _legs(p: Vector3, y0: float, y1: float) -> float:
 
 
 ## An elliptical hole around the neck (positive inside), so the collar line is smooth.
-func _neck_hole(p: Vector3, L: Dictionary) -> float:
-	var ellipse := Vector2(p.x / NECK_RADIUS, (p.z - L.neck_z) / (NECK_RADIUS * 0.95))
-	return minf(NECK_RADIUS * (1.0 - ellipse.length()), p.y - (L.neck - 0.035))
+func _neck_hole(p: Vector3, L: Dictionary, scale := 1.0) -> float:
+	var radius: float = NECK_RADIUS * scale
+	var ellipse := Vector2(p.x / radius, (p.z - L.neck_z) / (radius * 0.95))
+	return minf(radius * (1.0 - ellipse.length()), p.y - (L.neck - 0.035))
 
 
 ## The front V opening (positive inside it): from the neck down to `bottom`, `width` wide
@@ -1070,6 +1094,10 @@ func _build(model_scene: PackedScene, spec: Dictionary, face_shape: Dictionary =
 				surface.add(corner.pos)
 	for v in verts:
 		surface.add(v)
+	if spec.has("hood_roll"):
+		var binds := [_bind_index(skeleton, "neck_01"), _bind_index(skeleton, "spine_03")]
+		triangles += _add_hood_roll(tools[spec.hood_roll.slot], L, surface, binds, detailed)
+		used[spec.hood_roll.slot] = true
 	if spec.has("belt_knot") and spec.belt_knot.get("tied", false):
 		triangles += _add_tied_belt(tools[spec.belt_knot.slot], spec.belt_knot, L, surface, detailed)
 		used[spec.belt_knot.slot] = true
@@ -1488,6 +1516,27 @@ func _strip(st: SurfaceTool, path: Array[Vector3], widths: Array[float], thickne
 		var t := float(end) / (path.size() - 1)
 		var outward := (path[end] - path[1 if end == 0 else end - 1]).normalized()
 		triangles += _quad(st, [r[0], r[1], r[2], r[3]], outward, [t, t, t, t], skin, detailed)
+	return triangles
+
+
+## A hood folded down behind the neck: a soft, rounded roll of bunched fabric resting on the
+## upper back and following the curve of the shoulders. Solid, closed geometry.
+func _add_hood_roll(st: SurfaceTool, L: Dictionary, surface: _Surface, binds: Array, detailed: bool) -> int:
+	var y: float = L.neck - 0.036
+	var z: float = surface.back(0.0, y) - 0.014
+	var skin := func(_t: float) -> Array:
+		return [PackedInt32Array([binds[0], binds[1], 0, 0]), PackedFloat32Array([0.8, 0.2, 0.0, 0.0])]
+	var triangles := 0
+	# The main bunch, with a second fold lying over it at the neckline.
+	triangles += _rounded_box(st, Vector3(0.0, y, z), Vector3(0.068, 0.028, 0.026),
+		Basis(Vector3.RIGHT, 0.16), skin, detailed)
+	triangles += _rounded_box(st, Vector3(0.0, y + 0.020, z + 0.008), Vector3(0.056, 0.016, 0.022),
+		Basis(Vector3.RIGHT, -0.30), skin, detailed)
+	# The ends taper down toward the shoulder blades.
+	for side in [-1.0, 1.0]:
+		var s: float = side
+		triangles += _rounded_box(st, Vector3(s * 0.055, y - 0.014, z - 0.004), Vector3(0.038, 0.024, 0.022),
+			Basis(Vector3.RIGHT, 0.22) * Basis(Vector3.BACK, -s * 0.30), skin, detailed)
 	return triangles
 
 
