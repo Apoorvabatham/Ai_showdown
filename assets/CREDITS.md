@@ -106,7 +106,7 @@ Third-party assets are CC0, except the "Aelia" character model (CC-BY, credited 
 | Space Station Kit (computer screens, panels, pipes) | `assets/stage_props/server_farm/` | Kenney | https://kenney.nl/assets/space-station-kit | CC0 1.0 |
 | Factory Kit (robotic arms, factory machines, pipes, conveyor) | `assets/stage_props/foundry/` | Kenney | https://kenney.nl/assets/factory-kit | CC0 1.0 |
 | Floor Tiles 06 texture (1K; Mensa cafeteria floor) | `assets/stage_props/mensa/textures/floor_tiles_06_*` | Poly Haven | https://polyhaven.com/a/floor_tiles_06 | CC0 1.0 |
-| Stage interaction and ambient sounds (Mensa trays/dishes/chatter, Senate gavel/camera/chatter, Server Farm fan/alarm/beep/steam, Foundry welding/sparks/shower/laser/alarm) | `assets/audio/stage/` | Generated for this project (`tools/build_audio_assets.py`) | — | CC0 1.0 (project original) |
+| Stage interaction and ambient sounds (Mensa trays/dishes/chatter/cheer/gasp, Senate gavel/camera/chatter/cheer/gasp, Server Farm fan/alarm/beep/steam/cheer/gasp, Foundry welding/sparks/shower/laser/alarm/cheer/gasp) | `assets/audio/stage/` | Generated for this project (`tools/build_audio_assets.py`) | — | CC0 1.0 (project original) |
 | Super move and victory sounds (Tesla, Donald, Jensen, Zuckerbot, Sundar, Xi) | `assets/audio/supers/` | Generated for this project (`tools/build_audio_assets.py`) | — | CC0 1.0 (project original) |
 
 Notes:

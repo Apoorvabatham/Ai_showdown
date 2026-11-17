@@ -26,8 +26,8 @@ def write_wav(path: str, samples: np.ndarray, sample_rate: int = SAMPLE_RATE):
 
 # --- Sound Synthesis Helpers ---
 
-def noise(duration: float, color: str = 'white') -> np.ndarray:
-    n_samples = int(duration * SAMPLE_RATE)
+def noise(duration: float, color: str = 'white', count: int = -1) -> np.ndarray:
+    n_samples = count if count > 0 else int(duration * SAMPLE_RATE)
     raw = np.random.uniform(-1.0, 1.0, n_samples)
     if color == 'pink':
         # Simple IIR filter for pinkish noise
@@ -224,6 +224,27 @@ def make_server_farm_sounds(out_dir: str):
     sig = apply_envelope(sig, 0.05, 0.3)
     write_wav(os.path.join(out_dir, "steam_hiss.wav"), sig)
 
+    # 5. cheer.wav: sysadmin and NOC engineer crowd applause
+    dur = 2.0
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sig = np.zeros_like(t)
+    rng = np.random.default_rng(256)
+    for _ in range(70):
+        t_hit = rng.uniform(0.1, 1.8)
+        idx = int(t_hit * SAMPLE_RATE)
+        rem = min(int(0.04 * SAMPLE_RATE), len(t) - idx)
+        if rem > 0:
+            clap = noise(rem / SAMPLE_RATE) * np.exp(-42.0 * np.linspace(0, rem / SAMPLE_RATE, rem))
+            sig[idx:idx+rem] += clap * rng.uniform(0.2, 0.5)
+    sig = apply_envelope(sig, 0.2, 0.4)
+    write_wav(os.path.join(out_dir, "cheer.wav"), sig / (np.max(np.abs(sig)) + 1e-6))
+
+    # 6. gasp.wav: sysadmin collective gasp at server rack impact
+    dur = 0.85
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sig = noise(dur, 'pink') * np.exp(-5.0 * (t - 0.18)**2 / 0.04) * 0.75
+    write_wav(os.path.join(out_dir, "gasp.wav"), sig)
+
 def make_foundry_sounds(out_dir: str):
     # 1. welding.wav: electrical arc welding crackle and sizzle
     dur = 1.6
@@ -272,6 +293,28 @@ def make_foundry_sounds(out_dir: str):
     t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
     sig = np.sin(2 * np.pi * 620 * t) * np.sign(np.sin(2 * np.pi * 3.0 * t)) * 0.75
     write_wav(os.path.join(out_dir, "alarm.wav"), sig)
+
+    # 6. cheer.wav: cleanroom technicians applause through bunny-suit hoods
+    dur = 1.9
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sig = np.zeros_like(t)
+    rng = np.random.default_rng(999)
+    for _ in range(75):
+        t_hit = rng.uniform(0.12, 1.7)
+        idx = int(t_hit * SAMPLE_RATE)
+        rem = min(int(0.035 * SAMPLE_RATE), len(t) - idx)
+        if rem > 0:
+            # Slightly muffled clapping through cleanroom gloves
+            clap = (noise(0, 'pink', rem) * 0.7 + np.sin(2 * np.pi * 800 * np.linspace(0, rem / SAMPLE_RATE, rem)) * 0.3) * np.exp(-38.0 * np.linspace(0, rem / SAMPLE_RATE, rem))
+            sig[idx:idx+rem] += clap * rng.uniform(0.2, 0.5)
+    sig = apply_envelope(sig, 0.2, 0.4)
+    write_wav(os.path.join(out_dir, "cheer.wav"), sig / (np.max(np.abs(sig)) + 1e-6))
+
+    # 7. gasp.wav: cleanroom technicians collective gasp at wafer risk
+    dur = 0.9
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sig = noise(dur, 'pink') * np.exp(-4.5 * (t - 0.2)**2 / 0.05) * 0.7
+    write_wav(os.path.join(out_dir, "gasp.wav"), sig)
 
 # ==============================================================================
 # G7: SUPER & VICTORY SOUNDS
