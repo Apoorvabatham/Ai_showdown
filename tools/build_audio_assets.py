@@ -607,6 +607,201 @@ def make_xi_supers(out_dir: str):
             sig[idx:] += (np.sin(2*np.pi*n*nt) + 0.3*np.sin(3*np.pi*n*nt)) * np.exp(-3.5 * nt) * 0.5
     write_wav(os.path.join(out_dir, "victory.wav"), sig)
 
+# ==============================================================================
+# G7b: ADDITIONAL SUPER MOVE AND VICTORY SOUNDS
+# ==============================================================================
+
+def make_g7b_supers(base_dir: str):
+    rng = np.random.default_rng(2026)
+
+    # 1. Xi: dragon_drums.wav (paper dragon dance festive cadence)
+    dur = 2.2
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sig_drums = np.zeros_like(t)
+    drum_hits = [0.0, 0.22, 0.44, 0.60, 0.76, 0.92, 1.08, 1.24, 1.40, 1.56, 1.72, 1.90]
+    for i, d_time in enumerate(drum_hits):
+        idx = int(d_time * SAMPLE_RATE)
+        rem = len(t) - idx
+        if rem <= 0: continue
+        lt = t[:rem]
+        is_accent = (i % 3 == 0) or (i >= len(drum_hits) - 2)
+        base_freq = 115.0 if is_accent else 145.0
+        # Low skin resonance
+        skin = (np.sin(2 * np.pi * base_freq * lt) * 0.7 +
+                np.sin(2 * np.pi * (base_freq * 1.8) * lt) * 0.3) * np.exp(-18.0 * lt)
+        # Mallet slap & rim rattle
+        slap = (noise(len(lt)/SAMPLE_RATE) * 0.4 + np.sin(2 * np.pi * 1200 * lt) * 0.2) * np.exp(-45.0 * lt)
+        gain = 0.9 if is_accent else 0.65
+        sig_drums[idx:] += (skin + slap) * gain
+    write_wav(os.path.join(base_dir, "xi", "dragon_drums.wav"), sig_drums / (np.max(np.abs(sig_drums)) + 1e-6))
+
+    # 2. Donald: statue_rise.wav (massive mechanical ascending stone rumble)
+    dur = 2.2
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sub_pitch = 45.0 + 35.0 * (t / dur)
+    sub = np.sin(2 * np.pi * np.cumsum(sub_pitch) / SAMPLE_RATE) * 0.5
+    friction = noise(dur, 'pink') * (0.35 + 0.15 * np.sin(2 * np.pi * 8.0 * t))
+    hydraulic = np.sin(2 * np.pi * (140.0 + 120.0 * (t / dur)**1.5) * t) * 0.2
+    env = apply_envelope(sub + friction + hydraulic, 0.2, 0.3)
+    write_wav(os.path.join(base_dir, "donald", "statue_rise.wav"), env / (np.max(np.abs(env)) + 1e-6))
+
+    # 3. Donald: fanfare.wav (triumphant brass fanfare)
+    dur = 2.4
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sig_fanfare = np.zeros_like(t)
+    fanfare_notes = [
+        (0.0, 0.18, 392.00),  # G4
+        (0.20, 0.18, 392.00), # G4
+        (0.40, 0.18, 392.00), # G4
+        (0.60, 0.70, 523.25), # C5
+        (1.35, 0.20, 659.25), # E5
+        (1.58, 0.80, 783.99), # G5
+    ]
+    for start_t, n_dur, freq in fanfare_notes:
+        idx = int(start_t * SAMPLE_RATE)
+        rem = len(t) - idx
+        if rem <= 0: continue
+        n_samples = min(int(n_dur * SAMPLE_RATE), rem)
+        nt = t[:n_samples]
+        # Brass rich harmonics
+        brass = (
+            np.sin(2 * np.pi * freq * nt) * 0.45 +
+            np.sin(2 * np.pi * 2 * freq * nt) * 0.30 +
+            np.sin(2 * np.pi * 3 * freq * nt) * 0.15 +
+            np.sin(2 * np.pi * 4 * freq * nt) * 0.08
+        )
+        brass_env = apply_envelope(brass, 0.03, 0.06)
+        sig_fanfare[idx:idx+n_samples] += brass_env
+    write_wav(os.path.join(base_dir, "donald", "fanfare.wav"), sig_fanfare / (np.max(np.abs(sig_fanfare)) + 1e-6))
+
+    # 4. Zuckerbot: metaverse_ambience.wav (dreamy digital synth pad)
+    dur = 3.2
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    pad_freqs = [261.63, 329.63, 392.00, 493.88, 587.33] # Cmaj9
+    pad = np.zeros_like(t)
+    for i, pf in enumerate(pad_freqs):
+        vibrato = 0.8 * np.sin(2 * np.pi * 4.5 * t + i)
+        layer = np.sin(2 * np.pi * (pf + vibrato) * t) * (0.22 - i * 0.02)
+        pad += layer
+    shimmer = noise(dur) * (0.04 * (1.0 + np.sin(2 * np.pi * 1.5 * t)))
+    pad_out = apply_envelope(pad + shimmer, 0.5, 0.6)
+    write_wav(os.path.join(base_dir, "zuckerbot", "metaverse_ambience.wav"), pad_out / (np.max(np.abs(pad_out)) + 1e-6))
+
+    # 5. Sundar: page_load.wav (high-tech browser search / page load confirmation)
+    dur = 0.85
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sig_load = np.zeros_like(t)
+    arp = [523.25, 659.25, 783.99, 1046.50]
+    for i, af in enumerate(arp):
+        idx = int(i * 0.08 * SAMPLE_RATE)
+        rem = len(t) - idx
+        if rem <= 0: continue
+        lt = t[:rem]
+        chime = np.sin(2 * np.pi * af * lt) * np.exp(-16.0 * lt) * 0.35
+        sig_load[idx:] += chime
+    # Final confirmation ping
+    ding_idx = int(0.38 * SAMPLE_RATE)
+    if ding_idx < len(t):
+        dt = t[:len(t)-ding_idx]
+        ding = (np.sin(2 * np.pi * 1567.98 * dt) * 0.5 + np.sin(2 * np.pi * 3135.96 * dt) * 0.2) * np.exp(-7.0 * dt)
+        sig_load[ding_idx:] += ding
+    write_wav(os.path.join(base_dir, "sundar", "page_load.wav"), sig_load / (np.max(np.abs(sig_load)) + 1e-6))
+
+    # 6. Jensen: marker_squeak.wav (dry-erase marker squeaking on whiteboard)
+    dur = 0.75
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    chirp = 1900.0 + 650.0 * np.sin(2 * np.pi * 9.0 * t) + rng.uniform(-40, 40, len(t))
+    phase = 2 * np.pi * np.cumsum(chirp) / SAMPLE_RATE
+    squeak = np.sin(phase) * (0.6 + 0.4 * noise(dur))
+    squeak_env = apply_envelope(squeak, 0.05, 0.08)
+    write_wav(os.path.join(base_dir, "jensen", "marker_squeak.wav"), squeak_env / (np.max(np.abs(squeak_env)) + 1e-6))
+
+    # 7. Dario: victory.wav (scroll unroll + ancient scholarly stinger)
+    dur = 2.4
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    rustle = noise(dur, 'pink') * np.exp(-((t - 0.45) / 0.35)**2) * 0.4
+    # Classical stately cadence
+    cadence = np.zeros_like(t)
+    c_notes = [220.0, 277.18, 329.63, 440.0] # A major
+    for i, cn in enumerate(c_notes):
+        idx = int((0.6 + i * 0.28) * SAMPLE_RATE)
+        rem = len(t) - idx
+        if rem <= 0: continue
+        lt = t[:rem]
+        tone_val = (np.sin(2 * np.pi * cn * lt) + 0.3 * np.sin(4 * np.pi * cn * lt)) * np.exp(-4.0 * lt) * 0.4
+        cadence[idx:] += tone_val
+    write_wav(os.path.join(base_dir, "dario", "victory.wav"), (rustle + cadence) / (np.max(np.abs(rustle + cadence)) + 1e-6))
+
+    # 8. Yann: victory.wav (soothing rhythmic cat purr)
+    dur = 2.6
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    purr_fund = 28.0 + 3.0 * np.sin(2 * np.pi * 2.2 * t)
+    phase_purr = 2 * np.pi * np.cumsum(purr_fund) / SAMPLE_RATE
+    purr = (
+        np.sin(phase_purr) * 0.5 +
+        np.sin(2 * phase_purr) * 0.3 +
+        np.sin(3 * phase_purr) * 0.15 +
+        np.sin(4 * phase_purr) * 0.08
+    )
+    # Throat breathing envelope modulation (in / out)
+    breath = (0.5 + 0.5 * np.cos(2 * np.pi * 0.85 * t)) ** 1.5
+    purr_out = apply_envelope(purr * breath, 0.2, 0.3)
+    write_wav(os.path.join(base_dir, "yann", "victory.wav"), purr_out / (np.max(np.abs(purr_out)) + 1e-6))
+
+    # 9. Geoff: victory.wav (warm academic hall applause)
+    dur = 2.5
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sig_applause = np.zeros_like(t)
+    # Simulate overlapping handclaps
+    for _ in range(95):
+        hit_t = rng.uniform(0.1, 2.2)
+        idx = int(hit_t * SAMPLE_RATE)
+        rem = len(t) - idx
+        if rem <= 0: continue
+        cl = min(int(0.045 * SAMPLE_RATE), rem)
+        ct = t[:cl]
+        clap = (noise(cl / SAMPLE_RATE) * 0.6 + np.sin(2 * np.pi * rng.uniform(700, 1100) * ct) * 0.4) * np.exp(-65.0 * ct)
+        sig_applause[idx:idx+cl] += clap * rng.uniform(0.15, 0.4)
+    write_wav(os.path.join(base_dir, "geoff", "victory.wav"), sig_applause / (np.max(np.abs(sig_applause)) + 1e-6))
+
+    # 10. Ram: victory.wav (soaring fireworks launch and burst)
+    dur = 2.5
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sig_fw = np.zeros_like(t)
+    # Launch whoosh (0.0 to 0.7s)
+    launch_mask = t < 0.7
+    launch_n = np.sum(launch_mask)
+    launch_t = t[launch_mask]
+    whoosh = noise(0, count=launch_n) * np.linspace(0.1, 0.6, launch_n) * np.sin(np.pi * launch_t / 0.7)
+    sig_fw[launch_mask] += whoosh * 0.5
+    # Big aerial explosion burst at 0.7s
+    burst_idx = int(0.7 * SAMPLE_RATE)
+    bt = t[:len(t)-burst_idx]
+    boom = np.sin(2 * np.pi * (75.0 * np.exp(-12.0 * bt) + 38.0) * bt) * np.exp(-4.5 * bt) * 0.7
+    crackle = noise(0, count=len(bt)) * np.exp(-7.0 * bt) * 0.45
+    # Crackling glittering stars
+    sparks = np.zeros_like(bt)
+    for _ in range(40):
+        st_idx = int(rng.uniform(0.1, 1.4) * SAMPLE_RATE)
+        if st_idx < len(sparks):
+            sl = min(int(0.02 * SAMPLE_RATE), len(sparks) - st_idx)
+            sparks[st_idx:st_idx+sl] += rng.uniform(-0.35, 0.35, sl)
+    sig_fw[burst_idx:] += boom + crackle + sparks
+    write_wav(os.path.join(base_dir, "ram", "victory.wav"), sig_fw / (np.max(np.abs(sig_fw)) + 1e-6))
+
+    # 11. Algorithm: victory.wav (digital AI quantum matrix hum)
+    dur = 2.4
+    t = np.linspace(0, dur, int(dur * SAMPLE_RATE), endpoint=False)
+    sub = (np.sin(2 * np.pi * 55.0 * t) * 0.4 +
+           np.sin(2 * np.pi * 110.0 * t) * 0.3 +
+           np.sin(2 * np.pi * 220.0 * t) * 0.2)
+    # Quantum calculation digital sweep
+    sweep_tone = np.sin(2 * np.pi * (440.0 + 350.0 * np.sin(2 * np.pi * 6.0 * t)) * t) * 0.25
+    # Glitch bit packets
+    glitch = (noise(dur) * (rng.random(len(t)) > 0.985).astype(float)) * 0.3
+    algo_mix = apply_envelope(sub + sweep_tone + glitch, 0.15, 0.3)
+    write_wav(os.path.join(base_dir, "algorithm", "victory.wav"), algo_mix / (np.max(np.abs(algo_mix)) + 1e-6))
+
 def main():
     print("Generating stage audio assets (Task G5)...")
     make_mensa_sounds("assets/audio/stage/mensa")
@@ -621,6 +816,9 @@ def main():
     make_zuckerbot_supers("assets/audio/supers/zuckerbot")
     make_sundar_supers("assets/audio/supers/sundar")
     make_xi_supers("assets/audio/supers/xi")
+
+    print("Generating newly approved moves & scenes audio assets (Task G7b)...")
+    make_g7b_supers("assets/audio/supers")
     print("All audio assets successfully generated!")
 
 if __name__ == "__main__":

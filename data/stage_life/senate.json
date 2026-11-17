@@ -1,0 +1,60 @@
+{
+  "actors": [
+    {"npc": "senator_1", "pos": [-3.6, 0.0, -7.6], "yaw": 10, "pose": "sit", "reacts": ["gasp", "point", "bang_table"], "role": "committee"},
+    {"npc": "senator_2", "pos": [-1.8, 0.0, -7.6], "yaw": 5, "pose": "sit", "reacts": ["clap", "gasp", "bang_table"], "role": "committee"},
+    {"npc": "chair", "pos": [0.0, 0.0, -7.6], "yaw": 0, "pose": "sit", "reacts": ["gavel", "bang_table", "stand_up"], "role": "chair"},
+    {"npc": "senator_3", "pos": [1.8, 0.0, -7.6], "yaw": -5, "pose": "sit", "reacts": ["point", "cheer", "bang_table"], "role": "committee"},
+    {"npc": "senator_4", "pos": [3.6, 0.0, -7.6], "yaw": -10, "pose": "sit", "reacts": ["gasp", "clap", "stand_up"], "role": "committee"},
+    {"npc": "stenographer", "pos": [-1.8, 0.0, -5.2], "yaw": 45, "pose": "work", "reacts": ["gasp", "point"], "role": "staff"},
+    {"npc": "press_1", "pos": [-6.4, 0.0, -4.0], "yaw": 45, "pose": "stand", "reacts": ["photo", "point", "gasp"], "role": "press"},
+    {"npc": "press_2", "pos": [6.4, 0.0, -4.0], "yaw": -45, "pose": "stand", "reacts": ["photo", "cheer", "gasp"], "role": "press"},
+    {"npc": "press_3", "pos": [-5.5, 0.0, -4.5], "yaw": 35, "pose": "stand", "reacts": ["photo", "clap"], "role": "press"},
+    {"npc": "aide_1", "pos": [-7.2, 0.26, -1.5], "yaw": 80, "pose": "sit", "reacts": ["gasp", "clap"], "role": "crowd"},
+    {"npc": "aide_2", "pos": [-7.2, 0.26, 0.5], "yaw": 90, "pose": "sit", "reacts": ["cheer", "point"], "role": "crowd"},
+    {"npc": "aide_3", "pos": [-7.2, 0.26, 2.5], "yaw": 100, "pose": "sit", "reacts": ["stand_up", "cheer"], "role": "crowd"},
+    {"npc": "citizen_1", "pos": [7.2, 0.26, -1.5], "yaw": -80, "pose": "sit", "reacts": ["gasp", "point"], "role": "crowd"},
+    {"npc": "citizen_2", "pos": [7.2, 0.26, 0.5], "yaw": -90, "pose": "sit", "reacts": ["clap", "gasp"], "role": "crowd"},
+    {"npc": "citizen_3", "pos": [7.2, 0.26, 2.5], "yaw": -100, "pose": "sit", "reacts": ["cheer", "stand_up"], "role": "crowd"}
+  ],
+  "shouts": {
+    "round_start": [
+      "Hearing is now in session!",
+      "Order in the hearing!",
+      "Swear them in!",
+      "The committee will come to order!"
+    ],
+    "big_hit": [
+      "Strike that from the record!",
+      "Objection, your Honor!",
+      "That's contempt of Congress!",
+      "Did the stenographer catch that?"
+    ],
+    "super": [
+      "I demand a subpoena!",
+      "Order! Order in the chamber!",
+      "Yield your remaining time!",
+      "This is unprecedented testimony!"
+    ],
+    "ko": [
+      "Hearing adjourned!",
+      "Motion to adjourn passes!",
+      "The witness has collapsed!",
+      "No further questions!"
+    ],
+    "throw": [
+      "Unparliamentary conduct!",
+      "Security, escort them out!"
+    ],
+    "wall_hit": [
+      "Watch the mahogany railing!",
+      "Direct hit on the dais!"
+    ]
+  },
+  "events": {
+    "round_start": ["gavel"],
+    "super": ["camera_flashes", "gavel"],
+    "ko": ["camera_flashes", "gavel"],
+    "throw": ["camera_flashes"],
+    "wall_hit": ["sparks"]
+  }
+}

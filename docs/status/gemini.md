@@ -58,3 +58,52 @@ and any requests for other agents.
   - `sundar`: `keyboard_typing.wav`, `error_beep.wav`, `search_query.wav`, `victory.wav`.
   - `xi`: `footsteps_sprint.wav`, `punch_flurry.wav`, `gong_strike.wav`, `victory.wav`.
   - Credited in `assets/CREDITS.md`.
+
+## G7b: Newly approved super and victory sounds
+- **State**: done
+- **Summary**: Added sounds for newly approved moves and scenes in `assets/audio/supers/`:
+  - `xi/dragon_drums.wav`
+  - `donald/statue_rise.wav`, `donald/fanfare.wav`
+  - `zuckerbot/metaverse_ambience.wav`
+  - `sundar/page_load.wav`
+  - `jensen/marker_squeak.wav`
+  - `dario/victory.wav` (scroll unroll & stately cadence)
+  - `yann/victory.wav` (rhythmic cat purr)
+  - `geoff/victory.wav` (academic applause)
+  - `ram/victory.wav` (fireworks launch & burst)
+  - `algorithm/victory.wav` (quantum calculation digital hum)
+  - Credited in `assets/CREDITS.md`.
+
+## G4: Stage-life content (Senate, Mensa, Foundry, Server Farm)
+- **State**: done
+- **Summary**: Authored `data/stage_life/<stage>.json` content conforming to TASKS.md §3.3 for all 4 stages:
+  - `senate.json`: Chair, senators, stenographers, press, spectator gallery; hearing shout lines ("Order!", "Reclaim my time!", "Subpoena!"); camera flashes and gavel strike events.
+  - `mensa.json`: Students, dining crowd, cafeteria staff; food/exam shout lines ("Food fight!", "Check the gradients!"); food fight event.
+  - `foundry.json`: Cleanroom technicians in bunny suits, wafer engineers; cleanroom shout lines ("Particle detected!", "13.5nm locked!"); EUV spark burst and air shower events.
+  - `server_farm.json`: Sysadmins, SREs, monitoring engineers; datacenter shout lines ("OOM Killer!", "RoCE packet drop!"); high-pressure steam burst and rack alarm events.
+
+## G12 & G10: Realism round 2, Fight Lighting & Open-Source CC0 Props / PBR Pass
+- **State**: review
+- **Summary**: Overhauled visual depth, lighting, tonemapping and replaced code shapes with downloaded open-source CC0 3D models and Poly Haven PBR textures across all 4 stages.
+- **Details**:
+  - **Server Farm**: Downloaded Kenney CC0 Space Station models (`container-tall.glb`, `container-wide.glb`, `computer-system.glb`, `computer-wide.glb`, `structure-barrier.glb`, `display-wall.glb`) and Poly Haven 1K PBR `anti_skid_tiles_*`. Replaced primitive shapes with real server containers, battery/transformer modules, multi-screen consoles, cluster display walls, and safety barriers. Added ACES tonemapper, screen glow, and reflective wet floor channels.
+  - **GPU Foundry**: Fixed washed-out appearance by lowering exposure, increasing contrast, and applying Poly Haven 1K PBR `metal_plate_02_*` for the cleanroom floor. Downloaded Kenney CC0 Factory models (`catwalk-straight.glb`, `catwalk-stairs.glb`, `scanner-high.glb`, `scanner-low.glb`, `screen-hanging-wide.glb`, `screen-panel-wide.glb`, `warning-orange.glb`, `box-large.glb`). Placed elevated maintenance catwalks, stairs, inspection scanners, laser warning beacons, and sub-fab filtration units.
+  - **Senate**: Applied Poly Haven 1K PBR `lacquered_cherry_wood_*` (Rob Tuytel, Charlotte Baglioni, Jenelle van Heerden, Rico Cilliers) across the dais, railing, and witness table. Downloaded Kenney CC0 Furniture models (`laptop.glb`, `books.glb`, `bookcaseClosed.glb`, `bookcaseClosedWide.glb`, `bench.glb`, `desk.glb`, `deskCorner.glb`, `speakerSmall.glb`, `plantSmall1.glb`). Placed senator laptops, legal briefing books, public gallery benches, executive dais wing extensions, stately closed bookcases, PA speakers, chamber planters, and a dedicated official stenographer workstation matching `senate.json`.
+  - **Mensa**: Downloaded Kenney CC0 Furniture models (`kitchenBar.glb`, `kitchenBarEnd.glb`, `kitchenCoffeeMachine.glb`, `trashcan.glb`, `cardboardBoxClosed.glb`, `pottedPlant.glb`, `stoolBar.glb`, `table.glb`, `tableRound.glb`). Populated service counter line, espresso station, cafeteria waste receptacles, dining stools, round bistro seating tables, and multi-bench dining tables.
+  - **Robustness & Compatibility**:
+    - Texture import params set to VRAM/lossy compressed mode (`compress/mode=1`, `mipmaps/generate=true`) across all 1K PBR textures in `assets/stage_props/` to comply with project size rules and prevent texture aliasing.
+    - Implemented cross-platform case-insensitive path resolver `_resolve_tex_path()` in `stage_retheme.gd` for `textures` vs `Textures` directory paths.
+    - Added specific artist credits for all Poly Haven textures and stage audio/voice assets in `assets/CREDITS.md`.
+  - All tests passing at 0 failures (`PASS Showdown: Server Farm, Mensa, Senate and Foundry load with their props`).
+
+## G6: Voices for stage shout lines
+- **State**: done
+- **Summary**: Generated normalised OGG stage crowd voice shouts for all 4 stages conforming to contract §3.3 (`assets/audio/stage/<stage>/voice/<key>_<n>.ogg`).
+- **Details**:
+  - Synthesized distinct voice profiles per stage using `tools/build_stage_voices.py`:
+    - `senate`: Authoritative committee chair, formal senators, brisk stenographer, eager press pool.
+    - `mensa`: Energetic college students, cafeteria cook, busy cashier.
+    - `foundry`: Intercom radio-filtered cleanroom technicians, lead process architect, QA inspector.
+    - `server_farm`: Alert sysadmins, datacenter on-call SREs, cloud infrastructure architects.
+  - Trimmed silence, pitch-profiled, normalised, and converted to OGG Vorbis with `.import` configurations for all shout categories (`round_start`, `big_hit`, `super`, `ko`, `throw`, `wall_hit`).
+  - Documented and credited in `assets/CREDITS.md`.
