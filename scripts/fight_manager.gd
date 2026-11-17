@@ -163,6 +163,7 @@ func _ready() -> void:
 	fx.name = "FightFx"
 	add_child(fx)
 	fx.setup(self)
+	StageCrowd.attach(self) # people, shouts and events of the stage, if data/stage_life/<stage>.json exists
 	_waiting_for_screen = not is_online() and DisplayServer.get_name() != "headless"
 	if _waiting_for_screen:
 		_start_when_on_screen()

@@ -349,6 +349,7 @@ func _initialize() -> void:
 	await training_tests()
 	await arcade_tests()
 	await stage_tests()
+	await stage_life_tests()
 	await polish_tests()
 	graphics_tests()
 	await personality_tests()
@@ -1340,6 +1341,92 @@ func _files_under(dir: String) -> Array[String]:
 		out.append_array(_files_under(dir.path_join(sub)))
 	return out
 
+
+## Stage life (scripts/stage_life): fixture crowd, bubbles, events, and no effect on the sim.
+func stage_life_tests() -> void:
+	var fixture := "res://tests/fixtures/stage_life_example.json"
+	var crowd := StageCrowd.new()
+	root.add_child(crowd)
+	crowd.use_models = false
+	check("Stage life: the fixture loads", crowd.load_file(fixture) and not crowd.shouts.is_empty() and not crowd.events.is_empty())
+	check("Stage life: a missing or malformed file is refused", not crowd.load_file("res://tests/fixtures/none.json")
+		and not crowd.load_file("res://project.godot"))
+	crowd.load_file(fixture)
+	check("Stage life: actors spawn as stand-ins without NPC files (poses and roles kept)", crowd.actors.size() == 6
+		and crowd.actors.all(func(a: StageActor) -> bool: return a.is_stand_in())
+		and crowd.actors[1].pose == &"sit" and crowd.actors[3].role == "chair" and crowd.actors[2].pose == &"lean",
+		"%d actors" % crowd.actors.size())
+	check("Stage life: JSON path follows the stage scene name",
+		StageCrowd.json_path_for("res://scenes/stages/senate.tscn") == "res://data/stage_life/senate.json")
+	var reacted := 0
+	for a: StageActor in crowd.actors:
+		for r in StageActor.REACTIONS:
+			if a.react(r):
+				reacted += 1
+	check("Stage life: every reaction plays on a stand-in", reacted == 6 * StageActor.REACTIONS.size() and not crowd.actors[0].react(&"nope"))
+	var lines: Dictionary = crowd.shouts
+	crowd.trigger("big_hit")
+	check("Stage life: a big hit shows a bubble with a big_hit line", crowd.bubble_count() == 1 and crowd.last_shout.key == "big_hit"
+		and crowd.last_shout.line in lines["big_hit"], str(crowd.last_shout))
+	crowd.trigger("super")
+	check("Stage life: a super shows a super line", crowd.bubble_count() == 2 and crowd.last_shout.key == "super"
+		and crowd.last_shout.line in lines["super"], str(crowd.last_shout))
+	crowd.trigger("ko")
+	check("Stage life: at most two bubbles at once (a fresh one isn't replaced)", crowd.bubble_count() == 2 and crowd.last_shout.key == "super")
+	crowd._bubbles[0].age = 1.0
+	crowd.trigger("ko")
+	check("Stage life: a KO replaces an older bubble", crowd.bubble_count() == 2 and crowd.last_shout.key == "ko"
+		and crowd.last_shout.line in lines["ko"], str(crowd.last_shout))
+	var before: int = crowd.event_runner.runs
+	var ran := StageEvents.NAMES.all(func(n: StringName) -> bool: return crowd.event_runner.run(n))
+	check("Stage life: every event runs, unknown ones are refused", ran and not crowd.event_runner.run(&"nonsense")
+		and crowd.event_runner.runs == before + StageEvents.NAMES.size())
+	crowd.event_runner.run(&"sparks", Vector3(0, 3, -4))
+	for i in 40:
+		await process_frame
+	check("Stage life: bubbles fade away", crowd.bubble_count() <= 2)
+	crowd.free()
+
+	# The sim is unaffected: the same CPU-vs-CPU fight with and without the crowd ends identically.
+	var gs = root.get_node("GameState")
+	var runs := []
+	var shown := 0
+	for with_crowd in [false, true]:
+		gs.stage_path = gs.DEFAULT_STAGE
+		gs.match_seed = 7
+		change_scene_to_file("res://scenes/fight.tscn")
+		await process_frame; await process_frame
+		var fight = current_scene
+		fight.set_physics_process(false)
+		var cpu := AIController.new(AIController.Difficulty.HARD, 11)
+		fight.fighters[0].controller = cpu
+		cpu.attach(fight.fighters[0])
+		var life: StageCrowd
+		if with_crowd:
+			life = StageCrowd.new()
+			fight.add_child(life)
+			life.setup(fight, fixture)
+			life.use_models = false
+		fight.start_fight_immediately()
+		for i in 1500:
+			fight.step()
+			if life and i % 90 == 0:
+				life._process(1.0)
+		if with_crowd:
+			shown = life.shouts_shown
+			var resim_before := life.shouts_shown
+			fight.resimulating = true
+			life.trigger("ko")
+			fight.resimulating = false
+			check("Stage life: nothing happens while resimulating", life.shouts_shown == resim_before)
+			check("Stage life: bubbles hang on the people, never on fighters",
+				fight.fighters.all(func(f: Fighter) -> bool: return f.find_children("*", "ShoutBubble", true, false).is_empty()))
+		var state := []
+		for f: Fighter in fight.fighters:
+			state.append([f.position, f.health, f.meter, f.state, f.combo_hits, f.velocity])
+		runs.append([state, fight.phase, fight.round_wins.duplicate(), fight.timer_ticks])
+	check("Stage life: a CPU fight ends identically with the crowd (and it reacted)", runs[0] == runs[1] and shown > 0,
+		"%d shouts; %s vs %s" % [shown, str(runs[0]).left(80), str(runs[1]).left(80)])
 
 func stage_tests() -> void:
 	var gs = root.get_node("GameState")

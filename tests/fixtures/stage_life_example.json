@@ -1,0 +1,23 @@
+{
+  "actors": [
+    {"npc": "nobody_1", "pos": [-6.0, 0.0, -3.6], "yaw": 25, "pose": "stand", "reacts": ["cheer", "gasp", "clap"], "role": "crowd"},
+    {"npc": "nobody_2", "pos": [-4.6, 0.0, -4.2], "yaw": 15, "pose": "sit", "reacts": ["gasp", "stand_up"], "role": "crowd"},
+    {"npc": "nobody_3", "pos": [-3.0, 0.0, -4.4], "yaw": 8, "pose": "lean", "reacts": ["point", "gasp"], "role": "press"},
+    {"npc": "nobody_4", "pos": [3.0, 0.0, -4.4], "yaw": -8, "pose": "work", "reacts": ["bang_table", "gasp"], "role": "chair"},
+    {"npc": "nobody_5", "pos": [4.6, 0.0, -4.2], "yaw": -15, "pose": "sit", "reacts": ["cheer", "photo"], "role": "press"},
+    {"npc": "nobody_6", "pos": [6.0, 0.0, -3.6], "yaw": -25, "pose": "stand", "reacts": ["cheer", "clap", "gavel"], "role": "crowd"}
+  ],
+  "shouts": {
+    "big_hit": ["Oof!", "Did you see that?"],
+    "super": ["NO WAY!", "Order, order!"],
+    "ko": ["It's over!"],
+    "round_start": ["Fight! Fight! Fight!"]
+  },
+  "events": {
+    "ko": ["gavel", "camera_flashes"],
+    "super": ["camera_flashes", "sparks"],
+    "round_start": ["alarm"],
+    "wall_hit": ["steam_burst"],
+    "throw": ["food_fight"]
+  }
+}
