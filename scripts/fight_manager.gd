@@ -20,6 +20,9 @@ signal projectile_clashed(point: Vector3)
 ## A barrier destroyed a projectile, or a reflect stance sent one back (cosmetic hooks).
 signal projectile_blocked(point: Vector3)
 signal projectile_reflected(reflector: Fighter, point: Vector3)
+## A super with a scene (MoveData.cinematic) hit: the fight is frozen for its
+## cinematic_ticks while SuperScenePlayer plays the scene (cosmetic).
+signal cinematic_started(attacker: Fighter, defender: Fighter, move: MoveData)
 ## A fighter's move stole super meter from the opponent (MoveData.drain_meter).
 signal meter_drained(attacker: Fighter, amount: int)
 
@@ -163,6 +166,10 @@ func _ready() -> void:
 	fx.name = "FightFx"
 	add_child(fx)
 	fx.setup(self)
+	var scenes := SuperScenePlayer.new()
+	scenes.name = "SuperScenePlayer"
+	add_child(scenes)
+	scenes.setup(self)
 	_waiting_for_screen = not is_online() and DisplayServer.get_name() != "headless"
 	if _waiting_for_screen:
 		_start_when_on_screen()
@@ -764,6 +771,10 @@ func _resolve_hits() -> void:
 		_award_meter(attacker, defender, move, result, health_before - defender.health)
 		if move.drain_meter > 0 and result in [Fighter.HitResult.HIT, Fighter.HitResult.COUNTER]:
 			_drain_meter(attacker, defender, move)
+		if move.cinematic != &"" and move.cinematic_ticks > 0 and result in [Fighter.HitResult.HIT, Fighter.HitResult.COUNTER]:
+			_set_freeze(move.cinematic_ticks)
+			if not resimulating:
+				cinematic_started.emit(attacker, defender, move)
 		if result == Fighter.HitResult.COUNTER and not resimulating:
 			hud.note(fighters.find(attacker), "COUNTER")
 		elif result == Fighter.HitResult.ARMORED and not resimulating:

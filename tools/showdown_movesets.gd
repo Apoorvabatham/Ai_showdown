@@ -24,6 +24,10 @@ extends RefCounted
 ## its id: CharacterData.lookup() prefers the fighter's entry over the kit's.
 
 const MOVESETS := {
+	# tesla man: the super's finisher plays the "Rocket Launch" scene when it hits.
+	&"tesla": {
+		tweak = {tempest_finish = {cinematic = &"rocket_launch", cinematic_ticks = 405, super_fx = &"rocket_launch"}},
+	},
 	# Sundar Pickai: zoner / trapper (was a copy of Jensen's kit).
 	&"sundar": {
 		stats = {max_health = 1020, archetype = "Zoner"},

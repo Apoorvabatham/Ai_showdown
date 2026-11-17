@@ -95,6 +95,11 @@ enum HitLevel { HIGH, MID, LOW, OVERHEAD }
 @export var projectile_look: StringName = &""
 ## Cosmetic: the SuperFX show played when this super starts (scripts/supers/).
 @export var super_fx: StringName = &""
+## Super scene: when this move hits (not blocked), the fight freezes for
+## `cinematic_ticks` and the scene `scripts/supers/scenes/<cinematic>.gd` plays (cosmetic;
+## the freeze is part of the simulation, so it stays deterministic).
+@export var cinematic: StringName = &""
+@export var cinematic_ticks: int = 0
 
 ## Cosmetic effect when the move becomes active ("shockwave" = ground-pound ring and
 ## dust). Trails, rising sparks and projectile flashes come from the move's own data.

@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[sub_resource type="Environment" id="Environment_l8u28"]
+background_mode = 1
+background_color = Color(0, 0, 0.01, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.25, 0.27, 0.35, 1)
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2yoog"]
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_7mybr"]
+material = SubResource("StandardMaterial3D_2yoog")
+radius = 0.12
+height = 0.24
+radial_segments = 6
+rings = 3
+
+[sub_resource type="MultiMesh" id="MultiMesh_3wvp6"]
+transform_format = 1
+instance_count = 500
+mesh = SubResource("SphereMesh_7mybr")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b81vj"]
+albedo_color = Color(0.12, 0.3, 0.7, 1)
+roughness = 0.6
+emission_enabled = true
+emission = Color(0.05, 0.15, 0.4, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_osb8l"]
+radius = 40.0
+height = 80.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sspgv"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+albedo_color = Color(0.4, 0.7, 1, 0.25)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ms8b1"]
+radius = 41.5
+height = 83.0
+
+[node name="space" type="Node3D" unique_id=444229787]
+
+[node name="@WorldEnvironment@12" type="WorldEnvironment" parent="." unique_id=791910980]
+environment = SubResource("Environment_l8u28")
+
+[node name="@DirectionalLight3D@13" type="DirectionalLight3D" parent="." unique_id=1801420255]
+transform = Transform3D(0.49999997, -0.29619813, 0.8137977, 0, 0.9396926, 0.34202012, -0.86602545, -0.17101005, 0.46984628, 0, 0, 0)
+light_color = Color(1, 0.97, 0.92, 1)
+light_energy = 1.6
+shadow_enabled = true
+
+[node name="@MultiMeshInstance3D@14" type="MultiMeshInstance3D" parent="." unique_id=1846065377]
+multimesh = SubResource("MultiMesh_3wvp6")
+
+[node name="@MeshInstance3D@15" type="MeshInstance3D" parent="." unique_id=233360428]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -52, -30)
+material_override = SubResource("StandardMaterial3D_b81vj")
+mesh = SubResource("SphereMesh_osb8l")
+
+[node name="@MeshInstance3D@16" type="MeshInstance3D" parent="." unique_id=1883160378]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -52, -30)
+material_override = SubResource("StandardMaterial3D_sspgv")
+mesh = SubResource("SphereMesh_ms8b1")
+
+[node name="Rocket_Start" type="Marker3D" parent="." unique_id=434392035]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 2, 0)
+
+[node name="Rocket_End" type="Marker3D" parent="." unique_id=1504656110]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 9, -8)
+
+[node name="Reentry_Start" type="Marker3D" parent="." unique_id=2136456952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 7, 2)
+
+[node name="Reentry_End" type="Marker3D" parent="." unique_id=2094240042]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -9, -2)
+
+[node name="Cam_Space" type="Marker3D" parent="." unique_id=60928763]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 18)

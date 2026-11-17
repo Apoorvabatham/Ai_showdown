@@ -5024,6 +5024,40 @@ func showdown_tests() -> void:
 		and maxi(quick.round_wins[0], quick.round_wins[1]) == 1, "round %d, wins %s" % [quick.round_number, quick.round_wins])
 	gs.mode = old_mode
 
+	# Super scene: tesla man's Rocket Launch freezes the fight and plays its scene, then the
+	# fight comes back (scripts/supers/).
+	gs.player_character = gs.find_character(&"tesla")
+	gs.p2_character = gs.find_character(&"jensen")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var sf = current_scene
+	sf.set_physics_process(false)
+	sf.start_match(); sf.start_fight_immediately()
+	var rp1: Fighter = sf.fighters[0]
+	var rp2: Fighter = sf.fighters[1]
+	rp2.controller = sf.dummy
+	sf.dummy.mode = DummyController.Mode.STAND
+	rp1.position.x = -0.5; rp2.position.x = 0.5
+	rp1.add_meter(Fighter.MAX_METER)
+	var scenes = sf.get_node("SuperScenePlayer")
+	var started := [false]
+	sf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: started[0] = true)
+	rp1._start_move(rp1._move_for_input("236236K"), false)
+	var guard := 0
+	while not started[0] and guard < 300:
+		sf._physics_process(1.0 / 60.0); guard += 1
+	await process_frame; await process_frame
+	check("Super scene: Rocket Launch hits, freezes the fight and plays its scene", started[0] and sf.freeze_ticks > 300
+		and scenes.scene != null and scenes.scene.find_child("Rocket", true, false) != null and not sf.stage.visible,
+		"started %s, freeze %d" % [started[0], sf.freeze_ticks])
+	var hp_after_hit := rp2.health
+	for i in 420:
+		sf._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame; await process_frame
+	check("Super scene: the fight resumes after the scene", scenes.scene == null and sf.stage.visible and rp1.visible
+		and sf.freeze_ticks == 0 and rp2.health == hp_after_hit and sf.camera.current, "freeze %d" % sf.freeze_ticks)
+
 	# Arcade: AGI is the final boss; picking it gives the shadow boss instead.
 	var algorithm: CharacterData = gs.find_character(gs.FINAL_BOSS)
 	var run := ArcadeRun.create(gs.roster[0], gs.roster, 1, 4, gs.arcade_arenas(), gs.boss_stage, algorithm)

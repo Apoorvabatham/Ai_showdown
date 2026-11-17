@@ -166,7 +166,7 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 | C4 | Donald moveset | C2 | todo |
 | C5 | Xi moveset; Zuckerbot, Jensen and tesla changes | C2 | todo |
 | C6 | AGI boss kit | C2 | todo |
-| C7 | Super-scene framework: on a super hit, freeze the fight and play a cosmetic scene in its own set (own camera, puppets of both fighters, props); victory-scene framework; modelled shot looks (`scripts/supers/projectile_looks.gd`, started) | — | in progress (claude) |
+| C7 | Super-scene framework (`scripts/supers/`: SuperScene, ScenePuppet, SuperScenePlayer, SuperStandins; `MoveData.cinematic` + `cinematic_ticks` freeze) and the first scene: tesla man's Rocket Launch with stand-in sets `launch_pad`, `space` (`tools/build_super_sets.gd`). Next: victory-scene framework | — | in progress (claude) |
 | C8 | Per fighter: power move + super scene + victory scene (ROADMAP §2), owner approves each design first | C7, O2 per prop | todo |
 | C9 | Stage-life framework: StageActor, StageCrowd, ShoutBubble, events (food_fight, camera_flashes, gavel, sparks, spark_shower, steam_burst, alarm) + `data/stage_life` loader | — | todo |
 | C10 | AGI phases + mimicry + phase transitions | C6 | todo |
@@ -203,7 +203,7 @@ Start with G1 and G2 now; G3 after G2. G4 and G6 wait for Claude's stage-life fr
 | G4 | Stage-life content: `data/stage_life/<stage>.json` (actor placement, shout lines, events) for each stage | C9, O3 | blocked |
 | G5 | Stage sounds (CC0): gavel, camera shutter, tray clatter, welding, sparks, alarms, crowd cheers/gasps per stage, in `assets/audio/stage/<stage>/` | — | todo |
 | G6 | Voices for the stage shout lines (contract §3.3 naming): an offline TTS with a licence that allows use in a game (e.g. Piper with a permissively licensed voice; note the licence in `assets/CREDITS.md`), several different voices per stage (chair, students, press...), OGG, normalised, short | G4 | blocked |
-| G8 | **Dress the super-scene sets** (contract §3.5) so they look real, one at a time as Claude adds them: `launch_pad`, `space` (stars, Earth below), then the rest | C7 stand-ins | blocked |
+| G8 | **Dress the super-scene sets** (contract §3.5) so they look real, one at a time: `launch_pad` (sunset rocket launch site: real pad, tower, floodlights, distant buildings) and `space` (stars, a real-looking Earth with clouds and atmosphere) are ready now; keep every Marker3D | C7 stand-ins | todo |
 | G9 | **Dress the victory-scene sets**: `mars` (red terrain, dust, sky) first, then the others | C7 stand-ins | blocked |
 | G10 | **Fight look**: lighting, `WorldEnvironment` (glow, tonemap, fog, SSAO/SSR where cheap) per stage so fights look less flat; keep 60 fps on mid hardware | — | todo |
 | G7 | Super and victory sounds (CC0), in `assets/audio/supers/<fighter_id>/`: tesla (truck engine, chain rattle, rocket launch roar, space whoosh, re-entry burn, flag plant), Donald (container crash, giant stamp thud, paper flutter, crowd "USA" chant), Jensen (whoosh / wind tornado), Zuckerbot (VR power-up, digital glitch), Sundar (keyboard typing, error beep), Xi (running footsteps, punch flurry) | — | todo |
