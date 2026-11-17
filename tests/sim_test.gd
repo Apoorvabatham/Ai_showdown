@@ -5183,6 +5183,48 @@ func showdown_tests() -> void:
 	await process_frame
 	check("Victory scene: ends when a new match starts", victories.scene == null and sf.stage.visible)
 
+	# Super scene + victory: Donald Tarrif's Shower of Tariffs (a command grab) and golden statues.
+	gs.player_character = gs.find_character(&"donald")
+	gs.p2_character = gs.find_character(&"jensen")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var df = current_scene
+	df.set_physics_process(false)
+	df.start_match(); df.start_fight_immediately()
+	var dp1: Fighter = df.fighters[0]
+	var dp2: Fighter = df.fighters[1]
+	dp2.controller = df.dummy
+	df.dummy.mode = DummyController.Mode.STAND
+	dp1.position.x = -0.5; dp2.position.x = 0.5
+	dp1.add_meter(Fighter.MAX_METER)
+	var dscenes = df.get_node("SuperScenePlayer")
+	var dstarted := [false]
+	df.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: dstarted[0] = true)
+	dp1._start_move(dp1._move_for_input("236236P"), false)
+	var dguard := 0
+	while not dstarted[0] and dguard < 300:
+		df._physics_process(1.0 / 60.0); dguard += 1
+	await process_frame; await process_frame
+	check("Super scene: Shower of Tariffs connects, freezes the fight and plays its scene", dstarted[0] and df.freeze_ticks >= 300
+		and dscenes.scene != null and dscenes.scene.find_child("oval_desk", true, false) != null and not df.stage.visible,
+		"started %s, freeze %d" % [dstarted[0], df.freeze_ticks])
+	var dhp := dp2.health
+	for i in 380:
+		df._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame; await process_frame
+	check("Super scene: the fight resumes after Shower of Tariffs", dscenes.scene == null and df.stage.visible and dp1.visible
+		and df.freeze_ticks == 0 and dp2.health == dhp and df.camera.current, "freeze %d" % df.freeze_ticks)
+	var dvictories = df.get_node("VictoryScenePlayer")
+	df.phase = df.Phase.MATCH_OVER
+	df._start_victory(dp1)
+	await process_frame; await process_frame
+	check("Victory scene: Donald raises golden statues and flags on the stage", dvictories.scene != null
+		and df.stage.visible and dvictories.scene.statues.size() >= 4 and dvictories.scene.flags.size() >= 4)
+	df.start_match()
+	await process_frame
+	check("Victory scene: Donald's ends when a new match starts", dvictories.scene == null and df.stage.visible)
+
 	# Arcade: AGI is the final boss; picking it gives the shadow boss instead.
 	var algorithm: CharacterData = gs.find_character(gs.FINAL_BOSS)
 	var run := ArcadeRun.create(gs.roster[0], gs.roster, 1, 4, gs.arcade_arenas(), gs.boss_stage, algorithm)
