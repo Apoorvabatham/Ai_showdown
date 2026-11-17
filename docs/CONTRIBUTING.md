@@ -22,7 +22,7 @@ rule is: change the generator, re-run it, commit the output.
 
 | Path | What lives there |
 |---|---|
-| `data/characters/` | The AI Showdown roster (12 `.tres` files). **Generated** by `tools/build_showdown_roster.gd`. |
+| `data/characters/` | The AI Showdown roster (11 `.tres` files). **Generated** by `tools/build_showdown_roster.gd`. |
 | `data/kits/` | The original 3D Fighter cast (kenji, rhea, brutus, valka, jin, mira, lian, aelia). They are the *kits*: movesets, CPU personalities and showcase routines the roster is built from. Engine tests run on these (see below). |
 | `data/moves/<id>/` | One `MoveData` `.tres` per move, per fighter. **Generated** (copied from the kit, renamed, damage-scaled). |
 | `scripts/` | Game code. Autoloads in `scripts/autoload/` (`game_state.gd`, `audio.gd`), fighter logic in `scripts/fighter/` (`move_data.gd`), CPU in `scripts/ai/ai_controller.gd`, UI in `scripts/ui/`, stage code in `scripts/stages/`. `scripts/character_data.gd` is the `CharacterData` resource. |
@@ -454,6 +454,89 @@ godot --headless --path . -s res://tools/balance_sim.gd -- 6 2 all
 
 CPU personalities shape the results, so treat outliers as hints, not verdicts. Raw results
 are written to `user://balance_results.json`.
+
+### Giving a fighter its own moveset
+
+A roster fighter can play differently from its kit. Its overrides live in `MOVESETS` in
+`tools/showdown_movesets.gd`, keyed by fighter id. The `sundar` entry is a full example:
+it removes two kit moves, tweaks one, adds three and sets its own trials. Do not edit
+`data/moves/<id>/` by hand. The roster builder rewrites it.
+
+Keys (all optional):
+
+- `remove`: kit move files to drop, e.g. `remove = ["dragon_barrage", "dragon_finish"]`.
+  Drop a super's follow-ups with it.
+- `tweak`: `{move_file: {field: value}}` sets fields on a kept move, e.g.
+  `tweak = {ki_blast = {projectile_count = 3}}`. Values are final: damage is not scaled.
+- `add`: `{new_file: {from = "<moves folder>/<file>", set = {field: value}}}` clones a move
+  from `data/moves/`, then applies `set`, e.g.
+  `add = {algorithm_update = {from = "kenji/ki_blast", set = {name = "Algorithm Update", input = "214K", teleport = 1.0}}}`.
+  `damage` and `chip_damage` are scaled by the ROSTER `damage` unless `set` gives them.
+  Give it a `name` and an `input`.
+- `stats`: `{CharacterData field: value}`, e.g. `stats = {max_health = 1020}`. Applied
+  after the ROSTER `stats`.
+- `trials`: a list of combo trials that replaces the kit's, e.g.
+  `trials = [{name = "Jab String", steps = ["LP", "LP", "HP"], corner = false, tip = "..."}]`.
+  `steps` is a plain array of inputs. Without `trials`, the kit's trials are kept, minus any
+  that use a removed input.
+
+Order of application (`tools/build_showdown_roster.gd`):
+
+1. The ROSTER `stats`, then the moveset's `stats`.
+2. The kit's moves are copied into `data/moves/<id>/`, minus the `remove` files. ROSTER
+   `moves` names are applied and damage is scaled by the ROSTER `damage`.
+3. `tweak` on the kept moves. Keys are the kit's file names, not the new names. A tweak of
+   a removed or unknown move stops the build.
+4. `add`: each clone is built from its source, then `set` is applied.
+5. Trials: the `trials` list if given, otherwise the kit's, with names and tips renamed to
+   the new move names.
+6. Any `.tres` left in `data/moves/<id>/` that is no longer built is deleted.
+
+Rebuild one fighter (leave out the id to rebuild all of them):
+
+```bash
+godot --headless --path . -s res://tools/build_showdown_roster.gd -- sundar
+```
+
+Check its trials and balance:
+
+```bash
+godot --headless --path . -s res://tools/check_trials.gd -- sundar
+godot --headless --path . -s res://tools/balance_sim.gd -- 4 2 sundar
+```
+
+`check_trials.gd` plays every trial against every dummy and lists any the demo cannot
+finish. It exits with code 1 on failure. Add `stage=dojo` to test trials with a wall.
+`balance_sim.gd` takes matches, difficulty (0-2) and the fighter id, as in section 4.
+
+CPU style and showcase are looked up by fighter id too. `SHOWDOWN_PERSONALITIES` in
+`scripts/ai/ai_controller.gd` and `ROUTINES` in `scripts/ui/fighter_showcase.gd` are keyed
+by id. `CharacterData.lookup()` (`scripts/character_data.gd`) returns the entry for the
+fighter's id. If there is none, it returns the entry for the kit (`kit_id()`). The CPU then
+falls back to `PERSONALITIES` and `DEFAULT_PERSONALITY`. The showcase falls back to a plain
+idle loop. So a fighter with no entry of its own plays its kit's style and routine.
+
+### New MoveData fields
+
+Set these in an `add` `set` or a `tweak` in `tools/showdown_movesets.gd`, or in a kit's move
+(`data/kits/`, through `tools/build_movesets.gd`).
+
+| Field | What it does | Example |
+|---|---|---|
+| `projectile_count` | Shots per move. With `projectile_interval` 0 they leave together, stacked by `projectile_spread`. | `3` |
+| `projectile_interval` | Ticks between shots, while the move is still active. 0 = all at once. | `12` |
+| `projectile_spread` | Metres between shots: vertical for hand shots, along the fight axis for sky shots. | `0.35` |
+| `projectile_origin` | `&""` = from the hand, flying forward. `&"sky"` = falls from above the opponent (`projectile_speed` is the fall speed). `&"around"` = comes in from a half circle around the opponent. | `&"sky"` |
+| `projectile_sky_offset` | Shifts sky shots along the fight axis, in metres. | `1.5` |
+| `barrier` | The shot is a wall: no damage, destroys opponent projectiles it touches, pushes the opponent out. Moves at `projectile_speed` (0 = stays put) for `projectile_lifetime` ticks. One at a time. | `true` |
+| `reflect_projectiles` | During startup and active frames, opponent projectiles that touch the fighter are sent back at the opponent. | `true` |
+| `teleport` | On the first active frame, the fighter moves this many metres past the opponent. Negative = that far back from where it stands. | `1.0` |
+| `drain_meter` | Super meter taken from the opponent and given to the attacker when the move hits or its grab connects. | `10` |
+| `projectile_look` | Cosmetic shot model: `&""` = orb, `&"search_bar"`, `&"gpu"` (`scripts/supers/projectile_looks.gd`). | `&"gpu"` |
+| `super_fx` | Cosmetic SuperFX show played when the super starts (`scripts/supers/`). | `&"search_result"` |
+
+`fires_projectile()` is a method, not a field. It returns true when the move has
+`projectile_speed` above 0 or `barrier` set. Use it instead of checking those two by hand.
 
 ## 5. Power-move voices
 
