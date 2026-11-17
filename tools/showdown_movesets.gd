@@ -131,8 +131,9 @@ const MOVESETS := {
 			shoulder_tackle = {armor_hits = 1, damage = 88},
 			# You're Fired: slower, much bigger command grab.
 			valkyrie_slam = {startup = 14, damage = 170, recovery = 40},
-			# Shower of Tariffs: the kit's super; its cinematic comes later.
-			thunder_valkyrie = {super_fx = &"tariff_stamp"},
+			# Shower of Tariffs: the kit's super, a command grab; when it connects the
+			# "Shower of Tariffs" scene plays (scripts/supers/scenes/tariff_stamp.gd, ~5.7 s).
+			thunder_valkyrie = {super_fx = &"tariff_stamp", cinematic = &"tariff_stamp", cinematic_ticks = 360},
 		},
 		add = {
 			# Two shipping containers, one after the other, tumbling at the opponent.
