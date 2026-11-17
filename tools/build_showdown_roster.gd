@@ -87,7 +87,7 @@ const ROSTER := [
 		age = 43,
 		description = "A patient counter-fighter guided by a written constitution. Catches reckless strikes with Refusal Stance, then explains, at length, why that was unsafe.",
 		skin = &"pale", hair = ["Hair_CurlyMop"], hair_color = Color(0.12, 0.09, 0.08), alt_hair_color = Color(0.28, 0.20, 0.14),
-		hair_volume = [Vector3(1.08, 1.10, 1.08), Vector3(0.0, 0.006, -0.002)],
+		hair_volume = [Vector3(1.04, 1.06, 1.04), Vector3(0.0, 0.004, -0.004)],
 		damage = 1.0, stats = {},
 		face = {jaw = 1.04, chin = -0.004, chin_forward = 0.0, chin_round = 0.012, cheekbones = 0.001, fullness = 0.010,
 			jowls = 0.008, double_chin = 0.004, nose_width = 1.14, nose_length = 0.004, nose_bridge = 0.003, brow = 0.002,

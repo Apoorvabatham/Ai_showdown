@@ -74,29 +74,48 @@ func _build_curly_mop(style: String) -> void:
 
 	var locks: Array[Dictionary] = []
 
-	# A. Forehead bangs / fringe curls (tumbling forward and down right above the glasses)
-	for i in 30:
-		var frac := float(i) / 29.0
-		var x := lerpf(-0.065, 0.065, frac) + rng.randf_range(-0.006, 0.006)
-		var y := rng.randf_range(1.74, 1.78)
-		var z := rng.randf_range(0.055, 0.078)
-		var dir := Vector3(x * 0.45 + rng.randf_range(-0.1, 0.1), -0.42 + rng.randf_range(-0.08, 0.08), 0.78 + rng.randf_range(-0.08, 0.08)).normalized()
+	# A. Curly hairline above the brow (short, swept up and out — never over the glasses)
+	for i in 22:
+		var frac := float(i) / 21.0
+		var x := lerpf(-0.060, 0.060, frac) + rng.randf_range(-0.005, 0.005)
+		var y := rng.randf_range(1.760, 1.790)
+		var z := rng.randf_range(0.058, 0.072)
+		var dir := Vector3(x * 1.4 + rng.randf_range(-0.1, 0.1), 0.35 + rng.randf_range(-0.08, 0.08), 0.55 + rng.randf_range(-0.08, 0.08)).normalized()
 		locks.append({
 			root = Vector3(x, y, z),
 			dir = dir,
-			length = rng.randf_range(0.042, 0.058),
+			length = rng.randf_range(0.022, 0.032),
+			turns = rng.randf_range(1.8, 2.4),
+			radius = rng.randf_range(0.010, 0.014),
+			width = rng.randf_range(0.014, 0.019),
+			phase = rng.randf_range(0.0, TAU),
+			sag = Vector3(0, -0.004, 0.002)
+		})
+
+	# A2. Fringe curls that tumble forward and up above the glasses, adding mop volume
+	# without dropping in front of the eyes.
+	for i in 30:
+		var frac := float(i) / 29.0
+		var x := lerpf(-0.065, 0.065, frac) + rng.randf_range(-0.006, 0.006)
+		var y := rng.randf_range(1.795, 1.835)
+		var z := rng.randf_range(0.045, 0.070)
+		var dir := Vector3(x * 0.9 + rng.randf_range(-0.12, 0.12), 0.22 + rng.randf_range(-0.08, 0.08), 0.72 + rng.randf_range(-0.08, 0.08)).normalized()
+		locks.append({
+			root = Vector3(x, y, z),
+			dir = dir,
+			length = rng.randf_range(0.032, 0.046),
 			turns = rng.randf_range(2.0, 2.8),
 			radius = rng.randf_range(0.011, 0.016),
 			width = rng.randf_range(0.015, 0.021),
 			phase = rng.randf_range(0.0, TAU),
-			sag = Vector3(0, -0.008, 0.004)
+			sag = Vector3(0, -0.003, 0.004)
 		})
 
 	# B. Mid-front and frontal dome transition curls (filling the forehead-to-crown zone seamlessly)
 	for i in 25:
 		var x := rng.randf_range(-0.065, 0.065)
 		var z := rng.randf_range(0.015, 0.055)
-		var y := rng.randf_range(1.77, 1.81)
+		var y := rng.randf_range(1.795, 1.835)
 		var dir := Vector3(x * 0.8 + rng.randf_range(-0.15, 0.15), 0.55 + rng.randf_range(-0.1, 0.15), 0.55 + rng.randf_range(-0.1, 0.15)).normalized()
 		locks.append({
 			root = Vector3(x, y, z),
@@ -128,18 +147,19 @@ func _build_curly_mop(style: String) -> void:
 			sag = Vector3(dir.x * 0.006, -0.006, dir.z * 0.006)
 		})
 
-	# D. Temples, sideburns and sides (framing ears with rounded curly mop silhouette)
+	# D. Temples, sideburns and sides (framing ears with rounded curly mop silhouette,
+	# kept above the glasses arms)
 	for side_val in [-1.0, 1.0]:
 		var side: float = side_val
 		for i in 22:
-			var y := rng.randf_range(1.68, 1.78)
+			var y := rng.randf_range(1.705, 1.790)
 			var z := rng.randf_range(-0.045, 0.045)
-			var x := side * (0.062 + rng.randf_range(0.0, 0.015))
-			var dir := Vector3(side * (0.85 + rng.randf_range(0.0, 0.2)), -0.28 + rng.randf_range(-0.1, 0.1), z * 0.45 + rng.randf_range(-0.1, 0.1)).normalized()
+			var x := side * (0.066 + rng.randf_range(0.0, 0.015))
+			var dir := Vector3(side * (0.85 + rng.randf_range(0.0, 0.2)), 0.05 + rng.randf_range(-0.1, 0.1), z * 0.45 + rng.randf_range(-0.1, 0.1)).normalized()
 			locks.append({
 				root = Vector3(x, y, z),
 				dir = dir,
-				length = rng.randf_range(0.046, 0.068),
+				length = rng.randf_range(0.038, 0.058),
 				turns = rng.randf_range(1.8, 2.6),
 				radius = rng.randf_range(0.012, 0.018),
 				width = rng.randf_range(0.015, 0.021),

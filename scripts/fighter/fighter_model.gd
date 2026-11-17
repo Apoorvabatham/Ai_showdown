@@ -348,9 +348,10 @@ func _add_accessories(data: CharacterData, hair_color: Color) -> void:
 				frame.roughness = 0.4
 				frame.metallic = 0.15
 				var lens := StandardMaterial3D.new()
-				lens.albedo_color = Color(0.75, 0.85, 0.95, 0.18)
+				lens.albedo_color = Color(0.70, 0.80, 0.90, 0.07)
 				lens.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-				lens.roughness = 0.05
+				lens.roughness = 0.18
+				lens.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
 				for side in [-1.0, 1.0]:
 					var center: Vector3 = eyes + Vector3(side * 0.036, 0.004, 0.030)
 					var ring := TorusMesh.new()
