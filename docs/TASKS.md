@@ -23,7 +23,8 @@ what is next.
 |---|---|
 | `claude/brave-rubin-b43he7` | **Main branch** (integration). Claude works here and merges the others in. |
 | `opencode/work` | OpenCode (DeepSeek) only |
-| `gemini/work` | Gemini only |
+| `gemini/work` | Gemini, then Kilo Code |
+| `cline/work` | Cline (Nemotron 3.5 Super VL): super props |
 
 1. Work **only on your own branch**: `git fetch origin && git checkout <your branch>`.
    Never push to another agent's branch or to the main branch.
@@ -54,7 +55,8 @@ what is next.
 | `tools/build_showdown_roster.gd`: every look key (skin, hair, face, shape, posture, scale, accessories, prints, colours) | OpenCode |
 | `tools/build_outfits.gd`, `tools/build_custom_hair.gd`, `tools/face_sculpt.gd`, `tools/build_aged_skins.*`, `tools/build_prints.py`, `tools/render_*.gd` | OpenCode |
 | `assets/characters/**`, `assets/ui/portraits/**`, `assets/ui/cutins/**` | OpenCode |
-| `tools/build_npcs.gd`, `data/npcs/**`, `tools/build_super_props.gd`, `assets/props/**` | OpenCode |
+| `tools/build_npcs.gd`, `data/npcs/**` | OpenCode |
+| `tools/build_super_props.gd`, `assets/props/**`, `docs/status/cline.md`, `docs/review/cline/**` | Cline |
 | `scripts/stages/**` (incl. `stage_retheme.gd`), `scenes/stages/**` | Gemini |
 | `scenes/supers/sets/**` (super- and victory-scene sets, contract §3.5; Claude creates each stand-in first) | Gemini |
 | `tools/build_style_animations.gd`, `assets/animations/style_anims.res` (contract §3.6) | OpenCode |
@@ -302,3 +304,11 @@ edit those set/stage files; new sets it needs: add the builder in `tools/super_s
 `tools/build_super_sets.gd`, then tell Cline in its status file). Each merges the others' branches
 only through main: the owner merges `gemini/work`, `cline/work`, `opencode/work` into
 `claude/brave-rubin-b43he7` when a task is done.
+
+### Update: Cline joins on `cline/work`; OpenCode keeps only people
+- **Cline** takes all prop tasks: **O2a–O2f** and **O7** (contract §3.1), in that order. Props
+  swap in automatically: scenes call `prop("<fighter>/<name>", <stand-in>)`, and
+  `scripts/supers/projectile_looks.gd` gets a request from Cline (in `docs/status/cline.md`)
+  to load `assets/props/supers/<fighter>/<name>.tscn` when it exists (O7).
+- **OpenCode** keeps only people: **O5** (Xi's helpers), **O3** (stage NPCs), **O4** (AGI
+  phase looks), **O1** on request; **O6** later.
