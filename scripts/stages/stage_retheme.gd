@@ -7,8 +7,9 @@ extends Node3D
 ##   server_farm.tscn (rooftop): rows of GPU racks with blinking lights, cooling units.
 ##   mensa.tscn (dojo): a university cafeteria: tiled floor, tables, trays, the counter.
 ##   senate.tscn (ring): a hearing room: carpet, the committee's dais, a railing.
+##   foundry.tscn (market): an advanced semiconductor fabrication cleanroom.
 
-enum Look { SERVER_FARM, MENSA, SENATE }
+enum Look { SERVER_FARM, MENSA, SENATE, FOUNDRY }
 
 @export var look: Look = Look.SERVER_FARM
 
@@ -29,6 +30,8 @@ func _ready() -> void:
 			_build_mensa()
 		Look.SENATE:
 			_build_senate()
+		Look.FOUNDRY:
+			_build_foundry()
 	set_process(not _blinkers.is_empty() or not _flashers.is_empty())
 
 
@@ -291,6 +294,114 @@ func _build_senate() -> void:
 	_ambience("res://assets/audio/ambience/arena_crowd.ogg", -24.0)
 
 
+# --- GPU Foundry (the night market) ----------------------------------------------------
+
+func _build_foundry() -> void:
+	var stage := get_parent()
+	# Strip market props, stalls, street food, vehicles, and audio.
+	for node_name in [
+		"Jeepney0", "JeepneyRoute0", "JeepneyName0L", "JeepneyName0R",
+		"Jeepney1", "JeepneyRoute1", "JeepneyName1L", "JeepneyName1R",
+		"Crowd", "GrillSmoke0", "GrillSparks0", "GrillSmoke1", "GrillSparks1",
+		"GrillFlicker", "NeonOpen", "NeonCross", "NeonGlow", "Ambience",
+		"Sound", "StreetShadows"
+	]:
+		_remove(stage, node_name)
+	for i in 11:
+		_remove(stage, "ShopSign%d" % i)
+	for i in 6:
+		_remove(stage, "StallSign%d" % i)
+		_remove(stage, "StallLight%d" % i)
+
+	# 1. High-tech raised cleanroom airflow floor over the street asphalt.
+	var floor_mat := _mat(Color(0.85, 0.87, 0.90), 0.25, 0.15)
+	_box(Vector3(18.0, 0.02, 10.0), Vector3(0, 0.01, 0.0), floor_mat)
+	# Floor grid lines (perforated tile boundaries)
+	for x in range(-8, 9, 2):
+		_box(Vector3(0.02, 0.025, 10.0), Vector3(x, 0.012, 0.0), _mat(Color(0.2, 0.22, 0.25)))
+	for z in range(-4, 5, 2):
+		_box(Vector3(18.0, 0.025, 0.02), Vector3(0, 0.012, z), _mat(Color(0.2, 0.22, 0.25)))
+	# Yellow ESD caution border along the fighting bounds
+	for z in [-3.6, 3.6]:
+		_box(Vector3(17.0, 0.026, 0.08), Vector3(0, 0.013, z), _glow(Color(0.95, 0.75, 0.1), 2.2))
+	for x in [-3.6, 3.6]:
+		_box(Vector3(0.08, 0.026, 7.2), Vector3(x, 0.013, 0), _glow(Color(0.95, 0.75, 0.1), 2.2))
+
+	# 2. Cleanroom modular wall partition along the back
+	var wall_mat := _mat(Color(0.92, 0.94, 0.96), 0.3, 0.05)
+	_box(Vector3(18.0, 4.2, 0.2), Vector3(0, 2.1, -6.0), wall_mat)
+	for wx in range(-8, 9, 2):
+		_box(Vector3(0.08, 4.2, 0.24), Vector3(wx, 2.1, -6.0), _mat(Color(0.65, 0.68, 0.72), 0.3, 0.8))
+
+	# 3. Centerpiece: Twin EUV Photolithography Scanner & Chamber
+	var scanner_mat := _mat(Color(0.12, 0.14, 0.16), 0.35, 0.7)
+	_box(Vector3(5.4, 3.2, 1.8), Vector3(0, 1.6, -5.2), scanner_mat)
+	_box(Vector3(5.0, 0.1, 1.6), Vector3(0, 3.25, -5.2), _mat(Color(0.3, 0.32, 0.35), 0.2, 0.8))
+	# Chamber observation window with UV amber tint
+	var glass := _mat(Color(1.0, 0.8, 0.2, 0.45), 0.05)
+	glass.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_box(Vector3(2.4, 1.4, 0.04), Vector3(0, 1.7, -4.28), glass)
+	# EUV Laser Core (13.5nm pulsing violet/cyan aperture)
+	var euv_core := _glow(Color(0.75, 0.25, 1.0), 5.0, true)
+	_blinkers.append([euv_core, 5.0, 3.0, 0.0])
+	_box(Vector3(1.2, 0.8, 0.02), Vector3(0, 1.7, -4.4), euv_core)
+	# Wafer load port & 300mm silicon wafer disc
+	var wafer_mat := _mat(Color(0.15, 0.4, 0.45), 0.1, 0.95)
+	_box(Vector3(1.4, 0.8, 0.9), Vector3(0, 0.4, -4.3), _mat(Color(0.2, 0.22, 0.25), 0.4, 0.5))
+	_cylinder(0.42, 0.02, Vector3(0, 0.82, -4.3), wafer_mat)
+
+	# 4. AMHS (Automated Material Handling System) Overhead Monorail Track & FOUP pods
+	var rail_mat := _mat(Color(0.25, 0.27, 0.3), 0.4, 0.7)
+	_box(Vector3(17.5, 0.1, 0.35), Vector3(0, 3.5, -4.2), rail_mat)
+	var foup_mat := _mat(Color(0.1, 0.1, 0.12), 0.2, 0.4)
+	var foup_led := _glow(Color(0.2, 0.95, 0.35), 3.0)
+	for fx in [-6.0, -2.5, 2.5, 6.0]:
+		# Carrier clamp hanger
+		_box(Vector3(0.08, 0.4, 0.1), Vector3(fx, 3.25, -4.2), rail_mat)
+		# FOUP wafer container pod
+		_box(Vector3(0.55, 0.45, 0.5), Vector3(fx, 2.9, -4.2), foup_mat)
+		_box(Vector3(0.45, 0.04, 0.02), Vector3(fx, 2.9, -3.94), foup_led)
+
+	# 5. Diagnostic consoles & wafer cassette racks on the flanks
+	for cx in [-7.2, 7.2]:
+		_box(Vector3(1.0, 0.9, 0.7), Vector3(cx, 0.45, -3.6), _mat(Color(0.18, 0.2, 0.22), 0.4, 0.5))
+		_box(Vector3(0.7, 0.4, 0.04), Vector3(cx, 1.2, -3.5), _mat(Color(0.08, 0.08, 0.1), 0.2))
+		_box(Vector3(0.65, 0.35, 0.01), Vector3(cx, 1.2, -3.47), _glow(Color(0.1, 0.85, 0.95), 2.2))
+		_cylinder(0.25, 0.35, Vector3(cx + (0.9 if cx < 0 else -0.9), 0.45, -3.6), _mat(Color(0.3, 0.32, 0.35), 0.4, 0.7))
+	_label("NODE: 1.8nm GAAS\nDEFECTS: 0.002/cm²\nYIELD: NOMINAL", Vector3(-7.2, 1.2, -3.45), 0.065, Color(0.9, 1.0, 1.0))
+	_label("EUV LASER: 13.5nm\nCHAMBER: ARGON\nPURGE: 100%", Vector3(7.2, 1.2, -3.45), 0.065, Color(0.9, 1.0, 1.0))
+
+	# 6. Cryogenic pipes, liquid argon exhaust steam
+	for px in [-8.8, 8.8]:
+		_cylinder(0.3, 3.6, Vector3(px, 1.8, -4.8), _mat(Color(0.6, 0.63, 0.67), 0.3, 0.8))
+		_steam(Vector3(px, 3.65, -4.8))
+
+	# 7. Bunny-suit technicians (cleanroom spectators)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 2026
+	for sx in [-7.2, 7.2]:
+		_bunny_person(Vector3(sx, 0.0, -4.2), rng)
+	for bx in [-3.8, -1.8, 1.8, 3.8]:
+		_bunny_person(Vector3(bx, 0.0, -5.6), rng)
+
+	# 8. Satirical cleanroom signage and metrics boards
+	_label("GPU FOUNDRY — FAB 4090", Vector3(0, 3.8, -5.9), 0.48, Color(0.25, 0.95, 0.4), true)
+	_board("CLEANROOM PROTOCOL (CLASS 1)\n• Full bunny suit mandatory\n• No leather jackets in air shower\n• 3-frame jabs only (vibration < 0.1nm)\n• Scrapped wafers deducted from bonus\n• If laser pulses: continue fighting",
+		Vector3(-5.0, 2.3, -5.85))
+	_board("FAB 4090 METRICS\n• Process: 1.8nm Hype-FinFET\n• Die Yield: 88.4% (dropping)\n• EUV Uptime: 99.98%\n• Wafer Cost: $42,000 / piece\n• Today's Scrap: 12 wafers (blame P2)",
+		Vector3(5.0, 2.3, -5.85))
+	_label("DANGER: 13.5nm EUV BEAM\nAUTHORIZED CHIP ARCHITECTS ONLY", Vector3(0, 2.7, -4.28), 0.12, Color(1.0, 0.3, 0.2), true)
+
+	# 9. Cleanroom Lighting
+	_light(Vector3(0, 3.4, -3.0), Color(1.0, 0.9, 0.72), 2.8, 10.0)
+	_light(Vector3(-5.5, 3.0, -2.5), Color(0.2, 0.8, 1.0), 1.8, 7.0)
+	_light(Vector3(5.5, 3.0, -2.5), Color(0.2, 0.8, 1.0), 1.8, 7.0)
+	_light(Vector3(0, 1.8, -4.5), Color(0.7, 0.25, 1.0), 2.5, 5.0)
+
+	# 10. Ambient ventilation audio
+	_ambience("res://assets/audio/ambience/wind.ogg", -24.0)
+
+
 # --- Helpers ---------------------------------------------------------------------------
 
 func _steam(pos: Vector3) -> GPUParticles3D:
@@ -422,6 +533,37 @@ func _person(seat: Vector3, shirt: Color, rng: RandomNumberGenerator) -> void:
 	head.height = 0.22
 	var skins := [Color(0.85, 0.66, 0.52), Color(0.6, 0.42, 0.3), Color(0.4, 0.27, 0.18), Color(0.92, 0.75, 0.62)]
 	_instance(head, seat + Vector3(0, 0.74, 0), _mat(skins[rng.randi() % skins.size()], 0.6), self)
+
+
+## A cleanroom technician in full white bunny suit, hood, and visor goggles.
+func _bunny_person(seat: Vector3, rng: RandomNumberGenerator) -> void:
+	var suit_mat := _mat(Color(0.96, 0.96, 0.98), 0.4, 0.0)
+	var visor_mat := _glow(Color(0.2, 0.8, 1.0) if rng.randf() < 0.5 else Color(1.0, 0.85, 0.2), 2.5)
+	var glove_mat := _mat(Color(0.2, 0.35, 0.75), 0.5)
+
+	# Body in bunny suit
+	var body := CapsuleMesh.new()
+	body.radius = 0.19
+	body.height = 0.75
+	_instance(body, seat + Vector3(0, 0.42, 0), suit_mat, self)
+
+	# Hooded head
+	var head := SphereMesh.new()
+	head.radius = 0.14
+	head.height = 0.26
+	_instance(head, seat + Vector3(0, 0.88, 0), suit_mat, self)
+
+	# Cleanroom visor goggles
+	var visor := BoxMesh.new()
+	visor.size = Vector3(0.18, 0.06, 0.05)
+	_instance(visor, seat + Vector3(0, 0.9, 0.12), visor_mat, self)
+
+	# ESD Nitrile gloves
+	for gx in [-0.22, 0.22]:
+		var hand := SphereMesh.new()
+		hand.radius = 0.05
+		hand.height = 0.1
+		_instance(hand, seat + Vector3(gx, 0.32, 0.1), glove_mat, self)
 
 
 func _checker(a: Color, b: Color) -> ImageTexture:

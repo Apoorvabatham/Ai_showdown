@@ -13,8 +13,9 @@ assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **
 - 11 parody fighters in `data/characters/` (generated, see §4), built on the 8 original
   fighters, which live on as **kits** in `data/kits/` (movesets, CPU personalities,
   showcase routines). `CharacterData.kit` links them.
-- 3 stages: Server Farm, Mensa, Senate Hearing Room (`scenes/stages/server_farm.tscn`,
-  `mensa.tscn`, `senate.tscn`, inheriting the original rooftop, dojo and ring scenes, plus
+- 4 stages: Server Farm, Mensa, Senate Hearing Room and GPU Foundry
+  (`scenes/stages/server_farm.tscn`, `mensa.tscn`, `senate.tscn`, `foundry.tscn`,
+  inheriting the original rooftop, dojo, ring and market scenes, plus
   `scripts/stages/stage_retheme.gd`).
 - Modes: Vs CPU, Versus, Training, Arcade (final boss: AGI), Demo. Online is
   hidden (`SHOW_ONLINE` in `scripts/ui/main_menu.gd`). Best of 3.
@@ -45,11 +46,11 @@ assets CC BY 4.0: keep `LICENSE`, `LICENSE-ASSETS.md` and the credits). Godot **
 | geoff | Geoff Hintoff | **Approved** | age 78, slender tall stooped elder build, long narrow face, age-78 creases and age spots, wispy silver-white thinning hair, arched brows of perpetual concern, knit oatmeal cardigan sweater with contrast button band and 4 horn buttons, pale blue Oxford shirt, charcoal wool trousers, brown walking shoes. |
 | ram | Ram Altman | **Approved** | age 41, trim athletic build, youthful oval jaw, wide intense blue eyes, close-cropped buzz cut (Hair_Buzzed), alert tech-founder rest expression, fitted charcoal tee with official OpenAI emblem & typography print, slim dark wash denim jeans, white sneakers. |
 | dario | Dario Amoday | **Approved** | age 43, measured scholar build, soft oval academic jaw, rounded chin, thoughtful broader nose, earnest contemplative brow furrow, prominent voluminous handcrafted curly mop hair (Hair_CurlyMop) with 3D curl spirals, thick dark glasses, terracotta cotton tee with Anthropic print, dark indigo jeans, off-white sneakers. |
-| algorithm | AGI | **Review Ready** | Final boss (kit rhea), tall 1.1 scale synthetic boss build, sleek obsidian bodysuit with glowing cyan energy conduits & visor sensor, alt white chassis with magenta neon lines. |
+| algorithm | AGI | **Approved** | Final boss (kit rhea), tall 1.1 scale synthetic boss build, sleek obsidian bodysuit with glowing cyan energy conduits & visor sensor, alt white chassis with magenta neon lines. |
 
-Suggested order: yann → geoff → ram → dario → algorithm.
-Make each one **completely distinct** from the approved ones (silhouette, posture, hair, face
-shape, colours); the owner rejected subtle differences.
+All 11 fighters are **approved**. Make any future changes **completely distinct** from the
+approved ones (silhouette, posture, hair, face shape, colours); the owner rejected subtle
+differences.
 
 ## 4. Environment setup (Linux / cloud container)
 

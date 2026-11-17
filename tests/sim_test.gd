@@ -4773,7 +4773,7 @@ const SHOWDOWN_IDS := [&"ram", &"tesla", &"dario", &"zuckerbot", &"jensen", &"ya
 	&"donald", &"xi", &"algorithm"]
 
 
-## The parody roster (data/characters/), its three stages and the title screen, on top of
+## The parody roster (data/characters/), its four stages and the title screen, on top of
 ## the engine kits the rest of the suite tests.
 func showdown_tests() -> void:
 	var gs = root.get_node("GameState")
@@ -4830,12 +4830,13 @@ func showdown_tests() -> void:
 	# Voices: a fighter without its own shouts borrows its fallback's, except for the super
 	# (the drop-in <id>_super_1.ogg/.wav names the move).
 	var audio = root.get_node("Audio")
-	check("Showdown: voice fallback for specials, none for supers", audio.shout(&"ram", "special", -80.0, &"kenji") != null
-		and audio.shout(&"ram", "super", -80.0, &"kenji") == null and audio.shout(&"ram", "special", -80.0) == null)
+	check("Showdown: voice fallback for specials, none for supers", audio.shout(&"_unvoiced", "special", -80.0, &"kenji") != null
+		and audio.shout(&"_unvoiced", "super", -80.0, &"kenji") == null and audio.shout(&"_unvoiced", "special", -80.0) == null
+		and audio.shout(&"ram", "super", -80.0) != null)
 	check("Showdown: shouts accept .ogg, .wav and .mp3 drop-ins", audio.SHOUT_EXTENSIONS == ["ogg", "wav", "mp3"])
 
-	# Stages: exactly three, each loads with its retheme.
-	check("Showdown: three stages with thumbnails", gs.STAGES.size() == 3 and gs.STAGES.all(func(st: Dictionary) -> bool:
+	# Stages: exactly four, each loads with its retheme.
+	check("Showdown: four stages with thumbnails", gs.STAGES.size() == 4 and gs.STAGES.all(func(st: Dictionary) -> bool:
 		return ResourceLoader.exists(st.path) and ResourceLoader.exists(st.thumb)))
 	gs.mode = gs.Mode.VS_CPU
 	gs.player_character = gs.roster[0]; gs.p2_character = gs.roster[1]
@@ -4853,7 +4854,7 @@ func showdown_tests() -> void:
 				or not m.stage.find_children("Rope_*", "", true, false).is_empty()):
 			stage_problems.append("senate: ropes left")
 	await process_frame
-	check("Showdown: Server Farm, Mensa and Senate Hearing Room load with their props", stage_problems.is_empty(), str(stage_problems))
+	check("Showdown: Server Farm, Mensa, Senate and Foundry load with their props", stage_problems.is_empty(), str(stage_problems))
 
 	# Every fighter plays a whole CPU-vs-CPU match (best of 3) to the end.
 	var unfinished := []

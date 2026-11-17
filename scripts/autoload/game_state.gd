@@ -18,6 +18,7 @@ const COURTYARD_STAGE := "res://scenes/stages/courtyard.tscn"
 const SERVER_FARM_STAGE := "res://scenes/stages/server_farm.tscn"
 const MENSA_STAGE := "res://scenes/stages/mensa.tscn"
 const SENATE_STAGE := "res://scenes/stages/senate.tscn"
+const FOUNDRY_STAGE := "res://scenes/stages/foundry.tscn"
 ## Selectable stages: scene, display name, select-screen thumbnail (rendered by
 ## tools/render_stage_thumbs.gd) and a one-line description.
 const STAGES := [
@@ -27,6 +28,8 @@ const STAGES := [
 		blurb = "The university cafeteria at lunch rush. Today's special: alignment soup."},
 	{path = SENATE_STAGE, name = "Senate Hearing Room", thumb = "res://assets/ui/stages/senate.png",
 		blurb = "A televised hearing on AI oversight. Everyone is under oath."},
+	{path = FOUNDRY_STAGE, name = "GPU Foundry", thumb = "res://assets/ui/stages/foundry.png",
+		blurb = "Where 3nm wafers meet 3-frame jabs. Don't touch the EUV scanner."},
 ]
 ## The original 3D Fighter stages (still in the project: the AI Showdown stages build on
 ## them), used by the engine regression tests.

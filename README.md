@@ -10,7 +10,7 @@ A parody 2-player 3D fighting game in which caricatures of AI-industry public pe
 ## Features
 
 - **11 fighters**: 10 AI-industry caricatures plus AGI, the final boss. Each is built on one of the original fighters' movesets (see the roster below), with its own special names, super and outfit.
-- **3 stages**: Server Farm, Mensa (a university cafeteria) and Senate Hearing Room.
+- **4 stages**: Server Farm, Mensa (a university cafeteria), Senate Hearing Room and GPU Foundry.
 - **Modes**:
   - **Vs CPU** and **Versus** (2 local players);
   - **Training**;
@@ -55,8 +55,9 @@ Fighters have individual builds (height, belly, slim or heavy), glasses and hair
 - **Server Farm**: the original rooftop, rethemed.
 - **Mensa**: a university cafeteria, rethemed from the dojo.
 - **Senate Hearing Room**: the boxing ring, with the ropes replaced by a railing.
+- **GPU Foundry**: the night market, turned into a semiconductor cleanroom with an EUV scanner, wafer pods and bunny-suit technicians.
 
-The retheme code is `scripts/stages/stage_retheme.gd`; the scenes `scenes/stages/server_farm.tscn`, `mensa.tscn` and `senate.tscn` inherit the originals.
+The retheme code is `scripts/stages/stage_retheme.gd`; the scenes `scenes/stages/server_farm.tscn`, `mensa.tscn`, `senate.tscn` and `foundry.tscn` inherit the originals.
 
 ## Controls
 

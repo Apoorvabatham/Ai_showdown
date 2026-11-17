@@ -500,13 +500,14 @@ change gameplay. Inherited stage bounds, walls and camera come from the base sce
 | Server Farm | `scenes/stages/server_farm.tscn` | `rooftop.tscn` | `SERVER_FARM` |
 | Mensa | `scenes/stages/mensa.tscn` | `dojo.tscn` | `MENSA` |
 | Senate Hearing Room | `scenes/stages/senate.tscn` | `ring.tscn` | `SENATE` |
+| GPU Foundry | `scenes/stages/foundry.tscn` | `market.tscn` | `FOUNDRY` |
 
 Helpers in `stage_retheme.gd`: `_mat`, `_glow`, `_box`, `_cylinder`, `_instance`, `_label`
-(`Label3D` signs), `_board`, `_light`, `_person` (a seated spectator), `_checker`,
-`_relabel` (rename text on an inherited sign) and `_remove` (delete a base prop by node
-name; open the base scene in the editor to find names).
+(`Label3D` signs), `_board`, `_light`, `_person` (a seated spectator), `_bunny_person`
+(a cleanroom technician), `_checker`, `_relabel` (rename text on an inherited sign) and
+`_remove` (delete a base prop by node name; open the base scene in the editor to find names).
 
-### Add a fourth stage
+### Add a stage
 
 1. In `scripts/stages/stage_retheme.gd`, add a value to `enum Look` and a branch in
    `_ready()`'s `match look:` calling a new `_build_<name>()`. Model it on `_build_mensa()`
@@ -529,9 +530,10 @@ godot --headless --path . --import
 xvfb-run -a -s "-screen 0 1920x1080x24" godot --rendering-driver opengl3 --path . -s res://tools/render_stage_thumbs.gd -- <name>
 ```
 
-5. Update `tests/sim_test.gd`: the "Showdown: three stages with thumbnails" check expects
-   `gs.STAGES.size() == 3`; change it to 4. The loop below it checks every stage has a
-   `Retheme` node with at least 10 children, so make sure yours builds enough props.
+5. Update `tests/sim_test.gd`: the "Showdown: four stages with thumbnails" check expects
+   `gs.STAGES.size() == 4`; raise it with every stage you add. The loop below it checks
+   every stage has a `Retheme` node with at least 10 children, so make sure yours builds
+   enough props.
 6. Optionally add a shot in `FIGHTS` of `tools/render_screenshots.gd`.
 7. Run the tests.
 
