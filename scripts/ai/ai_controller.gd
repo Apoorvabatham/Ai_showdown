@@ -117,7 +117,7 @@ const SHOWDOWN_PERSONALITIES := {
 		name = "Trapper", blurb = "fills the screen with links and ads, then vanishes behind you", preferred_range = 3.0,
 		aggression = -0.1, block = 0.1, punish = 0.0, anti_air = 0.25,
 		rising_anti_air = 0.9, pressure = 0.15, far_punish = 0.0,
-		weights = {fireball = 3.0, ground_special = 1.2, rush = 0.3, dash = 0.3, jump = 0.4, throw = 0.6,
+		weights = {fireball = 2.0, ground_special = 1.2, rush = 0.3, dash = 0.3, jump = 0.4, throw = 0.6,
 			poke = 1.1, retreat = 2.2, approach = 0.4},
 	},
 }

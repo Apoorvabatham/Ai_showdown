@@ -30,8 +30,8 @@ const MOVESETS := {
 		remove = ["dragon_barrage", "dragon_finish"],
 		tweak = {
 			# A fan of three small links: the low one catches crouchers.
-			ki_blast = {projectile_count = 3, projectile_spread = 0.35, damage = 24, chip_damage = 3,
-				projectile_speed = 7.5, hitbox_radius = 0.18, recovery = 30},
+			ki_blast = {projectile_count = 3, projectile_spread = 0.35, damage = 17, chip_damage = 2,
+				projectile_speed = 6.0, hitbox_radius = 0.18, recovery = 34},
 		},
 		add = {
 			# A slow ad that hangs in the air and controls space.
