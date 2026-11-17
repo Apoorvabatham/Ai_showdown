@@ -17,6 +17,11 @@ signal ticked
 ## camera, effects).
 signal super_flash(fighter: Fighter, move: MoveData)
 signal projectile_clashed(point: Vector3)
+## A barrier destroyed a projectile, or a reflect stance sent one back (cosmetic hooks).
+signal projectile_blocked(point: Vector3)
+signal projectile_reflected(reflector: Fighter, point: Vector3)
+## A fighter's move stole super meter from the opponent (MoveData.drain_meter).
+signal meter_drained(attacker: Fighter, amount: int)
 
 enum Phase { INTRO, FIGHT, ROUND_OVER, MATCH_OVER }
 
@@ -627,8 +632,11 @@ func _resolve_throws() -> void:
 			continue
 		var target := attacker.opponent
 		if target.is_throwable() and _flat(target.position - attacker.position).length() <= attacker.current_move.grab_range:
+			var grab := attacker.current_move
 			attacker.on_command_grab()
 			target.on_grabbed_by(attacker, false)
+			if grab.drain_meter > 0:
+				_drain_meter(attacker, target, grab)
 			throw_landed.emit(attacker, target)
 	if a.is_throw_grab_frame() and b.is_throw_grab_frame():
 		a.tech_apart()
@@ -647,25 +655,67 @@ func _resolve_throws() -> void:
 			throw_landed.emit(attacker, defender)
 
 
-## Moves projectiles; two projectiles that meet cancel out.
+## Moves projectiles; two shots that meet cancel out, a barrier destroys the shots that
+## touch it and pushes the opponent out of it.
 func _tick_projectiles() -> void:
 	for fighter in fighters:
-		var p := fighter.projectile
-		if p and not p.tick(stage.bounds_half_extent, stage.depth_limit()):
-			_remove_projectile(fighter)
-	var a := fighters[0].projectile
-	var b := fighters[1].projectile
-	if a and b and a.position.distance_to(b.position) <= a.radius + b.radius:
-		last_hit_point = (a.position + b.position) * 0.5
-		projectile_clashed.emit(last_hit_point)
-		_remove_projectile(fighters[0])
-		_remove_projectile(fighters[1])
+		for p in fighter.projectiles.duplicate():
+			if not p.tick(stage.bounds_half_extent, stage.depth_limit()):
+				fighter.remove_projectile(p)
+	for a in fighters[0].projectiles.duplicate():
+		for b in fighters[1].projectiles.duplicate():
+			if not is_instance_valid(a) or not fighters[0].projectiles.has(a) or not fighters[1].projectiles.has(b):
+				continue
+			if a.barrier and b.barrier:
+				continue
+			if a.barrier or b.barrier:
+				var wall: Projectile = a if a.barrier else b
+				var shot: Projectile = b if a.barrier else a
+				if _barrier_touches(wall, shot.position, shot.radius):
+					last_hit_point = shot.position
+					projectile_blocked.emit(last_hit_point)
+					shot.owner_fighter.remove_projectile(shot)
+			elif a.position.distance_to(b.position) <= a.radius + b.radius:
+				last_hit_point = (a.position + b.position) * 0.5
+				projectile_clashed.emit(last_hit_point)
+				fighters[0].remove_projectile(a)
+				fighters[1].remove_projectile(b)
+	for fighter in fighters:
+		for wall in fighter.projectiles:
+			if wall.barrier:
+				_barrier_push(wall, fighter.opponent)
 
 
-func _remove_projectile(fighter: Fighter) -> void:
-	if fighter.projectile:
-		fighter.projectile.queue_free()
-		fighter.projectile = null
+## True if a sphere (`point`, `radius`) touches the barrier's wall.
+func _barrier_touches(wall: Projectile, point: Vector3, radius: float) -> bool:
+	var offset := point - wall.position
+	var along := offset.dot(wall.direction)
+	var across := (offset - wall.direction * along)
+	across.y = 0.0
+	return absf(along) <= wall.radius + radius and across.length() <= Projectile.BARRIER_HALF_WIDTH + radius \
+			and point.y <= Projectile.BARRIER_HEIGHT + radius
+
+
+## A barrier is solid for the opponent: it is pushed out on the side it is on (a moving
+## barrier carries it along).
+func _barrier_push(wall: Projectile, target: Fighter) -> void:
+	if target.state == Fighter.State.THROWN or not _barrier_touches(wall, target.position + Vector3.UP * 0.5, Fighter.BODY_RADIUS):
+		return
+	var along := (target.position - wall.position).dot(wall.direction)
+	var side := 1.0 if along >= 0.0 else -1.0
+	target.position += wall.direction * (side * (wall.radius + Fighter.BODY_RADIUS + 0.01) - along)
+	target.position.y = maxf(target.position.y, 0.0)
+	target.clamp_to_bounds()
+
+
+## Moves `move.drain_meter` super meter from the defender to the attacker.
+func _drain_meter(attacker: Fighter, defender: Fighter, move: MoveData) -> void:
+	var amount := mini(move.drain_meter, defender.meter)
+	if amount <= 0:
+		return
+	defender.add_meter(-amount)
+	attacker.add_meter(amount)
+	meter_drained.emit(attacker, amount)
 
 
 ## Collects all connecting hitboxes (bodies and projectiles) first, then applies them,
@@ -681,22 +731,30 @@ func _resolve_hits() -> void:
 				_reverse(attacker.opponent, attacker, hitbox.center)
 				return
 			connecting.append([attacker, attacker.current_move, hitbox.center, attacker.is_final_hit()])
-		var p := attacker.projectile
-		if p and not attacker.opponent.is_projectile_immune() and attacker.opponent.overlaps_hurtbox(p.position, p.radius):
+		var defender_now := attacker.opponent
+		for p in attacker.projectiles.duplicate():
+			if p.barrier or defender_now.is_projectile_immune() or not defender_now.overlaps_hurtbox(p.position, p.radius):
+				continue
+			if defender_now.reflects_projectiles():
+				_reflect(defender_now, attacker, p)
+				continue
 			connecting.append([attacker, p.move, p.position, true, p])
 	for hit in connecting:
 		var attacker: Fighter = hit[0]
 		var move: MoveData = hit[1]
 		var defender := attacker.opponent
 		var projectile: Projectile = hit[4] if hit.size() > 4 else null
-		var push_dir := projectile.direction if projectile else attacker.forward
+		var push_dir := attacker.forward
+		if projectile:
+			push_dir = projectile.direction if absf(projectile.direction.y) < 0.5 else attacker.forward
 		var health_before := defender.health
 		var result := defender.receive_hit(attacker, move, push_dir, hit[3])
 		if is_arcade() and attacker == fighters[0]:
 			GameState.arcade.add_damage(health_before - defender.health)
 			hud.set_score(GameState.arcade.score)
 		if projectile:
-			_remove_projectile(attacker)
+			if projectile.owner_fighter == attacker and attacker.projectiles.has(projectile):
+				attacker.remove_projectile(projectile)
 		else:
 			attacker.on_hit_confirmed()
 			# Against the edge the attacker takes the push, unless the hit splats: then
@@ -704,12 +762,30 @@ func _resolve_hits() -> void:
 			if defender.is_pinned_against_bounds(attacker.forward) and attacker.position.y <= 0.0 and not defender.will_splat():
 				attacker.velocity -= attacker.forward * move.knockback.x * CORNER_PUSHBACK
 		_award_meter(attacker, defender, move, result, health_before - defender.health)
+		if move.drain_meter > 0 and result in [Fighter.HitResult.HIT, Fighter.HitResult.COUNTER]:
+			_drain_meter(attacker, defender, move)
 		if result == Fighter.HitResult.COUNTER and not resimulating:
 			hud.note(fighters.find(attacker), "COUNTER")
 		elif result == Fighter.HitResult.ARMORED and not resimulating:
 			hud.note(fighters.find(defender), "ARMOR")
 		last_hit_point = hit[2]
 		hit_landed.emit(attacker, defender, move, result)
+
+
+## `reflector`'s stance sends `shooter`'s shot back: it now belongs to the reflector and
+## flies at its old owner, with a fresh lifetime.
+func _reflect(reflector: Fighter, shooter: Fighter, p: Projectile) -> void:
+	shooter.projectiles.erase(p)
+	reflector.projectiles.append(p)
+	p.owner_fighter = reflector
+	p.direction = reflector.forward
+	p.speed = maxf(p.speed, 4.0) * 1.25
+	p.ticks_left = p.move.projectile_lifetime
+	p.position = Vector3(p.position.x, maxf(p.position.y, Projectile.SPAWN_OFFSET.y), p.position.z) + p.direction * (p.radius + 0.3)
+	last_hit_point = p.position
+	if not resimulating:
+		hud.note(fighters.find(reflector), "REFLECT")
+	projectile_reflected.emit(reflector, p.position)
 
 
 ## `reverser`'s stance caught `attacker`'s strike: the strike never lands and the reverser

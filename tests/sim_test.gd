@@ -343,6 +343,7 @@ func _initialize() -> void:
 	await fx_tests()
 	await face_tests()
 	specials_tests()
+	engine_feature_tests()
 	await character_specials_tests()
 	await versus_tests()
 	await training_tests()
@@ -920,6 +921,138 @@ func specials_tests() -> void:
 	p1.attack_started.disconnect(count)
 	p1.controller = ctl
 	check("AI throws fireballs from range", fired[0] > 0, "%d fired" % fired[0])
+
+
+## Sets fields on one of `f`'s moves for a test; returns the old values for restore_move.
+func patch_move(f: Fighter, input: String, fields: Dictionary) -> Dictionary:
+	var mv: MoveData = f._move_for_input(input)
+	var old := {}
+	for k in fields:
+		old[k] = mv.get(k)
+		mv.set(k, fields[k])
+	return old
+
+func restore_move(f: Fighter, input: String, old: Dictionary) -> void:
+	var mv: MoveData = f._move_for_input(input)
+	for k in old:
+		mv.set(k, old[k])
+
+
+## Season 2 engine features (docs/ROADMAP.md §1.3), tried on Kenji's 236P with patched data.
+func engine_feature_tests() -> void:
+	var D := DummyController.Mode
+	var plain_shot: MoveData = p1._move_for_input("236P").duplicate()
+
+	# Multi-shot: three shots at once, stacked by the spread.
+	var old := patch_move(p1, "236P", {projectile_count = 3, projectile_spread = 0.35})
+	reset(D.STAND)
+	p1.position.x = -3.0; p2.position.x = 3.0
+	var hp := p2.health
+	motion("236", InputBuffer.HP)
+	wait_until(func() -> bool: return p1.projectiles.size() == 3, 30)
+	var heights: Array = p1.projectiles.map(func(pr: Projectile) -> float: return snappedf(pr.position.y, 0.01))
+	check("multi-shot: three shots at three heights", p1.projectiles.size() == 3 and heights[0] < heights[1] and heights[1] < heights[2], str(heights))
+	var saved: Dictionary = p1.save_state()
+	step(10)
+	p1.load_state(saved)
+	check("multi-shot: rollback restores every shot", p1.projectiles.size() == 3
+		and p1.projectiles.map(func(pr: Projectile) -> float: return snappedf(pr.position.y, 0.01)) == heights
+		and absf(p1.projectiles[0].position.x - (saved.projectiles[0][5] as Vector3).x) < 0.001)
+	wait_until(func() -> bool: return p1.projectiles.is_empty(), 150)
+	check("multi-shot: the shots hit for more than one shot's damage", p2.health < hp - dmg(p1, "236P"), "hp %d -> %d" % [hp, p2.health])
+	restore_move(p1, "236P", old)
+
+	# Burst: one shot every interval while the move runs.
+	old = patch_move(p1, "236P", {projectile_count = 3, projectile_interval = 6})
+	reset(D.STAND)
+	p1.position.x = -3.0; p2.position.x = 3.0
+	motion("236", InputBuffer.HP)
+	wait_until(func() -> bool: return p1.projectiles.size() == 1, 30)
+	step(6)
+	var after_one_interval := p1.projectiles.size()
+	step(6)
+	check("burst: a shot every interval", after_one_interval == 2 and p1.projectiles.size() == 3, "%d then %d" % [after_one_interval, p1.projectiles.size()])
+	wait_until(func() -> bool: return p1.projectiles.is_empty() and p1.is_actionable(), 200)
+	restore_move(p1, "236P", old)
+
+	# Sky shot: falls onto the opponent from above.
+	old = patch_move(p1, "236P", {projectile_origin = &"sky", projectile_speed = 9.0})
+	reset(D.STAND)
+	p1.position.x = -3.0; p2.position.x = 2.0
+	hp = p2.health
+	motion("236", InputBuffer.HP)
+	wait_until(func() -> bool: return p1.projectile != null, 30)
+	var sky := p1.projectile
+	check("sky shot: starts high above the opponent", sky != null and sky.position.y > 4.0 and absf(sky.position.x - p2.position.x) < 0.05
+		and sky.direction == Vector3.DOWN, str(sky.position) if sky else "none")
+	wait_until(func() -> bool: return p1.projectiles.is_empty(), 90)
+	check("sky shot: hits the opponent", p2.health < hp, "hp %d -> %d" % [hp, p2.health])
+	restore_move(p1, "236P", old)
+
+	# Barrier: stands in front, blocks the opponent's shots and the opponent.
+	old = patch_move(p1, "236P", {barrier = true, projectile_speed = 0.0, projectile_lifetime = 120, hitbox_radius = 0.15})
+	reset(D.STAND)
+	p1.position.x = -3.0; p2.position.x = 3.0
+	motion("236", InputBuffer.HP)
+	wait_until(func() -> bool: return not p1.projectiles.is_empty(), 30)
+	var wall: Projectile = p1.projectiles[0] if not p1.projectiles.is_empty() else null
+	check("barrier: goes up in front, not counted as a shot", wall != null and wall.barrier and p1.projectile == null
+		and wall.position.x > p1.position.x and wall.position.y == 0.0)
+	var blocked := [0]
+	var count_block := func(_pt: Vector3) -> void: blocked[0] += 1
+	m.projectile_blocked.connect(count_block)
+	var enemy := Projectile.new()
+	enemy.setup(p2, plain_shot, Vector3(wall.position.x + 1.5, 1.25, 0.0), Vector3.LEFT)
+	p2.projectiles.append(enemy)
+	p2.add_sibling(enemy)
+	hp = p1.health
+	wait_until(func() -> bool: return p2.projectiles.is_empty(), 60)
+	check("barrier: destroys the opponent's shot", blocked[0] == 1 and p1.health == hp and wall.is_inside_tree())
+	m.projectile_blocked.disconnect(count_block)
+	p2.position.x = wall.position.x + 0.1
+	step(1)
+	check("barrier: pushes the opponent out of it", p2.position.x - wall.position.x >= wall.radius + Fighter.BODY_RADIUS - 0.01,
+		"gap %.2f" % (p2.position.x - wall.position.x))
+	wait_until(func() -> bool: return p1.projectiles.is_empty(), 150)
+	check("barrier: expires", p1.projectiles.is_empty())
+	restore_move(p1, "236P", old)
+
+	# Reflect: a shot touching the stance flies back at its owner.
+	old = patch_move(p1, "236P", {projectile_speed = 0.0, reflect_projectiles = true, startup = 20, active = 10})
+	reset(D.STAND)
+	p1.position.x = -3.0; p2.position.x = 3.0
+	var incoming := Projectile.new()
+	incoming.setup(p2, plain_shot, Vector3(p1.position.x + 2.0, 1.25, 0.0), Vector3.LEFT)
+	p2.projectiles.append(incoming)
+	p2.add_sibling(incoming)
+	hp = p2.health
+	motion("236", InputBuffer.HP)
+	wait_until(func() -> bool: return p1.projectiles.has(incoming), 40)
+	check("reflect: the shot changes hands and turns around", p1.projectiles.has(incoming) and not p2.projectiles.has(incoming)
+		and incoming.direction.x > 0.9 and p1.health == p1.data.max_health)
+	wait_until(func() -> bool: return p1.projectiles.is_empty(), 150)
+	check("reflect: it hits its old owner", p2.health < hp, "hp %d -> %d" % [hp, p2.health])
+	restore_move(p1, "236P", old)
+
+	# Teleport: ends up past the opponent, facing it.
+	old = patch_move(p1, "236P", {projectile_speed = 0.0, teleport = 1.2})
+	reset(D.STAND)
+	p1.position.x = -1.5; p2.position.x = 1.5
+	motion("236", InputBuffer.HP)
+	wait_until(func() -> bool: return p1.position.x > 0.0, 30)
+	check("teleport: past the opponent, facing back", absf(p1.position.x - 2.7) < 0.05 and p1.forward.x < -0.9,
+		"x %.2f, facing %s" % [p1.position.x, p1.forward])
+	step(60)
+	restore_move(p1, "236P", old)
+
+	# Meter drain: a hit moves meter from the defender to the attacker.
+	old = patch_move(p1, "LP", {drain_meter = 200})
+	reset(D.STAND); approach(1.0)
+	p1.add_meter(-p1.meter); p2.add_meter(300 - p2.meter)
+	press(InputBuffer.LP); step(6)
+	check("meter drain: the jab steals meter", p1.meter >= 200 and p2.meter < 150, "p1 %d p2 %d" % [p1.meter, p2.meter])
+	restore_move(p1, "LP", old)
+	step(30)
 
 
 func character_specials_tests() -> void:

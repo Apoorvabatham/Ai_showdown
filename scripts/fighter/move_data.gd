@@ -62,6 +62,35 @@ enum HitLevel { HIGH, MID, LOW, OVERHEAD }
 @export var projectile_speed: float = 0.0
 @export var projectile_lifetime: int = 90
 @export var projectile_color: Color = Color(0.4, 0.75, 1.0)
+## Shots fired by the move (multi-shot). With `projectile_interval` 0 they all leave on
+## the first active frame (stacked by `projectile_spread`), otherwise one every
+## `projectile_interval` ticks while the move is still going.
+@export var projectile_count: int = 1
+@export var projectile_interval: int = 0
+## Spacing (m) between shots: vertical for hand shots fired together, along the fight
+## axis for sky shots.
+@export var projectile_spread: float = 0.0
+## Where shots start: &"" = from the hand, flying forward; &"sky" = above the opponent,
+## falling (projectile_speed = fall speed). Sky shots aim where the opponent is when
+## they are fired, shifted by `projectile_sky_offset` (m, along the fight axis).
+@export var projectile_origin: StringName = &""
+@export var projectile_sky_offset: float = 0.0
+## The "projectile" is a barrier: a wall that deals no damage, destroys the opponent's
+## projectiles that touch it, and pushes the opponent out of it (it travels at
+## projectile_speed, 0 = stays put, for projectile_lifetime ticks). One at a time.
+@export var barrier: bool = false
+## During startup and active frames, the opponent's projectiles that touch the fighter
+## are sent back: they now belong to this fighter and fly at the opponent.
+@export var reflect_projectiles: bool = false
+## On the first active frame the fighter teleports to `teleport` m past the opponent
+## (along the fight axis; negative = that far back from where the fighter stands).
+@export var teleport: float = 0.0
+## Super meter taken from the opponent (and given to the attacker) when the move hits
+## or its command grab connects.
+@export var drain_meter: int = 0
+## Cosmetic: the SuperFX show played when this super starts (scripts/supers/).
+@export var super_fx: StringName = &""
+
 ## Cosmetic effect when the move becomes active ("shockwave" = ground-pound ring and
 ## dust). Trails, rising sparks and projectile flashes come from the move's own data.
 @export var impact_fx: StringName = &""
@@ -138,3 +167,8 @@ func motion() -> String:
 
 func is_special() -> bool:
 	return motion() != ""
+
+
+## True if the move fires projectiles (or puts up a barrier) on its first active frame.
+func fires_projectile() -> bool:
+	return projectile_speed > 0.0 or barrier

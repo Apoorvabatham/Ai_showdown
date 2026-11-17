@@ -3,11 +3,17 @@ extends Node3D
 ## A fireball-style projectile. Simulation state is plain fields ticked by FightManager
 ## at 60 Hz (move → hit check), so it stays deterministic; the glowing orb, light and
 ## trail are cosmetic. Flies straight along the owner's facing at launch, so a sidestep
-## can dodge it. One per fighter at a time (Fighter.projectile).
+## can dodge it. A fighter can have several in flight (Fighter.projectiles: multi-shot
+## moves, sky shots that fall onto the opponent, a barrier wall).
 
 const SPAWN_OFFSET := Vector3(0.0, 1.25, -0.75) # fighter-local, -Z = toward the opponent
 ## How close (m, along its path) it must be to count as a threat for blocking.
 const THREAT_DISTANCE := 1.6
+## Sky shots start this high above the floor.
+const SKY_HEIGHT := 4.5
+## Barrier wall size (m): half its width across the fight axis, and its height.
+const BARRIER_HALF_WIDTH := 0.9
+const BARRIER_HEIGHT := 2.2
 
 var owner_fighter: Fighter
 var move: MoveData
@@ -15,6 +21,8 @@ var direction := Vector3.FORWARD
 var speed := 0.0
 var ticks_left := 0
 var radius := 0.3
+## A wall (MoveData.barrier): blocks projectiles and the opponent, deals no damage.
+var barrier := false
 
 var _mesh: MeshInstance3D
 var _light: OmniLight3D
@@ -22,19 +30,24 @@ var _trail: GPUParticles3D
 var _age := 0.0
 
 
-func setup(fighter: Fighter, projectile_move: MoveData) -> void:
+## `spawn` / `flight`: start position and direction (default: the fighter's hand, its facing).
+func setup(fighter: Fighter, projectile_move: MoveData, spawn := Vector3.INF, flight := Vector3.ZERO) -> void:
 	owner_fighter = fighter
 	move = projectile_move
-	direction = fighter.forward
+	barrier = projectile_move.barrier
+	direction = flight if flight != Vector3.ZERO else fighter.forward
 	speed = projectile_move.projectile_speed
 	ticks_left = projectile_move.projectile_lifetime
 	radius = projectile_move.hitbox_radius
-	position = fighter.global_transform * SPAWN_OFFSET
+	position = spawn if spawn != Vector3.INF else fighter.global_transform * SPAWN_OFFSET
 	name = "Projectile"
 
 
 func _ready() -> void:
 	var color := move.projectile_color
+	if move.barrier:
+		_build_barrier(color)
+		return
 	# White-hot core inside two additive glow shells.
 	_mesh = _sphere(radius * 0.45, Color(1.0, 1.0, 1.0), false)
 	_mesh.add_child(_sphere(radius * 0.75, Color(color.lightened(0.3), 0.55), true))
@@ -80,6 +93,30 @@ func _ready() -> void:
 	reset_physics_interpolation()
 
 
+## Placeholder wall look until a SuperFX show dresses it: a glowing translucent slab.
+func _build_barrier(color: Color) -> void:
+	var material := StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.albedo_color = Color(color, 0.45)
+	var box := BoxMesh.new()
+	box.size = Vector3(BARRIER_HALF_WIDTH * 2.0, BARRIER_HEIGHT, radius * 2.0)
+	_mesh = MeshInstance3D.new()
+	_mesh.mesh = box
+	_mesh.material_override = material
+	_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(_mesh)
+	_light = OmniLight3D.new()
+	_light.light_color = color
+	_light.light_energy = 1.5
+	_light.omni_range = 3.0
+	_light.position.y = BARRIER_HEIGHT * 0.5
+	add_child(_light)
+	reset_physics_interpolation()
+
+
 func _sphere(r: float, color: Color, additive: bool) -> MeshInstance3D:
 	var material := StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -102,6 +139,8 @@ func _sphere(r: float, color: Color, additive: bool) -> MeshInstance3D:
 func tick(bounds_half_extent: float, bounds_depth: float = bounds_half_extent) -> bool:
 	position += direction * speed * Fighter.DT
 	ticks_left -= 1
+	if position.y < 0.0:
+		return false # a sky shot reached the floor
 	return ticks_left > 0 and absf(position.x) <= bounds_half_extent + 0.5 and absf(position.z) <= bounds_depth + 0.5
 
 
@@ -112,6 +151,7 @@ func save_state() -> Array:
 
 func load_state(state: Array) -> void:
 	move = state[0]
+	barrier = move.barrier
 	direction = state[1]
 	speed = state[2]
 	ticks_left = state[3]
@@ -121,6 +161,8 @@ func load_state(state: Array) -> void:
 
 ## Approaching `target` and close enough that they should be blocking.
 func is_threatening(target: Fighter) -> bool:
+	if barrier:
+		return false
 	var to_target := target.position - position
 	to_target.y = 0.0
 	return to_target.dot(direction) > -0.2 and to_target.length() <= THREAT_DISTANCE + radius
@@ -128,8 +170,13 @@ func is_threatening(target: Fighter) -> bool:
 
 func _process(delta: float) -> void:
 	_age += delta
-	if _mesh:
+	if _mesh and barrier:
+		_mesh.position.y = BARRIER_HEIGHT * 0.5
+		_mesh.basis = Basis.looking_at(direction)
+		_light.light_energy = 1.5 + 0.3 * sin(_age * 12.0)
+	elif _mesh:
 		var pulse := 1.0 + 0.12 * sin(_age * 30.0)
 		# Slightly stretched along its flight.
-		_mesh.basis = Basis.looking_at(direction) * Basis.from_scale(Vector3(1.0, 1.0, 1.3) * pulse)
+		var up := Vector3.FORWARD if absf(direction.y) > 0.99 else Vector3.UP # sky shots fall straight down
+		_mesh.basis = Basis.looking_at(direction, up) * Basis.from_scale(Vector3(1.0, 1.0, 1.3) * pulse)
 		_light.light_energy = 2.5 * pulse

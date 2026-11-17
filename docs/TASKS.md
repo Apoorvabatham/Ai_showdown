@@ -117,9 +117,9 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 |---|---|---|---|
 | C0 | Collaboration docs (this board, ROADMAP, AGENTS.md), "fun project" wording | — | done |
 | C1 | Per-fighter moveset system: `tools/showdown_movesets.gd` overrides (remove/tweak/add/stats/trials); per-fighter CPU personality and showcase via `CharacterData.lookup()` with kit fallback | — | done |
-| C2 | New engine features: multi-shot and sky projectiles, stationary blocking entities, reflect, teleport, meter drain, `super_fx` id (all in saved state + tests) | C1 | in progress (claude) |
+| C2 | New engine features: multi-shot / burst / sky projectiles, barriers, reflect, teleport, meter drain, `super_fx` id (MoveData fields; all in saved state; tests in `engine_feature_tests()`) | C1 | done |
 | C2b | New fight animations for the new moves (toolkit in `build_fight_animations.gd`, unused UAL clips) | C1 | todo |
-| C3 | Sundar moveset (ROADMAP §1.2) | C2 | todo |
+| C3 | Sundar moveset (ROADMAP §1.2) | C2 | in progress (claude) |
 | C4 | Donald moveset | C2 | todo |
 | C5 | Xi moveset; Zuckerbot, Jensen and tesla changes | C2 | todo |
 | C6 | AGI boss kit | C2 | todo |

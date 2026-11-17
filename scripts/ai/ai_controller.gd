@@ -326,7 +326,7 @@ func _wants_block(fighter: Fighter, seen: Dictionary, dist: float) -> bool:
 ## Incoming fireball: rolled once per projectile, either jumped over (from range) or
 ## blocked when it gets close.
 func _wants_block_projectile(fighter: Fighter) -> bool:
-	var p := fighter.opponent.projectile
+	var p := fighter.opponent.incoming_projectile(fighter)
 	if p == null or not fighter.is_actionable() and fighter.state != Fighter.State.BLOCKSTUN:
 		return false
 	var to_me := fighter.position - p.position

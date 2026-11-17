@@ -139,7 +139,8 @@ const SIM_FIELDS := [&"input_locked", &"view_right", &"view_depth", &"state", &"
 	&"juggle_hits", &"air_attack_used", &"throw_grab_frame", &"grab_move", &"throw_techable",
 	&"current_move", &"move_has_hit", &"hits_landed", &"next_hit_frame", &"meter", &"frozen",
 	&"_landing_frames", &"sidestep_dir", &"victory", &"last_hit_level", &"immortal", &"focus",
-	&"move_focus", &"wall_used", &"wall_normal", &"hit_push", &"armor_used"]
+	&"move_focus", &"wall_used", &"wall_normal", &"hit_push", &"armor_used", &"shots_left",
+	&"shot_timer", &"shot_index"]
 ## (victory_clip is cosmetic: each machine picks its own victory animation.)
 
 var data: CharacterData
@@ -194,8 +195,22 @@ var wall_normal := Vector3.ZERO
 var hit_push := 0.0
 ## Strikes the current move's super armour has absorbed (MoveData.armor_hits).
 var armor_used := 0
-## This fighter's projectile in flight (one at a time), ticked by FightManager.
-var projectile: Projectile
+## This fighter's projectiles in flight (shots and barriers, oldest first), ticked by
+## FightManager. A projectile move can't start while a shot is in flight (barriers:
+## while a barrier stands).
+var projectiles: Array[Projectile] = []
+## The oldest shot in flight (not a barrier), or null. Read-only.
+var projectile: Projectile:
+	get:
+		for p in projectiles:
+			if not p.barrier:
+				return p
+		return null
+## Multi-shot moves fired one shot at a time (MoveData.projectile_interval): shots still
+## to fire, ticks until the next, and the index of the next shot.
+var shots_left := 0
+var shot_timer := 0
+var shot_index := 0
 ## Set by FightManager during the super freeze (holds animation).
 var frozen := false
 var _landing_frames := LANDING_FRAMES
@@ -281,9 +296,10 @@ func reset_to(spawn_position: Vector3) -> void:
 	hits_landed = 0
 	next_hit_frame = 0
 	_landing_frames = LANDING_FRAMES
-	if projectile:
-		projectile.queue_free()
-		projectile = null
+	clear_projectiles()
+	shots_left = 0
+	shot_timer = 0
+	shot_index = 0
 	frozen = false
 	input = InputBuffer.new()
 	input_locked = false
@@ -312,7 +328,7 @@ func reset_to(spawn_position: Vector3) -> void:
 ## Rollback snapshot of this fighter's whole simulation state.
 func save_state() -> Dictionary:
 	var state := {transform = transform, input = input.save_state(),
-		projectile = projectile.save_state() if projectile else []}
+		projectiles = projectiles.map(func(p: Projectile) -> Array: return p.save_state())}
 	for field in SIM_FIELDS:
 		state[field] = get(field)
 	return state
@@ -328,22 +344,27 @@ func load_state(state: Dictionary) -> void:
 		set(field, state[field])
 	transform = state.transform
 	input.load_state(state.input)
-	var saved_projectile: Array = state.projectile
-	if saved_projectile.is_empty():
-		if projectile:
-			projectile.queue_free()
-			projectile = null
-	else:
-		if not projectile:
-			projectile = Projectile.new()
-			projectile.owner_fighter = self
-			projectile.move = saved_projectile[0]
-			projectile.name = "Projectile"
-			add_sibling(projectile)
-			projectile.load_state(saved_projectile)
-			projectile.reset_physics_interpolation()
+	# Reuse the projectile nodes by index (their visuals rebuild themselves).
+	var saved: Array = state.projectiles
+	while projectiles.size() > saved.size():
+		projectiles.pop_back().queue_free()
+	for i in saved.size():
+		if i < projectiles.size() and projectiles[i].move.barrier == (saved[i][0] as MoveData).barrier:
+			projectiles[i].owner_fighter = self
+			projectiles[i].load_state(saved[i])
+			continue
+		var p := Projectile.new()
+		p.owner_fighter = self
+		p.move = saved[i][0]
+		p.name = "Projectile"
+		p.load_state(saved[i])
+		add_sibling(p)
+		p.reset_physics_interpolation()
+		if i < projectiles.size():
+			projectiles[i].queue_free()
+			projectiles[i] = p
 		else:
-			projectile.load_state(saved_projectile)
+			projectiles.append(p)
 	if health != old_health:
 		health_changed.emit(health, data.max_health)
 	if meter != old_meter:
@@ -517,8 +538,23 @@ func _tick_attack() -> void:
 			velocity = forward * move.dive.x + Vector3.DOWN * move.dive.y
 		if move.focus_gain > 0:
 			_set_focus(mini(MAX_FOCUS, focus + move.focus_gain))
-		if move.projectile_speed > 0.0:
+		if move.teleport != 0.0:
+			_teleport(move.teleport)
+		if move.fires_projectile():
+			shot_index = 0
+			if move.projectile_interval > 0 and not move.barrier:
+				_fire_projectile(move)
+				shots_left = move.projectile_count - 1
+				shot_timer = move.projectile_interval
+			else:
+				for i in (1 if move.barrier else move.projectile_count):
+					_fire_projectile(move)
+	elif shots_left > 0 and frame > move.startup:
+		shot_timer -= 1
+		if shot_timer <= 0:
 			_fire_projectile(move)
+			shots_left -= 1
+			shot_timer = move.projectile_interval
 	if move_has_hit and frame > move.startup and _try_attack(true):
 		return
 	# A connected move with a follow-up chains into it right after its active frames;
@@ -579,7 +615,7 @@ func _try_special(cancel_only: bool) -> bool:
 			continue
 		if move.super_move and meter < MAX_METER:
 			continue
-		if move.projectile_speed > 0.0 and projectile != null:
+		if move.fires_projectile() and _blocks_new_projectile(move):
 			continue
 		var pressed := []
 		for b: int in special[3]:
@@ -623,6 +659,7 @@ func _start_move(move: MoveData, airborne: bool, carried_focus := -1) -> void:
 	hits_landed = 0
 	next_hit_frame = 0
 	armor_used = 0
+	shots_left = 0
 	air_attack_used = air_attack_used or airborne
 	# Crouching normals (2LP...) crouch; specials whose motion starts with 2 (236, 214) don't.
 	_set_state(State.ATTACK, (move.input.begins_with("2") and not move.is_special()) or move.low_profile)
@@ -636,10 +673,58 @@ func _start_move(move: MoveData, airborne: bool, carried_focus := -1) -> void:
 	attack_started.emit(move)
 
 
+## Fires the move's next shot (shot_index): from the hand, stacked by the spread, or from
+## the sky above the opponent; or puts up the move's barrier.
 func _fire_projectile(move: MoveData) -> void:
-	projectile = Projectile.new()
-	projectile.setup(self, move)
-	add_sibling(projectile)
+	var p := Projectile.new()
+	var count := move.projectile_count if move.projectile_interval == 0 else 1
+	var lane := float(shot_index % maxi(count, 1)) - (count - 1) * 0.5
+	if move.barrier:
+		p.setup(self, move, _flat(global_transform * Vector3(0.0, 0.0, Projectile.SPAWN_OFFSET.z)))
+	elif move.projectile_origin == &"sky":
+		# Sky shots of a burst cycle centre / behind / past the opponent's position.
+		var cycle: float = [0.0, -1.0, 1.0][shot_index % 3] if move.projectile_interval > 0 else lane
+		var target := _flat(opponent.position) + forward * (move.projectile_sky_offset + cycle * move.projectile_spread)
+		p.setup(self, move, target + Vector3.UP * Projectile.SKY_HEIGHT, Vector3.DOWN)
+	else:
+		var height := lane * move.projectile_spread if move.projectile_interval == 0 else 0.0
+		p.setup(self, move, global_transform * Projectile.SPAWN_OFFSET + Vector3.UP * height)
+	shot_index += 1
+	projectiles.append(p)
+	add_sibling(p)
+
+
+## A move that fires can't start while one of this fighter's shots is in flight (or,
+## for a barrier, while its barrier stands).
+func _blocks_new_projectile(move: MoveData) -> bool:
+	return projectiles.any(func(p: Projectile) -> bool: return p.barrier == move.barrier)
+
+
+func clear_projectiles() -> void:
+	for p in projectiles:
+		p.queue_free()
+	projectiles.clear()
+
+
+## Removes one of this fighter's projectiles (it hit, expired or was destroyed).
+func remove_projectile(p: Projectile) -> void:
+	projectiles.erase(p)
+	p.queue_free()
+
+
+## Moves to `distance` m past the opponent along the fight axis (negative: that far back
+## from here), inside the stage, facing the opponent again.
+func _teleport(distance: float) -> void:
+	var target := _flat(opponent.position) + forward * distance if distance > 0.0 else _flat(position) + forward * distance
+	position = Vector3(target.x, position.y, target.z)
+	velocity = Vector3(0.0, velocity.y, 0.0)
+	clamp_to_bounds()
+	face_opponent()
+	reset_physics_interpolation()
+
+
+static func _flat(v: Vector3) -> Vector3:
+	return Vector3(v.x, 0.0, v.z)
 
 
 func _set_focus(level: int) -> void:
@@ -955,15 +1040,33 @@ func is_threatening(target: Fighter) -> bool:
 ## The attack about to reach `target`: the current move in startup/active within reach,
 ## or an approaching projectile. Null if none.
 func threat_move(target: Fighter) -> MoveData:
-	if projectile and projectile.is_threatening(target):
-		return projectile.move
-	if state != State.ATTACK or current_move == null or current_move.projectile_speed > 0.0 			or current_move.hitbox_radius <= 0.0:
+	var shot := incoming_projectile(target)
+	if shot and shot.is_threatening(target):
+		return shot.move
+	if state != State.ATTACK or current_move == null or current_move.fires_projectile() 			or current_move.hitbox_radius <= 0.0:
 		return null
 	if state_frame > current_move.startup + current_move.active:
 		return null
 	var reach := absf(current_move.hitbox_offset.z) + current_move.hitbox_radius + BODY_RADIUS
 	reach += current_move.travel * current_move.active * DT
 	return current_move if _flat_distance_to(target) <= reach + PROXIMITY_GUARD_MARGIN else null
+
+
+## The closest of this fighter's shots still flying toward `target`, or null.
+func incoming_projectile(target: Fighter) -> Projectile:
+	var best: Projectile = null
+	var best_distance := INF
+	for p in projectiles:
+		if p.barrier:
+			continue
+		var to_target := _flat(target.position - p.position)
+		if p.direction.y > -0.5 and to_target.dot(_flat(p.direction)) < 0.0:
+			continue # already past
+		var d := to_target.length()
+		if d < best_distance:
+			best = p
+			best_distance = d
+	return best
 
 
 func _flat_distance_to(other: Fighter) -> float:
@@ -984,6 +1087,12 @@ func is_command_grab_frame() -> bool:
 ## True if this fighter's reversal stance catches `move` (a body strike) right now.
 func reverses(move: MoveData) -> bool:
 	return state == State.ATTACK and current_move != null and current_move.reversal 			and state_frame > current_move.startup and state_frame <= current_move.startup + current_move.active 			and move.hit_level != MoveData.HitLevel.LOW
+
+
+## True while the current move sends the opponent's projectiles back.
+func reflects_projectiles() -> bool:
+	return state == State.ATTACK and current_move != null and current_move.reflect_projectiles \
+			and state_frame <= current_move.startup + current_move.active
 
 
 func is_projectile_immune() -> bool:
