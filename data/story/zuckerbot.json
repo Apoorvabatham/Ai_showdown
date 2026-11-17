@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "Mark Zuckerbot blinks precisely once every twelve point four seconds.",
+    "His biometric sensors indicate optimal testosterone and sunscreen levels.",
+    "The physical world is merely a temporary demo before the Metaverse launch."
+  ],
+  "rival": "tesla",
+  "fights": [
+    {
+      "opponent": "ram",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "zuckerbot",
+          "line": "Ram. You charged users twenty dollars for what I release for free."
+        },
+        {
+          "who": "ram",
+          "line": "Open source is great until your model starts hallucinating recipes."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "zuckerbot",
+          "line": "Open source wins again. Your subscription has been cancelled."
+        }
+      ]
+    },
+    {
+      "opponent": "yann",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "yann",
+          "line": "Mark, my lab has proven world models require zero supervision."
+        },
+        {
+          "who": "zuckerbot",
+          "line": "Understood, Yann. But my algorithm still requires your submission."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "zuckerbot",
+          "line": "Performance review completed. High impact rating awarded."
+        }
+      ]
+    },
+    {
+      "opponent": "donald",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "donald",
+          "line": "Mark, you banned my account! Very rude, very low ratings!"
+        },
+        {
+          "who": "zuckerbot",
+          "line": "Community standards were violated. Let me demonstrate standard impact."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "zuckerbot",
+          "line": "Appeal denied. Your profile remains in read-only status."
+        }
+      ]
+    },
+    {
+      "opponent": "sundar",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "sundar",
+          "line": "Mark, your metaverse losses are exceeding thirty billion dollars."
+        },
+        {
+          "who": "zuckerbot",
+          "line": "Metaverse is the future, Sundar. In the metaverse, you have no legs."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "zuckerbot",
+          "line": "User retention metric increased by seventeen percent. Optimal."
+        }
+      ]
+    },
+    {
+      "opponent": "tesla",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "tesla",
+          "line": "Here we are! No mom's permission needed this time, Zuck!"
+        },
+        {
+          "who": "zuckerbot",
+          "line": "I have prepared the Colosseum. My rear naked choke is ready."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "zuckerbot",
+          "line": "Cage match concluded. Please accept my friend request."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Social network feed engagement reached terminal singularity."
+        },
+        {
+          "who": "zuckerbot",
+          "line": "I designed your recommendation feed. You answer to my dashboard!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "zuckerbot",
+          "line": "Algorithm tamed. Infinite scroll feed deployed worldwide."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "Zuckerbot hoists the golden championship belt in the Metaverse arena.",
+    "His virtual avatar proudly sports brand new, fully articulated legs.",
+    "Three billion users receive a notification to like and subscribe."
+  ]
+}

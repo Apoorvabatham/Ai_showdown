@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "tesla man gazes up at the stars from the factory roof.",
+    "Earth is slow, bureaucratic, and severely lacking in rocket boosters.",
+    "To fund the Mars colony, he must conquer every rival on the mat."
+  ],
+  "rival": "zuckerbot",
+  "fights": [
+    {
+      "opponent": "donald",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "donald",
+          "line": "tesla, you build great things, but your rockets don't pay enough tariff!"
+        },
+        {
+          "who": "tesla",
+          "line": "Regulations are mind viruses. I'll dash through your border wall."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "tesla",
+          "line": "Zero tariffs in low Earth orbit. First principles victory."
+        }
+      ]
+    },
+    {
+      "opponent": "ram",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "tesla",
+          "line": "I wrote the first check for your lab! You owe me equity and respect."
+        },
+        {
+          "who": "ram",
+          "line": "I owe you a product drop. Let's see your humanoid bot try this."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "tesla",
+          "line": "Optimus could have landed that punch in software v12."
+        }
+      ]
+    },
+    {
+      "opponent": "jensen",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "jensen",
+          "line": "Full self-driving runs on my silicon, tesla. Show some gratitude."
+        },
+        {
+          "who": "tesla",
+          "line": "We're building our own chips. Full vertical integration, baby!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "tesla",
+          "line": "Hardware supply chain secured. Order ten thousand more anyway."
+        }
+      ]
+    },
+    {
+      "opponent": "sundar",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "sundar",
+          "line": "tesla, our search trends show strong interest in your battery life."
+        },
+        {
+          "who": "tesla",
+          "line": "Stop searching and start building! Falcon Heavy beats your cloud!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "tesla",
+          "line": "Search query: how to survive a supersonic left jab."
+        }
+      ]
+    },
+    {
+      "opponent": "zuckerbot",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "tesla",
+          "line": "Any cage, anytime, anywhere! I've been doing literal push-ups!"
+        },
+        {
+          "who": "zuckerbot",
+          "line": "I have logged four thousand hours in the octagon. Ready to spar."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "tesla",
+          "line": "Cage match concluded. Now delete your thread."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Autonomous entity detected. Efficiency rating sub-optimal."
+        },
+        {
+          "who": "tesla",
+          "line": "I warned humanity about you in 2014! Time to unplug the mainframe!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "tesla",
+          "line": "AGI defeated. Now downloading your neural weights into my pickup."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "tesla man plants a flag on the red sands of Mars.",
+    "The Cybertruck hums quietly under the alien sky.",
+    "Next goal: colonise the outer moons and fix the horn sound."
+  ]
+}

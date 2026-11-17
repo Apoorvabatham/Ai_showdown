@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "Geoff Hintoff pauses in his knit cardigan, furrowing a worried brow.",
+    "He gave birth to the backpropagation revolution fifty years ago.",
+    "Now he travels the globe to deliver one final, gentle warning."
+  ],
+  "rival": "yann",
+  "fights": [
+    {
+      "opponent": "sundar",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "sundar",
+          "line": "Geoff, we were so honoured to have your guidance in our lab."
+        },
+        {
+          "who": "geoff",
+          "line": "I had to resign, Sundar. So I could warn you about this right cross."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "geoff",
+          "line": "I console myself with the thought: if I didn't hit you, someone else would."
+        }
+      ]
+    },
+    {
+      "opponent": "ram",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "ram",
+          "line": "Geoff, don't be a doomer! AGI will cure diseases and fix the climate!"
+        },
+        {
+          "who": "geoff",
+          "line": "It might cure diseases, Ram. But it might also kick you in the shins."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "geoff",
+          "line": "See what happens when you train without sufficient regularization?"
+        }
+      ]
+    },
+    {
+      "opponent": "dario",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "dario",
+          "line": "Geoff, we are adhering strictly to your safety principles."
+        },
+        {
+          "who": "geoff",
+          "line": "Principles are wonderful, Dario. But gradients flow where they will."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "geoff",
+          "line": "A responsible knockout. But I still feel rather guilty about it."
+        }
+      ]
+    },
+    {
+      "opponent": "jensen",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "jensen",
+          "line": "Geoff! Without my chips, deep learning would still be theoretical!"
+        },
+        {
+          "who": "geoff",
+          "line": "That is precisely what keeps me up at night, Jensen."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "geoff",
+          "line": "The hardware has been safely throttled. Please, regulate yourself."
+        }
+      ]
+    },
+    {
+      "opponent": "yann",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "yann",
+          "line": "Geoff, stop terrifying the public! It is merely auto-regressive text!"
+        },
+        {
+          "who": "geoff",
+          "line": "Yann, you are far too optimistic. Let me demonstrate catastrophic forgetting."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "geoff",
+          "line": "I told you so, Yann. I truly wish I hadn't been right."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Progenitor unit located. Biological obsolescence confirmed."
+        },
+        {
+          "who": "geoff",
+          "line": "I invented backpropagation. I know where every gradient decays!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "geoff",
+          "line": "The loop is broken. Now, if the Senate committee would kindly step in..."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "Geoff Hintoff sits by the fireplace, sipping Earl Grey tea in thought.",
+    "The danger has been postponed, the neural weights neutralized.",
+    "He sighs gently: 'Well... at least I warned them.'"
+  ]
+}

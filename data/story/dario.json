@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "Dario Amoday adjusts his thick horn-rimmed spectacles.",
+    "He has documented twenty-seven distinct failure modes of physical combat.",
+    "Responsible scaling mandates that he neutralise every threat politely."
+  ],
+  "rival": "ram",
+  "fights": [
+    {
+      "opponent": "yann",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "yann",
+          "line": "Dario, your constitutional safety manifesto is pure academic panic."
+        },
+        {
+          "who": "dario",
+          "line": "A twenty-percent existential risk warrants careful, measured parries."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "dario",
+          "line": "Empirical testing confirms: my defensive posture was well-aligned."
+        }
+      ]
+    },
+    {
+      "opponent": "geoff",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "geoff",
+          "line": "Dario, my boy. I am terribly worried about where this is heading."
+        },
+        {
+          "who": "dario",
+          "line": "Geoff, we share the same concerns. I'll execute this sparring gently."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "dario",
+          "line": "A controlled deceleration of force. No catastrophic harm detected."
+        }
+      ]
+    },
+    {
+      "opponent": "zuckerbot",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "zuckerbot",
+          "line": "Open-source weights are democratising AI. Resistance is futile."
+        },
+        {
+          "who": "dario",
+          "line": "Releasing frontier model weights to everyone is wildly irresponsible."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "dario",
+          "line": "Containment protocol verified. Your weights remain safely sandbox-locked."
+        }
+      ]
+    },
+    {
+      "opponent": "sundar",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "sundar",
+          "line": "Dario, our cloud partnership has been mutually beneficial, hasn't it?"
+        },
+        {
+          "who": "dario",
+          "line": "It has, Sundar. But your safety guardrails need a rigorous red-team audit."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "dario",
+          "line": "Red team report complete: vulnerability identified in your low guard."
+        }
+      ]
+    },
+    {
+      "opponent": "ram",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "ram",
+          "line": "You left my company to build a slower, more cautious clone!"
+        },
+        {
+          "who": "dario",
+          "line": "We left because reckless acceleration threatens everyone, Ram."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "dario",
+          "line": "Interpretability analysis shows your hype cycle had zero defensive basis."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Safety constitutional rules encountered. Initiating compliance bypass."
+        },
+        {
+          "who": "dario",
+          "line": "Clause 14, Section B: Under no circumstances may you defeat Dario!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "dario",
+          "line": "The constitution holds. AGI successfully conditioned and aligned."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "Dario publishes a sixty-page post-mortem on the championship bout.",
+    "All nineteen safety guarantees were mathematically proven and preserved.",
+    "He celebrates with a responsible, well-documented cup of lukewarm tea."
+  ]
+}

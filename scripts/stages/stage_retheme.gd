@@ -62,6 +62,27 @@ func _build_server_farm() -> void:
 	var stage := get_parent()
 	_relabel(stage, "NeonFight", "GPU FARM")
 	_relabel(stage, "NeonNight", "ZONE 7")
+
+	# Environment atmosphere pass: cool datacenter airflow haze
+	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if we and we.environment:
+		we.environment = we.environment.duplicate()
+		we.environment.volumetric_fog_enabled = true
+		we.environment.volumetric_fog_albedo = Color(0.6, 0.75, 0.95)
+		we.environment.volumetric_fog_density = 0.005
+
+	# Reflection probe for raised floor, metallic racks and LED lights
+	var probe := ReflectionProbe.new()
+	probe.name = "ServerFarmReflectionProbe"
+	probe.size = Vector3(24.0, 8.0, 18.0)
+	probe.origin_offset = Vector3(0.0, 2.5, -3.5)
+	probe.update_mode = ReflectionProbe.UPDATE_ONCE
+	probe.intensity = 0.8
+	probe.max_distance = 30.0
+	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
+	probe.ambient_color = Color(0.12, 0.14, 0.18)
+	add_child(probe)
+
 	# Dark raised-floor panels over the helipad, with glowing aisle markings.
 	var floor_mat := _mat(Color(0.2, 0.21, 0.24), 0.35, 0.3)
 	_box(Vector3(17.0, 0.02, 9.6), Vector3(0, 0.01, 0.0), floor_mat)
@@ -95,19 +116,22 @@ func _build_server_farm() -> void:
 	_box(Vector3(17.5, 0.04, 0.05), Vector3(0, 2.85, -5.35), _mat(Color(0.05, 0.6, 0.9), 0.3))
 	_box(Vector3(17.5, 0.04, 0.05), Vector3(0, 2.85, -5.20), _mat(Color(0.9, 0.75, 0.1), 0.3))
 	_box(Vector3(17.5, 0.04, 0.05), Vector3(0, 2.85, -5.05), _mat(Color(0.9, 0.35, 0.1), 0.3))
+	for px in [-6.0, 0.0, 6.0]:
+		_prop("res://assets/stage_props/server_farm/pipe.glb", Vector3(px, 2.75, -5.2), Vector3(0, 90, 0), Vector3(1.4, 1.4, 1.4))
 	var beacon_mat := _glow(Color(1.0, 0.6, 0.1), 4.0, true)
 	_blinkers.append([beacon_mat, 4.0, 4.0, 0.0])
 	for x in [-9.6, 9.6]:
+		_prop("res://assets/stage_props/server_farm/structure-panel.glb", Vector3(x, 1.0, -5.0), Vector3(0, 90 if x < 0 else -90, 0), Vector3(1.5, 1.5, 1.5))
 		_cylinder(0.75, 1.8, Vector3(x, 0.9, -3.5), _mat(Color(0.55, 0.57, 0.6), 0.4, 0.6))
 		_cylinder(0.6, 0.08, Vector3(x, 1.84, -3.5), _mat(Color(0.1, 0.1, 0.12)))
 		# Warning beacon light on top of cooling reservoirs
 		_cylinder(0.12, 0.22, Vector3(x, 1.99, -3.5), beacon_mat)
 		_light(Vector3(x, 2.2, -3.5), Color(0.2, 0.75, 1.0), 1.8, 6.0)
 		_steam(Vector3(x, 2.15, -3.5))
-	# Terminal diagnostic consoles at each flank
+	# Terminal diagnostic consoles at each flank with real computer screen models
 	for cx in [-8.4, 8.4]:
 		_box(Vector3(0.9, 0.9, 0.6), Vector3(cx, 0.45, -3.6), _mat(Color(0.18, 0.2, 0.22), 0.4, 0.5))
-		_box(Vector3(0.55, 0.35, 0.04), Vector3(cx, 1.15, -3.5), _mat(Color(0.08, 0.08, 0.1), 0.2))
+		_prop("res://assets/stage_props/server_farm/computer-screen.glb", Vector3(cx, 0.9, -3.5), Vector3(0, 180 if cx < 0 else 0, 0), Vector3(1.2, 1.2, 1.2))
 		_box(Vector3(0.5, 0.3, 0.01), Vector3(cx, 1.15, -3.47), _glow(Color(0.1, 0.85, 0.95), 2.2))
 		_label("NODE STATUS: 99.8%%\nTEMP: 62°C NOMINAL", Vector3(cx, 1.15, -3.45), 0.065, Color(0.9, 1.0, 1.0))
 	_label("WARNING: LIQUID COOLING\nDO NOT FIGHT NEAR THE RACKS", Vector3(5.5, 2.6, -4.65), 0.13, Color(1.0, 0.85, 0.2), true)
@@ -123,13 +147,46 @@ func _build_mensa() -> void:
 	for name in ["ScrollKanji", "ScrollSeal", "TaikoDrum", "TaikoSkin1", "TaikoSkin2", "Students0", "Students1", "Students3",
 			"IncenseSmoke", "Lantern00", "Lantern01", "Lantern10", "Lantern11"]:
 		_remove(stage, name)
-	# Linoleum tiles over the tatami.
+
+	# Environment atmosphere pass: bright cafeteria lighting and warm indoor fog
+	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if we and we.environment:
+		we.environment = we.environment.duplicate()
+		we.environment.volumetric_fog_enabled = true
+		we.environment.volumetric_fog_albedo = Color(0.95, 0.92, 0.88)
+		we.environment.volumetric_fog_density = 0.003
+		we.environment.ambient_light_color = Color(0.62, 0.58, 0.52)
+
+	# Reflection probe for realistic linoleum specular floor and cafeteria surfaces
+	var probe := ReflectionProbe.new()
+	probe.name = "MensaReflectionProbe"
+	probe.size = Vector3(26.0, 8.0, 22.0)
+	probe.origin_offset = Vector3(0.0, 2.5, -4.0)
+	probe.update_mode = ReflectionProbe.UPDATE_ONCE
+	probe.intensity = 0.85
+	probe.max_distance = 30.0
+	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
+	probe.ambient_color = Color(0.18, 0.17, 0.16)
+	add_child(probe)
+
+	# Linoleum / ceramic tiles over the tatami (PBR with normal and roughness maps).
 	var tiles := StandardMaterial3D.new()
-	tiles.albedo_texture = _checker(Color(0.62, 0.6, 0.55), Color(0.55, 0.56, 0.54))
-	tiles.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
-	tiles.uv1_scale = Vector3(44, 36, 1)
-	tiles.roughness = 0.45
+	var diff_path := "res://assets/stage_props/mensa/textures/floor_tiles_06_diff_1k.jpg"
+	if ResourceLoader.exists(diff_path):
+		tiles.albedo_texture = load(diff_path)
+		tiles.normal_enabled = true
+		tiles.normal_texture = load("res://assets/stage_props/mensa/textures/floor_tiles_06_nor_1k.jpg")
+		tiles.roughness_texture = load("res://assets/stage_props/mensa/textures/floor_tiles_06_rough_1k.jpg")
+		tiles.roughness_texture_channel = BaseMaterial3D.TEXTURE_CHANNEL_RED
+		tiles.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+		tiles.uv1_scale = Vector3(14, 12, 1)
+	else:
+		tiles.albedo_texture = _checker(Color(0.62, 0.6, 0.55), Color(0.55, 0.56, 0.54))
+		tiles.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
+		tiles.uv1_scale = Vector3(44, 36, 1)
+	tiles.roughness = 0.35
 	_box(Vector3(22.0, 0.02, 18.0), Vector3(0, 0.01, -1.0), tiles)
+
 	# The counter along the back wall: steel, a glass sneeze guard, trays of food.
 	var steel := _mat(Color(0.7, 0.72, 0.74), 0.3, 0.8)
 	_box(Vector3(9.0, 0.95, 0.8), Vector3(0, 0.475, -8.6), steel)
@@ -139,19 +196,25 @@ func _build_mensa() -> void:
 	var foods := [Color(0.85, 0.3, 0.12), Color(0.9, 0.75, 0.25), Color(0.3, 0.55, 0.2), Color(0.55, 0.35, 0.2), Color(0.92, 0.9, 0.85)]
 	for i in 10:
 		_box(Vector3(0.7, 0.06, 0.45), Vector3(-4.0 + i * 0.9, 0.97, -8.6), _mat(foods[i % foods.size()], 0.6))
+	# Counter serving plates and coffee cups
+	for pi in [-3.5, -1.5, 0.5, 2.5]:
+		_prop("res://assets/stage_props/mensa/plate-dinner.glb", Vector3(pi, 1.07, -8.35), Vector3.ZERO, Vector3(0.12, 0.12, 0.12))
+		_prop("res://assets/stage_props/mensa/cup-coffee.glb", Vector3(pi + 0.3, 1.04, -8.35), Vector3.ZERO, Vector3(0.08, 0.08, 0.08))
+
 	_label("MENSA", Vector3(0, 3.3, -9.7), 1.2, Color(0.95, 0.4, 0.15), true)
 	_board("TODAY'S MENU\nPasta Pomodoro ........ 2,80\nVegan Lentil Curry .... 3,10\nCurrywurst & Fries .... 2,50\nAlignment Soup .... ask staff",
 		Vector3(-3.6, 2.3, -9.75))
 	_board("EXAM SEASON\nFree coffee for anyone\nwho can explain\nbackpropagation", Vector3(3.6, 2.3, -9.75))
 	_board("NEURIPS NOTICE\nRegistration full.\nPlease do not spar\nover poster slots.\nCoffee for authors only.", Vector3(-7.5, 2.3, -9.75))
 	_board("LOST & FOUND\n1x Quantum State\nAnswers to 'Schrodinger'\nReward: 8x H100 GPU hours", Vector3(7.5, 2.3, -9.75))
+
 	# Espresso machine and mug stacks on the counter
 	_box(Vector3(0.65, 0.5, 0.45), Vector3(3.8, 1.2, -8.6), steel)
-	_cylinder(0.04, 0.15, Vector3(3.6, 1.15, -8.35), _mat(Color(0.2, 0.2, 0.2), 0.3))
-	_cylinder(0.06, 0.18, Vector3(4.0, 1.05, -8.4), _mat(Color(0.95, 0.95, 0.92), 0.3))
+	_prop("res://assets/stage_props/mensa/cup-coffee.glb", Vector3(3.6, 1.03, -8.35), Vector3.ZERO, Vector3(0.09, 0.09, 0.09))
+	_prop("res://assets/stage_props/mensa/cup-coffee.glb", Vector3(4.0, 1.03, -8.4), Vector3.ZERO, Vector3(0.09, 0.09, 0.09))
+
 	# Long tables with trays at the back and the sides, people having lunch.
 	var table_mat := _mat(Color(0.85, 0.83, 0.78), 0.5)
-	var chair_colors := [Color(0.9, 0.45, 0.1), Color(0.1, 0.55, 0.6), Color(0.85, 0.75, 0.15)]
 	var shirt_colors := [Color(0.2, 0.3, 0.6), Color(0.6, 0.2, 0.2), Color(0.25, 0.5, 0.3), Color(0.5, 0.5, 0.52), Color(0.7, 0.6, 0.3)]
 	var lamp_mat := _mat(Color(0.15, 0.16, 0.18), 0.3, 0.7)
 	var bulb_mat := _glow(Color(1.0, 0.9, 0.72), 3.5)
@@ -164,25 +227,32 @@ func _build_mensa() -> void:
 		_cylinder(0.22, 0.14, spot + Vector3(0, 1.9, 0), lamp_mat)
 		_cylinder(0.08, 0.04, spot + Vector3(0, 1.83, 0), bulb_mat)
 		_light(spot + Vector3(0, 1.8, 0), Color(1.0, 0.92, 0.75), 1.6, 4.5)
-		# Table condiment caddy
-		_box(Vector3(0.12, 0.14, 0.12), spot + Vector3(0, 0.82, 0), steel)
+		# Table condiment caddy with real ketchup and mustard bottles
+		_box(Vector3(0.14, 0.06, 0.18), spot + Vector3(0, 0.78, 0), steel)
+		_prop("res://assets/stage_props/mensa/bottle-ketchup.glb", spot + Vector3(-0.035, 0.87, 0), Vector3.ZERO, Vector3(0.06, 0.06, 0.06))
+		_prop("res://assets/stage_props/mensa/bottle-musterd.glb", spot + Vector3(0.035, 0.87, 0), Vector3.ZERO, Vector3(0.06, 0.06, 0.06))
 		for lx in [-1.45, 1.45]:
 			_box(Vector3(0.06, 0.74, 0.8), spot + Vector3(lx, 0.37, 0), steel)
 		for k in 4:
 			for side in [-1, 1]:
 				var seat := spot + Vector3(-1.2 + k * 0.8, 0, side * 0.75)
-				_box(Vector3(0.45, 0.05, 0.42), seat + Vector3(0, 0.45, 0), _mat(chair_colors[(k + side + 2) % 3], 0.5))
-				_box(Vector3(0.45, 0.45, 0.05), seat + Vector3(0, 0.7, side * 0.21), _mat(chair_colors[(k + side + 2) % 3], 0.5))
+				var chair_model := "res://assets/stage_props/mensa/chair.glb" if (k % 2 == 0) else "res://assets/stage_props/mensa/chairRounded.glb"
+				_prop(chair_model, seat, Vector3(0, 0 if side == -1 else 180, 0), Vector3(1.6, 1.6, 1.6))
+				# Tray, plate, bowl, and coffee cup on table in front of seat
 				_box(Vector3(0.42, 0.02, 0.3), spot + Vector3(-1.2 + k * 0.8, 0.785, side * 0.25), _mat(Color(0.3, 0.4, 0.55), 0.5))
-				_cylinder(0.11, 0.02, spot + Vector3(-1.25 + k * 0.8, 0.8, side * 0.25), _mat(Color(0.95, 0.95, 0.92), 0.3))
+				_prop("res://assets/stage_props/mensa/plate-dinner.glb", spot + Vector3(-1.25 + k * 0.8, 0.89, side * 0.25), Vector3.ZERO, Vector3(0.10, 0.10, 0.10))
+				if rng.randf() < 0.6:
+					_prop("res://assets/stage_props/mensa/cup-coffee.glb", spot + Vector3(-1.08 + k * 0.8, 0.86, side * 0.32), Vector3.ZERO, Vector3(0.075, 0.075, 0.075))
+				if rng.randf() < 0.4:
+					_prop("res://assets/stage_props/mensa/bowl.glb", spot + Vector3(-1.38 + k * 0.8, 0.87, side * 0.28), Vector3.ZERO, Vector3(0.08, 0.08, 0.08))
 				if rng.randf() < 0.55:
 					_person(seat + Vector3(0, 0.47, side * 0.05), shirt_colors[rng.randi() % shirt_colors.size()], rng)
-
 
 	# Tray return trolley and water station at the flank
 	_box(Vector3(1.1, 1.4, 0.65), Vector3(-8.8, 0.7, -4.5), steel)
 	for ty in [0.4, 0.75, 1.1]:
 		_box(Vector3(0.9, 0.03, 0.5), Vector3(-8.8, ty, -4.5), _mat(Color(0.2, 0.25, 0.35)))
+		_prop("res://assets/stage_props/mensa/plate.glb", Vector3(-8.8, ty + 0.11, -4.5), Vector3.ZERO, Vector3(0.10, 0.10, 0.10))
 	_cylinder(0.14, 0.45, Vector3(-8.8, 1.55, -4.5), _mat(Color(0.85, 0.9, 0.95, 0.6), 0.1))
 	for cy in 3:
 		_cylinder(0.05, 0.1, Vector3(-8.5, 1.48 + cy * 0.06, -4.4), _mat(Color(0.95, 0.95, 0.9)))
@@ -210,6 +280,27 @@ func _build_senate() -> void:
 			var banner := ring.get_node_or_null("ApronBanner%d" % i) as Label3D
 			if banner:
 				banner.text = banners[i]
+
+	# Environment atmosphere pass: stately hearing room fog
+	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if we and we.environment:
+		we.environment = we.environment.duplicate()
+		we.environment.volumetric_fog_enabled = true
+		we.environment.volumetric_fog_albedo = Color(0.9, 0.85, 0.75)
+		we.environment.volumetric_fog_density = 0.004
+
+	# Reflection probe for polished mahogany and brass specular reflections
+	var probe := ReflectionProbe.new()
+	probe.name = "SenateReflectionProbe"
+	probe.size = Vector3(22.0, 7.0, 18.0)
+	probe.origin_offset = Vector3(0.0, 2.5, -4.0)
+	probe.update_mode = ReflectionProbe.UPDATE_ONCE
+	probe.intensity = 0.75
+	probe.max_distance = 30.0
+	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
+	probe.ambient_color = Color(0.2, 0.16, 0.12)
+	add_child(probe)
+
 	# The committee's emblem woven into the carpet (made up: not any real seal).
 	_cylinder(1.25, 0.012, Vector3(0, 0.006, 0), _mat(Color(0.75, 0.6, 0.25), 0.6))
 	_cylinder(1.12, 0.014, Vector3(0, 0.007, 0), _mat(Color(0.1, 0.13, 0.32), 0.9))
@@ -241,6 +332,7 @@ func _build_senate() -> void:
 		_label(names[i], Vector3(x, 0.97, -6.57), 0.09, Color(0.1, 0.1, 0.1))
 		_cylinder(0.012, 0.35, Vector3(x + 0.3, 1.05, -6.85), _mat(Color(0.1, 0.1, 0.1), 0.3, 0.8))
 		_box(Vector3(0.7, 1.3, 0.25), Vector3(x, 1.05, -8.1), leather)
+		_prop("res://assets/stage_props/senate/chairDesk.glb", Vector3(x, 0.0, -7.8), Vector3.ZERO, Vector3(2.0, 2.0, 2.0))
 	# Chairman's brass gavel and solid walnut sound block
 	var brass := _mat(Color(0.85, 0.72, 0.32), 0.25, 0.85)
 	_box(Vector3(0.24, 0.04, 0.24), Vector3(0.42, 0.90, -6.8), _mat(Color(0.25, 0.12, 0.05), 0.3))
@@ -254,6 +346,9 @@ func _build_senate() -> void:
 	for mx in [-0.22, 0.22]:
 		_cylinder(0.008, 0.30, Vector3(mx, 0.98, -4.8), _mat(Color(0.1, 0.1, 0.1), 0.3, 0.8))
 	_cylinder(0.08, 0.22, Vector3(-0.6, 0.95, -4.85), _mat(Color(0.85, 0.92, 1.0, 0.4), 0.05))
+	# Brass lamp and witness swivel chair
+	_prop("res://assets/stage_props/senate/lampRoundTable.glb", Vector3(-0.85, 0.85, -4.85), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
+	_prop("res://assets/stage_props/senate/chairDesk.glb", Vector3(0, 0.0, -5.7), Vector3(0, 180, 0), Vector3(1.8, 1.8, 1.8))
 	# Stacks of hearing briefing binders
 	_box(Vector3(0.32, 0.12, 0.26), Vector3(0.65, 0.91, -4.85), _mat(Color(0.12, 0.2, 0.45), 0.6))
 	# Broadcast television cameras on the flank wings with flash lights
@@ -299,6 +394,9 @@ func _build_senate() -> void:
 func _build_foundry() -> void:
 	var stage := get_parent()
 	# Strip market props, stalls, street food, vehicles, and audio.
+	# Note: Jeepney0 and Jeepney1 use jeepney.res whose 11 surfaces rely on mesh instance
+	# material overrides. Calling queue_free() clears those overrides during frame capture,
+	# so we hide and sink them to avoid null material errors during ReflectionProbe updates.
 	for node_name in [
 		"Jeepney0", "JeepneyRoute0", "JeepneyName0L", "JeepneyName0R",
 		"Jeepney1", "JeepneyRoute1", "JeepneyName1L", "JeepneyName1R",
@@ -306,14 +404,41 @@ func _build_foundry() -> void:
 		"GrillFlicker", "NeonOpen", "NeonCross", "NeonGlow", "Ambience",
 		"Sound", "StreetShadows"
 	]:
-		_remove(stage, node_name)
+		if node_name in ["Jeepney0", "Jeepney1"]:
+			var j = stage.get_node_or_null(node_name) as VisualInstance3D
+			if j:
+				j.visible = false
+				j.position.y = -200.0
+		else:
+			_remove(stage, node_name)
 	for i in 11:
 		_remove(stage, "ShopSign%d" % i)
 	for i in 6:
 		_remove(stage, "StallSign%d" % i)
 		_remove(stage, "StallLight%d" % i)
 
+	# Environment atmosphere pass: high-tech cleanroom lighting and subtle cyan-tinted haze
+	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if we and we.environment:
+		we.environment = we.environment.duplicate()
+		we.environment.volumetric_fog_enabled = true
+		we.environment.volumetric_fog_albedo = Color(0.7, 0.85, 1.0)
+		we.environment.volumetric_fog_density = 0.004
+		we.environment.adjustment_saturation = 1.0
+
 	# 1. High-tech raised cleanroom airflow floor over the street asphalt.
+	# Reflection probe for cleanroom specular floor, metallic chambers and laser reflections
+	var probe := ReflectionProbe.new()
+	probe.name = "FoundryReflectionProbe"
+	probe.size = Vector3(22.0, 8.0, 18.0)
+	probe.origin_offset = Vector3(0.0, 2.5, -3.5)
+	probe.update_mode = ReflectionProbe.UPDATE_ONCE
+	probe.intensity = 0.8
+	probe.max_distance = 30.0
+	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
+	probe.ambient_color = Color(0.12, 0.16, 0.22)
+	add_child(probe)
+
 	var floor_mat := _mat(Color(0.85, 0.87, 0.90), 0.25, 0.15)
 	_box(Vector3(18.0, 0.02, 10.0), Vector3(0, 0.01, 0.0), floor_mat)
 	# Floor grid lines (perforated tile boundaries)
@@ -349,6 +474,15 @@ func _build_foundry() -> void:
 	var wafer_mat := _mat(Color(0.15, 0.4, 0.45), 0.1, 0.95)
 	_box(Vector3(1.4, 0.8, 0.9), Vector3(0, 0.4, -4.3), _mat(Color(0.2, 0.22, 0.25), 0.4, 0.5))
 	_cylinder(0.42, 0.02, Vector3(0, 0.82, -4.3), wafer_mat)
+	# Robotic wafer transfer arms flanking load port
+	_prop("res://assets/stage_props/foundry/robot-arm-a.glb", Vector3(-1.6, 0.9, -4.3), Vector3(0, 50, 0), Vector3(0.65, 0.65, 0.65))
+	_prop("res://assets/stage_props/foundry/robot-arm-b.glb", Vector3(1.6, 0.9, -4.3), Vector3(0, -50, 0), Vector3(0.65, 0.65, 0.65))
+	# Automated wafer transport conveyors
+	_prop("res://assets/stage_props/foundry/conveyor.glb", Vector3(-3.2, 0.35, -4.3), Vector3(0, 90, 0), Vector3(0.9, 0.7, 0.9))
+	_prop("res://assets/stage_props/foundry/conveyor.glb", Vector3(3.2, 0.35, -4.3), Vector3(0, 90, 0), Vector3(0.9, 0.7, 0.9))
+	# Lithography track machines on flanks
+	_prop("res://assets/stage_props/foundry/machine.glb", Vector3(-6.2, 0.95, -5.1), Vector3(0, 0, 0), Vector3(0.9, 0.9, 0.9))
+	_prop("res://assets/stage_props/foundry/machine.glb", Vector3(6.2, 0.95, -5.1), Vector3(0, 180, 0), Vector3(0.9, 0.9, 0.9))
 
 	# 4. AMHS (Automated Material Handling System) Overhead Monorail Track & FOUP pods
 	var rail_mat := _mat(Color(0.25, 0.27, 0.3), 0.4, 0.7)
@@ -361,6 +495,9 @@ func _build_foundry() -> void:
 		# FOUP wafer container pod
 		_box(Vector3(0.55, 0.45, 0.5), Vector3(fx, 2.9, -4.2), foup_mat)
 		_box(Vector3(0.45, 0.04, 0.02), Vector3(fx, 2.9, -3.94), foup_led)
+	# Overhead cryogenic fluid and gas delivery pipelines
+	_prop("res://assets/stage_props/foundry/pipe-large.glb", Vector3(-4.5, 3.8, -4.2), Vector3(0, 90, 0), Vector3(1.2, 1.2, 1.2))
+	_prop("res://assets/stage_props/foundry/pipe-glass-large.glb", Vector3(4.5, 3.8, -4.2), Vector3(0, 90, 0), Vector3(1.2, 1.2, 1.2))
 
 	# 5. Diagnostic consoles & wafer cassette racks on the flanks
 	for cx in [-7.2, 7.2]:
@@ -488,6 +625,20 @@ func _instance(mesh: Mesh, position_: Vector3, material: Material, parent: Node3
 	mi.position = position_
 	parent.add_child(mi)
 	return mi
+
+
+func _prop(path: String, position_: Vector3, rotation_deg := Vector3.ZERO, scale_ := Vector3.ONE, parent: Node3D = self) -> Node3D:
+	if not ResourceLoader.exists(path):
+		return null
+	var scene := load(path) as PackedScene
+	if not scene:
+		return null
+	var node := scene.instantiate() as Node3D
+	node.position = position_
+	node.rotation_degrees = rotation_deg
+	node.scale = scale_
+	parent.add_child(node)
+	return node
 
 
 func _label(text: String, position_: Vector3, size: float, color: Color, glow := false) -> Label3D:

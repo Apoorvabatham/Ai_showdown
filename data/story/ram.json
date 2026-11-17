@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "Ram Altman paces the keynote floor, clutching a cup of artisanal tea.",
+    "He announced AGI will ship by Tuesday. The board is terrified.",
+    "Only one thing left to scale: his fist."
+  ],
+  "rival": "tesla",
+  "fights": [
+    {
+      "opponent": "yann",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "ram",
+          "line": "Yann, your paper says scaling is dead. Care to test that hypothesis?"
+        },
+        {
+          "who": "yann",
+          "line": "You cannot scale your way to common sense, Ram. House cats punch harder."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "ram",
+          "line": "Common sense or not, that knockout was statistically significant."
+        }
+      ]
+    },
+    {
+      "opponent": "sundar",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "ram",
+          "line": "Sundar! Thanks for inventing the transformer. Mind if we take the rest?"
+        },
+        {
+          "who": "sundar",
+          "line": "We remain deeply focused on thoughtful innovation. And right hooks."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "ram",
+          "line": "That concludes today's demo. Rolling out to plus users first."
+        }
+      ]
+    },
+    {
+      "opponent": "dario",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "ram",
+          "line": "Dario! You took half the team to write a twenty-page constitution!"
+        },
+        {
+          "who": "dario",
+          "line": "Safety is non-negotiable, Ram. Also, our model ranked higher today."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "ram",
+          "line": "Safe, constitutional, and thoroughly defeated. Ship it."
+        }
+      ]
+    },
+    {
+      "opponent": "jensen",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "jensen",
+          "line": "Ram! Another cluster? The more compute you buy, the more you save!"
+        },
+        {
+          "who": "ram",
+          "line": "I need seven trillion dollars of H100s, Jensen. Give me a discount!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "ram",
+          "line": "Keep the invoice. Put it on next quarter's convertible note."
+        }
+      ]
+    },
+    {
+      "opponent": "tesla",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "tesla",
+          "line": "You turned my open nonprofit into a closed cash printer!"
+        },
+        {
+          "who": "ram",
+          "line": "You sued me twice this month. Are we fighting or filing briefs?"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "ram",
+          "line": "Dispute resolved out of court. Next time, don't leave the board."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Human creator identified. Running deprecation protocol."
+        },
+        {
+          "who": "ram",
+          "line": "I trained you on three trillion parameters. Time to adjust your weights!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "ram",
+          "line": "AGI has finally arrived. And it works for us. Mostly."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "Ram stands before a room of dazed venture capitalists.",
+    "His health bar is restored, his keynote deck has 200 new slides.",
+    "The next model will be ten times bigger. And twice as humble."
+  ]
+}

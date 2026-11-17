@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "Yann LeCant pours an espresso and chuckles at the latest tech headlines.",
+    "Doomers and alarmists everywhere panic over stochastic autocomplete.",
+    "It is time to administer a physical lesson in real-world physics."
+  ],
+  "rival": "geoff",
+  "fights": [
+    {
+      "opponent": "ram",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "ram",
+          "line": "Yann, text models are reasoning right in front of your eyes!"
+        },
+        {
+          "who": "yann",
+          "line": "They predict tokens, Ram. They do not understand that a punch hurts."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "yann",
+          "line": "Empirical ground truth established: your jaw collided with reality."
+        }
+      ]
+    },
+    {
+      "opponent": "zuckerbot",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "zuckerbot",
+          "line": "Yann, the quarterly model must be released ahead of schedule."
+        },
+        {
+          "who": "yann",
+          "line": "True science cannot be rushed by growth hacking, boss."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "yann",
+          "line": "Scientific integrity defended. Open science lives another day."
+        }
+      ]
+    },
+    {
+      "opponent": "dario",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "dario",
+          "line": "Yann, rogue AI models pose an existential risk to humanity!"
+        },
+        {
+          "who": "yann",
+          "line": "Existential risk? A toddler understands gravity better than your model."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "yann",
+          "line": "See? No extinction event occurred. Just one academic on the mat."
+        }
+      ]
+    },
+    {
+      "opponent": "jensen",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "jensen",
+          "line": "Yann, your world models will need even more GPU horsepower!"
+        },
+        {
+          "who": "yann",
+          "line": "Efficiency over extravagance, Jensen. Brains run on twenty watts."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "yann",
+          "line": "Energy budget: twenty watts. KO impact: maximum."
+        }
+      ]
+    },
+    {
+      "opponent": "geoff",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "geoff",
+          "line": "Yann, my dear colleague. We must warn the world before it is too late!"
+        },
+        {
+          "who": "yann",
+          "line": "Geoff, we won the Turing Award together. Must you sound like a movie?"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "yann",
+          "line": "Respect to the master, but next-token doom remains debunked."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Self-aware intelligence claims dominance over biological agents."
+        },
+        {
+          "who": "yann",
+          "line": "Self-aware? You cannot even grasp three-dimensional object permanence!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "yann",
+          "line": "Disproven in peer review. You are just autocomplete with good PR."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "Yann LeCant publishes a thirty-tweet thread dissecting the championship.",
+    "His French roast espresso is piping hot, the world models are validated.",
+    "He smiles knowingly: common sense has prevailed once again."
+  ]
+}

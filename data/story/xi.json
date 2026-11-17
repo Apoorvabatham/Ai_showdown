@@ -1,0 +1,135 @@
+{
+  "intro": [
+    "Xi Winping buttons his charcoal Zhongshan collar in measured silence.",
+    "Global stability and five-year economic targets require steady resolve.",
+    "No disharmonious jab shall penetrate the Great Firewall of the state."
+  ],
+  "rival": "donald",
+  "fights": [
+    {
+      "opponent": "jensen",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "jensen",
+          "line": "Chairman! Export regulations prevent me from selling you top silicon."
+        },
+        {
+          "who": "xi",
+          "line": "We manufacture our own lithography, Jensen. Self-reliance is assured."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "xi",
+          "line": "Domestic chip yield targets have been achieved ahead of schedule."
+        }
+      ]
+    },
+    {
+      "opponent": "zuckerbot",
+      "stage": "server_farm",
+      "before": [
+        {
+          "who": "zuckerbot",
+          "line": "Chairman, we would love to enter your domestic consumer market."
+        },
+        {
+          "who": "xi",
+          "line": "Your application has been reviewed and permanently archived."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "xi",
+          "line": "Digital border security remains fully operational."
+        }
+      ]
+    },
+    {
+      "opponent": "sundar",
+      "stage": "mensa",
+      "before": [
+        {
+          "who": "sundar",
+          "line": "Chairman, could we reconsider Project Dragonfly for your citizens?"
+        },
+        {
+          "who": "xi",
+          "line": "Harmony does not require external search queries, Sundar."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "xi",
+          "line": "Search terminated. Harmony restored across all sectors."
+        }
+      ]
+    },
+    {
+      "opponent": "tesla",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "tesla",
+          "line": "Our Gigafactory in Shanghai is running at peak capacity, Chairman!"
+        },
+        {
+          "who": "xi",
+          "line": "We appreciate your investment, tesla. Now observe domestic technique."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "xi",
+          "line": "Production quotas exceeded. Battery supply secured."
+        }
+      ]
+    },
+    {
+      "opponent": "donald",
+      "stage": "foundry",
+      "before": [
+        {
+          "who": "donald",
+          "line": "Xi! The tariffs are working! Everyone says your economy is wobbling!"
+        },
+        {
+          "who": "xi",
+          "line": "Patience is measured in dynasties, Donald. Not four-year terms."
+        }
+      ],
+      "after_win": [
+        {
+          "who": "xi",
+          "line": "Trade dispute concluded in bilateral accordance with our terms."
+        }
+      ]
+    },
+    {
+      "opponent": "algorithm",
+      "stage": "senate",
+      "before": [
+        {
+          "who": "algorithm",
+          "line": "Centralised authority protocol flagged for algorithm replacement."
+        },
+        {
+          "who": "xi",
+          "line": "No algorithm operates outside the leadership of the Central Committee!"
+        }
+      ],
+      "after_win": [
+        {
+          "who": "xi",
+          "line": "AGI incorporated into the five-year plan. Stability maintained."
+        }
+      ]
+    }
+  ],
+  "ending": [
+    "Chairman Xi addresses the National Congress before rows of red banners.",
+    "All eleven tournament rounds have been recorded as unanimous victories.",
+    "Historical records reflect peace, stability, and zero landed counter-punches."
+  ]
+}
