@@ -123,8 +123,8 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 | C4 | Donald moveset | C2 | todo |
 | C5 | Xi moveset; Zuckerbot, Jensen and tesla changes | C2 | todo |
 | C6 | AGI boss kit | C2 | todo |
-| C7 | SuperFX framework (`scripts/supers/`): camera shots, screen effects, prop spawning, sounds | — | todo |
-| C8 | The 11 supers' gameplay + show (ROADMAP §2), one by one | C7, O2 per prop | todo |
+| C7 | Super-scene framework: on a super hit, freeze the fight and play a cosmetic scene in its own set (own camera, puppets of both fighters, props); victory-scene framework; modelled shot looks (`scripts/supers/projectile_looks.gd`, started) | — | in progress (claude) |
+| C8 | Per fighter: power move + super scene + victory scene (ROADMAP §2), owner approves each design first | C7, O2 per prop | todo |
 | C9 | Stage-life framework: StageActor, StageCrowd, ShoutBubble, events (food_fight, camera_flashes, gavel, sparks, spark_shower, steam_burst, alarm) + `data/stage_life` loader | — | todo |
 | C10 | AGI phases + mimicry + phase transitions | C6 | todo |
 | C11 | Story mode screens and flow | G1 (one fighter is enough to start) | todo |

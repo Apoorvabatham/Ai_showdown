@@ -103,27 +103,45 @@ field tweaks, stats) so a fighter can diverge from its kit. CPU personality
 (`AIController.PERSONALITIES`), showcase routines and combo trials get per-fighter entries
 that fall back to the kit.
 
-## 2. Supers that do what they say
+## 2. Power moves, super scenes and victory scenes (owner-approved structure)
 
-A super has two halves:
-- **Gameplay** (simulation): the move and any entities it spawns (rain of GPUs, a wall).
-- **Show** (cosmetic): a `SuperFX` script per super in `scripts/supers/<id>.gd`, started from the
-  `super_flash` signal. It owns the camera shot, props, particles, screen effects and sounds.
-  Props (3D models) come from `assets/props/supers/<id>/` (built by OpenCode).
+Every fighter gets (owner decision, Nov 2026):
+1. **Their own fighting style**: different punches, kicks and movement (new animations, §6).
+2. **One power move**: a special that throws an *animated object* (never a glowing blob):
+   e.g. search bars, falling GPUs. Built with `MoveData.projectile_look`
+   (`scripts/supers/projectile_looks.gd`) and the shot origins (hand / sky / around).
+3. **One super that changes the screen**: when it **hits**, the fight pauses, the screen cuts
+   to a short animated scene in its own set, then the fight resumes with the damage done.
+   A blocked or whiffed super plays out as a normal move.
+4. **Their own victory scene** when they win the match.
 
-| Fighter | Super | Gameplay | Show |
-|---|---|---|---|
-| Ram | Scaling Law | Focus-scaled rush (exists) | Ram grows bigger with each hit, rising "compute" graph, server hum |
-| tesla man | Rocket Launch | Kicks then launcher | Rocket prop strapped on, smoke trail, launch-pad countdown |
-| Dario | Constitutional Shield | Reversal that also reflects projectiles | Glowing rulebook shield, pages flying, soft gold light |
-| Zuckerbot | Metaverse Trap | Command grab (exists) | Stage swaps to a VR grid world, low-poly avatars, glitch exit |
-| Jensen | GPU Rain | GPUs fall from the sky over the opponent | Graphics cards with spinning fans, price tags, sparks |
-| Yann | It's Just Autocomplete | Multi-hit rush | Predicted-text tokens fill the screen, "▌" cursor, typing sounds |
-| Geoff | I Regret Nothing… Wait | Armoured rush | VHS rewind filter, time runs backwards, then the big hit |
-| Sundar | Search Result | Search bar slams from above | Giant search bar, "Did you mean: lose?" text, result cards |
-| Donald | Shower of Tariffs | Paper rain across the screen | Tariff papers, stamp "TARIFF 145%", gold confetti |
-| Xi | Great Firewall | Wall entity that pushes and reflects | Red brick wall with glowing grid rises from the floor |
-| AGI | Engagement Loop | Multi-hit trap | Infinite-scroll feed panels wrap the opponent, notification pings |
+Status: **approved** = the owner confirmed the idea; **proposed** = waiting for the owner.
+Design details are agreed with the owner **before** building.
+
+| Fighter | Power move | Super scene | Victory scene | Status |
+|---|---|---|---|---|
+| Sundar | **Search Result**: search bars with funny queries fly in from every side | Opponent trapped in a giant browser window, "404 NOT FOUND", pixelated away | proposed | power + super approved |
+| Zuckerbot | "Like" thumbs-up bombs | VR goggles on the opponent, cut to a cartoon metaverse, their legs disappear, Zuck's avatar punches them | The map turns into the metaverse | approved |
+| tesla man | Small rockets launched at the opponent | Drives up in an angular steel pickup (own design, no logo); opponent chained to a rocket, launched into space, re-enters and burns up cartoon-style (soot and smoke, no gore) | Flies to Mars and plants a flag: "CAPTURED" | approved |
+| Donald | (being redesigned: must differ from the super) | Office room, Donald grows giant, tiny opponent on the desk, giant "TARIFF" stamp slams down | Golden Donald statues appear around the map, USA flags everywhere | super + victory approved |
+| Xi | Something Chinese (proposed: a paper dragon-dance charge) | Three people in T-shirts reading "Kimi", "DeepSeek" (and a third) run in and beat the opponent up | proposed | super approved |
+| Jensen | GPU Rain: graphics cards with spinning fans fall from the sky | (being redesigned: must differ from GPU Rain) | proposed | power approved |
+| Dario | Glowing rulebook shield reflects attacks | A giant constitution scroll wraps the opponent, sealed with a "SAFE" stamp | proposed | proposed |
+| Yann | Word tokens fly ("the", "next", "token") | Opponent in a giant text box; autocomplete types "you lose", heavy letters fall | proposed | proposed |
+| Geoff | Neural-net node zaps | VHS rewind; lecture hall; the neural net zaps the opponent; Geoff looks regretful | proposed | proposed |
+| Ram | Money bags rain ("Funding Round") | Opponent rides a giant exponential "Scaling Law" line off the chart and falls | proposed | proposed |
+| AGI | Feed cards spin around the opponent | Opponent sucked into a giant phone, endless scroll, spat out | proposed | proposed |
+
+How it is built (Claude, C7–C8):
+- **Gameplay** (simulation): the super move connects like any move. On a hit,
+  `MoveData.cinematic` names the scene and `cinematic_ticks` freezes the fight for a fixed
+  time (deterministic, rollback-safe); damage is the move's damage.
+- **Show** (cosmetic): `scripts/supers/scenes/<id>.gd` builds its own small set away from
+  the stage, with its own camera, puppets of both fighters (their real models, scaled or
+  posed), props, effects and sounds. It never touches the simulation.
+- Victory scenes: `scripts/supers/victory/<id>.gd`, played when the match is won.
+- Props: built in code first (like the search bar and GPU); OpenCode (O2) can replace them
+  with better models in `assets/props/supers/<id>/`.
 
 ## 3. Living, realistic stages
 
@@ -186,6 +204,7 @@ sounds.
 
 1. Collaboration docs + per-fighter moveset system (C1, C2).
 2. Sundar → Donald → Xi → AGI movesets (C3–C6), one at a time, owner tests each.
-3. SuperFX framework (C7), then supers one by one (C8), props from OpenCode (O2).
+3. Super-scene framework (C7), then power moves, supers and victory scenes one fighter at a
+   time (C8), each design approved by the owner first; props from OpenCode (O2).
 4. Stage-life framework (C9); NPC models (O3); stage realism and dressing (G2–G4).
 5. AGI boss phases (C10). Story mode (C11 + G1).
