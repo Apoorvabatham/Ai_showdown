@@ -35,6 +35,8 @@ const MOVESETS := {
 				knockdown = true, damage = 100},
 			rising_gauntlet = {armor_hits = 0, invuln_frames = 5},
 			gauntlet_drive = {armor_hits = 0},
+			# Super finisher: the squad scene (scripts/supers/scenes/open_source_squad.gd, 5 s).
+			oath_finish = {cinematic = &"open_source_squad", cinematic_ticks = 310, super_fx = &"open_source_squad"},
 		},
 		add = {
 			# Censorship: a short stance that sends the opponent's shots back.

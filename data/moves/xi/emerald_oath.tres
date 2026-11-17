@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_i55b7")
-name = "Great Firewall"
+name = "Open-Source Squad"
 input = "236236P"
 animation = &"fight/punch_flurry"
 animation_impact = 0.1

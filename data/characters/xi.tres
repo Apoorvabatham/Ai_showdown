@@ -135,7 +135,7 @@ combo_trials = Array[Dictionary]([{
 &"tip": "State Media Drive near the edge splats them: walk in and follow up."
 }, {
 &"corner": false,
-&"name": "Great Firewall",
+&"name": "Open-Source Squad",
 &"steps": PackedStringArray("LP", "HP", "236236P"),
 &"tip": "With a full meter, cancel the straight into the super."
 }])

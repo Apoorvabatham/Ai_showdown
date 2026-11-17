@@ -118,6 +118,14 @@ func puppet(fighter: Fighter, parent: Node = null) -> ScenePuppet:
 	return p
 
 
+## A puppet of any character (NPCs, helpers): `data` built like a fighter.
+func puppet_of(data: CharacterData, parent: Node = null, alt := false) -> ScenePuppet:
+	var p := ScenePuppet.new()
+	(parent if parent else self).add_child(p)
+	p.setup(data, alt)
+	return p
+
+
 ## The prop at assets/props/supers/<path>.tscn if it exists, else `standin.call()`.
 func prop(path: String, standin: Callable, parent: Node = null) -> Node3D:
 	var file := PROP_DIR + path + ".tscn"
