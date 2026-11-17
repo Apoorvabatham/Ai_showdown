@@ -45,8 +45,14 @@ const ROUTINES := {
 		["clip", &"fight/victory_oath", 3.2], ["idle", 1.0]],
 	# Punisher: waits with folded arms, then slams, charges, smashes, flexes.
 	# AI Showdown fighters with their own movesets (tools/showdown_movesets.gd).
+	&"tesla": [["idle", 0.5, &"fight/guard", 1.8], ["move", "214K"], ["idle", 1.4, &"fight/guard", 1.8],
+		["move", "236K"], ["idle", 0.4, &"fight/guard", 1.8], ["move", "6HP"], ["move", "623K"],
+		["idle", 0.6, &"fight/guard", 1.8], ["move", "236236K"], ["idle", 0.6, &"fight/guard", 1.8],
+		["clip", &"fight/victory_point", 2.4], ["idle", 0.4, &"fight/guard", 1.8]],
+	&"jensen": [["idle", 1.0], ["move", "236P"], ["idle", 1.1], ["move", "214P"], ["idle", 1.6], ["move", "623P"],
+		["idle", 1.0], ["move", "LP"], ["move", "HP"], ["idle", 1.0], ["clip", &"fight/victory_bow", 3.0], ["idle", 1.2]],
 	&"sundar": [["idle", 1.0], ["move", "236P"], ["idle", 0.9], ["move", "214P"], ["idle", 0.9],
-		["move", "214K"], ["idle", 0.8], ["move", "623P"], ["idle", 1.0],
+		["move", "63214P"], ["idle", 1.4], ["move", "214K"], ["idle", 0.8], ["move", "623P"], ["idle", 1.0],
 		["clip", &"fight/victory_bow", 3.0], ["idle", 1.0]],
 	&"donald": [["idle", 1.2, &"fight/walk_guard", 0.6], ["move", "236P"], ["idle", 1.2], ["move", "214P"],
 		["idle", 1.0], ["move", "6HP"], ["idle", 0.8], ["move", "623P"], ["idle", 0.8], ["move", "63214P"],

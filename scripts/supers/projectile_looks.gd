@@ -19,13 +19,18 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _gpu(color)
 		&"container":
 			return _container(color)
+		&"mini_rocket":
+			return _mini_rocket(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
 
 ## Starting rotation: a search bar faces the camera (animate keeps it so); a GPU starts
 ## tumbled at an angle picked from `seed_value` (cosmetic).
-static func orient(look: StringName, _direction: Vector3, seed_value: int) -> Basis:
+static func orient(look: StringName, direction: Vector3, seed_value: int) -> Basis:
+	if look == &"mini_rocket":
+		# Nose (-Z) along the flight direction.
+		return Basis.looking_at(direction.normalized() if direction.length_squared() > 0.001 else Vector3.FORWARD)
 	if look == &"gpu" or look == &"container":
 		var rng := RandomNumberGenerator.new()
 		rng.seed = seed_value
@@ -46,6 +51,11 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 				if away.length_squared() > 0.001:
 					node.global_basis = Basis.looking_at(away.normalized()) * Basis(Vector3.FORWARD, 0.08 * sin(age * 9.0))
 			node.scale = Vector3.ONE * lerpf(0.3, 1.0, pop)
+		&"mini_rocket":
+			# The exhaust flame flickers.
+			var flame := node.get_node_or_null("Flame") as Node3D
+			if flame:
+				flame.scale = Vector3(1.0 + 0.25 * sin(age * 70.0), 1.0 + 0.25 * sin(age * 70.0), 1.0 + 0.4 * sin(age * 53.0 + 1.0))
 		&"container":
 			# Tumbles end over end along its flight.
 			node.rotate(Vector3(0, 0, 1), -5.0 * delta)
@@ -57,6 +67,38 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 				var fan := node.get_node_or_null(NodePath(fan_name)) as Node3D
 				if fan:
 					fan.rotate_object_local(Vector3.FORWARD, 30.0 * delta)
+
+
+# --- Mini rocket -----------------------------------------------------------------
+
+## ~0.6 m white rocket: nose toward -Z, flame at the back (+Z).
+static func _mini_rocket(_color: Color) -> Node3D:
+	var root := Node3D.new()
+	root.name = "MiniRocket"
+	var white := _metal(Color(0.9, 0.9, 0.92), 0.1)
+	var red := _metal(Color(0.85, 0.15, 0.12), 0.2)
+	root.add_child(_cylinder(0.065, 0.065, 0.38, Vector3.ZERO, white))
+	root.add_child(_cylinder(0.0, 0.065, 0.18, Vector3(0, 0, -0.28), red, -PI * 0.5))
+	root.add_child(_cylinder(0.068, 0.068, 0.04, Vector3(0, 0, -0.06), _metal(Color(0.12, 0.12, 0.14), 0.3)))
+	for i in 3:
+		var fin := _box(Vector3(0.015, 0.11, 0.13), Vector3.ZERO, red)
+		var angle := TAU * i / 3.0
+		fin.position = Vector3(0, 0.09, 0.15).rotated(Vector3.FORWARD, angle)
+		fin.rotation.z = -angle
+		root.add_child(fin)
+	var flame := Node3D.new()
+	flame.name = "Flame"
+	flame.position = Vector3(0, 0, 0.19)
+	flame.add_child(_cylinder(0.0, 0.055, 0.26, Vector3(0, 0, 0.13), _glow(Color(1.0, 0.45, 0.08), 2.5)))
+	flame.add_child(_cylinder(0.0, 0.03, 0.16, Vector3(0, 0, 0.08), _glow(Color(1.0, 0.85, 0.45), 3.0)))
+	root.add_child(flame)
+	var light := OmniLight3D.new()
+	light.light_color = Color(1.0, 0.6, 0.2)
+	light.light_energy = 0.35
+	light.omni_range = 1.0
+	light.position = Vector3(0, 0, 0.5)
+	root.add_child(light)
+	return root
 
 
 # --- Shipping container ----------------------------------------------------------
@@ -179,6 +221,22 @@ static func _box(size: Vector3, position: Vector3, material: Material) -> MeshIn
 	box.size = size
 	mesh.mesh = box
 	mesh.position = position
+	mesh.material_override = material
+	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mesh
+
+
+## A cylinder / cone along Z (rotation_x PI/2 turns its Y axis onto +Z).
+static func _cylinder(top: float, bottom: float, height: float, position: Vector3, material: Material, rotation_x := PI * 0.5) -> MeshInstance3D:
+	var mesh := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	cyl.top_radius = top
+	cyl.bottom_radius = bottom
+	cyl.height = height
+	cyl.radial_segments = 12
+	mesh.mesh = cyl
+	mesh.position = position
+	mesh.rotation.x = rotation_x
 	mesh.material_override = material
 	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mesh

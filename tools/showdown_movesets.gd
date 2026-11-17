@@ -27,6 +27,26 @@ const MOVESETS := {
 	# tesla man: the super's finisher plays the "Rocket Launch" scene when it hits.
 	&"tesla": {
 		tweak = {tempest_finish = {cinematic = &"rocket_launch", cinematic_ticks = 405, super_fx = &"rocket_launch"}},
+		add = {
+			# Power move: three small rockets, one after another, from the hand.
+			rocket_barrage = {from = "kenji/ki_blast", set = {name = "Rocket Barrage", input = "214K",
+				projectile_count = 3, projectile_interval = 8, projectile_speed = 7.0, projectile_lifetime = 90,
+				projectile_look = &"mini_rocket", projectile_color = Color(0.35, 0.09, 0.02),
+				damage = 34, chip_damage = 4, hitbox_radius = 0.2, startup = 14, recovery = 30,
+				hitstun = 18, blockstun = 13}},
+		},
+	},
+	# Jensen Wong: Tensor Blast (kit fireball) plus the GPU Rain power move.
+	&"jensen": {
+		add = {
+			# Power move: four graphics cards fall on and around the opponent.
+			gpu_rain = {from = "kenji/ki_blast", set = {name = "GPU Rain", input = "214P",
+				projectile_origin = &"sky", projectile_count = 4, projectile_interval = 6, projectile_spread = 0.7,
+				projectile_speed = 14.0, projectile_lifetime = 60, projectile_look = &"gpu",
+				hitbox_radius = 0.4, damage = 40, chip_damage = 5,
+				animation = &"fight/ground_pound", animation_impact = 0.33, animation_end = 0.85,
+				startup = 14, recovery = 36, hitstun = 22, blockstun = 16}},
+		},
 	},
 	# Sundar Pickai: zoner / trapper (was a copy of Jensen's kit).
 	&"sundar": {
@@ -47,8 +67,14 @@ const MOVESETS := {
 				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.0,
 				projectile_speed = 0.0, hitbox_radius = 0.0, damage = 0, chip_damage = 0, teleport = 1.0,
 				startup = 14, active = 1, recovery = 22, invuln_frames = 15, camera_intensity = 0.0}},
+			# Power move: five search bars fly in at the opponent from every side.
+			search_result = {from = "kenji/ki_blast", set = {name = "Search Result", input = "63214P",
+				projectile_origin = &"around", projectile_count = 5, projectile_interval = 4, projectile_speed = 9.0,
+				projectile_lifetime = 70, projectile_look = &"search_bar", hit_level = 1, hitbox_radius = 0.4,
+				damage = 36, chip_damage = 5, startup = 16, recovery = 36, hitstun = 18, blockstun = 14,
+				animation = &"fight/ground_pound", animation_impact = 0.33, animation_end = 0.85}},
 			# Super: a giant search bar slams down on the opponent (overhead: block standing).
-			search_result = {from = "kenji/ki_blast", set = {name = "Search Result", input = "236236P", super_move = true,
+			not_found = {from = "kenji/ki_blast", set = {name = "404 Not Found", input = "236236P", super_move = true,
 				animation = &"fight/ground_pound", animation_impact = 0.33, animation_end = 0.85,
 				projectile_origin = &"sky", projectile_speed = 20.0, projectile_lifetime = 60, hitbox_radius = 0.65,
 				damage = 290, chip_damage = 45, hit_level = 3, hitstun = 0, blockstun = 24, hitstop = 14,
@@ -66,7 +92,7 @@ const MOVESETS := {
 				tip = "Low jabs, then cancel into the rising uppercut."},
 			{name = "Corner Splat", steps = ["HK", "WALL", "6LK", "6HP"], corner = true,
 				tip = "A roundhouse near the edge splats them: walk in and follow up."},
-			{name = "Search Result", steps = ["LP", "HP", "236236P"], corner = false,
+			{name = "404 Not Found", steps = ["LP", "HP", "236236P"], corner = false,
 				tip = "With a full meter, cancel the straight into the super: block it standing!"},
 		],
 	},

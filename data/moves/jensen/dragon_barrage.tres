@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_tahbi")
-name = "GPU Rain"
+name = "Leather Jacket Tornado"
 input = "236236P"
 animation = &"fight/punch_flurry"
 animation_impact = 0.1

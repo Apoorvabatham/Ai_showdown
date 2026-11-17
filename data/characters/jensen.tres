@@ -24,6 +24,7 @@
 [ext_resource type="Resource" path="res://data/moves/jensen/dragon_barrage.tres" id="22_emas8"]
 [ext_resource type="Resource" path="res://data/moves/jensen/dragon_finish.tres" id="23_748rd"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="24_2wpfc"]
+[ext_resource type="Resource" path="res://data/moves/jensen/gpu_rain.tres" id="24_3fsju"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/jensen_body.res" id="24_n68sn"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/jensen_outfit.res" id="25_i1kn0"]
 [ext_resource type="Texture2D" path="res://assets/characters/prints/T_jensen_tee.png" id="26_5ljcw"]
@@ -129,10 +130,10 @@ combo_trials = Array[Dictionary]([{
 &"tip": "A roundhouse near the edge splats them: walk in and follow up."
 }, {
 &"corner": false,
-&"name": "GPU Rain",
+&"name": "Leather Jacket Tornado",
 &"steps": PackedStringArray("LP", "HP", "236236P"),
 &"tip": "With a full meter, cancel the straight into the super."
 }])
 power_rating = 0.55
 speed_rating = 0.55
-moves = Array[ExtResource("5_5ljcw")]([ExtResource("6_3fsju"), ExtResource("7_0uowl"), ExtResource("8_mo7wa"), ExtResource("9_c6usm"), ExtResource("10_ofj3m"), ExtResource("11_uptqe"), ExtResource("12_oog5y"), ExtResource("13_0hd10"), ExtResource("14_c3m2v"), ExtResource("15_yeyfo"), ExtResource("16_0wrum"), ExtResource("17_0y73e"), ExtResource("18_uri75"), ExtResource("19_e7xrc"), ExtResource("20_dauaf"), ExtResource("21_kigbc"), ExtResource("22_emas8"), ExtResource("23_748rd")])
+moves = Array[ExtResource("5_5ljcw")]([ExtResource("6_3fsju"), ExtResource("7_0uowl"), ExtResource("8_mo7wa"), ExtResource("9_c6usm"), ExtResource("10_ofj3m"), ExtResource("11_uptqe"), ExtResource("12_oog5y"), ExtResource("13_0hd10"), ExtResource("14_c3m2v"), ExtResource("15_yeyfo"), ExtResource("16_0wrum"), ExtResource("17_0y73e"), ExtResource("18_uri75"), ExtResource("19_e7xrc"), ExtResource("20_dauaf"), ExtResource("21_kigbc"), ExtResource("22_emas8"), ExtResource("23_748rd"), ExtResource("24_3fsju")])

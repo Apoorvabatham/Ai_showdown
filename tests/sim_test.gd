@@ -5035,9 +5035,9 @@ func showdown_tests() -> void:
 			if mv.super_move:
 				supers[c.id] = mv.name
 	check("Showdown: the supers are renamed for the parody", supers.ram == "Scaling Law" and supers.tesla == "Rocket Launch"
-		and supers.dario == "Constitutional Shield" and supers.zuckerbot == "Metaverse Trap" and supers.jensen == "GPU Rain"
+		and supers.dario == "Constitutional Shield" and supers.zuckerbot == "Metaverse Trap" and supers.jensen == "Leather Jacket Tornado"
 		and supers.yann == "It's Just Autocomplete" and supers.geoff.begins_with("I Regret Nothing")
-		and supers.sundar == "Search Result" and supers.donald == "Shower of Tariffs" and supers.xi == "Great Firewall"
+		and supers.sundar == "404 Not Found" and supers.donald == "Shower of Tariffs" and supers.xi == "Great Firewall"
 		and supers.algorithm == "Engagement Loop", str(supers))
 	var jensen: CharacterData = gs.find_character(&"jensen")
 	var sundar: CharacterData = gs.find_character(&"sundar")
@@ -5049,6 +5049,20 @@ func showdown_tests() -> void:
 		and not "~dragon_finish" in sundar_inputs and sundar.combo_trials.size() == 6 and sundar.walk_speed < jensen.walk_speed
 		and sundar.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Trapper" and FighterShowcase.ROUTINES.has(&"sundar"),
 		str(sundar_inputs))
+	var power_moves := {}
+	for id in [&"tesla", &"jensen", &"sundar"]:
+		for mv in gs.find_character(id).moves:
+			if mv.input in ["214K", "214P", "63214P"] and mv.projectile_look != &"" and not mv.super_move:
+				power_moves[id] = mv
+	check("Showdown: power moves throw animated objects (Rocket Barrage, GPU Rain, Search Result)",
+		power_moves.size() == 3 and power_moves.tesla.name == "Rocket Barrage" and power_moves.tesla.projectile_look == &"mini_rocket"
+		and power_moves.tesla.projectile_count == 3 and power_moves.jensen.name == "GPU Rain"
+		and power_moves.jensen.projectile_origin == &"sky" and power_moves.jensen.projectile_count == 4
+		and power_moves.sundar.name == "Search Result" and power_moves.sundar.projectile_origin == &"around"
+		and power_moves.sundar.projectile_count == 5 and not power_moves.sundar.knockdown
+		and gs.find_character(&"jensen").moves.any(func(mv: MoveData) -> bool: return mv.input == "236P" and mv.name == "Tensor Blast")
+		and ProjectileLooks.build(&"mini_rocket", Color.WHITE).get_node_or_null("Flame") != null,
+		str(power_moves.keys()))
 	var zuck: CharacterData = gs.find_character(&"zuckerbot")
 	var donald: CharacterData = gs.find_character(&"donald")
 	var donald_moves := {}
