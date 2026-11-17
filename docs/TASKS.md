@@ -63,6 +63,7 @@ what is next.
 | `README.md`, `docs/**` (except this board, ROADMAP and status files) | Gemini for prose; anyone may fix facts |
 | `docs/status/opencode.md`, `docs/review/opencode/**` | OpenCode |
 | `docs/status/gemini.md`, `docs/review/gemini/**` | Gemini |
+| `docs/status/opus.md`, `docs/review/opus/**` | Opus 4.6 (on `gemini/work`) |
 | `docs/TASKS.md`, `docs/ROADMAP.md` | Claude |
 | `data/characters/**`, `data/moves/**` | generated: never hand-edit |
 
@@ -232,7 +233,8 @@ Add a line: `- [from <agent> to <agent>] what and why`. The owner of the file do
 
 ## 7. Handoff (Nov 2026): Claude steps back, Opus 4.6 on `gemini/work` continues
 
-Claude's tasks (C*) move to **Opus 4.6 working on `gemini/work`**, which also takes over the
+Gemini's remaining tasks (G4, G6, G7b, G8–G10, G12) and Claude's tasks (C*) move to
+**Opus 4.6 working on `gemini/work`**, which also takes over the
 orchestrator role (keep this board, the ROADMAP and the contracts up to date). Start with:
 `git fetch origin && git checkout gemini/work && git merge origin/claude/brave-rubin-b43he7`.
 
@@ -256,7 +258,8 @@ Each was written by an agent from the brief in the commit history; read the scen
 merge conflicts only in `tools/showdown_movesets.gd` and `tests/sim_test.gd` (keep both sides).
 
 ### Remaining work, in a sensible order
-1. Finish and merge the three WIP branches (above). Re-render Xi's squad scene once (helpers
+1. Finish and merge the three WIP branches (above) first: they add the sets `oval_desk`,
+   `vr_lobby`, `metaverse`, `browser_void`, `keynote_stage`, which G8 then dresses with the rest. Re-render Xi's squad scene once (helpers
    were just spread out; untested visually).
 2. Victory scenes still to build (approved, ROADMAP §2): Sundar, Xi, Jensen, Dario, Yann,
    Geoff, Ram, AGI. Pattern: `scripts/supers/victory/tesla.gd` (own set) or `own_set = false`
