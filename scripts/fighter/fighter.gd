@@ -884,7 +884,7 @@ func _set_state(new_state: State, crouch: bool = false) -> void:
 
 ## Active hitbox this tick as {center: Vector3, radius: float}, or {} if none.
 func get_active_hitbox() -> Dictionary:
-	if state != State.ATTACK or current_move.projectile_speed > 0.0 or current_move.command_grab 			or current_move.hitbox_radius <= 0.0:
+	if state != State.ATTACK or current_move.fires_projectile() or current_move.command_grab 			or current_move.hitbox_radius <= 0.0:
 		return {}
 	if hits_landed >= move_hits() or state_frame < next_hit_frame:
 		return {}

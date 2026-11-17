@@ -211,8 +211,8 @@ const ROSTER := [
 		shape = {spine_03 = Vector3(0.88, 1, 0.88), upperarm = Vector3(0.84, 1, 0.84), lowerarm = Vector3(0.88, 1, 0.88),
 			thigh = Vector3(0.88, 1, 0.88), calf = Vector3(0.9, 1, 0.9), neck_01 = Vector3(0.92, 1.05, 0.92)},
 		posture = {spine_02 = Vector3(1, 0, 0), spine_03 = Vector3(1, 0, 0), neck_01 = Vector3(2, 0, 0), Head = Vector3(-2, 0, 0)},
-		moves = {ki_blast = "Ten Blue Links", rising_dragon = "Featured Snippet", snap_kick = "Quarterly Kick",
-			advancing_straight = "Sponsored Result", dragon_barrage = "Search Result", dragon_finish = "Search Result"},
+		moves = {ki_blast = "Ten Blue Links", rising_dragon = "I'm Feeling Lucky", snap_kick = "Quarterly Kick",
+			advancing_straight = "Pixel Push", dragon_barrage = "Search Result", dragon_finish = "Search Result"},
 		projectile_color = Color(0.26, 0.52, 0.96),
 		voice = &"kenji", color = Color(0.26, 0.52, 0.96),
 		intro = ["I'm feeling lucky.", "We're an AI-first fighter now.", "Let's have a thoughtful, constructive fight."],
@@ -397,6 +397,8 @@ func _build(spec: Dictionary, order: int) -> void:
 			move.name = spec.moves[file]
 		move.damage = roundi(kit_move.damage * spec.damage)
 		move.chip_damage = roundi(kit_move.chip_damage * spec.damage)
+		if spec.has("projectile_color") and move.projectile_speed > 0.0:
+			move.projectile_color = spec.projectile_color
 		built[file] = move
 	var tweaks: Dictionary = overrides.get("tweak", {})
 	for file: String in tweaks:
@@ -411,14 +413,14 @@ func _build(spec: Dictionary, order: int) -> void:
 		var move := source.duplicate() as MoveData
 		move.damage = roundi(source.damage * spec.damage)
 		move.chip_damage = roundi(source.chip_damage * spec.damage)
+		if spec.has("projectile_color") and move.fires_projectile():
+			move.projectile_color = spec.projectile_color
 		for field: String in add.get("set", {}):
 			move.set(field, add.set[field])
 		built[file] = move
 	var moves: Array[MoveData] = []
 	for file: String in built:
 		var move: MoveData = built[file]
-		if spec.has("projectile_color") and move.projectile_speed > 0.0:
-			move.projectile_color = spec.projectile_color
 		var move_path := dir + file + ".tres"
 		ResourceSaver.save(move, move_path)
 		moves.append(load(move_path))
@@ -430,9 +432,13 @@ func _build(spec: Dictionary, order: int) -> void:
 	for move in moves:
 		inputs[move.input] = true
 	var trials: Array[Dictionary] = []
-	if overrides.has("trials"):
-		trials.assign(overrides.trials)
-	for trial in kit.combo_trials if not overrides.has("trials") else []:
+	var own_trials: Variant = overrides.get("trials") # get(): the keys are StringNames
+	if own_trials != null:
+		for trial: Dictionary in own_trials:
+			var copy := trial.duplicate(true)
+			copy[&"steps"] = PackedStringArray(trial.steps)
+			trials.append(copy)
+	for trial in kit.combo_trials if own_trials == null else []:
 		var steps: PackedStringArray = trial.steps
 		if not Array(steps).all(func(s: String) -> bool: return s == "WALL" or inputs.has(s) or inputs.has(s.trim_prefix("6"))):
 			continue # uses a move this fighter no longer has

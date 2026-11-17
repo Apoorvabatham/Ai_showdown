@@ -45,14 +45,15 @@ The engine features each design needs are listed in §1.3.
 ### 1.2 Move lists (specials; numbers are first drafts for balance)
 
 Inputs: 236 = quarter-circle forward, 214 = quarter-circle back, 623 = dragon punch,
-22 = down-down, 63214 = half-circle back, 236236 = super. P / K = any punch / kick.
+63214 = half-circle back, 236236 = super. P / K = any punch / kick.
 
 **Sundar Pickai (Zoner).** HP 1020, slow walk.
-- 236P **Ten Blue Links**: fans out 3 small fast shots (low damage each, multi-height).
+- 236P **Ten Blue Links**: fans out 3 small fast shots (low damage each, three heights: the low one catches crouchers).
 - 214P **Sponsored Result**: a slow, long-lived "ad" projectile that hangs in the air (trap).
 - 623P **I'm Feeling Lucky**: invincible rising anti-air.
-- 22P **Algorithm Update**: teleports behind the opponent (slow recovery if guessed).
-- Super **Search Result**: a giant search bar slams down from above in front of him.
+- 214K **Algorithm Update**: teleports behind the opponent (slow recovery if guessed).
+- 6HP **Pixel Push**, 6LK **Quarterly Kick** (command normals).
+- Super **Search Result**: a giant search bar slams down onto the opponent from above (overhead: block standing).
 
 **Donald Tarrif (Armoured powerhouse).** HP 1120, slowest walk, big damage.
 - 236P **Trade War Tackle**: armoured charge (absorbs 1 hit), wall-bounce.
@@ -70,7 +71,7 @@ Inputs: 236 = quarter-circle forward, 214 = quarter-circle back, 623 = dragon pu
 **Xi Winping (Fortress).** HP 1080.
 - 236P **Belt and Road Rush**: long travelling charge with big wall-carry.
 - 214P **Social Credit Hammer**: ground shockwave (must jump it).
-- 22P **Censorship**: short stance that **reflects** projectiles back.
+- 214K **Censorship**: short stance that **reflects** projectiles back.
 - 623P **Five-Year Plan**: focus stance; stacks power into the next special.
 - Super **Great Firewall**: a red wall rises; it blocks/reflects projectiles and pushes the
   opponent toward the corner for a few seconds.

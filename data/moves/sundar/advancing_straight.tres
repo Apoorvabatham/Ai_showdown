@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_h4mso")
-name = "Sponsored Result"
+name = "Pixel Push"
 input = "6HP"
 animation = &"ual1/Punch_Cross"
 animation_impact = 0.28

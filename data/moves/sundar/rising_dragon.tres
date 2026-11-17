@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_tsop7")
-name = "Featured Snippet"
+name = "I'm Feeling Lucky"
 input = "623P"
 animation = &"fight/rising_uppercut"
 animation_impact = 0.09

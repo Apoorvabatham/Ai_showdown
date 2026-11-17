@@ -21,10 +21,11 @@
 [ext_resource type="Resource" path="res://data/moves/sundar/snap_kick.tres" id="18_q1cn5"]
 [ext_resource type="Resource" path="res://data/moves/sundar/ki_blast.tres" id="19_4nbj0"]
 [ext_resource type="Resource" path="res://data/moves/sundar/rising_dragon.tres" id="20_w5kka"]
-[ext_resource type="Resource" path="res://data/moves/sundar/dragon_barrage.tres" id="21_s35op"]
-[ext_resource type="Resource" path="res://data/moves/sundar/dragon_finish.tres" id="22_4cjg5"]
+[ext_resource type="Resource" path="res://data/moves/sundar/sponsored_result.tres" id="22_ibel8"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="23_bdy5b"]
+[ext_resource type="Resource" path="res://data/moves/sundar/algorithm_update.tres" id="23_ebf8y"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/sundar_body.res" id="23_hj4g3"]
+[ext_resource type="Resource" path="res://data/moves/sundar/search_result.tres" id="24_gqhry"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/sundar_outfit.res" id="24_p7qgi"]
 [ext_resource type="Texture2D" path="res://assets/characters/prints/T_sundar_tee.png" id="26_ibel8"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/sundar.png" id="26_ksgio"]
@@ -33,7 +34,7 @@
 script = ExtResource("23_bdy5b")
 id = &"sundar"
 display_name = "Sundar Pickai"
-archetype = "Calm Zoner"
+archetype = "Zoner"
 description = "Unflappable and endlessly polite. Ranks your weaknesses and serves you ten blue links' worth of fireballs. Takes a hit better than he throws one."
 select_order = 7
 kit = &"kenji"
@@ -109,19 +110,19 @@ combo_trials = Array[Dictionary]([{
 &"tip": "Jabs chain into each other and into the straight."
 }, {
 &"corner": false,
-&"name": "Quarterly Kick Rush",
+&"name": "Quarterly Push",
 &"steps": PackedStringArray("6LK", "6HP"),
-&"tip": "Hold forward: the snap kick chains into the advancing straight."
+&"tip": "Hold forward: the Quarterly Kick chains into the Pixel Push."
 }, {
 &"corner": false,
-&"name": "Fireball Confirm",
+&"name": "Ten Blue Links",
 &"steps": PackedStringArray("LP", "HP", "236P"),
 &"tip": "Cancel the straight into Ten Blue Links as it hits."
 }, {
 &"corner": false,
-&"name": "Featured Snippet",
+&"name": "I'm Feeling Lucky",
 &"steps": PackedStringArray("2LP", "2LP", "623P"),
-&"tip": "Low jabs, then cancel into the dragon punch."
+&"tip": "Low jabs, then cancel into the rising uppercut."
 }, {
 &"corner": true,
 &"name": "Corner Splat",
@@ -131,12 +132,12 @@ combo_trials = Array[Dictionary]([{
 &"corner": false,
 &"name": "Search Result",
 &"steps": PackedStringArray("LP", "HP", "236236P"),
-&"tip": "With a full meter, cancel the straight into the super."
+&"tip": "With a full meter, cancel the straight into the super: block it standing!"
 }])
-max_health = 1100
+max_health = 1020
 walk_speed = 1.8
 back_walk_speed = 1.5
 weight = 1.1
 power_rating = 0.4
 speed_rating = 0.45
-moves = Array[ExtResource("4_p7qgi")]([ExtResource("5_ksgio"), ExtResource("6_qiyug"), ExtResource("7_ibel8"), ExtResource("8_ebf8y"), ExtResource("9_gqhry"), ExtResource("10_n8ahd"), ExtResource("11_5kjqn"), ExtResource("12_mccji"), ExtResource("13_w7k45"), ExtResource("14_voawu"), ExtResource("15_lgv4l"), ExtResource("16_2f78i"), ExtResource("17_a8b6e"), ExtResource("18_q1cn5"), ExtResource("19_4nbj0"), ExtResource("20_w5kka"), ExtResource("21_s35op"), ExtResource("22_4cjg5")])
+moves = Array[ExtResource("4_p7qgi")]([ExtResource("5_ksgio"), ExtResource("6_qiyug"), ExtResource("7_ibel8"), ExtResource("8_ebf8y"), ExtResource("9_gqhry"), ExtResource("10_n8ahd"), ExtResource("11_5kjqn"), ExtResource("12_mccji"), ExtResource("13_w7k45"), ExtResource("14_voawu"), ExtResource("15_lgv4l"), ExtResource("16_2f78i"), ExtResource("17_a8b6e"), ExtResource("18_q1cn5"), ExtResource("19_4nbj0"), ExtResource("20_w5kka"), ExtResource("22_ibel8"), ExtResource("23_ebf8y"), ExtResource("24_gqhry")])

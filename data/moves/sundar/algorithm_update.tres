@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="1_t2sf3"]
+
+[resource]
+script = ExtResource("1_t2sf3")
+name = "Algorithm Update"
+input = "214K"
+animation = &"fight/focus_stance"
+startup = 14
+active = 1
+recovery = 22
+damage = 0
+hitstun = 18
+blockstun = 14
+hitstop = 7
+knockback = Vector2(1.8, 0)
+invuln_frames = 15
+projectile_lifetime = 100
+projectile_color = Color(0.26, 0.52, 0.96, 1)
+teleport = 1.0
+hitbox_radius = 0.0
+hitbox_offset = Vector3(0, 1.2, -0.6)

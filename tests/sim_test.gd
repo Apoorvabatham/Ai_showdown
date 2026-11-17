@@ -4953,8 +4953,14 @@ func showdown_tests() -> void:
 		and supers.algorithm == "Engagement Loop", str(supers))
 	var jensen: CharacterData = gs.find_character(&"jensen")
 	var sundar: CharacterData = gs.find_character(&"sundar")
-	check("Showdown: Sundar shares Jensen's kit with different stats", jensen.kit == sundar.kit and sundar.max_health > jensen.max_health
-		and sundar.walk_speed < jensen.walk_speed)
+	var links: MoveData = sundar.moves.filter(func(mv: MoveData) -> bool: return mv.input == "236P")[0]
+	var sundar_inputs: Array = sundar.moves.map(func(mv: MoveData) -> String: return mv.input)
+	var sundar_super: MoveData = sundar.moves.filter(func(mv: MoveData) -> bool: return mv.super_move)[0]
+	check("Showdown: Sundar is a trapper, not a copy of Jensen", links.projectile_count == 3 and "214P" in sundar_inputs
+		and "214K" in sundar_inputs and sundar_super.projectile_origin == &"sky" and sundar_super.hit_level == MoveData.HitLevel.OVERHEAD
+		and not "~dragon_finish" in sundar_inputs and sundar.combo_trials.size() == 6 and sundar.walk_speed < jensen.walk_speed
+		and sundar.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Trapper" and FighterShowcase.ROUTINES.has(&"sundar"),
+		str(sundar_inputs))
 	var zuck: CharacterData = gs.find_character(&"zuckerbot")
 	var donald: CharacterData = gs.find_character(&"donald")
 	check("Showdown: Donald is a heavier take on the grappler kit", donald.kit == zuck.kit and donald.max_health > zuck.max_health

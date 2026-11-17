@@ -47,7 +47,8 @@ const WAKEUP_SPACING := 1.4
 ## How far from the preferred range before the AI steers back toward it.
 const SPACING_SLACK := 0.5
 
-## Option weight keys: fireball, rush (travelling special), dash, jump, throw, grab
+## Option weight keys: fireball, trap (a slower second projectile), teleport, rush
+## (travelling special), dash, jump, throw, grab
 ## (command grab), ground_special (214), poke, string, sidestep, wait (stand / walk
 ## back), retreat and approach (steering toward the preferred range). Missing keys
 ## count as 1.0.
@@ -108,6 +109,16 @@ const PERSONALITIES := {
 		rising_anti_air = 0.0, pressure = 0.2, far_punish = 0.85,
 		weights = {rush = 0.5, dash = 0.3, jump = 0.4, throw = 1.2, ground_special = 2.0,
 			poke = 0.8, string = 0.8, wait = 2.4, retreat = 0.6, approach = 0.7},
+	},
+}
+## AI Showdown fighters that diverged from their kit (tools/showdown_movesets.gd).
+const SHOWDOWN_PERSONALITIES := {
+	&"sundar": {
+		name = "Trapper", blurb = "fills the screen with links and ads, then vanishes behind you", preferred_range = 3.0,
+		aggression = -0.1, block = 0.1, punish = 0.0, anti_air = 0.25,
+		rising_anti_air = 0.9, pressure = 0.15, far_punish = 0.0,
+		weights = {fireball = 3.0, ground_special = 1.2, rush = 0.3, dash = 0.3, jump = 0.4, throw = 0.6,
+			poke = 1.1, retreat = 2.2, approach = 0.4},
 	},
 }
 const DEFAULT_PERSONALITY := {
@@ -495,7 +506,13 @@ func _decide(fighter: Fighter, seen: Dictionary, dist: float) -> void:
 		return
 
 	var options: Array = []
-	var projectile_move := _special_with(func(m: MoveData) -> bool: return m.projectile_speed > 0.0)
+	# Shots, fastest first: the fastest is the fireball, a slower second one a trap.
+	var shots: Array = _moves.values().filter(func(m: MoveData) -> bool:
+		return m.is_special() and _is_attack(m) and m.projectile_speed > 0.0 and not m.super_move)
+	shots.sort_custom(func(x: MoveData, y: MoveData) -> bool: return x.projectile_speed > y.projectile_speed)
+	var projectile_move: MoveData = shots[0] if not shots.is_empty() else null
+	var trap: MoveData = shots[-1] if shots.size() > 1 else null
+	var teleport := _special_any(func(m: MoveData) -> bool: return m.teleport > 0.0 and not m.super_move)
 	var rush := _special_with(func(m: MoveData) -> bool: return (m.travel > 0.0 or m.lunge > 0.0) and m.rise == 0.0 and not m.super_move)
 	var ground_special := _special_with(func(m: MoveData) -> bool: return m.motion() == "214")
 	var grab := _special_with(func(m: MoveData) -> bool: return m.command_grab and not m.super_move)
@@ -506,6 +523,8 @@ func _decide(fighter: Fighter, seen: Dictionary, dist: float) -> void:
 	if dist > FAR_RANGE:
 		options = [
 			[2.5 * _w("fireball") if can_fireball else 0.0, func() -> void: _queue_special(projectile_move)],
+			[1.0 * _w("trap") if trap and can_fireball else 0.0, func() -> void: _queue_special(trap)],
+			[0.4 * _w("teleport") if teleport else 0.0, func() -> void: _queue_special(teleport)],
 			[1.0 * _w("stance") if stance else 0.0, func() -> void: _queue_special(stance)],
 			[1.0 * aggression * _w("rush") if rush and dist <= reach(rush) else 0.0, func() -> void: _queue_special(rush)],
 			[4.0 * _w("approach"), func() -> void: _plan.append([6, 0, _rng.randi_range(12, 28)])],
@@ -521,6 +540,7 @@ func _decide(fighter: Fighter, seen: Dictionary, dist: float) -> void:
 			[1.2 * aggression if _signature_in_range(dist) else 0.0, func() -> void: _queue_press(HP, 6)],
 			[1.0 * aggression * _w("rush") if rush and dist <= reach(rush) else 0.0, func() -> void: _queue_special(rush)],
 			[0.8 * _w("fireball") if can_fireball else 0.0, func() -> void: _queue_special(projectile_move)],
+			[0.6 * _w("teleport") if teleport else 0.0, func() -> void: _queue_special(teleport)],
 			[1.5 * aggression * _w("jump"), func() -> void: _queue_jump_in()],
 			[1.0 * _w("sidestep"), func() -> void: _queue_sidestep()],
 			[0.6 * _w("retreat"), func() -> void: _queue_backdash()],
@@ -786,7 +806,7 @@ func attach(fighter: Fighter) -> void:
 	_moves.clear()
 	for move in fighter.data.moves:
 		_moves[move.input] = move
-	personality = fighter.data.lookup(PERSONALITIES, DEFAULT_PERSONALITY)
+	personality = fighter.data.lookup(SHOWDOWN_PERSONALITIES, fighter.data.lookup(PERSONALITIES, DEFAULT_PERSONALITY))
 	_apply_profile()
 
 
