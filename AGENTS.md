@@ -7,6 +7,18 @@ parallel, each with its own area:
 - **OpenCode**: character design (fighter likeness pass, NPC models, super props).
 - **Gemini**: stages (realism, props, sounds, crowd content), story writing, docs.
 
+## Your branch
+
+| Agent | Branch |
+|---|---|
+| Claude | `claude/brave-rubin-b43he7` (the main branch) |
+| OpenCode | `opencode/work` |
+| Gemini | `gemini/work` |
+
+Work and push only on your own branch; merge the main branch into yours at the start of each
+task. Report progress in `docs/status/<agent>.md`; Claude merges your branch. Details:
+docs/TASKS.md §1.
+
 ## Read first, in this order
 
 1. [docs/TASKS.md](docs/TASKS.md): the task board, **file ownership**, the contracts between

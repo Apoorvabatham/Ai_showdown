@@ -14,19 +14,30 @@ what is next.
 
 ## 1. Workflow (everyone)
 
-1. `git pull` before you start. Work on the branch the owner names (now:
-   `claude/brave-rubin-b43he7`).
-2. **Claim** a task: set its status to `in progress (<agent>)` in this file, commit and push
-   that one line on its own. Take only tasks assigned to you (or `any`) whose dependencies are `done`.
-3. Edit **only files you own** (§2). If you need a change in someone else's file, add a
-   note under "Requests" (§5) instead.
-4. Commit small, with the task id: `[O2] Jensen GPU prop`, `[C3] Sundar moveset`.
-5. Before pushing: `godot --headless --path . -s res://tests/sim_test.gd` must end with
-   `0 failure(s)`. Then `git pull --rebase` and push.
-6. Conflict in a generated file (`data/characters/*.tres`, `data/moves/**`)? Take either
+### Branches
+| Branch | Who works there |
+|---|---|
+| `claude/brave-rubin-b43he7` | **Main branch** (integration). Claude works here and merges the others in. |
+| `opencode/work` | OpenCode (DeepSeek) only |
+| `gemini/work` | Gemini only |
+
+1. Work **only on your own branch**: `git fetch origin && git checkout <your branch>`.
+   Never push to another agent's branch or to the main branch.
+2. Stay up to date: at the start of every task run
+   `git fetch origin && git merge origin/claude/brave-rubin-b43he7` (the main branch).
+3. Edit **only files you own** (§2). If you need a change in someone else's file, write it
+   in your status file (step 5) under "Requests".
+4. Commit small, with the task id: `[O2] Rocket prop`, `[G3] Mensa lighting`. Push your branch.
+5. **Report status in your own file**, not in this board: `docs/status/opencode.md` or
+   `docs/status/gemini.md` (task id, state, what changed, screenshots, requests). Claude reads
+   it, updates this board and merges your branch into the main branch.
+6. Before pushing: `godot --headless --path . -s res://tests/sim_test.gd` must end with
+   `0 failure(s)`.
+7. Conflict in a generated file (`data/characters/*.tres`, `data/moves/**`)? Take either
    side, then **re-run the generators** (HANDOFF §5) and commit the result.
-7. Done = tests pass, renders or screenshots attached for visual work (in `docs/review/`),
-   status set to `review` (or `done` if no owner review is needed). The owner moves `review` to `done`.
+8. Done = tests pass, renders or screenshots for visual work in `docs/review/` (your own
+   subfolder: `docs/review/opencode/`, `docs/review/gemini/`), state `review` in your status
+   file. The owner approves; Claude merges.
 
 ## 2. File ownership
 
@@ -43,8 +54,10 @@ what is next.
 | `scripts/stages/**` (incl. `stage_retheme.gd`), `scenes/stages/**` | Gemini |
 | `assets/stage_props/**`, `assets/audio/stage/**`, `data/stage_life/**`, `data/story/**` | Gemini |
 | `assets/CREDITS.md`, `LICENSE-ASSETS.md` | anyone adding assets (append only) |
-| `README.md`, `docs/**` (except this board's task sections) | Gemini for prose; anyone may fix facts |
-| `docs/TASKS.md` | Claude edits tasks; anyone updates their own task's status |
+| `README.md`, `docs/**` (except this board, ROADMAP and status files) | Gemini for prose; anyone may fix facts |
+| `docs/status/opencode.md`, `docs/review/opencode/**` | OpenCode |
+| `docs/status/gemini.md`, `docs/review/gemini/**` | Gemini |
+| `docs/TASKS.md`, `docs/ROADMAP.md` | Claude |
 | `data/characters/**`, `data/moves/**` | generated: never hand-edit |
 
 ## 3. Contracts between agents
@@ -57,12 +70,17 @@ what is next.
 - Under 30k triangles per prop; textures at most 1024 px, VRAM-compressed (HANDOFF §8).
 - Glow parts: emissive `StandardMaterial3D` (Claude adds bloom and animation).
 
+Super-scene sets (rooms, launch pad, space, Mars, metaverse) are built by Claude in code;
+props are the objects in them. Scale for **giant** props is real-world: Claude scales them.
+
 ### 3.2 NPC models (OpenCode → Claude)
 - `data/npcs/<npc_id>.tres` as `CharacterData` (look fields only, no moves), built by
   `tools/build_npcs.gd` with the same body/outfit/face pipeline as the fighters.
 - **Made-up generic people, never real persons.** Mix ages, builds, men and women
   (the female base bodies are used by the aelia/rhea/valka/mira kits).
-- Claude's `StageActor` loads them through `FighterModel` and plays UAL clips on them.
+- Claude's `StageActor` and super-scene puppets load them through `FighterModel` and play
+  UAL clips on them.
+- T-shirt prints go through `tools/build_prints.py` like the fighters' tees.
 
 ### 3.3 Stage-life data (Gemini → Claude's loader)
 `data/stage_life/<stage>.json` (stage = `server_farm`, `mensa`, `senate`, `foundry`):
@@ -130,25 +148,35 @@ Status: `todo`, `in progress (<agent>)`, `review`, `done`, `blocked`.
 | C11 | Story mode screens and flow | G1 (one fighter is enough to start) | todo |
 | C12 | 1v1 Quick Match: player vs a random CPU, random stage, one round (`GameState.Mode.QUICK`) | — | done |
 
-### OpenCode (character design)
+### OpenCode (character design) — branch `opencode/work`
+
+Start with O2a, then O5, then O3. All can start now (no dependency on Claude's code).
 
 | ID | Task | Depends | Status |
 |---|---|---|---|
 | O1 | Likeness pass: whatever the owner asks next for fighter looks (HANDOFF §2–§5) | — | ongoing |
-| O2 | Super props (contract §3.1): `jensen/gpu_card` (child meshes `Fan1`, `Fan2`), `donald/tariff_paper` + `donald/stamp`, `sundar/search_bar` (3 m wide, magnifier icon, child `Text` area) + `sundar/result_card`, `xi/firewall_segment` (1 × 2 × 0.3 m bricks + emissive grid child `Grid`), `tesla/rocket` (~1.6 m, child `Flame`), `dario/rulebook_shield` (open book, child `Glow`), `zuckerbot/vr_headset`, `algorithm/feed_panel` (0.6 × 1 m phone-feed card) | — | todo |
-| O3 | NPC models (contract §3.2), made-up people: `chair` (senior committee chair), `senator_1..3`, `stenographer`, `press_1..2`, `student_1..6`, `cook`, `cashier`, `technician_1..3` (bunny suits), `sysadmin_1..2` | — | todo |
+| O2a | **tesla man** props (contract §3.1): `tesla/steel_pickup` (angular stainless-steel pickup truck, **our own design, no logo or badge**, ~5.6 m long, wheels as children `Wheel_FL`, `Wheel_FR`, `Wheel_RL`, `Wheel_RR`, child `Headlights` emissive strip), `tesla/rocket` (tall rocket ~8 m, white/steel, child `Flame` at the nozzle, child Marker3D `ChainPoint` where a fighter is chained), `tesla/mini_rocket` (~0.6 m power-move shot, child `Flame`), `tesla/mars_flag` (pole ~2.5 m + white cloth child `Cloth` with blank space for the text "CAPTURED") | — | todo |
+| O2b | **Donald** props: `donald/shipping_container` (cartoon container ~1.2 × 0.5 × 0.5 m, corrugated sides, doors at one end, blank panel for the word "IMPORTS"), `donald/tariff_stamp` (giant rubber stamp: wooden handle + red rubber base, the base's underside reads "TARIFF" mirrored), `donald/office_desk` (big dark-wood executive desk ~2.4 × 1.2 m), `donald/us_flag` (flag on a pole, child `Cloth`) | — | todo |
+| O2c | **Jensen** props: `jensen/leather_jacket` (black leather jacket as a separate prop, open, sleeves out, for the tornado super) | — | todo |
+| O2d | **Zuckerbot** props: `zuckerbot/vr_goggles` (chunky VR headset with strap), `zuckerbot/metaverse_kit` (low-poly floating island, cartoon tree, bright pastel colours: 3–4 props) | — | todo |
+| O2e | **Sundar** props: `sundar/browser_window` (giant browser window frame ~4 × 3 m: title bar, address bar, close/min buttons, blank page area) | — | todo |
+| O3 | NPC models for the stages (contract §3.2), made-up people: `chair` (senior committee chair), `senator_1..3`, `stenographer`, `press_1..2`, `student_1..6`, `cook`, `cashier`, `technician_1..3` (bunny suits), `sysadmin_1..2` | — | todo |
 | O4 | AGI phase looks: material/colour variants for phase 2 and 3 (glitch, red), as alt outfits on `algorithm` | — | todo |
+| O5 | **Xi's super helpers** (NPCs, contract §3.2): `helper_qwen`, `helper_alibaba`, `helper_kimi`: three made-up young engineers in T-shirts with the words **Qwen**, **Alibaba** and **Kimi** printed on the chest (owner's request), different builds and hair, sneakers | — | todo |
 
-### Gemini (stages, assets, writing)
+### Gemini (stages, assets, writing) — branch `gemini/work`
+
+Start with G1 and G2 now; G3 after G2. G4 and G6 wait for Claude's stage-life framework (C9).
 
 | ID | Task | Depends | Status |
 |---|---|---|---|
 | G1 | Story scripts for all 11 fighters (contract §3.4). Start with `ram`, then the rest | — | todo |
 | G2 | Find CC0 models/textures for the 4 stages (Kenney, Quaternius, Poly Haven, ambientCG); put them in `assets/stage_props/<pack>/`, credit them in `assets/CREDITS.md`, keep the download small (models < 5 MB, textures ≤ 2K) | — | todo |
 | G3 | Realism pass per stage in `scripts/stages/stage_retheme.gd`: replace box props with real models, PBR materials, lighting, fog, reflection probes. One stage at a time (Mensa first), screenshots for the owner | G2 | todo |
-| G4 | Stage-life content: `data/stage_life/<stage>.json` (actor placement, shout lines, events) for each stage | C9, O3 | todo |
+| G4 | Stage-life content: `data/stage_life/<stage>.json` (actor placement, shout lines, events) for each stage | C9, O3 | blocked |
 | G5 | Stage sounds (CC0): gavel, camera shutter, tray clatter, welding, sparks, alarms, crowd cheers/gasps per stage, in `assets/audio/stage/<stage>/` | — | todo |
-| G6 | Voices for the stage shout lines (contract §3.3 naming): an offline TTS with a licence that allows use in a game (e.g. Piper with a permissively licensed voice; note the licence in `assets/CREDITS.md`), several different voices per stage (chair, students, press...), OGG, normalised, short | G4 | todo |
+| G6 | Voices for the stage shout lines (contract §3.3 naming): an offline TTS with a licence that allows use in a game (e.g. Piper with a permissively licensed voice; note the licence in `assets/CREDITS.md`), several different voices per stage (chair, students, press...), OGG, normalised, short | G4 | blocked |
+| G7 | Super and victory sounds (CC0), in `assets/audio/supers/<fighter_id>/`: tesla (truck engine, chain rattle, rocket launch roar, space whoosh, re-entry burn, flag plant), Donald (container crash, giant stamp thud, paper flutter, crowd "USA" chant), Jensen (whoosh / wind tornado), Zuckerbot (VR power-up, digital glitch), Sundar (keyboard typing, error beep), Xi (running footsteps, punch flurry) | — | todo |
 
 ## 5. Requests (cross-owner changes)
 
