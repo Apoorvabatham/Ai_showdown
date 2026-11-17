@@ -148,8 +148,8 @@ real props).
 | **GPU Foundry** | Bunny-suit technicians, an engineer at a console | Welding/laser sparks, robot arms move wafers, alarms on supers, AGV carts | Glossy cleanroom floor, yellow litho lighting, real machinery models, haze |
 | **Server Farm** | Sysadmins with laptops, a drone | Sparks on wall hits, rack LEDs pulse with combos, steam vents, cooling leak on KO | Blinking racks, night skyline, rain/fog option, cable trays |
 
-Shouts are **speech bubbles + generic crowd sounds** first. Voice lines can come later
-(recordings or TTS, owner decides).
+Shouts are **speech bubbles and spoken voice lines** (offline TTS, task G6), plus crowd
+sounds.
 
 ## 4. AGI, the final boss
 
@@ -168,8 +168,8 @@ Shouts are **speech bubbles + generic crowd sounds** first. Voice lines can come
   an ending. Presentation: dialogue boxes with the existing portraits and cut-ins over the
   VS screen style (cheap, looks good). Script data in `data/story/<id>.json` (schema in
   TASKS.md, task G1). Engine and screens: Claude.
-- **1v1 mode.** Waiting for the owner to define it (online 1v1? quick 1v1 vs chosen CPU?).
-  Versus (2 local players) and Vs CPU already exist.
+- **1v1 Quick Match** (done): the player against a random CPU on a random stage, one round,
+  no story.
 
 ## 6. Animations
 
@@ -187,4 +187,4 @@ Shouts are **speech bubbles + generic crowd sounds** first. Voice lines can come
 2. Sundar → Donald → Xi → AGI movesets (C3–C6), one at a time, owner tests each.
 3. SuperFX framework (C7), then supers one by one (C8), props from OpenCode (O2).
 4. Stage-life framework (C9); NPC models (O3); stage realism and dressing (G2–G4).
-5. AGI boss phases (C10). Story mode (C11 + G1). 1v1 once defined.
+5. AGI boss phases (C10). Story mode (C11 + G1).
