@@ -281,3 +281,10 @@ merge conflicts only in `tools/showdown_movesets.gd` and `tests/sim_test.gd` (ke
   killed.
 - Flaky old tests: "Replays: a rematch is saved as a second replay" and "Courtyard: the
   pigeons..." fail now and then; rerun before investigating.
+
+### Update: Gemini's last round merged; Kilo Code continues on `gemini/work`
+Gemini finished G4 (crowd content, all 4 stages), G6 (voices), G7b (sounds), G10 and G12
+(realism round 2, lighting), merged into main with the suite at `0 failure(s)`. Opus did not
+start. **Kilo Code** now works on `gemini/work` and takes everything in "Remaining work" above,
+starting with the three `wip/*` branches, then G8 / G9 (dress the sets). New stage screenshots
+after G10/G12 were not saved: render fresh ones into `docs/review/kilo/` first.
