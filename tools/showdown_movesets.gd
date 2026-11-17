@@ -70,4 +70,45 @@ const MOVESETS := {
 				tip = "With a full meter, cancel the straight into the super: block it standing!"},
 		],
 	},
+	# Donald Tarrif: armoured powerhouse (was a copy of Valka's grappler kit).
+	&"donald": {
+		stats = {archetype = "Armoured Powerhouse"},
+		tweak = {
+			# Executive Order: the lariat soaks up a hit while it spins up.
+			spinning_lariat = {armor_hits = 1, damage = 42},
+			# Trade War Tackle: an armoured charge.
+			shoulder_tackle = {armor_hits = 1, damage = 88},
+			# You're Fired: slower, much bigger command grab.
+			valkyrie_slam = {startup = 14, damage = 170, recovery = 40},
+			# Shower of Tariffs: the kit's super; its cinematic comes later.
+			thunder_valkyrie = {super_fx = &"tariff_stamp"},
+		},
+		add = {
+			# Two shipping containers, one after the other, tumbling at the opponent.
+			trade_war = {from = "kenji/ki_blast", set = {name = "Trade War", input = "236P",
+				projectile_count = 2, projectile_interval = 10, projectile_speed = 5.0, projectile_lifetime = 110,
+				projectile_look = &"container", projectile_color = Color(0.8, 0.3, 0.12),
+				damage = 52, chip_damage = 7, hitbox_radius = 0.34, startup = 14, recovery = 30,
+				hitstun = 20, blockstun = 15}},
+			# A wall that stands for three seconds, eats shots and blocks the way.
+			build_the_wall = {from = "kenji/ki_blast", set = {name = "Build the Wall", input = "214P",
+				barrier = true, projectile_speed = 0.0, projectile_lifetime = 180, hitbox_radius = 0.15,
+				projectile_color = Color(0.85, 0.7, 0.4), damage = 0, chip_damage = 0,
+				startup = 16, recovery = 28}},
+		},
+		trials = [
+			{name = "Jab String", steps = ["LP", "LP", "HP"], corner = false,
+				tip = "Jabs chain into each other and into the straight."},
+			{name = "Low Order", steps = ["2LP", "2LP", "623P"], corner = false,
+				tip = "Low jabs, then cancel into the Executive Order."},
+			{name = "Knee and Order", steps = ["6LK", "623P"], corner = false,
+				tip = "Cancel the knee lift into the Executive Order while they're in the air."},
+			{name = "Trade War", steps = ["LP", "HP", "236P"], corner = false,
+				tip = "Cancel the straight into two shipping containers."},
+			{name = "Corner Splat", steps = ["HK", "WALL", "LK", "HP"], corner = true,
+				tip = "A roundhouse near the edge splats them: walk in and follow up."},
+			{name = "Tackle to the Wall", steps = ["6HP", "WALL", "LP", "623P"], corner = true,
+				tip = "The armoured tackle splats them on the edge: jab, then cancel into the Executive Order."},
+		],
+	},
 }

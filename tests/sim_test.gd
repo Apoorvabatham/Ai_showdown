@@ -4963,8 +4963,20 @@ func showdown_tests() -> void:
 		str(sundar_inputs))
 	var zuck: CharacterData = gs.find_character(&"zuckerbot")
 	var donald: CharacterData = gs.find_character(&"donald")
-	check("Showdown: Donald is a heavier take on the grappler kit", donald.kit == zuck.kit and donald.max_health > zuck.max_health
-		and donald.weight > zuck.weight)
+	var donald_moves := {}
+	for mv: MoveData in donald.moves:
+		donald_moves[mv.input] = mv
+	var trade_war: MoveData = donald_moves.get("236P")
+	var wall: MoveData = donald_moves.get("214P")
+	var donald_super: MoveData = donald.moves.filter(func(mv: MoveData) -> bool: return mv.super_move)[0]
+	check("Showdown: Donald is an armoured powerhouse with his own moveset, not a copy of Zuckerbot",
+		trade_war != null and trade_war.projectile_count == 2 and trade_war.projectile_look == &"container"
+		and wall != null and wall.barrier and donald_moves.get("623P").armor_hits == 1 and donald_moves.get("6HP").armor_hits == 1
+		and donald_moves.get("63214P").command_grab and donald_moves.get("63214P").name == "You're Fired"
+		and donald_super.name == "Shower of Tariffs" and donald_super.super_fx == &"tariff_stamp"
+		and donald.max_health > zuck.max_health and donald.weight > zuck.weight and donald.walk_speed < zuck.walk_speed
+		and donald.combo_trials.size() == 6 and donald.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Tycoon"
+		and FighterShowcase.ROUTINES.has(&"donald") and zuck.moves.all(func(mv: MoveData) -> bool: return not mv.barrier and mv.armor_hits == 0))
 
 	# Voices: a fighter without its own shouts borrows its fallback's, except for the super
 	# (the drop-in <id>_super_1.ogg/.wav names the move).
