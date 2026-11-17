@@ -26,3 +26,6 @@ docs/reviews/
 __pycache__/
 *.py[cod]
 
+
+# Scratch scripts (renders, debugging); never committed
+tools/_tmp_*
