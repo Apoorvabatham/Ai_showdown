@@ -40,8 +40,8 @@ portrait = ExtResource("25_eil64")
 model_scene = ExtResource("4_eil64")
 hair_scenes = Array[PackedScene]([ExtResource("3_eil64")])
 body_albedo = ExtResource("1_eil64")
-model_scale = 1.07
-hair_color = Color(0.88, 0.7, 0.38, 1)
+model_scale = 1.08
+hair_color = Color(0.75, 0.65, 0.45, 1)
 alt_body_albedo = ExtResource("1_eil64")
 alt_hair_color = Color(0.85, 0.85, 0.82, 1)
 outfit_mesh = ExtResource("24_eil64")
@@ -54,39 +54,43 @@ realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_flex", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.85, 0.15, 0.15, 1)
 body_shape = {
-&"Head": Vector3(1.05, 1.08, 1.08),
-&"lowerarm": Vector3(1.05, 1, 1.05),
-&"neck_01": Vector3(1.28, 1, 1.25),
-&"pelvis": [Vector3(1.32, 1, 1.45), Vector3(0, 0, 0.02)],
-&"spine_01": [Vector3(1.55, 1, 1.85), Vector3(0, 0, 0.06)],
-&"spine_02": [Vector3(1.4, 1, 1.6), Vector3(0, 0, 0.04)],
-&"spine_03": Vector3(1.15, 1, 1.2),
-&"thigh": Vector3(1.16, 1, 1.16),
-&"upperarm": Vector3(1.12, 1, 1.12)
+&"Head": Vector3(1.03, 1.04, 1.04),
+&"lowerarm": Vector3(1.1, 1, 1.1),
+&"neck_01": Vector3(1.16, 1, 1.12),
+&"pelvis": [Vector3(1.46, 1, 1.62), Vector3(0, 0, 0.02)],
+&"spine_01": [Vector3(1.66, 1, 1.96), Vector3(0, 0, 0.06)],
+&"spine_02": [Vector3(1.54, 1, 1.76), Vector3(0, 0, 0.04)],
+&"spine_03": Vector3(1.2, 1, 1.26),
+&"thigh": Vector3(1.25, 1, 1.25),
+&"upperarm": Vector3(1.2, 1, 1.2)
 }
 face_shape = {
 "age": 80,
-&"brow": 0.001,
-&"cheekbones": -0.002,
-&"chin_round": 0.013,
-&"double_chin": 0.008,
-&"eye_open": -0.0025,
-&"fullness": 0.022,
-&"jaw": 0.95,
-&"jowls": 0.01,
-&"lips": 0.002,
-&"mouth_width": 0.84,
-&"nose_width": 1.08,
-&"pout": 0.004
+&"brow": 0.004,
+&"cheekbones": -0.004,
+&"chin": 0.002,
+&"chin_round": 0.02,
+&"double_chin": 0.018,
+&"eye_open": -0.004,
+&"eye_tilt": -0.0002,
+&"face_length": 0.96,
+&"fullness": 0.04,
+&"jaw": 1.03,
+&"jowls": 0.02,
+&"lips": 0.003,
+&"mouth_width": 0.94,
+&"nose_bridge": 0.001,
+&"nose_width": 1.06,
+&"pout": 0.006
 }
 brow_scale = Vector3(1, 0.7, 1)
-hair_scale = Vector3(1.12, 1.25, 1.15)
-hair_offset = Vector3(0, 0.008, 0.004)
+hair_scale = Vector3(1.09, 1.12, 1.12)
+hair_offset = Vector3(0, -0.004, 0.008)
 eye_texture = ExtResource("2_eil64")
 face_rest = {
-&"brow_down": 0.35,
-&"grimace": 0.25,
-&"squint": 0.55
+&"brow_down": 0.4,
+&"grimace": 0.15,
+&"squint": 0.65
 }
 posture = {
 &"Head": Vector3(-6, 0, 0),

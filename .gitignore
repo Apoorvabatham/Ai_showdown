@@ -16,6 +16,9 @@
 # Local design notes (not published)
 CLAUDE.md
 
+# Generated character review boards (local QA)
+docs/reviews/
+
 # Local tool settings
 .claude/
 

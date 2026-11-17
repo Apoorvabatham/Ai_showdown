@@ -349,14 +349,16 @@ func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit:
 	var pieces := func(L: Dictionary) -> Array:
 		var v_bottom: float = (L.chest + L.waist) * 0.5 - 0.03
 		var hem: float = L.hip - 0.11
-		var jacket := func(p, n): return minf(_top(p, L, hem, L.wrist - 0.045), -_v_cut(p, n, L, v_bottom, 0.095))
+		var v_top: float = L.neck + 0.030
+		var jacket := func(p, n): return minf(_top(p, L, hem, L.wrist - 0.045), -_v_cut(p, n, L, v_bottom, 0.060, v_top))
 		var list := [
-			# Jacket to below the hips, long sleeves, open in a V over the shirt; the
-			# front edge below the V is a placket line.
+			# Jacket to below the hips, long sleeves, closed over the throat and open in a
+			# V over the shirt lower on the chest; the front edge below the V is a placket line.
 			{slot = Slot.MAIN, offset = 0.022, region = jacket},
 			# Lapels: a raised band along both edges of the V, rolling over at the chest.
+			# Narrow enough that the two sides leave a gap for the shirt and tie at the top.
 			{slot = Slot.MAIN, offset = 0.028, hide = false, stitches = false, region = func(p, n):
-				return minf(jacket.call(p, n), _v_cut(p, n, L, v_bottom, 0.095) + 0.03)},
+				return minf(jacket.call(p, n), _v_cut(p, n, L, v_bottom, 0.060, v_top) + 0.016)},
 			# Two buttons below the V.
 			{slot = Slot.DETAIL, offset = 0.026, hide = false, stitches = false, region = func(p, n):
 				if p.z <= 0.0 or n.z < 0.5:
@@ -364,8 +366,21 @@ func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit:
 				var b1 := 0.009 - Vector2(p.x, p.y - (v_bottom - 0.035)).length()
 				var b2 := 0.009 - Vector2(p.x, p.y - (v_bottom - 0.105)).length()
 				return maxf(b1, b2)},
-			# Shirt (shows in the V and at the cuffs).
-			{slot = Slot.EXTRA, offset = 0.008, region = func(p, n): return _top(p, L, L.waist - 0.06, L.wrist - 0.03)},
+			# Shirt (shows in the V and at the cuffs). The front of the collar is closed:
+			# the shirt wraps the neck up to the jacket collar line, so the throat never
+			# shows a dark gap between the neck and the jacket's neck hole.
+			{slot = Slot.EXTRA, offset = 0.010, region = func(p, n):
+				var band := minf(minf(p.y - (L.waist - 0.06), (L.neck + 0.030) - p.y), (L.wrist - 0.03) - absf(p.x))
+				if p.z > L.neck_z - 0.005:
+					return band
+				return minf(band, -_neck_hole(p, L))},
+			# Tie knot: a wider block at the top of the tie, filling the collar gap.
+			{slot = Slot.ACCENT, offset = 0.017, hide = false, stitches = false, region = func(p, n):
+				if p.z <= 0.0:
+					return -1.0
+				var kx := 0.030 - absf(p.x)
+				var ky := minf(p.y - (L.neck - 0.050), (L.neck + 0.018) - p.y)
+				return minf(kx, ky)},
 			# Trousers to the shoes, a little loose.
 			{slot = Slot.MAIN, offset = 0.013, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.03),
 				drape = _pants_drape(L, {base = 0.013, flare = 0.01, hem = L.ankle + 0.03, amount = 0.6, cover = hem, cover_max = 0.016,
@@ -378,8 +393,8 @@ func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit:
 			list.append({slot = Slot.ACCENT, offset = 0.014, hide = false, stitches = false, region = func(p, n):
 				if p.z <= 0.02 or n.z < 0.3:
 					return -1.0
-				var width: float = lerpf(0.016, 0.034, clampf((L.neck - 0.03 - p.y) / 0.22, 0.0, 1.0))
-				return minf(minf(width - absf(p.x), (L.neck - 0.028) - p.y), p.y - bottom)})
+				var width: float = lerpf(0.028, 0.046, clampf((L.neck - 0.03 - p.y) / 0.22, 0.0, 1.0))
+				return minf(minf(width - absf(p.x), (L.neck - 0.042) - p.y), p.y - bottom)})
 		return list
 	return {
 		detailed = true,
@@ -737,8 +752,11 @@ func _neck_hole(p: Vector3, L: Dictionary) -> float:
 
 
 ## The front V opening (positive inside it): from the neck down to `bottom`, `width` wide
-## at the neck. Only the front of the body.
-func _v_cut(p: Vector3, n: Vector3, L: Dictionary, bottom: float, width: float) -> float:
+## at the neck. Only the front of the body. `top` caps where the opening begins, so a
+## jacket can close over the throat and show the V lower down the chest.
+func _v_cut(p: Vector3, n: Vector3, L: Dictionary, bottom: float, width: float, top := INF) -> float:
+	if p.y > top:
+		return -1.0
 	if p.z <= 0.0 or n.z < 0.15:
 		return -1.0
 	var half_width: float = width * (p.y - bottom) / (L.neck - bottom)

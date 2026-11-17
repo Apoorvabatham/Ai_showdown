@@ -357,17 +357,24 @@ func _build_trump_pomp(style: String) -> void:
 
 	for i in verts.size():
 		var p := verts[i]
-		# Loft top and front up and sweep to the right
+		# Loft the top into a lower, combed-over sweep: a controlled side part, not a
+		# tall quiff. The height and forward sweep both come down from the old values.
 		if p.y > 1.70:
 			var lift := (p.y - 1.70) / 0.14
-			p.y += lift * 0.038 * clampf(1.0 - absf(p.x) * 3.0, 0.2, 1.0)
-			# Sweep across to the right (+X) and forward (+Z)
-			p.x += lift * 0.022
+			p.y += lift * 0.024 * clampf(1.0 - absf(p.x) * 3.0, 0.2, 1.0)
+			# Sweep across to the right (+X) and slightly forward (+Z)
+			p.x += lift * 0.016
 			if p.z > -0.02:
-				p.z += lift * 0.018
-		# Sides flared over temples
+				p.z += lift * 0.010
+		# Sides tucked over the temples rather than flared wide.
 		if absf(p.x) > 0.065 and p.y > 1.68:
-			p.x *= 1.08
+			p.x *= 1.04
+		# Bring the front hairline down over the forehead: the comb-over should cover
+		# more of the brow line instead of leaving a tall, bare forehead.
+		if p.z > 0.040 and p.y > 1.68 and p.y < 1.81:
+			var front := clampf((p.z - 0.040) / 0.055, 0.0, 1.0)
+			p.y -= 0.014 * front
+			p.z += 0.005 * front
 		verts[i] = p
 
 	for t in indices.size() / 3:
