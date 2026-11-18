@@ -60,15 +60,15 @@ func run() -> void:
 		rise.tween_property(l, "global_position:y", target_y, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 	await wait(0.4)
-	big_text("+1,000,000 SOCIAL CREDIT!", _centre + Vector3(0.0, 3.8, -2.0), Color(1.0, 0.88, 0.15), 0.85)
+	big_text("+1,000,000 SOCIAL CREDIT!", _centre + Vector3(0.0, 3.8, -2.0), Color(1.0, 0.94, 0.72), 0.75)
 	var sub := Label3D.new()
 	sub.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
 	sub.text = "★ HARMONIOUS STABILITY MAINTAINED ★"
 	sub.font_size = 80
 	sub.pixel_size = 0.005
-	sub.modulate = Color(1.0, 0.95, 0.7)
+	sub.modulate = Color(1.0, 0.95, 0.82)
 	sub.outline_size = 14
-	sub.outline_modulate = Color(0.25, 0.02, 0.02)
+	sub.outline_modulate = Color(0.04, 0.03, 0.06, 0.95)
 	sub.position = _centre + Vector3(0.0, 2.9, -2.0)
 	sub.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	sub.no_depth_test = true

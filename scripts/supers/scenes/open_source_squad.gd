@@ -54,7 +54,7 @@ func run() -> void:
 	xi.play(&"fight/intro_power")
 	xi.face = &"shout"
 	sound("gong_strike")
-	big_text("SQUAD ASSEMBLE!", xi.global_position + Vector3(0.0, 3.2, 0.0), Color(1.0, 0.2, 0.15), 0.9, CALL_TIME - 0.2)
+	big_text("SQUAD ASSEMBLE!", xi.global_position + Vector3(0.0, 3.2, 0.0), Color(1.0, 0.28, 0.2), 0.78, CALL_TIME - 0.2)
 	await wait(CALL_TIME)
 
 	# They sprint in from all sides; the opponent looks around.
@@ -98,7 +98,7 @@ func run() -> void:
 	xi.face = &"grin"
 	victim.play(&"fight/thrown", 1.4)
 	victim.face = &"out"
-	big_text("100% OPEN SOURCE!", victim.global_position + Vector3(0, 3.5, 0), Color(1.0, 0.85, 0.2), 0.85)
+	big_text("100% OPEN SOURCE!", victim.global_position + Vector3(0, 3.5, 0), Color(1.0, 0.94, 0.72), 0.75)
 	var fly := create_tween()
 	fly.tween_property(victim, "global_position", victim.global_position + Vector3(0, 6.0, -1.0), FINISH_TIME) \
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)

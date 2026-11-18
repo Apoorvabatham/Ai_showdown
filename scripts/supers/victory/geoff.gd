@@ -124,15 +124,15 @@ func run() -> void:
 
 	# Geoff continues to look deeply concerned about the future.
 	geoff_puppet.face = &"pain"
-	big_text("1ST PLACE!", _centre + Vector3(0.0, 3.8, -1.0), Color(1.0, 0.85, 0.2), 0.85)
+	big_text("1ST PLACE!", _centre + Vector3(0.0, 3.8, -1.0), Color(1.0, 0.94, 0.72), 0.75)
 	var worry := Label3D.new()
 	worry.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
 	worry.text = "“I PROFOUNDLY REGRET MY LIFE'S WORK”"
 	worry.font_size = 80
 	worry.pixel_size = 0.005
-	worry.modulate = Color(1.0, 0.9, 0.6)
+	worry.modulate = Color(1.0, 0.95, 0.85)
 	worry.outline_size = 12
-	worry.outline_modulate = Color(0.15, 0.05, 0.02)
+	worry.outline_modulate = Color(0.03, 0.03, 0.06, 0.95)
 	worry.position = _centre + Vector3(0.0, 3.0, -1.0)
 	worry.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	worry.no_depth_test = true

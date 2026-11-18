@@ -1,389 +1,174 @@
 [gd_scene format=3]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_Browser"]
-sky_top_color = Color(0.12, 0.28, 0.65, 1)
-sky_horizon_color = Color(0.6, 0.78, 0.98, 1)
-ground_bottom_color = Color(0.08, 0.14, 0.28, 1)
-ground_horizon_color = Color(0.35, 0.5, 0.72, 1)
+sky_top_color = Color(0.04, 0.08, 0.16, 1)
+sky_horizon_color = Color(0.12, 0.25, 0.48, 1)
+ground_bottom_color = Color(0.02, 0.04, 0.08, 1)
+ground_horizon_color = Color(0.08, 0.15, 0.28, 1)
 
 [sub_resource type="Sky" id="Sky_Node"]
 sky_material = SubResource("Sky_Browser")
 
-[sub_resource type="Environment" id="Environment_10yiw"]
+[sub_resource type="Environment" id="Environment_Browser"]
 background_mode = 2
 sky = SubResource("Sky_Node")
 ambient_light_source = 3
-ambient_light_color = Color(0.65, 0.75, 0.9, 1)
-ambient_light_energy = 0.7
+ambient_light_color = Color(0.45, 0.6, 0.85, 1)
+ambient_light_energy = 0.6
 tonemap_mode = 2
 glow_enabled = true
-glow_intensity = 0.75
-glow_bloom = 0.22
+glow_intensity = 0.7
+glow_bloom = 0.18
 
-[sub_resource type="StandardMaterial3D" id="Mat_Floor"]
-albedo_color = Color(0.08, 0.12, 0.22, 1)
-roughness = 0.25
-metallic = 0.4
+[sub_resource type="StandardMaterial3D" id="Mat_VoidFloor"]
+albedo_color = Color(0.06, 0.08, 0.14, 1)
+roughness = 0.2
+metallic = 0.6
 
-[sub_resource type="PlaneMesh" id="Mesh_Floor"]
-size = Vector2(200, 200)
+[sub_resource type="StandardMaterial3D" id="Mat_NeonCyan"]
+shading_mode = 0
+albedo_color = Color(0.2, 0.8, 1.0, 1)
 
-[sub_resource type="StandardMaterial3D" id="Mat_GBlue"]
+[sub_resource type="StandardMaterial3D" id="Mat_NeonBlue"]
 shading_mode = 0
 albedo_color = Color(0.26, 0.52, 0.96, 1)
 
-[sub_resource type="StandardMaterial3D" id="Mat_GRed"]
+[sub_resource type="StandardMaterial3D" id="Mat_NeonRed"]
 shading_mode = 0
-albedo_color = Color(0.92, 0.26, 0.21, 1)
+albedo_color = Color(0.95, 0.25, 0.2, 1)
 
-[sub_resource type="StandardMaterial3D" id="Mat_GYellow"]
+[sub_resource type="StandardMaterial3D" id="Mat_NeonYellow"]
 shading_mode = 0
-albedo_color = Color(0.98, 0.74, 0.02, 1)
+albedo_color = Color(0.98, 0.75, 0.1, 1)
 
-[sub_resource type="StandardMaterial3D" id="Mat_GGreen"]
+[sub_resource type="StandardMaterial3D" id="Mat_NeonGreen"]
 shading_mode = 0
-albedo_color = Color(0.2, 0.66, 0.33, 1)
+albedo_color = Color(0.2, 0.85, 0.4, 1)
 
-[sub_resource type="StandardMaterial3D" id="Mat_SearchBody"]
-albedo_color = Color(0.96, 0.97, 0.98, 1)
-roughness = 0.2
-metallic = 0.1
+[sub_resource type="StandardMaterial3D" id="Mat_QueryBubble"]
+albedo_color = Color(0.12, 0.16, 0.25, 0.9)
+roughness = 0.3
+metallic = 0.2
+transparency = 1
 
-[sub_resource type="BoxMesh" id="Mesh_SearchPill"]
-size = Vector3(9.0, 1.2, 0.2)
+[sub_resource type="CylinderMesh" id="Mesh_PlatformPad"]
+top_radius = 8.5
+bottom_radius = 9.0
+height = 0.3
+radial_segments = 48
 
-[sub_resource type="BoxMesh" id="Mesh_SearchFrame"]
-size = Vector3(9.2, 1.35, 0.15)
-
-[sub_resource type="SphereMesh" id="Mesh_SearchDot"]
-radius = 0.18
-height = 0.36
-
-[sub_resource type="TorusMesh" id="Mesh_MagnifierRing"]
-inner_radius = 0.35
-outer_radius = 0.45
-rings = 24
-ring_segments = 6
-
-[sub_resource type="CylinderMesh" id="Mesh_MagnifierHandle"]
-top_radius = 0.05
-bottom_radius = 0.05
-height = 0.5
-
-[sub_resource type="TorusMesh" id="Mesh_PulseRing1"]
-inner_radius = 3.4
-outer_radius = 3.55
+[sub_resource type="TorusMesh" id="Mesh_FloorRing1"]
+inner_radius = 4.8
+outer_radius = 5.0
 rings = 48
 ring_segments = 6
 
-[sub_resource type="TorusMesh" id="Mesh_PulseRing2"]
-inner_radius = 4.9
-outer_radius = 5.08
+[sub_resource type="TorusMesh" id="Mesh_FloorRing2"]
+inner_radius = 7.8
+outer_radius = 8.05
 rings = 48
 ring_segments = 6
 
-[sub_resource type="TorusMesh" id="Mesh_PulseRing3"]
-inner_radius = 6.9
-outer_radius = 7.1
-rings = 48
-ring_segments = 6
+[sub_resource type="CylinderMesh" id="Mesh_DataPillar"]
+top_radius = 0.12
+bottom_radius = 0.12
+height = 18.0
+radial_segments = 8
 
-[sub_resource type="TorusMesh" id="Mesh_PulseRing4"]
-inner_radius = 9.4
-outer_radius = 9.62
-rings = 48
-ring_segments = 6
-
-[sub_resource type="BoxMesh" id="Mesh_FrameBeamH"]
-size = Vector3(4.0, 0.1, 0.1)
-
-[sub_resource type="BoxMesh" id="Mesh_FrameBeamV"]
-size = Vector3(0.1, 2.6, 0.1)
-
-[sub_resource type="BoxMesh" id="Mesh_FrameBeamH_Lg"]
-size = Vector3(5.2, 0.12, 0.12)
-
-[sub_resource type="BoxMesh" id="Mesh_FrameBeamV_Lg"]
-size = Vector3(0.12, 3.4, 0.12)
-
-[sub_resource type="CylinderMesh" id="Mesh_SundarPad"]
-top_radius = 1.2
-bottom_radius = 1.3
-height = 0.08
-radial_segments = 6
-
-[sub_resource type="TorusMesh" id="Mesh_SundarRing"]
-inner_radius = 1.2
-outer_radius = 1.28
-rings = 36
-ring_segments = 6
-
-[sub_resource type="BoxMesh" id="Mesh_WebCubeLg"]
-size = Vector3(2.0, 2.0, 2.0)
-
-[sub_resource type="BoxMesh" id="Mesh_WebCubeMed"]
-size = Vector3(1.3, 1.3, 1.3)
-
-[sub_resource type="BoxMesh" id="Mesh_WebCubeSm"]
-size = Vector3(0.8, 0.8, 0.8)
-
-[sub_resource type="SphereMesh" id="Mesh_WebSphere"]
-radius = 0.7
-height = 1.4
-
-[sub_resource type="TorusMesh" id="Mesh_WebRing"]
-inner_radius = 1.0
-outer_radius = 1.15
-rings = 24
-ring_segments = 6
+[sub_resource type="BoxMesh" id="Mesh_QueryCard"]
+size = Vector3(5.6, 1.2, 0.12)
 
 [node name="browser_void" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_10yiw")
+environment = SubResource("Environment_Browser")
 
-[node name="SunLight" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866025, 0.353553, -0.353553, 0, 0.707107, 0.707107, 0.5, -0.612372, 0.612372, 0, 0, 0)
-light_color = Color(1, 0.98, 0.95, 1)
-light_energy = 1.0
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, 0.353553, -0.353553, 0, 0.707107, 0.707107, 0.5, -0.612372, 0.612372, 0, 20, 0)
+light_color = Color(0.95, 0.98, 1.0, 1)
+light_energy = 1.2
 shadow_enabled = true
 
-[node name="LightBlue" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 3.5, 2.0)
-light_color = Color(0.26, 0.52, 0.96, 1)
-light_energy = 1.4
-omni_range = 10.0
+[node name="OmniCyan" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+light_color = Color(0.2, 0.75, 1.0, 1)
+light_energy = 1.6
+omni_range = 16.0
 
-[node name="LightRed" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 3.5, 2.0)
-light_color = Color(0.92, 0.26, 0.21, 1)
-light_energy = 1.4
-omni_range = 10.0
+[node name="OmniSundar" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 2.0, 1.5)
+light_color = Color(0.98, 0.9, 0.7, 1)
+light_energy = 1.8
+omni_range = 6.0
 
-[node name="LightYellow" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.0, 5.0, -5.0)
-light_color = Color(0.98, 0.74, 0.02, 1)
-light_energy = 1.2
-omni_range = 12.0
+[node name="Platform" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+material_override = SubResource("Mat_VoidFloor")
+mesh = SubResource("Mesh_PlatformPad")
 
-[node name="LightGreen" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0, 5.0, -5.0)
-light_color = Color(0.2, 0.66, 0.33, 1)
-light_energy = 1.2
-omni_range = 12.0
+[node name="FloorRingInner" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+material_override = SubResource("Mat_NeonCyan")
+mesh = SubResource("Mesh_FloorRing1")
 
-[node name="Floor" type="MeshInstance3D" parent="."]
-material_override = SubResource("Mat_Floor")
-mesh = SubResource("Mesh_Floor")
+[node name="FloorRingOuter" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+material_override = SubResource("Mat_NeonBlue")
+mesh = SubResource("Mesh_FloorRing2")
 
-[node name="PulseRingBlue" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_PulseRing1")
+[node name="DataPillar1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.0, 9.0, -8.0)
+material_override = SubResource("Mat_NeonCyan")
+mesh = SubResource("Mesh_DataPillar")
 
-[node name="PulseRingRed" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
-material_override = SubResource("Mat_GRed")
-mesh = SubResource("Mesh_PulseRing2")
+[node name="DataPillar2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.0, 9.0, -8.0)
+material_override = SubResource("Mat_NeonBlue")
+mesh = SubResource("Mesh_DataPillar")
 
-[node name="PulseRingYellow" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
-material_override = SubResource("Mat_GYellow")
-mesh = SubResource("Mesh_PulseRing3")
+[node name="DataPillar3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.0, 9.0, -14.0)
+material_override = SubResource("Mat_NeonGreen")
+mesh = SubResource("Mesh_DataPillar")
 
-[node name="PulseRingGreen" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
-material_override = SubResource("Mat_GGreen")
-mesh = SubResource("Mesh_PulseRing4")
+[node name="DataPillar4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.0, 9.0, -14.0)
+material_override = SubResource("Mat_NeonRed")
+mesh = SubResource("Mesh_DataPillar")
 
-[node name="SundarPlatform" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3, 0.04, 1.7)
-material_override = SubResource("Mat_Floor")
-mesh = SubResource("Mesh_SundarPad")
+[node name="QueryCard1" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -6.5, 4.2, -6.0)
+material_override = SubResource("Mat_QueryBubble")
+mesh = SubResource("Mesh_QueryCard")
 
-[node name="SundarPlatformRing" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3, 0.085, 1.7)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_SundarRing")
+[node name="QueryText1" type="Label3D" parent="."]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -6.5, 4.2, -5.92)
+text = "🔍 Did you mean: \"git gud\"?"
+font_size = 42
+pixel_size = 0.005
+outline_size = 6
+outline_modulate = Color(0, 0, 0, 1)
+modulate = Color(0.85, 0.95, 1.0, 1)
 
-[node name="SearchPillBody" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, -9.0)
-material_override = SubResource("Mat_SearchBody")
-mesh = SubResource("Mesh_SearchPill")
+[node name="QueryCard2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 6.5, 4.0, -6.0)
+material_override = SubResource("Mat_QueryBubble")
+mesh = SubResource("Mesh_QueryCard")
 
-[node name="SearchPillBorder" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, -9.05)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_SearchFrame")
-
-[node name="SearchDotB" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 7.5, -8.85)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_SearchDot")
-
-[node name="SearchDotR" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1, 7.5, -8.85)
-material_override = SubResource("Mat_GRed")
-mesh = SubResource("Mesh_SearchDot")
-
-[node name="SearchDotY" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 7.5, -8.85)
-material_override = SubResource("Mat_GYellow")
-mesh = SubResource("Mesh_SearchDot")
-
-[node name="SearchDotG" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1, 7.5, -8.85)
-material_override = SubResource("Mat_GGreen")
-mesh = SubResource("Mesh_SearchDot")
-
-[node name="Magnifier" type="Node3D" parent="."]
-transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 3.6, 7.5, -8.85)
-
-[node name="Ring" type="MeshInstance3D" parent="Magnifier"]
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_MagnifierRing")
-
-[node name="Handle" type="MeshInstance3D" parent="Magnifier"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_MagnifierHandle")
-
-[node name="TabFrameLeft" type="Node3D" parent="."]
-transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -6.8, 4.2, -4.5)
-
-[node name="Top" type="MeshInstance3D" parent="TabFrameLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_FrameBeamH")
-
-[node name="Bottom" type="MeshInstance3D" parent="TabFrameLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3, 0)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_FrameBeamH")
-
-[node name="Left" type="MeshInstance3D" parent="TabFrameLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0, 0, 0)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_FrameBeamV")
-
-[node name="Right" type="MeshInstance3D" parent="TabFrameLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 0, 0)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_FrameBeamV")
-
-[node name="TabFrameRight" type="Node3D" parent="."]
-transform = Transform3D(0.906308, 0, -0.422618, 0, 1, 0, 0.422618, 0, 0.906308, 6.8, 4.5, -5.0)
-
-[node name="Top" type="MeshInstance3D" parent="TabFrameRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
-material_override = SubResource("Mat_GRed")
-mesh = SubResource("Mesh_FrameBeamH")
-
-[node name="Bottom" type="MeshInstance3D" parent="TabFrameRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3, 0)
-material_override = SubResource("Mat_GRed")
-mesh = SubResource("Mesh_FrameBeamH")
-
-[node name="Left" type="MeshInstance3D" parent="TabFrameRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0, 0, 0)
-material_override = SubResource("Mat_GRed")
-mesh = SubResource("Mesh_FrameBeamV")
-
-[node name="Right" type="MeshInstance3D" parent="TabFrameRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0, 0, 0)
-material_override = SubResource("Mat_GRed")
-mesh = SubResource("Mesh_FrameBeamV")
-
-[node name="TabFrameDeepLeft" type="Node3D" parent="."]
-transform = Transform3D(0.819152, 0, 0.573576, 0, 1, 0, -0.573576, 0, 0.819152, -13.0, 8.0, -14.0)
-
-[node name="Top" type="MeshInstance3D" parent="TabFrameDeepLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
-material_override = SubResource("Mat_GYellow")
-mesh = SubResource("Mesh_FrameBeamH_Lg")
-
-[node name="Bottom" type="MeshInstance3D" parent="TabFrameDeepLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.7, 0)
-material_override = SubResource("Mat_GYellow")
-mesh = SubResource("Mesh_FrameBeamH_Lg")
-
-[node name="Left" type="MeshInstance3D" parent="TabFrameDeepLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, 0)
-material_override = SubResource("Mat_GYellow")
-mesh = SubResource("Mesh_FrameBeamV_Lg")
-
-[node name="Right" type="MeshInstance3D" parent="TabFrameDeepLeft"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 0, 0)
-material_override = SubResource("Mat_GYellow")
-mesh = SubResource("Mesh_FrameBeamV_Lg")
-
-[node name="TabFrameDeepRight" type="Node3D" parent="."]
-transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 13.0, 7.5, -13.0)
-
-[node name="Top" type="MeshInstance3D" parent="TabFrameDeepRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
-material_override = SubResource("Mat_GGreen")
-mesh = SubResource("Mesh_FrameBeamH_Lg")
-
-[node name="Bottom" type="MeshInstance3D" parent="TabFrameDeepRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.7, 0)
-material_override = SubResource("Mat_GGreen")
-mesh = SubResource("Mesh_FrameBeamH_Lg")
-
-[node name="Left" type="MeshInstance3D" parent="TabFrameDeepRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, 0)
-material_override = SubResource("Mat_GGreen")
-mesh = SubResource("Mesh_FrameBeamV_Lg")
-
-[node name="Right" type="MeshInstance3D" parent="TabFrameDeepRight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 0, 0)
-material_override = SubResource("Mat_GGreen")
-mesh = SubResource("Mesh_FrameBeamV_Lg")
-
-[node name="FloatingCubeB1" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, -4.5, 3.2, -6.0)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_WebCubeMed")
-
-[node name="FloatingCubeR1" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 4.5, 3.0, -6.0)
-material_override = SubResource("Mat_GRed")
-mesh = SubResource("Mesh_WebCubeMed")
-
-[node name="FloatingSphereY1" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.0, 5.5, -8.0)
-material_override = SubResource("Mat_GYellow")
-mesh = SubResource("Mesh_WebSphere")
-
-[node name="FloatingRingG1" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.866025, 0.353553, -0.353553, 0, 0.707107, 0.707107, 0.5, -0.612372, 0.612372, 8.0, 5.0, -8.0)
-material_override = SubResource("Mat_GGreen")
-mesh = SubResource("Mesh_WebRing")
-
-[node name="FloatingCubeDeepB" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.819152, 0.409576, 0.401487, 0, 0.700041, -0.714104, -0.573576, 0.584961, 0.573441, -16.0, 10.0, -22.0)
-material_override = SubResource("Mat_GBlue")
-mesh = SubResource("Mesh_WebCubeLg")
-
-[node name="FloatingCubeDeepR" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 16.0, 9.5, -20.0)
-material_override = SubResource("Mat_GRed")
-mesh = SubResource("Mesh_WebCubeLg")
-
-[node name="FloatingCubeDeepY" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, -2.0, 12.0, -25.0)
-material_override = SubResource("Mat_GYellow")
-mesh = SubResource("Mesh_WebCubeLg")
-
-[node name="FloatingCubeDeepG" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.707107, -0.707107, 0, 0.5, 0.5, -0.707107, 0.5, 0.5, 0.707107, 3.0, 13.0, -24.0)
-material_override = SubResource("Mat_GGreen")
-mesh = SubResource("Mesh_WebCubeLg")
+[node name="QueryText2" type="Label3D" parent="."]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 6.5, 4.0, -5.92)
+text = "★ About 0.004 results found"
+font_size = 42
+pixel_size = 0.005
+outline_size = 6
+outline_modulate = Color(0, 0, 0, 1)
+modulate = Color(1.0, 0.9, 0.4, 1)
 
 [node name="Window" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Sundar" type="Marker3D" parent="."]
-transform = Transform3D(0.4694716, 0, -0.88294756, 0, 1, 0, 0.88294756, 0, 0.4694716, -3.3, 0, 1.7)
+transform = Transform3D(0.469472, 0, -0.882948, 0, 1, 0, 0.882948, 0, 0.469472, -3.3, 0, 1.7)
 
 [node name="Cam_Wide" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 2, 6.2)

@@ -74,15 +74,15 @@ func run() -> void:
 	_sit_down()
 	await wait(0.3)
 
-	big_text("WORLD MODELS > LLMs!", _centre + Vector3(0.0, 3.6, -1.0), Color(0.3, 1.0, 0.6), 0.8)
+	big_text("WORLD MODELS > LLMs!", _centre + Vector3(0.0, 3.6, -1.0), Color(0.35, 1.0, 0.65), 0.75)
 	var quote := Label3D.new()
 	quote.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
 	quote.text = "“THE CAT HAS MORE COMMON SENSE THAN YOUR LLM”"
 	quote.font_size = 76
 	quote.pixel_size = 0.005
-	quote.modulate = Color(1.0, 0.95, 0.7)
+	quote.modulate = Color(1.0, 0.95, 0.85)
 	quote.outline_size = 14
-	quote.outline_modulate = Color(0.05, 0.2, 0.1)
+	quote.outline_modulate = Color(0.03, 0.03, 0.06, 0.95)
 	quote.position = _centre + Vector3(0.0, 2.8, -1.0)
 	quote.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	quote.no_depth_test = true

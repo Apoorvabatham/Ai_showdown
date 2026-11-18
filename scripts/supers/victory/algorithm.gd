@@ -79,7 +79,7 @@ func run() -> void:
 		await wait(0.14)
 
 	await wait(0.6)
-	big_text("ALL YOUR BASE\nARE BELONG TO AGI!", _centre + Vector3(0.0, 4.35, -1.5), Color(1.0, 0.2, 0.25), 0.48)
+	big_text("ALL YOUR BASE\nARE BELONG TO AGI!", _centre + Vector3(0.0, 4.35, -1.5), Color(0.25, 1.0, 0.55), 0.5)
 
 
 func _process(delta: float) -> void:

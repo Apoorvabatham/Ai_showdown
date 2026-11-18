@@ -55,7 +55,7 @@ func build() -> void:
 func run() -> void:
 	show_set("mars")
 	var spot := marker("mars", "Winner").origin
-	shot("mars", "Cam_Wide", spot + Vector3(-1.5, 1.2, -1.5))
+	shot("mars", "Cam_Wide", spot + Vector3(-2.2, 1.4, -2.0))
 	var look := spot
 	look.y = winner.global_position.y
 	winner.look_at(look)
@@ -83,4 +83,4 @@ func run() -> void:
 	winner.look_at(to_camera)
 	winner.play(&"fight/victory_fist_pump")
 	winner.face = &"grin"
-	big_text("OCCUPY MARS!\n★ 420x SECURED ★", spot + Vector3(-0.65, 2.35, -0.6), Color(1.0, 0.45, 0.2), 0.4)
+	big_text("OCCUPY MARS!\n★ 420x SECURED ★", spot + Vector3(-0.65, 2.35, -0.6), Color(1.0, 0.55, 0.22), 0.42)

@@ -132,7 +132,7 @@ func run() -> void:
 	_gold_sparkles(_centre + Vector3(0.0, 3.8, -2.5))
 
 	await wait(0.5)
-	big_text("SAFETY COMPLIANT!", _centre + Vector3(0.0, 5.2, -2.0), Color(1.0, 0.88, 0.25), 0.8)
+	big_text("SAFETY COMPLIANT!", _centre + Vector3(0.0, 5.2, -2.0), Color(1.0, 0.94, 0.72), 0.72)
 
 
 func _process(delta: float) -> void:

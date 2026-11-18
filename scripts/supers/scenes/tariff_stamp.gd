@@ -13,8 +13,8 @@ const SLAM_TIME := 0.18
 const AFTER_TIME := 2.5
 const LENGTH := GROW_TIME + COWER_TIME + RAISE_TIME + SLAM_TIME + AFTER_TIME
 
-const GIANT := 4.0
-const TINY := 0.35
+const GIANT := 2.6
+const TINY := 0.42
 const DESK_Y := 1.12
 
 var donald: ScenePuppet
@@ -36,7 +36,7 @@ func build() -> void:
 	victim.play(&"ual1/Idle")
 	victim.face = &"surprise"
 	stamp = prop("donald/tariff_stamp", _stamp_standin, office)
-	stamp.global_position = marker("oval_desk", "Stamp").origin + Vector3(0, 9.0, 0)
+	stamp.global_position = marker("oval_desk", "Stamp").origin + Vector3(0, 7.5, 0)
 	stamp.visible = false
 	mark = prop("donald/tariff_mark", _mark_standin, office)
 	mark.global_position = marker("oval_desk", "Stamp").origin + Vector3(0, 0.012, 0)
@@ -47,7 +47,7 @@ func run() -> void:
 	show_set("oval_desk")
 	var desk := marker("oval_desk", "Stamp").origin
 	# 1. Both start life-size; he swells up, they shrink and hop onto the desk.
-	shot("oval_desk", "Cam_Wide", desk + Vector3(0, 3.0, -1.0))
+	shot("oval_desk", "Cam_Wide", desk + Vector3(0, 2.4, -1.0))
 	sound("paper_flutter")
 	var grow := create_tween().set_parallel(true)
 	grow.tween_property(donald, "scale", Vector3.ONE * GIANT, GROW_TIME).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -59,7 +59,7 @@ func run() -> void:
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	donald.play(&"fight/victory_flex")
 	donald.face = &"roar"
-	big_text("TREMENDOUS!", desk + Vector3(3.2, 7.0, 0), Color(1.0, 0.85, 0.2), 1.1, GROW_TIME)
+	big_text("TREMENDOUS!", desk + Vector3(2.2, 4.4, 0), Color(1.0, 0.94, 0.72), 0.85, GROW_TIME)
 	await wait(GROW_TIME)
 
 	# 2. Close on the tiny opponent, cowering, the giant looming behind.
@@ -68,22 +68,22 @@ func run() -> void:
 	victim.face = &"pain"
 	donald.face = &"smirk"
 	donald.play(&"ual1/Idle")
-	shot("oval_desk", "Cam_Cower", desk + Vector3(0, 0.5, 0.0))
+	shot("oval_desk", "Cam_Cower", desk + Vector3(0, 0.4, 0.0))
 	await wait(COWER_TIME)
 
 	# 3. He raises the giant stamp.
-	shot("oval_desk", "Cam_Wide", desk + Vector3(0, 5.0, -1.0))
+	shot("oval_desk", "Cam_Wide", desk + Vector3(0, 3.6, -1.0))
 	stamp.visible = true
 	donald.play(&"fight/victory_fist_pump")
 	donald.face = &"shout"
 	var raise := create_tween()
-	raise.tween_property(stamp, "global_position:y", desk.y + 5.6, RAISE_TIME).from(desk.y + 9.0) \
+	raise.tween_property(stamp, "global_position:y", desk.y + 4.2, RAISE_TIME).from(desk.y + 7.5) \
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	sound("paper_flutter", -6.0)
 	await wait(RAISE_TIME)
 
 	# 4. SLAM.
-	shot("oval_desk", "Cam_Slam", desk + Vector3(0, 1.5, 0))
+	shot("oval_desk", "Cam_Slam", desk + Vector3(0, 1.1, 0))
 	var slam := create_tween()
 	slam.tween_property(stamp, "global_position:y", desk.y, SLAM_TIME).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	donald.play(&"fight/ground_pound")
@@ -92,10 +92,10 @@ func run() -> void:
 	await wait(0.35)
 
 	# 5. The stamp lifts: the opponent is flat in a red TARIFF mark.
-	shot("oval_desk", "Cam_Desk", desk + Vector3(0, 0.5, 0))
+	shot("oval_desk", "Cam_Desk", desk + Vector3(0, 0.9, -0.6))
 	var lift := create_tween()
-	lift.tween_property(stamp, "global_position:y", desk.y + 7.0, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	big_text("500% TARIFFED!", desk + Vector3(0, 1.35, 0.5), Color(1.0, 0.12, 0.1), 0.75)
+	lift.tween_property(stamp, "global_position:y", desk.y + 4.8, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	big_text("500% TARIFFED!", desk + Vector3(0, 1.4, 0.4), Color(1.0, 0.28, 0.28), 0.75)
 	donald.play(&"fight/victory_flex")
 	donald.face = &"grin"
 	await wait(AFTER_TIME - 0.35)

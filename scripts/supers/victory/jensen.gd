@@ -85,7 +85,7 @@ func run() -> void:
 	_signing = false
 	# Done: the jacket flexes, the screen says it.
 	pen.visible = false
-	big_text("1000x PERFORMANCE!", spot + Vector3(0.0, 2.2, 1.0), Color(0.55, 0.95, 0.1), 0.5, 3.5)
+	big_text("1000x PERFORMANCE!", spot + Vector3(0.0, 2.2, 1.0), Color(0.35, 0.95, 1.0), 0.5, 3.5)
 	sound("gpu_sparks", -2.0)
 	winner.look_at(Vector3(camera.global_position.x, winner.global_position.y, camera.global_position.z))
 	winner.play(&"fight/victory_fist_pump")

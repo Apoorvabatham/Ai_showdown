@@ -148,13 +148,13 @@ size = Vector3(2.5, 3.0, 0.5)
 size = Vector3(3.2, 2.2, 0.5)
 
 [sub_resource type="BoxMesh" id="Mesh_DeskTop"]
-size = Vector3(6.6, 0.22, 2.6)
+size = Vector3(8.4, 0.24, 3.2)
 
 [sub_resource type="BoxMesh" id="Mesh_DeskPedestal"]
-size = Vector3(1.6, 0.98, 2.2)
+size = Vector3(1.8, 0.98, 2.8)
 
 [sub_resource type="BoxMesh" id="Mesh_DeskModesty"]
-size = Vector3(6.6, 0.98, 0.12)
+size = Vector3(8.4, 0.98, 0.12)
 
 [sub_resource type="StandardMaterial3D" id="Mat_LeatherBlotter"]
 albedo_color = Color(0.12, 0.28, 0.18, 1)
@@ -162,7 +162,7 @@ roughness = 0.8
 metallic = 0.05
 
 [sub_resource type="BoxMesh" id="Mesh_Blotter"]
-size = Vector3(4.8, 0.02, 1.8)
+size = Vector3(6.0, 0.02, 2.2)
 
 [sub_resource type="CylinderMesh" id="Mesh_FlagPole"]
 top_radius = 0.04
@@ -337,22 +337,22 @@ material_override = SubResource("Mat_WoodPBR")
 mesh = SubResource("Mesh_DeskTop")
 
 [node name="DeskPedestalLeft" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0.49, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0, 0.49, 0)
 material_override = SubResource("Mat_WoodPBR")
 mesh = SubResource("Mesh_DeskPedestal")
 
 [node name="DeskPedestalRight" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0.49, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0, 0.49, 0)
 material_override = SubResource("Mat_WoodPBR")
 mesh = SubResource("Mesh_DeskPedestal")
 
 [node name="DeskModesty" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -1.05)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -1.35)
 material_override = SubResource("Mat_WoodPBR")
 mesh = SubResource("Mesh_DeskModesty")
 
 [node name="DeskBlotter" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.115, 0.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0.1)
 material_override = SubResource("Mat_LeatherBlotter")
 mesh = SubResource("Mesh_Blotter")
 
@@ -436,7 +436,7 @@ material_override = SubResource("Mat_PresFlag")
 mesh = SubResource("Mesh_FlagCloth")
 
 [node name="Attacker" type="Marker3D" parent="."]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -2.9)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -2.6)
 
 [node name="Opponent" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0.3)
@@ -445,13 +445,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0.3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0.3)
 
 [node name="Cam_Wide" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 11)
 
 [node name="Cam_Desk" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 4.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 4.4)
 
 [node name="Cam_Cower" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 1.6, 2.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.45, 2.4)
 
 [node name="Cam_Slam" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 2.2, 5.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 1.6, 4.2)

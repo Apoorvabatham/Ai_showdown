@@ -174,3 +174,37 @@ and any requests for other agents.
   - All 17 contact sheets re-rendered into `docs/review/gemini/scenes/` and visually verified.
   - Full test suite verified passing with `0 failure(s)`.
 
+## G14: Sets Overhaul, Cinematography, Clean Cyberspace & Typography Refinements
+- **State**: review
+- **Summary**: Comprehensive visual pass addressing set dressing, camera sightlines, and arcade typography based on owner feedback across `launch_pad`, `space`, `mars`, `browser_void`, and `oval_desk`.
+- **Details**:
+  - **`launch_pad.tscn`**:
+    - Removed occluding monolithic columns at Z=4 and Z=20 that blocked launch and wide cameras.
+    - Rebuilt gantry as a sleek Starbase-style catch/service tower positioned cleanly behind the rocket (Z=-10), keeping the Starship rocket as the unobstructed hero centerpiece.
+    - Replaced primitive cylinder trench with a recessed industrial flame deflector trench with refractory blast plate, glowing exhaust grill, and deluge manifold.
+    - Added slender perimeter floodlight masts at the four apron corners (`X = ±22, Z = ±22`) illuminating the rocket with high-intensity directional lighting.
+    - Added parody countdown / telemetry LED board ("★ STARBASE PAD 39A ★", "STATUS: T-0 LIFTOFF IMMINENT", "33/33 RAPTORS ARMED").
+    - Preserved 100% of Marker3D anchors with clear sightlines.
+  - **`space.tscn` & `rocket_launch.gd`**:
+    - Repositioned Earth from Y=-52 up to Y=-31, Z=-12, bringing vibrant blue oceans, swirling cloud systems, and glowing atmospheric halo directly into camera FOV.
+    - Camera `Cam_Space` tracks close to Earth's illuminated rim during orbital flight, with the flailing victim re-entering straight down into Earth's glowing upper atmosphere.
+  - **`mars.tscn` & `victory_tesla.gd`**:
+    - Replaced steep cylinder hills with organic Martian landscape featuring rolling red-ochre dunes, dark basalt rock clusters, solar power arrays, and distant horizon ridges.
+    - Pulled `Cam_Wide` back to `(8.5, 3.8, 14.5)` for an expansive panoramic cinematic vista of Mars as Elon walks from the distant Starship to the flag spot.
+    - Refined Mars flag and punchline text to vivid bright Mars orange `Color(1.0, 0.55, 0.22)`.
+  - **`browser_void.tscn` & `not_found.gd`**:
+    - Cleared cluttered floating wireframe beams and 25+ random colored cubes.
+    - Rebuilt into a sleek dark-mode digital cyberspace: dark reflective platform with neon cyan and blue concentric rings, sleek data stream pillars, and humorous floating search suggestion cards ("🔍 Did you mean: 'git gud'?", "★ About 0.004 results found").
+    - Refined 404 error and system restored typography with crisp palette.
+  - **`oval_desk.tscn` & `tariff_stamp.gd`**:
+    - Expanded executive desk (`8.4 x 0.24 x 3.2m`) and blotter (`6.0 x 0.02 x 2.2m`).
+    - Reduced Donald's scale from `GIANT = 4.0` down to `2.6` (~4.7m tall) and increased victim scale from `0.35` to `0.42` for clear visibility and expression reading.
+    - Lowered camera angles: `Cam_Desk` at `(0, 1.85, 4.4)`, `Cam_Cower` at `(0.65, 1.45, 2.4)`, and `Cam_Slam` at `(-2.6, 1.6, 4.2)`. Both Donald's facial reactions and the stamp impact on the squashed opponent fit cleanly within frame simultaneously.
+  - **Typography & Floating Text Overhaul**:
+    - Refined `big_text()` in `super_scene.gd` with base font size 96, pixel size 0.0055, and crisp 12px dark charcoal outline `Color(0.03, 0.03, 0.06, 0.98)`.
+    - Cohesive AAA arcade palette applied across all 6 super scenes and 11 victory scenes (Championship Gold `Color(1.0, 0.94, 0.72)`, Electric Cyber Cyan `Color(0.35, 0.95, 1.0)`, Punch Red `Color(1.0, 0.28, 0.28)`, Vivid Orange `Color(1.0, 0.58, 0.18)`, Mint Green `Color(0.28, 0.95, 0.55)`).
+    - All 17 contact sheets re-rendered into `docs/review/gemini/scenes/`.
+  - **Verification**:
+    - Automated test suite `tests/sim_test.gd` passes cleanly with **`0 failure(s)`**.
+
+

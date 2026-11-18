@@ -121,7 +121,7 @@ func run() -> void:
 	victim.visible = false
 	victim.scale = Vector3.ONE
 	pixels.visible = true
-	big_text("404: SKILL NOT FOUND!", window.global_position + Vector3(0, 3.6, 0.8), Color(1.0, 0.25, 0.2), 0.5, 1.0)
+	big_text("404: SKILL NOT FOUND!", window.global_position + Vector3(0, 3.6, 0.8), Color(1.0, 0.3, 0.3), 0.52, 1.0)
 	scatter_pixels()
 	await wait(SCATTER_TIME)
 	await wait(EMPTY_TIME)
@@ -139,7 +139,7 @@ func run() -> void:
 		_progress.scale.x = 0.001
 		var reload := create_tween()
 		reload.tween_property(_progress, "scale:x", 1.0, RELOAD_TIME * 0.6)
-	big_text("SYSTEM RESTORED!", window.global_position + Vector3(0, 3.6, 0.8), Color(0.2, 0.9, 0.4), 0.5, 0.5)
+	big_text("SYSTEM RESTORED!", window.global_position + Vector3(0, 3.6, 0.8), Color(0.28, 0.95, 0.55), 0.52, 0.5)
 	victim.visible = true
 	victim.scale = Vector3.ONE * 0.05
 	victim.face = &"pain"
