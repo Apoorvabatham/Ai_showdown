@@ -351,9 +351,9 @@ Geoff, Ram, AGI, G13/G14 typography and sets overhaul) and `opencode/work` (O5 X
 O2b–O2f props, O7 search bar and GPU card, O3 stage NPCs, O4 AGI phase looks). Both merged
 without conflicts. Start each branch with
 `git fetch origin && git merge origin/claude/brave-rubin-b43he7`.
-Branches cleaned up: `cline/work` and the three `wip/*` branches are deleted (all merged;
-Cline's last commit is kept as tag `archive/cline-work`). Only main, `gemini/work` and
-`opencode/work` remain.
+Retired branches (all content is on main; delete them, don't work on them): `cline/work`,
+`wip/donald-scenes`, `wip/zuckerbot-scenes`, `wip/sundar-jensen-scenes`,
+`claude/blissful-meitner-2wmcms`. Only main, `gemini/work` and `opencode/work` are active.
 
 ### Gemini (`gemini/work`), in order (code; owns everything Claude owned)
 1. **O7 swap**: `scripts/supers/projectile_looks.gd` loads `sundar/search_bar` and
