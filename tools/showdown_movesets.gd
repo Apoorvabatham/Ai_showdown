@@ -170,4 +170,46 @@ const MOVESETS := {
 				tip = "The armoured tackle splats them on the edge: jab, then cancel into the Executive Order."},
 		],
 	},
+	# AGI (algorithm): the final boss, trained on everyone (ROADMAP §4).
+	# Projectile (Kenji), command grab (Valka), reversal (Lian), armour (Aelia),
+	# teleport (Sundar), super Engagement Loop (Rhea).
+	&"algorithm": {
+		stats = {archetype = "Boss"},
+		remove = ["gale_slide", "crescent_rise"],
+		add = {
+			# Projectile (from Kenji's Ki Blast): a high-speed electric stream of tokens.
+			data_stream = {from = "kenji/ki_blast", set = {name = "Data Stream", input = "236P",
+				damage = 70, chip_damage = 8, projectile_speed = 7.0, hitbox_radius = 0.28,
+				projectile_color = Color(0.2, 0.95, 0.95), startup = 10, recovery = 24}},
+			# Command Grab (from Valka's Valkyrie Slam): compresses the opponent's latent space.
+			model_collapse = {from = "valka/valkyrie_slam", set = {name = "Model Collapse", input = "63214P",
+				damage = 130, startup = 8, grab_range = 0.95, recovery = 36, camera_intensity = 0.4}},
+			# Reversal (from Lian's Still Water): catches attacks and counters with safety alignment.
+			safety_filter = {from = "lian/still_water", set = {name = "Safety Filter", input = "214P",
+				reversal = true, damage = 115, startup = 3, active = 15, recovery = 20, camera_intensity = 0.4}},
+			# Armour (from Aelia's Shield Rush): absorbs a hit and charges forward with brute-force compute.
+			compute_rush = {from = "aelia/shield_rush", set = {name = "Compute Rush", input = "236K",
+				armor_hits = 1, travel = 5.5, damage = 85, chip_damage = 10, startup = 10, recovery = 20,
+				camera_intensity = 0.3}},
+			# Teleport (from Sundar's Algorithm Update): dematerializes and shifts positions instantly.
+			weights_update = {from = "kenji/ki_blast", set = {name = "Weights Update", input = "214K",
+				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.0,
+				projectile_speed = 0.0, hitbox_radius = 0.0, damage = 0, chip_damage = 0, teleport = 1.0,
+				startup = 14, active = 1, recovery = 22, invuln_frames = 15, camera_intensity = 0.0}},
+		},
+		trials = [
+			{name = "Jab String", steps = ["LP", "LP", "HP"], corner = false,
+				tip = "Jabs chain into each other and into the straight."},
+			{name = "Step In", steps = ["6LK", "6HP"], corner = false,
+				tip = "Hold forward: the step kick chains into the rushing hook."},
+			{name = "Data Stream", steps = ["LP", "HP", "236P"], corner = false,
+				tip = "Cancel the straight into Data Stream as it hits."},
+			{name = "Compute Rush", steps = ["2LP", "2LK", "236K"], corner = false,
+				tip = "Low jabs, then cancel into the armoured Compute Rush."},
+			{name = "Corner Splat", steps = ["HK", "WALL", "LK", "HP"], corner = true,
+				tip = "A roundhouse near the edge splats them: walk in and follow up."},
+			{name = "Engagement Loop", steps = ["LP", "LP", "236236K"], corner = false,
+				tip = "With a full meter, confirm from light attacks into Engagement Loop."},
+		],
+	},
 }

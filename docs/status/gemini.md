@@ -219,5 +219,27 @@ and any requests for other agents.
   - Added automated test in `tests/sim_test.gd` verifying all 5 projectile looks load OpenCode props with interactive hooks.
   - Test suite passes with `0 failure(s)`.
 
+## C6: AGI moveset kit ("trained on everyone")
+- **State**: review
+- **Summary**: Implemented the custom moveset for AGI (`algorithm`) trained across the roster per `docs/ROADMAP.md` §4, with AI personality, showcase routine, full set of 6 combo trials, and comprehensive test suite validation.
+- **Details**:
+  - Specials & Super:
+    - 236P: "Data Stream" (projectile adapted from Kenji's `ki_blast`)
+    - 63214P: "Model Collapse" (command grab adapted from Valka's `valkyrie_slam`, startup 8, range 0.95)
+    - 214P: "Safety Filter" (reversal counter adapted from Lian's `still_water`, startup 3)
+    - 236K: "Compute Rush" (armoured advancing strike adapted from Aelia's `shield_rush`, travel 5.5, startup 10)
+    - 214K: "Weights Update" (teleport behind opponent adapted from Sundar's `algorithm_update`, startup 14, recovery 22)
+    - 236236K: "Engagement Loop" (super move adapted from Rhea's `tempest_kicks` / `tempest_finish`)
+  - AI & UI Integration:
+    - Added "Optimiser" personality in `scripts/ai/ai_controller.gd` with balanced aggression, defensive discipline, and tactical teleport/grab utility.
+    - Added showcase demo routine in `scripts/ui/fighter_showcase.gd`.
+  - Combo Trials:
+    - Implemented 6 combo trials in `tools/showdown_movesets.gd`: Target Combo, Heavy Advancing Link, Fireball Cancel, Armoured Strike String, Wall Splat Extension, and Super Cancel.
+    - Verified 100% demo execution across all 11 roster opponents on both ring and dojo via `tools/check_trials.gd` (`combo trials: 0 failed`).
+  - Regenerated roster character and move resources: `data/characters/algorithm.tres` and `data/moves/algorithm/*.tres`.
+  - Added sim test assertions in `tests/sim_test.gd` verifying all moves, super, trials, personality, and showcase routine.
+  - Automated test suite `tests/sim_test.gd` passes with `0 failure(s)`.
+
+
 
 

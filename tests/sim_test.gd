@@ -5122,6 +5122,22 @@ func showdown_tests() -> void:
 		and geoff.moves.any(func(mv: MoveData) -> bool: return mv.armor_hits > 0)
 		and xi.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Fortress" and FighterShowcase.ROUTINES.has(&"xi"))
 
+	var agi: CharacterData = gs.find_character(&"algorithm")
+	var agi_moves := {}
+	for mv: MoveData in agi.moves:
+		agi_moves[mv.input] = mv
+	var agi_super: MoveData = agi.moves.filter(func(mv: MoveData) -> bool: return mv.super_move)[0]
+	check("Showdown: AGI is trained on everyone (projectile, command grab, reversal, armour, teleport, super)",
+		agi_moves.has("236P") and (agi_moves["236P"] as MoveData).fires_projectile()
+		and agi_moves.has("63214P") and (agi_moves["63214P"] as MoveData).command_grab
+		and agi_moves.has("214P") and (agi_moves["214P"] as MoveData).reversal
+		and agi_moves.has("236K") and (agi_moves["236K"] as MoveData).armor_hits > 0
+		and agi_moves.has("214K") and (agi_moves["214K"] as MoveData).teleport > 0.0
+		and agi_super.name == "Engagement Loop" and not agi_moves.has("623K")
+		and agi.combo_trials.size() == 6
+		and agi.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Optimiser"
+		and FighterShowcase.ROUTINES.has(&"algorithm"))
+
 	# Voices: a fighter without its own shouts borrows its fallback's, except for the super
 	# (the drop-in <id>_super_1.ogg/.wav names the move).
 	var audio = root.get_node("Audio")

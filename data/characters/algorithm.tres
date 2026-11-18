@@ -18,14 +18,17 @@
 [ext_resource type="Resource" path="res://data/moves/algorithm/flying_kick.tres" id="16_s370v"]
 [ext_resource type="Resource" path="res://data/moves/algorithm/rushing_hook.tres" id="17_p3w2l"]
 [ext_resource type="Resource" path="res://data/moves/algorithm/step_kick.tres" id="18_khjtc"]
-[ext_resource type="Resource" path="res://data/moves/algorithm/gale_slide.tres" id="19_p6x4c"]
-[ext_resource type="Resource" path="res://data/moves/algorithm/crescent_rise.tres" id="20_ur51r"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/data_stream.tres" id="21_5n7v7"]
 [ext_resource type="Resource" path="res://data/moves/algorithm/tempest_kicks.tres" id="21_d28ur"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/model_collapse.tres" id="22_lx3f2"]
 [ext_resource type="Resource" path="res://data/moves/algorithm/tempest_finish.tres" id="22_n8c8e"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="23_4wtgs"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/algorithm_body.res" id="23_233vy"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/algorithm_outfit.res" id="23_kfoxg"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/safety_filter.tres" id="23_pm0tc"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/compute_rush.tres" id="24_bhor0"]
 [ext_resource type="Texture2D" path="res://assets/ui/portraits/algorithm.png" id="25_soqyl"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/weights_update.tres" id="25_uitx4"]
 
 [resource]
 script = ExtResource("23_4wtgs")
@@ -46,7 +49,6 @@ outfit_body_mesh = ExtResource("23_233vy")
 outfit_colors = PackedColorArray(0.04, 0.045, 0.06, 1, 0.15, 0.95, 1, 1)
 outfit_fabrics = Array[StringName]([&"stretch", &"glow"])
 alt_outfit_colors = PackedColorArray(0.9, 0.9, 0.92, 1, 1, 0.25, 0.85, 1)
-variant_outfit_colors = Array[PackedColorArray]([PackedColorArray(0.03, 0.075, 0.045, 1, 0.45, 1, 0.3, 1), PackedColorArray(0.12, 0.02, 0.03, 1, 1, 0.15, 0.05, 1)])
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_point", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.2, 0.95, 0.95, 1)
@@ -67,7 +69,7 @@ rival_lines = {
 }
 combo_trials = Array[Dictionary]([{
 &"corner": false,
-&"name": "Quick Hands",
+&"name": "Jab String",
 &"steps": PackedStringArray("LP", "LP", "HP"),
 &"tip": "Jabs chain into each other and into the straight."
 }, {
@@ -77,14 +79,14 @@ combo_trials = Array[Dictionary]([{
 &"tip": "Hold forward: the step kick chains into the rushing hook."
 }, {
 &"corner": false,
-&"name": "Low Slide",
-&"steps": PackedStringArray("2LP", "2LK", "236K"),
-&"tip": "Cancel the low kick into Infinite Scroll."
+&"name": "Data Stream",
+&"steps": PackedStringArray("LP", "HP", "236P"),
+&"tip": "Cancel the straight into Data Stream as it hits."
 }, {
 &"corner": false,
-&"name": "Crescent Launcher",
-&"steps": PackedStringArray("LP", "LP", "623K"),
-&"tip": "Cancel the second jab into Viral Spike."
+&"name": "Compute Rush",
+&"steps": PackedStringArray("2LP", "2LK", "236K"),
+&"tip": "Low jabs, then cancel into the armoured Compute Rush."
 }, {
 &"corner": true,
 &"name": "Corner Splat",
@@ -94,7 +96,7 @@ combo_trials = Array[Dictionary]([{
 &"corner": false,
 &"name": "Engagement Loop",
 &"steps": PackedStringArray("LP", "LP", "236236K"),
-&"tip": "With a full meter, cancel the jabs into the super."
+&"tip": "With a full meter, confirm from light attacks into Engagement Loop."
 }])
 max_health = 1050
 walk_speed = 2.6
@@ -105,4 +107,4 @@ weight = 0.85
 throw_damage = 100
 power_rating = 0.6
 speed_rating = 0.9
-moves = Array[ExtResource("4_soqyl")]([ExtResource("5_x2hp0"), ExtResource("6_kkud4"), ExtResource("7_5n7v7"), ExtResource("8_lx3f2"), ExtResource("9_pm0tc"), ExtResource("10_bhor0"), ExtResource("11_uitx4"), ExtResource("12_gjol2"), ExtResource("13_n64h4"), ExtResource("14_8a0mi"), ExtResource("15_uylfq"), ExtResource("16_s370v"), ExtResource("17_p3w2l"), ExtResource("18_khjtc"), ExtResource("19_p6x4c"), ExtResource("20_ur51r"), ExtResource("21_d28ur"), ExtResource("22_n8c8e")])
+moves = Array[ExtResource("4_soqyl")]([ExtResource("5_x2hp0"), ExtResource("6_kkud4"), ExtResource("7_5n7v7"), ExtResource("8_lx3f2"), ExtResource("9_pm0tc"), ExtResource("10_bhor0"), ExtResource("11_uitx4"), ExtResource("12_gjol2"), ExtResource("13_n64h4"), ExtResource("14_8a0mi"), ExtResource("15_uylfq"), ExtResource("16_s370v"), ExtResource("17_p3w2l"), ExtResource("18_khjtc"), ExtResource("21_d28ur"), ExtResource("22_n8c8e"), ExtResource("21_5n7v7"), ExtResource("22_lx3f2"), ExtResource("23_pm0tc"), ExtResource("24_bhor0"), ExtResource("25_uitx4")])

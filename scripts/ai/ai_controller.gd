@@ -134,6 +134,13 @@ const SHOWDOWN_PERSONALITIES := {
 		weights = {fireball = 1.6, ground_special = 1.4, rush = 1.5, grab = 1.8, approach = 2.0, dash = 0.3, jump = 0.3,
 			throw = 1.2, poke = 0.8, wait = 0.5, retreat = 0.2, sidestep = 0.3},
 	},
+	&"algorithm": {
+		name = "Optimiser", blurb = "trained on everyone: projectiles, command grabs, counters, armour and teleports", preferred_range = 1.8,
+		aggression = 0.1, block = 0.1, punish = 0.15, anti_air = 0.2,
+		rising_anti_air = 0.7, pressure = 0.4, far_punish = 0.4,
+		weights = {fireball = 1.4, rush = 1.3, grab = 1.3, ground_special = 1.2, poke = 1.1, wait = 0.8,
+			approach = 1.1, retreat = 0.6, jump = 0.4, throw = 1.1},
+	},
 }
 const DEFAULT_PERSONALITY := {
 	name = "Balanced", blurb = "a bit of everything", preferred_range = 1.6,
