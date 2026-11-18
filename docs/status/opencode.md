@@ -26,3 +26,26 @@ stand-ins. Clips, poses and the scene flow are unchanged.
 Requests: none. Rebuild order for this task: `python tools/build_prints.py` →
 `godot --headless --path . --import` → `tools/build_npcs.gd` →
 `tools/build_outfits.gd -- helper_qwen helper_alibaba helper_kimi`.
+
+## O2b: Donald props
+
+State: **review** — `scripts/supers/scenes/tariff_stamp.gd` and the victory scene now load
+these instead of Claude's stand-ins; the scenes and their timings are unchanged.
+
+- `assets/props/supers/donald/shipping_container.tscn`: 1.2 × 0.5 × 0.5 m cartoon
+  container, corrugated long sides, raised IMPORTS panels (front -Z), two door leaves with
+  hinges and locking bars at the +X end, corner castings.
+- `assets/props/supers/donald/tariff_stamp.tscn`: 2.3 m giant rubber stamp (red rubber
+  base, wooden block/plate, handle and knob), origin at the middle of the rubber base's
+  underside; the underside reads TARIFF mirrored.
+- `assets/props/supers/donald/office_desk.tscn`: 2.4 × 1.2 m, 0.78 m tall dark-wood
+  executive desk with two drawer pedestals, brass pulls, modesty panel and plinth.
+- `assets/props/supers/donald/us_flag.tscn`: 4.3 m pole with gold finial and a `Cloth`
+  child hinged at the pole (the victory scene swings it); 13 stripes and a star canton.
+- `donald/tariff_mark.tscn` (not on the board, but the tariff scene loads it): the flat red
+  TARIFF mark left on the desk, replacing the last stand-in in that scene.
+- `tools/build_super_props.gd` builds the set (user args now filter folders, e.g.
+  `-- donald`); `tools/render_super_props.gd` (new) renders
+  `docs/review/opencode/props_donald.jpg` (fitted cells, front-left view).
+- `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
+

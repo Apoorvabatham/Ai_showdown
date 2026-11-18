@@ -8,7 +8,11 @@ extends SceneTree
 const PROP_DIR := "res://assets/props/supers/"
 
 func _initialize() -> void:
-	_build_tesla_props()
+	var only := OS.get_cmdline_user_args() # e.g. `-- donald`: rebuild just these folders
+	if only.is_empty() or "tesla" in only:
+		_build_tesla_props()
+	if only.is_empty() or "donald" in only:
+		_build_donald_props()
 	quit()
 
 # --- Materials ---------------------------------------------------------------
@@ -218,6 +222,193 @@ func _mars_flag() -> void:
 	root.add_child(flag)
 
 	_save(root, PROP_DIR + "tesla/mars_flag.tscn")
+
+# =============================================================================
+# O2b - donald props
+# =============================================================================
+
+func _build_donald_props() -> void:
+	_dir_for("donald")
+	_shipping_container()
+	_tariff_stamp()
+	_office_desk()
+	_us_flag()
+	_tariff_mark()
+
+## Cartoon shipping container, ~1.2 x 0.5 x 0.5 m: corrugated long sides, doors at the
+## +X end, a raised blank panel on both long sides for the word IMPORTS.
+## Front = -Z.
+func _shipping_container() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "ShippingContainer"
+	var body_color := Color(0.62, 0.18, 0.10)
+	var corrugation := _metal(body_color.darkened(0.18), 0.25, 0.6)
+	var frame := _metal(body_color.darkened(0.38), 0.3, 0.55)
+	var doors := _metal(body_color.darkened(0.52), 0.35, 0.5)
+	var lock := _metal(Color(0.55, 0.56, 0.58), 0.85, 0.35)
+	var panel := _metal(body_color.darkened(0.12), 0.2, 0.65)
+
+	root.add_child(_box(Vector3(1.14, 0.46, 0.46), Vector3(0, 0.25, 0), frame, "Body"))
+	root.add_child(_box(Vector3(1.2, 0.04, 0.5), Vector3(0, 0.48, 0), frame, "Roof"))
+	root.add_child(_box(Vector3(1.2, 0.04, 0.5), Vector3(0, 0.02, 0), frame, "Floor"))
+	# Vertical corrugation along both long sides (front/back are Z, so the ridges face Z).
+	for side in [-1.0, 1.0]:
+		for i in 13:
+			var x := -0.51 + 0.085 * i
+			root.add_child(_box(Vector3(0.032, 0.4, 0.018), Vector3(x, 0.25, 0.235 * side), corrugation))
+		# Raised blank panel (the IMPORTS sign area).
+		root.add_child(_box(Vector3(0.78, 0.28, 0.012), Vector3(0, 0.25, 0.246 * side), panel, "Panel" if side < 0 else "PanelBack"))
+		var sign := Label3D.new()
+		sign.name = "Imports" if side < 0 else "ImportsBack"
+		sign.text = "IMPORTS"
+		sign.font_size = 72
+		sign.pixel_size = 0.0024
+		sign.modulate = Color(0.97, 0.93, 0.84)
+		sign.outline_size = 0
+		sign.shaded = false
+		sign.double_sided = false
+		sign.position = Vector3(0, 0.25, 0.253 * side)
+		sign.rotation.y = 0.0 if side > 0.0 else PI
+		root.add_child(sign)
+	# Doors at the +X end: two leaves, hinges on the outer edges and locking bars.
+	for z in [-0.1155, 0.1155]:
+		root.add_child(_box(Vector3(0.022, 0.44, 0.222), Vector3(0.581, 0.25, z), doors, "Door"))
+	root.add_child(_box(Vector3(0.03, 0.44, 0.012), Vector3(0.584, 0.25, 0), frame))
+	for z in [-0.21, 0.21]:
+		for y in [0.08, 0.42]:
+			root.add_child(_box(Vector3(0.04, 0.055, 0.03), Vector3(0.596, y, z), lock))
+	for z in [-0.07, 0.07]:
+		root.add_child(_box(Vector3(0.035, 0.36, 0.018), Vector3(0.596, 0.25, z), lock))
+		root.add_child(_box(Vector3(0.04, 0.03, 0.05), Vector3(0.596, 0.1, z), lock))
+		root.add_child(_box(Vector3(0.04, 0.03, 0.05), Vector3(0.596, 0.4, z), lock))
+	# Small corner castings, like a real container.
+	for x in [-0.57, 0.57]:
+		for z in [-0.22, 0.22]:
+			for y in [0.045, 0.455]:
+				root.add_child(_box(Vector3(0.06, 0.07, 0.06), Vector3(x, y, z), frame))
+
+	_save(root, PROP_DIR + "donald/shipping_container.tscn")
+
+## Giant rubber stamp: red rubber base on a wooden block, wooden handle and knob. Origin
+## at the middle of the rubber base's underside; the underside reads TARIFF mirrored.
+func _tariff_stamp() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "TariffStamp"
+	var rubber := _rubber(Color(0.72, 0.07, 0.07))
+	var rubber_dark := _rubber(Color(0.48, 0.04, 0.04))
+	var wood := _metal(Color(0.42, 0.24, 0.11), 0.0, 0.45)
+	var wood_dark := _metal(Color(0.30, 0.16, 0.07), 0.0, 0.5)
+	var brass := _metal(Color(0.82, 0.62, 0.25), 0.9, 0.3)
+
+	# Rubber base: a flat slab with a slightly inset sole, so the print edge reads.
+	root.add_child(_box(Vector3(1.7, 0.5, 1.2), Vector3(0, 0.27, 0), rubber, "Base"))
+	root.add_child(_box(Vector3(1.62, 0.04, 1.12), Vector3(0, 0.02, 0), rubber_dark, "Sole"))
+	# Wooden mounting block and top plate.
+	root.add_child(_box(Vector3(1.78, 0.1, 1.28), Vector3(0, 0.57, 0), wood_dark))
+	root.add_child(_box(Vector3(1.62, 0.08, 1.12), Vector3(0, 0.5, 0), wood))
+	root.add_child(_box(Vector3(1.9, 0.12, 1.4), Vector3(0, 0.66, 0), wood, "Plate"))
+	root.add_child(_box(Vector3(0.24, 0.04, 0.24), Vector3(0, 0.735, 0), brass, "Collar"))
+	# Handle rod and knob.
+	root.add_child(_cylinder(0.16, 0.2, 1.4, Vector3(0, 1.42, 0), wood, "Handle"))
+	root.add_child(_cylinder(0.12, 0.12, 0.08, Vector3(0, 2.14, 0), wood_dark))
+	var knob: MeshInstance3D = _mesh(SphereMesh.new(), Vector3(0, 2.32, 0), wood, "Knob")
+	(knob.mesh as SphereMesh).radius = 0.36
+	(knob.mesh as SphereMesh).height = 0.72
+	knob.scale = Vector3(1.0, 0.85, 1.0)
+	root.add_child(knob)
+	# TARIFF on the underside, mirrored like a real rubber stamp.
+	var label := Label3D.new()
+	label.name = "Underside"
+	label.text = "TARIFF"
+	label.font_size = 112
+	label.pixel_size = 0.0034
+	label.modulate = Color(0.95, 0.9, 0.86)
+	label.outline_size = 0
+	label.shaded = false
+	label.double_sided = false
+	label.scale = Vector3(-1.0, 1.0, 1.0) # mirror image, like a rubber stamp
+	label.rotation_degrees = Vector3(90, 0, 0) # faces down
+	label.position = Vector3(0, -0.002, 0)
+	root.add_child(label)
+
+	_save(root, PROP_DIR + "donald/tariff_stamp.tscn")
+
+## Big dark-wood executive desk, 2.4 x 1.2 m and 0.78 m high: overhanging top, two
+## drawer pedestals, a modesty panel and brass pulls. Front = -Z.
+func _office_desk() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "OfficeDesk"
+	var wood := _metal(Color(0.13, 0.07, 0.035), 0.0, 0.32)
+	var wood_light := _metal(Color(0.19, 0.11, 0.06), 0.0, 0.4)
+	var wood_dark := _metal(Color(0.08, 0.04, 0.02), 0.0, 0.45)
+	var brass := _metal(Color(0.78, 0.6, 0.28), 0.9, 0.3)
+
+	# Top with a rounded-looking lip and a darker edge band.
+	root.add_child(_box(Vector3(2.4, 0.07, 1.2), Vector3(0, 0.75, 0), wood, "Top"))
+	root.add_child(_box(Vector3(2.44, 0.025, 1.24), Vector3(0, 0.71, 0), wood_dark))
+	root.add_child(_box(Vector3(2.36, 0.02, 1.16), Vector3(0, 0.79, 0), wood_light))
+	# Pedestals, each with three drawer fronts and brass pulls.
+	for side in [-1.0, 1.0]:
+		var x: float = 0.85 * side
+		root.add_child(_box(Vector3(0.56, 0.68, 1.02), Vector3(x, 0.34, 0), wood_dark, "Pedestal"))
+		for i in 3:
+			var y: float = 0.17 + 0.22 * i
+			root.add_child(_box(Vector3(0.5, 0.18, 0.03), Vector3(x, y, -0.52), wood))
+			root.add_child(_box(Vector3(0.24, 0.022, 0.03), Vector3(x, y, -0.54), brass))
+	# Modesty panel between the pedestals (at the back, +Z), and a plinth.
+	root.add_child(_box(Vector3(1.16, 0.5, 0.06), Vector3(0, 0.4, 0.45), wood, "Modesty"))
+	root.add_child(_box(Vector3(2.2, 0.06, 0.9), Vector3(0, 0.03, 0.02), wood_dark))
+
+	_save(root, PROP_DIR + "donald/office_desk.tscn")
+
+## Flag on a pole (like the victory stand-in): silver pole, gold finial and a `Cloth`
+## child hinged at the pole so the victory scene can swing it. Stars and stripes, no logo.
+func _us_flag() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "UsaFlag"
+	var pole := _metal(Color(0.82, 0.83, 0.86), 0.9, 0.28)
+	var gold := _metal(Color(1.0, 0.8, 0.25), 0.9, 0.3)
+	var red := _cloth(Color(0.78, 0.1, 0.16))
+	var white := _cloth(Color(0.96, 0.96, 0.94))
+	var blue := _cloth(Color(0.1, 0.16, 0.48))
+
+	root.add_child(_cylinder(0.04, 0.05, 4.2, Vector3(0, 2.1, 0), pole, "Pole"))
+	root.add_child(_cylinder(0.09, 0.12, 0.08, Vector3(0, 0.04, 0), gold, "Foot"))
+	root.add_child(_sphere(0.09, Vector3(0, 4.25, 0), gold, "Finial"))
+	var cloth := Node3D.new()
+	cloth.name = "Cloth"
+	cloth.position = Vector3(0.0, 3.75, 0.0)
+	cloth.rotation.y = 0.0
+	root.add_child(cloth)
+	var stripe: float = 1.4 / 13.0
+	for i in 13:
+		cloth.add_child(_box(Vector3(2.1, stripe, 0.025), Vector3(1.05, 0.7 - stripe * (i + 0.5), 0.0),
+			red if i % 2 == 0 else white))
+	cloth.add_child(_box(Vector3(0.84, stripe * 7.0, 0.032), Vector3(0.42, 0.7 - stripe * 3.5, 0.0), blue, "Canton"))
+	for row in 4:
+		for col in 5:
+			cloth.add_child(_box(Vector3(0.06, 0.06, 0.04), Vector3(0.1 + col * 0.15, 0.62 - row * 0.14, 0.0), white))
+
+	_save(root, PROP_DIR + "donald/us_flag.tscn")
+
+## Flat red TARIFF mark for the desk after the slam (the scene's `donald/tariff_mark`).
+func _tariff_mark() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "TariffMark"
+	root.add_child(_box(Vector3(1.9, 0.01, 1.4), Vector3(0, 0.005, 0), _rubber(Color(0.82, 0.08, 0.08))))
+	root.add_child(_box(Vector3(1.62, 0.012, 1.12), Vector3(0, 0.011, 0), _cloth(Color(0.96, 0.92, 0.84))))
+	var label := Label3D.new()
+	label.name = "Text"
+	label.text = "TARIFF"
+	label.font_size = 96
+	label.pixel_size = 0.0068
+	label.modulate = Color(0.82, 0.07, 0.07)
+	label.outline_size = 0
+	label.shaded = false
+	label.rotation_degrees = Vector3(-90, 0, 0) # faces up
+	label.position = Vector3(0, 0.02, 0)
+	root.add_child(label)
+	_save(root, PROP_DIR + "donald/tariff_mark.tscn")
 
 ## Makes sure every node below `root` is owned by `root` so PackedScene.pack()
 ## keeps the whole subtree (see tools/build_custom_hair.gd).
