@@ -391,8 +391,8 @@ Power moves and super scenes for Dario, Yann, Geoff, Ram and AGI (designs propos
 
 ## 10. Nov 18: OpenCode hands over to Cline (same branch `opencode/work`)
 
-OpenCode delivered O6 for **tesla** and **Donald** (`style_anims.res`, merged into `main`;
-review strips `docs/review/opencode/style_tesla.jpg`, `style_donald.jpg`). OpenCode is out of
+OpenCode delivered O6 for **tesla**, **Donald** and **Sundar** (`style_anims.res`, merged into `main`;
+review strips `docs/review/opencode/style_<fighter>.jpg`). OpenCode is out of
 quota; **Cline (Nemotron 3.5 Super VL)** continues on `opencode/work` with OpenCode's file
 ownership and keeps reporting in `docs/status/opencode.md` (sign entries "Cline").
 
@@ -403,13 +403,17 @@ ownership and keeps reporting in `docs/status/opencode.md` (sign entries "Cline"
   keep both fists clearly locked together and the arms straight down in front at hip height.
 - `tesla_flying_knee`: at impact (0.18 s) the rear knee is not visible at chest height (leg
   hangs down); lift the knee to chest height, toes pointed down, and pull the hands toward it.
+- `sundar_sweep`: at impact (0.26 s) he only crouches; the lead leg must swing out low and
+  wide across the front (foot near the floor, clearly away from the body).
+- Sundar has **no table yet** in `docs/status/opencode.md` (clips: `sundar_idle` 2.00 s loop,
+  `sundar_jab` 0.36 / 0.10, `sundar_cross` 0.44 / 0.14, `sundar_cast` 0.72 / 0.26,
+  `sundar_sweep` 0.72 / 0.26, `sundar_walk` 1.57 s loop): add it.
 - Everything else reads well: keep it.
 
 ### Cline, in order
-1. **[O6-fix]** The three fixes above; re-render `style_tesla.jpg` and `style_donald.jpg`, look
+1. **[O6-fix]** The four fixes and the Sundar table above; re-render `style_tesla.jpg`, `style_donald.jpg` and `style_sundar.jpg`, look
    at them, and update the tables (lengths / impact times) if they change.
-2. **[O6]** Style clips for **Sundar** (calm, precise: idle, palm strike, low sweep, side step,
-   "search" point-and-zap pose), **Jensen** (showman: idle with jacket shrug, hook, uppercut,
+2. **[O6]** Style clips for **Jensen** (showman: idle with jacket shrug, hook, uppercut,
    spinning backfist, presenter walk), **Zuckerbot** (stiff, robotic: idle, straight punch,
    front kick, mechanical dash, glitchy hurt), **Xi** (composed, rooted: idle, palm push, low
    stance sweep, two-hand fan strike, slow walk). One fighter per commit, strip + table each.
