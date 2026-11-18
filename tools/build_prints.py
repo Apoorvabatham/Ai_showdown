@@ -212,6 +212,27 @@ def anthropic(width_m=0.22):
     return res, width_m, width_m * 0.41
 
 
+def wordmark(text, colour, width_m=0.16, accent=None):
+    """Plain team wordmark, no emblem (the helpers' shirts): bold italic text over a
+    short accent bar."""
+    W = int(width_m * PX_PER_M)
+    H = int(width_m * 0.34 * PX_PER_M)
+    SS = 3
+    sw, sh = W * SS, H * SS
+    img = Image.new("RGBA", (sw, sh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    font = ImageFont.truetype(FONT, int(sh * 0.58))
+    tw = d.textlength(text, font=font)
+    d.text(((sw - tw) / 2, sh * 0.08), text, font=font, fill=colour + (255,))
+    if accent:
+        bar_w, bar_h = sw * 0.34, max(int(sh * 0.05), 2)
+        y = int(sh * 0.85)
+        d.rounded_rectangle([(sw - bar_w) / 2, y, (sw + bar_w) / 2, y + bar_h], radius=bar_h / 2,
+                            fill=accent + (255,))
+    res = img.resize((W, H), Image.Resampling.LANCZOS)
+    return res, width_m, width_m * 0.34
+
+
 # id -> (output name, base colour (0..1), design, centre (x, y) on the chest, metres)
 PRINTS = {
     "tesla": ("tee", (0.05, 0.05, 0.06), occupy_mars, (0.0, 1.355)),
@@ -219,6 +240,12 @@ PRINTS = {
     "sundar": ("tee", (0.12, 0.12, 0.13), google, (0.0, 1.355)),
     "ram": ("tee", (0.12, 0.12, 0.13), openai, (0.0, 1.380)),
     "dario": ("tee", (0.82, 0.33, 0.14), anthropic, (0.0, 1.395)),
+    "helper_qwen": ("tee", (0.13, 0.11, 0.3),
+                    lambda: wordmark("Qwen", (235, 238, 255), 0.24, (130, 105, 255)), (0.0, 1.365)),
+    "helper_alibaba": ("tee", (0.86, 0.35, 0.07),
+                       lambda: wordmark("Alibaba", (255, 248, 235), 0.28, (255, 185, 60)), (0.0, 1.365)),
+    "helper_kimi": ("tee", (0.07, 0.08, 0.1),
+                    lambda: wordmark("Kimi", (245, 246, 250), 0.2, (90, 205, 245)), (0.0, 1.365)),
 }
 
 

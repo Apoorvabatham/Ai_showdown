@@ -30,6 +30,7 @@ extends SceneTree
 const OUT_DIR := "res://assets/characters/outfits/"
 const CHARACTER_DIR := "res://data/characters/"
 const KIT_DIR := "res://data/kits/" # the original 3D Fighter cast
+const NPC_DIR := "res://data/npcs/" # stage and super-scene people (tools/build_npcs.gd)
 const HIDE_INSET := 0.015 # body skin this far inside a garment's edge is removed
 const NECK_RADIUS := 0.072 # the neck hole of tops and jackets
 const ARM_LIMIT := 0.35 # |x| beyond this (T-pose) is arm, never legs or torso
@@ -68,6 +69,8 @@ func _initialize() -> void:
 		var data_path := CHARACTER_DIR + id + ".tres"
 		if not ResourceLoader.exists(data_path):
 			data_path = KIT_DIR + id + ".tres"
+		if not ResourceLoader.exists(data_path):
+			data_path = NPC_DIR + id + ".tres"
 		var data := load(data_path) as CharacterData
 		if data == null:
 			push_error("No character data for %s" % id)
@@ -100,6 +103,7 @@ func _initialize() -> void:
 func _specs() -> Dictionary:
 	var specs := _kit_specs()
 	specs.merge(_showdown_specs())
+	specs.merge(_npc_specs())
 	return specs
 
 
@@ -338,6 +342,22 @@ func _showdown_specs() -> Dictionary:
 		"xi": _zhongshan_spec(Color(0.12, 0.13, 0.16), Color(0.05, 0.05, 0.05),
 			Color(0.18, 0.22, 0.19), Color(0.06, 0.06, 0.06)),
 		"algorithm": _bodysuit_spec(Color(0.04, 0.045, 0.06), Color(0.15, 0.95, 1.0), Color(1.0, 0.25, 0.85)),
+	}
+
+
+# --- Stage and super-scene NPCs (all on the male base body) ---------------------------
+
+## Xi's helpers (O5): plain tee, jeans and sneakers; the chest print reading Qwen,
+## Alibaba or Kimi comes from tools/build_prints.py. The tee colour here is the fallback
+## for the alternate outfit (the print covers the main one).
+func _npc_specs() -> Dictionary:
+	return {
+		"helper_qwen": _tee_spec(Color(0.13, 0.11, 0.3), Color(0.13, 0.16, 0.24), Color(0.86, 0.86, 0.82),
+			Color(0.85, 0.85, 0.9), Color(0.1, 0.1, 0.12), Color(0.12, 0.12, 0.14)),
+		"helper_alibaba": _tee_spec(Color(0.86, 0.35, 0.07), Color(0.16, 0.17, 0.2), Color(0.1, 0.1, 0.1),
+			Color(0.2, 0.2, 0.22), Color(0.12, 0.12, 0.14), Color(0.9, 0.9, 0.88)),
+		"helper_kimi": _tee_spec(Color(0.07, 0.08, 0.1), Color(0.17, 0.2, 0.25), Color(0.9, 0.9, 0.9),
+			Color(0.75, 0.78, 0.82), Color(0.1, 0.1, 0.12), Color(0.12, 0.12, 0.14)),
 	}
 
 
