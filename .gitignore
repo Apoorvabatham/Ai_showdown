@@ -20,7 +20,9 @@ CLAUDE.md
 docs/reviews/
 
 # Local tool settings
-.claude/
+.claude/*
+!.claude/skills/
+!.claude/.gdignore
 
 # Python cache
 __pycache__/
