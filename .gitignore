@@ -29,3 +29,5 @@ __pycache__/
 
 # Scratch scripts (renders, debugging); never committed
 tools/_tmp_*
+sim_stdout*.log
+sim_stderr*.log

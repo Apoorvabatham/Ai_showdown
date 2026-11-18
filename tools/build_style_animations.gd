@@ -246,17 +246,18 @@ func build_tesla_flying_knee() -> Animation:
 	move_bone(air, "pelvis", Vector3(0, 0.17, 0.07))
 	hip_turn(air, 25.0)
 	lean(air, 6.0, 3.0)
-	var hip := global_origin(air, "thigh_" + rear)
-	solve_ik(air, "thigh_" + rear, "calf_" + rear, "foot_" + rear,
-		hip + Vector3(s * 0.02, 0.2, 0.12), Vector3(0, 1, 0.6))
-	point_foot(air, rear, Vector3(0, -1, -0.25))
-	var lead_hip := global_origin(air, "thigh_" + lead)
+	var rhip := global_origin(air, "thigh_" + rear)
+	# Rear knee drives up to chest height at impact.
+	var knee := rhip + Vector3(s * 0.04, 0.45, 0.08)
+	solve_ik(air, "thigh_" + rear, "calf_" + rear, "foot_" + rear, knee, Vector3(0, 1, 0.6))
+	point_foot(air, rear, Vector3(0, -1, -0.15))   # toes pointed down
+	var lhip := global_origin(air, "thigh_" + lead)
 	solve_ik(air, "thigh_" + lead, "calf_" + lead, "foot_" + lead,
-		lead_hip + Vector3(-s * 0.05, -0.5, -0.18), Vector3(0, 0.2, 1))
+		lhip + Vector3(-s * 0.05, -0.55, -0.12), Vector3(0, 0.2, 1))
 	point_foot(air, lead, Vector3(0, -0.9, 0.2))
-	var chest := global_origin(air, "spine_03")
-	reach_arm(air, lead, Vector3(0.1, chest.y + 0.05, chest.z + 0.48))
-	reach_arm(air, rear, Vector3(-0.1, chest.y + 0.08, chest.z + 0.42))
+	# Both hands pull in toward the raised knee.
+	reach_arm(air, lead, knee + Vector3(-0.06, 0.04, 0.12))
+	reach_arm(air, rear, knee + Vector3(0.06, 0.04, 0.0))
 
 	var peak := duplicate_pose(air)
 	move_bone(peak, "pelvis", Vector3(0, 0.04, 0.02))
@@ -418,14 +419,16 @@ func build_donald_overhead() -> Animation:
 			top + Vector3(x, 0, 0), Vector3(x * 4.0, 0.2, -1.0))
 
 	var slam := duplicate_pose(base)
-	move_bone(slam, "pelvis", Vector3(0, -0.16, 0.1))
-	lean(slam, -34.0, 0.0)
+	move_bone(slam, "pelvis", Vector3(0, -0.04, 0.02))   # slight sink, stay upright
+	lean(slam, -8.0, 0.0)                                 # slight forward lean, not a crouch
 	plant_both(slam, lf, rf)
-	var floor := Vector3(0, 0.12, 0.55)
+	var hip := global_origin(slam, "pelvis")
+	var fist_y := hip.y                                   # hip height
 	for side in ["l", "r"]:
-		var x := 0.055 if side == "l" else -0.055
+		var x := 0.02 if side == "l" else -0.02
+		# Both fists locked together at hip height in front, arms straight down.
 		solve_ik(slam, "upperarm_" + side, "lowerarm_" + side, "hand_" + side,
-			floor + Vector3(x, 0, 0), Vector3(x * 4.0, 0.3, 0.2))
+			Vector3(x, fist_y, 0.55), Vector3(x * 2.0, -1.0, 0.1))
 
 	var hold := duplicate_pose(slam)
 	move_bone(hold, "pelvis", Vector3(0, 0.015, 0))
@@ -466,14 +469,26 @@ func build_donald_shove() -> Animation:
 		[0.46, push], [0.60, hold], [0.74, base], [0.86, guard]], false)
 
 
-## Heavy walk: the slow Walk_Carry cycle in place with the arms hanging heavy in front.
-## 2.00 s loop.
+## Heavy walk: Walk_Carry legs in place. His head and chest stay upright over the hips,
+## with a slight forward lean, a heavy side-to-side sway and arms low in front. He never
+## leans back or looks up. Length follows Walk_Carry, loops.
 func build_donald_walk() -> Animation:
 	var source := ual2.get_animation("Walk_Carry")
 	var keys := []
 	var t := 0.0
+	var upper := upper_body_bones().duplicate()
+	for b in ["spine_01", "spine_02", "spine_03"]:
+		var bi := skeleton.find_bone(b)
+		if not upper.has(bi):
+			upper.append(bi)
 	while t <= source.length + 0.001:
 		var pose := sample(source, t)
+		# Legs come from Walk_Carry; everything above the hips comes from the upright
+		# guard so Donald never leans back or looks up.
+		pose = merge(pose, guard, upper)
+		lean(pose, -4.0, 0.0)                      # slight forward lean
+		var sway := sin(t * PI * 2) * 0.014        # heavy side-to-side sway
+		move_bone(pose, "pelvis", Vector3(sway, 0, 0))
 		_heavy_arms(pose)
 		keys.append([t, pose])
 		t += 1.0 / SAMPLE_FPS
@@ -620,14 +635,16 @@ func build_sundar_sweep() -> Animation:
 	_tuck_hands(crouch)
 
 	var sweep := duplicate_pose(crouch)
-	move_bone(sweep, "pelvis", Vector3(-out * 0.03, -0.06, 0.02))
+	move_bone(sweep, "pelvis", Vector3(-out * 0.03, -0.10, 0.02))   # deeper crouch on the rear leg
 	hip_turn(sweep, 32.0)
 	lean(sweep, -18.0, 0.0)
 	plant_foot(sweep, rear, rf)
 	hip = global_origin(sweep, "thigh_" + lead)
+	# Lead leg swings low and wide across the front; foot near the floor, clearly away
+	# from the body.
 	solve_ik(sweep, "thigh_" + lead, "calf_" + lead, "foot_" + lead,
-		hip + Vector3(out * 0.46, -0.62, 0.18), Vector3(out * 0.2, 0.6, 0.5))
-	point_foot(sweep, lead, Vector3(out, -0.25, 0.4))
+		hip + Vector3(out * 0.6, -0.55, 0.0), Vector3(out * 0.3, 0.8, 0.4))
+	point_foot(sweep, lead, Vector3(out * 0.6, -0.9, 0.1))
 	var chest := global_origin(sweep, "spine_03")
 	reach_arm(sweep, rear, Vector3(-out * 0.34, chest.y - 0.22, chest.z + 0.3))
 	tuck_hand(sweep, lead)
