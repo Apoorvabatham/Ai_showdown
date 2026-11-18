@@ -392,6 +392,27 @@ and any requests for other agents.
     - `godot --headless --path . -s res://tools/check_trials.gd -- dario`: combo trials 0 failed.
     - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
 
+## C8: Yann power move and super scene
+- **State**: review
+- **Summary**: Implemented Yann LeCant's power move (Word Tokens) and owner-approved super scene (It's Just Autocomplete).
+- **Details**:
+  - **Power Move (Word Tokens)**:
+    - Move input: `214K` (quarter-circle back Kick).
+    - Fires 3 sequential word tokens ("the", "next", "token") with `projectile_interval = 8`, speed 5.2, lifetime 80, 25 damage per token (75 total), chip damage 3.
+    - Projectile visual: `&"word_token"` in `scripts/supers/projectile_looks.gd`, procedural 3D tokenizer token cards with glowing cyan/blue rim borders, embossed word labels, token IDs (#464, #1309, #4037), and camera-facing billboard animation. Supports hook to `assets/props/supers/yann/word_token.tscn`.
+  - **Super Scene & Set (It's Just Autocomplete)**:
+    - Set: `scenes/supers/sets/prompt_terminal.tscn` (built via `tools/super_sets/yann.gd` and `tools/build_super_sets.gd`), a cyber terminal void with glowing neon grid floor, giant 3D prompt text box with header tag, blinking cursor, autocomplete dropdown popup, and Yann's speaker podium.
+    - Script: `scripts/supers/scenes/autocomplete.gd`. Yann observes from podium; opponent trapped inside the text box; prompt types "> you lose_"; autocomplete dropdown confirms "★ 1. you lose 99.9%"; giant heavy 3D concrete letters "Y O U L O S E" cascade from above and crush the opponent; Yann bows sceptically at the podium with "IT'S JUST AUTOCOMPLETE!" callout.
+    - Finisher: `titan_finish` in `tools/showdown_movesets.gd` wired with `cinematic = &"autocomplete"`, `cinematic_ticks = 270`, `super_fx = &"autocomplete"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_autocomplete.jpg` generated via `tools/render_scene_sheets.gd -- yann` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/yann/word_token.tscn`: 3D tokenizer badge card / embedding pill.
+    - `assets/props/supers/yann/heavy_letters.tscn`: Massive 3D concrete letter blocks Y, O, U, L, O, S, E.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- yann`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
+
 
 
 

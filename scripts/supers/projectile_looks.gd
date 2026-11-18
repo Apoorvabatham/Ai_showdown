@@ -36,6 +36,8 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _paper_dragon(color)
 		&"rulebook":
 			return _rulebook(color)
+		&"word_token":
+			return _word_token(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
@@ -46,7 +48,7 @@ static func orient(look: StringName, direction: Vector3, seed_value: int) -> Bas
 	if look == &"paper_dragon":
 		var flat := Vector3(direction.x, 0.0, direction.z)
 		return Basis.looking_at(flat.normalized()) if flat.length_squared() > 0.001 else Basis.IDENTITY
-	if look == &"mini_rocket" or look == &"rulebook":
+	if look == &"mini_rocket" or look == &"rulebook" or look == &"word_token":
 		# Nose (-Z) along the flight direction.
 		return Basis.looking_at(direction.normalized() if direction.length_squared() > 0.001 else Vector3.FORWARD)
 	if look == &"gpu" or look == &"container":
@@ -94,6 +96,13 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 					fan.rotate_object_local(Vector3.FORWARD, 30.0 * delta)
 		&"rulebook":
 			node.rotation.z = 0.08 * sin(age * 7.0)
+		&"word_token":
+			var camera := node.get_viewport().get_camera_3d() if node.is_inside_tree() else null
+			if camera:
+				var away := node.global_position - camera.global_position
+				if away.length_squared() > 0.001:
+					node.global_basis = Basis.looking_at(away.normalized()) * Basis(Vector3.FORWARD, 0.06 * sin(age * 10.0))
+			node.position.y += sin(age * 8.0) * 0.002
 
 
 # --- Mini rocket -----------------------------------------------------------------
@@ -378,6 +387,57 @@ static func _rulebook(color: Color) -> Node3D:
 	light.omni_range = 2.4
 	root.add_child(light)
 	return root
+
+
+# --- Word Token (Yann's power move) ----------------------------------------------
+
+static var _token_cycle := 0
+const TOKEN_WORDS := ["the", "next", "token"]
+const TOKEN_IDS := ["#464", "#1309", "#4037"]
+
+static func _word_token(color: Color) -> Node3D:
+	var prop := _load_prop("yann/word_token")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "WordToken"
+	var word: String = TOKEN_WORDS[_token_cycle % TOKEN_WORDS.size()]
+	var tid: String = TOKEN_IDS[_token_cycle % TOKEN_IDS.size()]
+	_token_cycle += 1
+
+	var card_mat := _metal(Color(0.12, 0.16, 0.24), 0.2)
+	var border_mat := _glow(color, 2.0)
+
+	root.add_child(_box(Vector3(0.72, 0.36, 0.06), Vector3.ZERO, card_mat))
+	root.add_child(_box(Vector3(0.74, 0.03, 0.07), Vector3(0, 0.18, 0), border_mat))
+	root.add_child(_box(Vector3(0.74, 0.03, 0.07), Vector3(0, -0.18, 0), border_mat))
+	root.add_child(_box(Vector3(0.03, 0.38, 0.07), Vector3(0.36, 0, 0), border_mat))
+	root.add_child(_box(Vector3(0.03, 0.38, 0.07), Vector3(-0.36, 0, 0), border_mat))
+
+	var lbl := Label3D.new()
+	lbl.text = "\"%s\"" % word
+	lbl.font_size = 40
+	lbl.pixel_size = 0.0045
+	lbl.modulate = Color(1.0, 0.98, 0.9)
+	lbl.position = Vector3(0, 0.02, 0.04)
+	root.add_child(lbl)
+
+	var sub_lbl := Label3D.new()
+	sub_lbl.text = tid
+	sub_lbl.font_size = 20
+	sub_lbl.pixel_size = 0.0035
+	sub_lbl.modulate = color
+	sub_lbl.position = Vector3(0, -0.11, 0.04)
+	root.add_child(sub_lbl)
+
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 0.9
+	light.omni_range = 1.8
+	root.add_child(light)
+
+	return root
+
 
 
 static func _flat(color: Color) -> StandardMaterial3D:

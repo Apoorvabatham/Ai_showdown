@@ -15,6 +15,7 @@ const SUPERS := [
 	{"id": &"jensen", "opp": &"geoff", "out": "super_jacket_tornado"},
 	{"id": &"xi", "opp": &"sundar", "out": "super_open_source_squad"},
 	{"id": &"dario", "opp": &"ram", "out": "super_constitution_scroll"},
+	{"id": &"yann", "opp": &"geoff", "out": "super_autocomplete"},
 ]
 
 const VICTORIES := [

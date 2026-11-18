@@ -86,6 +86,23 @@ const MOVESETS := {
 				camera_intensity = 0.2}},
 		},
 	},
+	# Yann LeCant: heavyweight sceptic, word token bursts and autocomplete finisher.
+	&"yann": {
+		tweak = {
+			# Super finisher: Opponent trapped in giant text box, autocomplete types "you lose", heavy letters fall.
+			titan_finish = {cinematic = &"autocomplete", cinematic_ticks = 270, super_fx = &"autocomplete"},
+		},
+		add = {
+			# Power move: word tokens "the" / "next" / "token" fly toward the opponent.
+			word_tokens = {from = "kenji/ki_blast", set = {name = "Word Tokens", input = "214K",
+				projectile_look = &"word_token", projectile_count = 3, projectile_interval = 8,
+				projectile_speed = 5.2, projectile_lifetime = 80,
+				hitbox_radius = 0.32, damage = 25, chip_damage = 3,
+				animation = &"fight/overhead_smash", animation_impact = 0.25, animation_end = 0.7,
+				startup = 14, active = 18, recovery = 22, projectile_color = Color(0.35, 0.65, 0.95),
+				camera_intensity = 0.2}},
+		},
+	},
 	# Mark Zuckerbot: the Metaverse Trap (command grab) plays its scene when it connects.
 	&"zuckerbot": {
 		tweak = {thunder_valkyrie = {cinematic = &"metaverse_trap", cinematic_ticks = 390}},

@@ -5533,6 +5533,40 @@ func showdown_tests() -> void:
 	check("Showdown C8: Dario has Rulebook Shield reflecting projectiles", dar_shield != null and dar_shield.reflect_projectiles
 		and dar_shield.projectile_look == &"rulebook")
 
+	# Yann super scene test
+	gs.player_character = gs.find_character(&"yann")
+	gs.p2_character = gs.find_character(&"geoff")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var yf = current_scene
+	yf.set_physics_process(false)
+	yf.start_match(); yf.start_fight_immediately()
+	var yp1: Fighter = yf.fighters[0]
+	yf.fighters[1].controller = yf.dummy
+	yf.dummy.mode = DummyController.Mode.STAND
+	yp1.position.x = -0.45; yf.fighters[1].position.x = 0.45
+	yp1.add_meter(Fighter.MAX_METER)
+	var ystarted := [false]
+	yf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: ystarted[0] = true)
+	yp1._start_move(yp1._move_for_input("236236P"), false)
+	var yg := 0
+	while not ystarted[0] and yg < 400:
+		yf._physics_process(1.0 / 60.0); yg += 1
+	await process_frame; await process_frame
+	var yscene = yf.get_node("SuperScenePlayer").scene
+	check("Super scene: Yann's Autocomplete traps opponent in text box", ystarted[0] and yscene != null
+		and yscene.find_child("HeavyLetters", true, false) != null and yf.freeze_ticks > 100)
+	for i in 290:
+		yf._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: Yann's scene ends and fight resumes", yf.get_node("SuperScenePlayer").scene == null and yf.stage.visible)
+
+	# Yann power move check
+	var y_words: MoveData = yp1._move_for_input("214K")
+	check("Showdown C8: Yann has Word Tokens power move", y_words != null and y_words.projectile_count == 3
+		and y_words.projectile_look == &"word_token")
+
 	# Victory scenes: Xi, Dario, Yann, Geoff, Ram, and AGI (algorithm)
 	var victory_cases: Array = [
 		[&"xi", "RedLantern", "Xi Winping's red lanterns and fireworks", false],
