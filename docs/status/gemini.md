@@ -107,3 +107,43 @@ and any requests for other agents.
     - `server_farm`: Alert sysadmins, datacenter on-call SREs, cloud infrastructure architects.
   - Trimmed silence, pitch-profiled, normalised, and converted to OGG Vorbis with `.import` configurations for all shout categories (`round_start`, `big_hit`, `super`, `ko`, `throw`, `wall_hit`).
   - Documented and credited in `assets/CREDITS.md`.
+
+## G8: Dress the remaining super- and victory-scene sets
+- **State**: done
+- **Summary**: Dressed all 6 remaining sets (`oval_desk`, `vr_lobby`, `metaverse`, `browser_void`, `keynote_stage`, `xi_plaza`) in `scenes/supers/sets/` while preserving 100% of the Marker3D anchors.
+- **Details**:
+  - `oval_desk`: Executive dark-wood desk, desk lamps, briefing folders, presidential curtains, flags, circular seal rug, wainscot panelling, and balanced lighting.
+  - `vr_lobby`: High-tech headset kiosk with glowing boundary pylons, neon floor ring, teleport pads, and diagnostic monitor.
+  - `metaverse`: Floating pastel low-poly islands, cartoon trees, glowing cyan cyber-grid floor, and pastel sunset lighting.
+  - `browser_void`: Glowing circular browser platform, colourful address ribbons, browser window frame tabs, and chrome lighting.
+  - `keynote_stage`: High-contrast tech keynote screen ("THE MORE YOU BUY, THE MORE YOU SAVE"), glossy stage runway, PA speakers, and crowd barrier rails placed cleanly along the flanks without obstructing presenter framing.
+  - `xi_plaza`: Traditional red lacquered colonnade, festive hanging lanterns, curved stone courtyard benches, and atmospheric sunset sky.
+  - All 38 Marker3D anchor nodes across all 6 sets strictly preserved in their original hierarchy and coordinates.
+  - Verified clean headless loading for all 6 `.tscn` files.
+
+## G9: Missing victory scenes and tests (Xi, Dario, Yann, Geoff, Ram, AGI)
+- **State**: done
+- **Summary**: Implemented the remaining 6 approved victory scenes in `scripts/supers/victory/` per `docs/ROADMAP.md` §2, with automated tests added in `tests/sim_test.gd`.
+- **Details**:
+  - `xi.gd`: Festive red lanterns rise into the night sky while colourful fireworks bursts celebrate the victory ("XI WINPING WINS", "Stability maintained.").
+  - `dario.gd`: Golden constitutional scroll unrolls with golden rollers and seal: "Safe and helpful victory", "HELPFUL & HARMLESS" with golden confetti.
+  - `yann.gd`: Giant orange tabby cat walks across the stage behind the fighters and sits gracefully next to Yann ("WORLD MODEL ONLINE").
+  - `geoff.gd`: 3-tier medal ceremony podium; Geoff Hintoff atop 1st place with gold medal looking deeply concerned and existential, defeated opponent on 2nd place.
+  - `ram.gd`: Giant glowing neon marquee banner ("AGI ACHIEVED - COMPUTE SCALING LAW COMPLETE") with celebratory multi-coloured fireworks bursts.
+  - `algorithm.gd`: Digital green matrix wireframe grid covers the arena, stage screens activate with glowing red eye sensors ("STAGE DIGITIZED: AGI IN CONTROL").
+  - Automated test suite `tests/sim_test.gd` updated with comprehensive start/end assertions for all 6 victory scenes.
+
+## Visual review & contact sheets
+- **State**: done
+- **Summary**: Rendered 1920x720 contact sheets for all 6 super scenes and 11 victory scenes into `docs/review/gemini/scenes/`.
+- **Review & Visual Fixes**:
+  - Inspected all 17 rendered sheets visually.
+  - `mars.tscn`: Fixed height fog issue (`fog_height = 10.0` was submerging the set at Y=-400 in opaque fog). Mars terrain, rocket, and flag planting are now completely visible.
+  - `keynote_stage.tscn`: Re-routed crowd barriers from center sightline (`Z = 4.2`) to side flanks, giving clear camera view of Jensen signing the giant leather jacket.
+  - `space.tscn`: Re-aligned `SunLight` vector and materials so Earth's oceans, clouds, and atmosphere glow vibrantly in space re-entry shots.
+  - `open_source_squad.gd`: Lifted "OPEN SOURCE!" big_text offset so it stays centered in the sky above the launched opponent.
+  - `dario.gd`: Adjusted banner label font size so "Safe and helpful victory" fits comfortably within the golden parchment borders.
+  - `geoff.gd`: Hidden real fighters on stage during podium ceremony and placed opponent on 2nd place step, resolving duplicate fighter display.
+  - `yann.gd`: Path of giant cat routed behind Yann so it walks into view and sits alongside him without occluding the fighter.
+  - `tools/render_scene_sheets.gd`: Created reusable tool to render all super and victory contact sheets at 1080p downsampled to high-quality 3x2 contact sheet images.
+  - Full test suite verified passing with `0 failure(s)`.

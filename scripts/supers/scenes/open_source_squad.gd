@@ -98,7 +98,7 @@ func run() -> void:
 	xi.face = &"grin"
 	victim.play(&"fight/thrown", 1.4)
 	victim.face = &"out"
-	big_text("OPEN SOURCE!", victim.global_position + Vector3(0, 3.8, 0), Color(1.0, 0.85, 0.2), 0.6)
+	big_text("OPEN SOURCE!", victim.global_position + Vector3(0, 5.5, 0), Color(1.0, 0.85, 0.2), 0.5)
 	var fly := create_tween()
 	fly.tween_property(victim, "global_position", victim.global_position + Vector3(0, 6.0, -1.0), FINISH_TIME) \
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)

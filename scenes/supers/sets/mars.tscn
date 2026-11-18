@@ -21,9 +21,7 @@ tonemap_mode = 2
 glow_enabled = true
 fog_enabled = true
 fog_light_color = Color(0.8, 0.5, 0.35, 1)
-fog_density = 0.008
-fog_height = 10.0
-fog_height_density = 0.15
+fog_density = 0.003
 
 [sub_resource type="StandardMaterial3D" id="Mat_MarsGround"]
 albedo_color = Color(0.55, 0.28, 0.15, 1)
