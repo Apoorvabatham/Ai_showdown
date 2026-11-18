@@ -126,11 +126,11 @@ Design details are agreed with the owner **before** building.
 | Donald | **Trade War**: shipping containers stamped "IMPORTS" tumble across the floor at the opponent | Office room, Donald grows giant, tiny opponent on the desk, giant "TARIFF" stamp slams down | Golden Donald statues appear around the map, USA flags everywhere | approved |
 | Xi | **Paper Dragon Dance**: a paper festival dragon charges along the floor at the opponent | Three made-up helpers in T-shirts printed **Qwen**, **Alibaba** and **Kimi** run in and beat the opponent up | Red lanterns rise and fireworks fill the sky | approved |
 | Jensen | GPU Rain: graphics cards with spinning fans fall from the sky (done) | **Leather Jacket Tornado**: he whips off his leather jacket, it spins into a tornado that flings the opponent around | He signs his own leather jacket while GPUs rain down like confetti | approved |
-| Dario | Glowing rulebook shield reflects attacks | A giant constitution scroll wraps the opponent, sealed with a "SAFE" stamp | A golden scroll unrolls: "Safe and helpful victory" | victory approved; power + super proposed |
-| Yann | Word tokens fly ("the", "next", "token") | Opponent in a giant text box; autocomplete types "you lose", heavy letters fall | A giant cat walks across the map and sits next to him | victory approved; power + super proposed |
-| Geoff | Neural-net node zaps | VHS rewind; lecture hall; the neural net zaps the opponent; Geoff looks regretful | A medal ceremony on a podium, but he looks worried | victory approved; power + super proposed |
-| Ram | Money bags rain ("Funding Round") | Opponent rides a giant exponential "Scaling Law" line off the chart and falls | A huge "AGI ACHIEVED" banner with fireworks | victory approved; power + super proposed |
-| AGI | Feed cards spin around the opponent | Opponent sucked into a giant phone, endless scroll, spat out | Every screen on the map shows its glowing eye, the stage turns digital | victory approved; power + super proposed |
+| Dario | Glowing rulebook shield reflects attacks | A giant constitution scroll wraps the opponent, sealed with a "SAFE" stamp | A golden scroll unrolls: "Safe and helpful victory" | approved |
+| Yann | Word tokens fly ("the", "next", "token") | Opponent in a giant text box; autocomplete types "you lose", heavy letters fall | A giant cat walks across the map and sits next to him | approved |
+| Geoff | Neural-net node zaps | VHS rewind; lecture hall; the neural net zaps the opponent; Geoff looks regretful | A medal ceremony on a podium, but he looks worried | approved |
+| Ram | Money bags rain ("Funding Round") | Opponent rides a giant exponential "Scaling Law" line off the chart and falls | A huge "AGI ACHIEVED" banner with fireworks | approved |
+| AGI | Feed cards spin around the opponent | Opponent sucked into a giant phone, endless scroll, spat out | Every screen on the map shows its glowing eye, the stage turns digital | approved |
 
 How it is built (Claude, C7–C8):
 - **Gameplay** (simulation): the super move connects like any move. On a hit,

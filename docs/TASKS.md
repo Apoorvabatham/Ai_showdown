@@ -419,3 +419,46 @@ ownership and keeps reporting in `docs/status/opencode.md` (sign entries "Cline"
    stance sweep, two-hand fan strike, slow walk). One fighter per commit, strip + table each.
 3. **[O2-fix]** Gemini's scene sheets in `docs/review/gemini/scenes/`: fix props that read
    badly (scale, origin, facing) in `tools/build_super_props.gd`.
+
+## 11. Nov 18: Gemini's round merged; next round (Gemini)
+
+**Merged into `main`**: O7 (projectile props), C6 (AGI kit), C10 (AGI phases), C11 (story
+mode), C12b (balance: every regular fighter 40–60 %, AGI 68 %). Review notes:
+- C10 **rollback bug**: `boss_phase` is in `SIM_FIELDS`, but `opponent_specials_used`,
+  `mimicked_move` and the `_specials` entry it registers are not, so an online rollback can
+  pick a different mimicked move on each machine. Also the `health` setter calls
+  `update_boss_phase()`, so `load_state()` and resimulation emit `phase_changed` and replay
+  the glitch/red-light transition.
+- O6 was not wired because `style_anims.res` was not on `gemini/work` yet; it is on `main` now
+  (tesla, Donald, Sundar; Cline is fixing four clips and adding Jensen, Zuckerbot, Xi).
+
+**Owner approved (Nov 18)** the power moves and super scenes for **Dario, Yann, Geoff, Ram
+and AGI** as written in ROADMAP §2.
+
+### Gemini (`gemini/work`), in order
+1. **[C10-fix]** Make the mimicry rollback-safe: snapshot `opponent_specials_used` (as plain
+   data, e.g. move ids/inputs with counts, copied not shared) and `mimicked_move`, and rebuild
+   the mimicked `_specials` entry in `load_state()`. Keep cosmetic effects out of
+   `load_state()`/resimulation: the setter (or `load_state`) must not emit `phase_changed`
+   while restoring; the look variant follows `boss_phase` after a load. Add a test: save a
+   state in phase 3, run on with different specials, load, and check the mimicked move and
+   `_specials` match the saved state exactly.
+2. **[O6-wire]** Load `style_anims.res` as library `style` and use the clips for tesla, Donald
+   and Sundar (table in `docs/status/opencode.md`): line each move's active frames up with the
+   clip's `animation_impact`; idle/walk loops replace the generic ones for that fighter. Keep
+   frame data changes small and note them. Cline re-renders four of these clips (`donald_walk`,
+   `donald_overhead`, `tesla_flying_knee`, `sundar_sweep`); re-check the timing when that lands
+   on `main`. Jensen, Zuckerbot, Xi follow when Cline delivers.
+3. **[C8] Power moves + super scenes**, one fighter per commit, in this order: **Dario**
+   (rulebook shield that reflects; constitution scroll + "SAFE" stamp), **Yann** (word tokens
+   "the" / "next" / "token"; giant text box, autocomplete types "you lose", letters fall),
+   **Geoff** (neural-net node zaps; VHS rewind, lecture hall, net zaps, Geoff regretful),
+   **Ram** (money bags "Funding Round"; opponent rides the "Scaling Law" curve off the chart),
+   **AGI** (feed cards spin round the opponent; giant phone, endless scroll, spat out).
+   Pattern: `scripts/supers/scenes/tariff_stamp.gd` / `open_source_squad.gd`, sets via a builder
+   in `tools/super_sets/<fighter>.gd` + `tools/build_super_sets.gd`, power moves via
+   `MoveData.projectile_look` in `scripts/supers/projectile_looks.gd`. Use `prop()` stand-ins
+   and list the real props you want in your status file for Cline. For each: tests, combo
+   trials (`tools/check_trials.gd -- <id>`), a contact sheet in `docs/review/gemini/scenes/`
+   that you look at before committing.
+4. **[C12c]** Re-run `tools/balance_sim.gd` after step 3 and keep everyone in 40–60 %.
