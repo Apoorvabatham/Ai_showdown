@@ -473,3 +473,23 @@ and AGI** as written in ROADMAP §2.
   (about knee height, 0.6 m in front), with the shoulders following through.
 - Don't commit test logs (`sim_stdout*.log`, `sim_stderr*.log`); they are git-ignored now.
   Delete the two on `opencode/work` when you next merge `main`.
+
+## 12. Nov 18 night: Claude's pass (Cline stopped; owner: "make it modern and playable on a laptop")
+
+Done on `main` (suite `0 failure(s)` after every step):
+- **O6 finished**: Cline's fixes plus `sundar_sweep` / `donald_overhead` redone, and new clips for
+  **Jensen, Zuckerbot, Xi**. All six fighters' tables are in `docs/status/opencode.md`.
+  **Gemini: O6-wire now covers all six** (`style/<fighter>_<move>`).
+- **Modern UI**: `assets/ui/theme.tres` is the project theme (Inter fonts, dark glass buttons,
+  white focus bar with a cyan accent). Shared helpers in `scripts/ui/ui_style.gd`:
+  `backdrop()`, `versus_look()`, `glass_panel()` / `use_glass()`, `tile_focus()`,
+  `accent_bar()`, `use_display_font()`. New screens should use these instead of hand-made
+  gold/neon styles. Main menu is left-aligned with the showcase on the right.
+- **HUD**: slanted flat health bars, glass timer and pause panel, controls hint on the first
+  fight of a session (`FightHud.show_controls_hint`).
+- **Laptop**: `Settings.auto_graphics` (first launch picks the preset from the GPU; a fight
+  under 42 fps steps it down). Visual only.
+- **Stages**: server farm (no indoor rain, dark floor, labels), Mensa (no capsule diners,
+  exposure), Senate (dark wood wall, gallery in suits), Foundry (clear EUV window, boards
+  below the HUD); crowd speech bubbles stay on screen.
+- Exported Linux build verified running into a fight.
