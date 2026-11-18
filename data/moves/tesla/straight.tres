@@ -6,11 +6,11 @@
 script = ExtResource("1_5d3iv")
 name = "Straight"
 input = "HP"
-animation = &"ual1/Punch_Cross"
-animation_impact = 0.28
+animation = &"style/tesla_cross"
+animation_impact = 0.14
 animation_end = 0.85
 startup = 8
-recovery = 18
+recovery = 12
 damage = 72
 hit_level = 0
 hitstun = 20

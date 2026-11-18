@@ -6,9 +6,9 @@
 script = ExtResource("1_wutxa")
 name = "Jab"
 input = "LP"
-animation = &"ual1/Punch_Jab"
+animation = &"style/sundar_jab"
+animation_impact = 0.1
 animation_end = 0.62
-startup = 4
 active = 2
 recovery = 8
 damage = 29

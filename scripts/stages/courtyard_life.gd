@@ -43,7 +43,7 @@ const EXCITED_EXTRA := 3
 const CHEER_EXCITEMENT := 0.5
 const APPEAR_SECONDS := 1.1
 ## Jet: first pass this long after the stage loads, then every so often.
-const JET_FIRST := Vector2(22.0, 38.0)
+const JET_FIRST := Vector2(40.0, 60.0)
 const JET_INTERVAL := Vector2(55.0, 85.0)
 const JET_SECONDS := 26.0
 const JET_PEAK := 13.5 # when it's closest (the sound's loudest moment)

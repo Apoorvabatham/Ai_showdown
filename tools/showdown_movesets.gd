@@ -51,7 +51,13 @@ const MOVESETS := {
 	},
 	# tesla man: the super's finisher plays the "Rocket Launch" scene when it hits.
 	&"tesla": {
-		tweak = {tempest_finish = {cinematic = &"rocket_launch", cinematic_ticks = 405, super_fx = &"rocket_launch"}},
+		tweak = {
+			tempest_finish = {cinematic = &"rocket_launch", cinematic_ticks = 405, super_fx = &"rocket_launch"},
+			jab = {animation = &"style/tesla_jab", animation_impact = 0.08, startup = 4, active = 2, recovery = 8},
+			straight = {animation = &"style/tesla_cross", animation_impact = 0.14, startup = 8, active = 3, recovery = 12},
+			step_kick = {animation = &"style/tesla_flying_knee", animation_impact = 0.18, startup = 10, active = 3, recovery = 15},
+			roundhouse = {animation = &"style/tesla_spin_back_kick", animation_impact = 0.22, startup = 12, active = 4, recovery = 18},
+		},
 		add = {
 			# Power move: three small rockets, one after another, from the hand.
 			rocket_barrage = {from = "kenji/ki_blast", set = {name = "Rocket Barrage", input = "214K",
@@ -101,9 +107,13 @@ const MOVESETS := {
 		stats = {max_health = 1020, archetype = "Zoner"},
 		remove = ["dragon_barrage", "dragon_finish"],
 		tweak = {
+			jab = {animation = &"style/sundar_jab", animation_impact = 0.10, startup = 5, active = 2, recovery = 8},
+			straight = {animation = &"style/sundar_cross", animation_impact = 0.14, startup = 8, active = 3, recovery = 14},
 			# A fan of three small links: the low one catches crouchers.
-			ki_blast = {projectile_count = 3, projectile_spread = 0.35, damage = 14, chip_damage = 2,
-				projectile_speed = 6.0, hitbox_radius = 0.18, recovery = 35},
+			ki_blast = {animation = &"style/sundar_cast", animation_impact = 0.26, startup = 14, active = 1,
+				projectile_count = 3, projectile_spread = 0.35, damage = 14, chip_damage = 2,
+				projectile_speed = 6.0, hitbox_radius = 0.18, recovery = 28},
+			sweep = {animation = &"style/sundar_sweep", animation_impact = 0.26, startup = 14, active = 4, recovery = 24},
 		},
 		add = {
 			# A slow ad that hangs in the air and controls space.
@@ -152,7 +162,9 @@ const MOVESETS := {
 			# Executive Order: the lariat soaks up a hit while it spins up.
 			spinning_lariat = {armor_hits = 1, damage = 40},
 			# Trade War Tackle: an armoured charge.
-			shoulder_tackle = {armor_hits = 1, damage = 84},
+			shoulder_tackle = {armor_hits = 1, damage = 84, animation = &"style/donald_shove", animation_impact = 0.32, startup = 18, active = 4, recovery = 20},
+			# Big wind-up haymaker.
+			roundhouse = {animation = &"style/donald_haymaker", animation_impact = 0.58, startup = 16, active = 4, recovery = 20},
 			# You're Fired: slower, much bigger command grab.
 			valkyrie_slam = {startup = 14, damage = 160, recovery = 40},
 			# Shower of Tariffs: the kit's super, a command grab; when it connects the

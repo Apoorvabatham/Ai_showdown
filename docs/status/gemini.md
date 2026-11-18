@@ -330,6 +330,48 @@ and any requests for other agents.
     - Roster regenerated via `godot --headless --path . -s res://tools/build_showdown_roster.gd`.
     - Full test suite `godot --headless --path . -s res://tests/sim_test.gd` executed and passed cleanly with **`0 failure(s)`**.
 
+## C10-fix: Rollback-safe AGI mimicry
+- **State**: review
+- **Summary**: Made AGI's Phase 3 boss mimicry rollback-safe.
+- **Details**:
+  - `scripts/fighter/fighter.gd`:
+    - Added `&"mimicked_move"` to `SIM_FIELDS`.
+    - `save_state()` snapshots `opponent_specials_used` as a plain duplicated dictionary (mapping move inputs to counts) and `mimicked_move`.
+    - `load_state()` restores `opponent_specials_used`, `mimicked_move`, and calls `_rebuild_mimicked_specials()` to rebuild the mimicked move entry in `_specials` without replaying transition FX.
+    - Added `_restoring_state` guard so that `load_state()` does not fire `phase_changed` or glitch audio/visuals. Look variant strictly tracks `boss_phase` upon restoration.
+  - `tests/sim_test.gd`:
+    - Added unit test: save state in Phase 3, execute opponent specials to alter mimicry state, restore state, and assert that `phase_changed` was not emitted, `mimicked_move` and `_specials` match saved snapshots, and `look_variant` remains consistent.
+  - Full test suite `sim_test.gd` passes with **`0 failure(s)`**.
+
+## O6-wire: Style animations for tesla, Donald, and Sundar
+- **State**: review
+- **Summary**: Loaded `assets/animations/style_anims.res` into `FighterModel` under the `&"style"` library, wired character-specific idle and walk/dash animation overrides in `Fighter`, and connected style animation clips for tesla, Donald, and Sundar with active frame timings aligned to `animation_impact`.
+- **Details**:
+  - **Animation Library Integration**:
+    - `scripts/fighter/fighter_model.gd`: Registered `&"style": preload("res://assets/animations/style_anims.res")` in `LIBRARIES` and added `has_clip(clip: StringName) -> bool` helper.
+    - `scripts/fighter/fighter.gd`: Added `_style_clip(suffix: String) -> StringName` helper to dynamically check and route fighter-specific clips (`style/<id>_<suffix>`). Wired `State.WALK_FWD` and `State.WALK_BACK` to `style/<id>_walk`, `State.DASH` to `style/<id>_dash`, and neutral guard/idle to `style/<id>_idle`.
+  - **Move Clip Timings & Frame Data**:
+    - **tesla**:
+      - `jab` (LP): `style/tesla_jab` (impact 0.08s -> active tick frame 5, startup 4, active 2, recovery 8).
+      - `straight` (HP): `style/tesla_cross` (impact 0.14s -> active tick frame 9, startup 8, active 3, recovery 12).
+      - `step_kick` (6LK): `style/tesla_flying_knee` (impact 0.18s -> active tick frame 11, startup 10, active 3, recovery 15).
+      - `roundhouse` (HK): `style/tesla_spin_back_kick` (impact 0.22s -> active tick frame 13, startup 12, active 4, recovery 18).
+      - Overrides also provide `tesla_idle`, `tesla_walk`, and `tesla_dash`.
+    - **sundar**:
+      - `jab` (LP): `style/sundar_jab` (impact 0.10s -> active tick frame 6, startup 5, active 2, recovery 8).
+      - `straight` (HP): `style/sundar_cross` (impact 0.14s -> active tick frame 9, startup 8, active 3, recovery 14).
+      - `ki_blast` (236P): `style/sundar_cast` (impact 0.26s -> active tick frame 15, startup 14, active 1, recovery 28).
+      - `sweep` (2HK): `style/sundar_sweep` (impact 0.26s -> active tick frame 15, startup 14, active 4, recovery 24).
+      - Overrides also provide `sundar_idle` and `sundar_walk`.
+    - **donald**:
+      - `shoulder_tackle` (6HP): `style/donald_shove` (impact 0.32s -> active tick frame 19, startup 18, active 4, recovery 20, 1 hit armor).
+      - `roundhouse` (HK): `style/donald_haymaker` (impact 0.58s -> startup 16, active 4, recovery 20; maintaining 40-frame duration to preserve combo trial wall-splat links).
+      - Overrides also provide `donald_idle` and `donald_walk`.
+  - **Verification**:
+    - Checked combo trials for all three fighters: `godot --headless --path . -s res://tools/check_trials.gd -- tesla donald sundar` passed with `0 failed`.
+    - Automated test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
+
 
 
 

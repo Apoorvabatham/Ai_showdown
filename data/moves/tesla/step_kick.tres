@@ -6,9 +6,10 @@
 script = ExtResource("1_526up")
 name = "Hyperloop Step"
 input = "6LK"
-animation = &"fight/front_kick"
-startup = 7
-recovery = 12
+animation = &"style/tesla_flying_knee"
+animation_impact = 0.18
+startup = 10
+recovery = 15
 damage = 38
 hitstun = 16
 blockstun = 11

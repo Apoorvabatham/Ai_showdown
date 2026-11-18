@@ -6,9 +6,10 @@
 script = ExtResource("1_u60ob")
 name = "Jab"
 input = "LP"
-animation = &"ual1/Punch_Jab"
+animation = &"style/tesla_jab"
+animation_impact = 0.08
 animation_end = 0.62
-startup = 3
+startup = 4
 active = 2
 recovery = 8
 damage = 28

@@ -6,10 +6,11 @@
 script = ExtResource("1_ufj2h")
 name = "Sweep"
 input = "2HK"
-animation = &"fight/spin_sweep"
-startup = 9
+animation = &"style/sundar_sweep"
+animation_impact = 0.26
+startup = 14
 active = 4
-recovery = 26
+recovery = 24
 damage = 77
 hit_level = 2
 hitstun = 0
