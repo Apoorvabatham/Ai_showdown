@@ -185,6 +185,39 @@ func _style_top() -> void:
 	UiStyle.use_glass(get_node_or_null("PauseMenu/Center/Row/Panel"), 36.0)
 
 
+## Newcomer help: the controls in a glass pill near the bottom for a few seconds, the first
+## fight of each session only (laptop players rarely open the Controls screen first).
+static var _controls_hint_shown := false
+
+
+func show_controls_hint(text: String) -> void:
+	if _controls_hint_shown:
+		return
+	_controls_hint_shown = true
+	var panel := PanelContainer.new()
+	panel.name = "ControlsHint"
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_theme_stylebox_override("panel", UiStyle.glass_panel(18.0))
+	var label := Label.new()
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_color_override("font_color", Color(0.92, 0.94, 0.97))
+	panel.add_child(label)
+	panel.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	panel.offset_bottom = -90
+	panel.modulate.a = 0.0
+	add_child(panel)
+	var tween := create_tween()
+	tween.tween_interval(1.2)
+	tween.tween_property(panel, "modulate:a", 1.0, 0.35)
+	tween.tween_interval(6.0)
+	tween.tween_property(panel, "modulate:a", 0.0, 0.6)
+	tween.tween_callback(panel.queue_free)
+
+
 ## `p2_tag` labels P2: "CPU", "P2" (versus, which also tags P1) or "Dummy".
 func setup(p1: Fighter, p2: Fighter, rounds_to_win: int, p2_tag: String = "CPU") -> void:
 	p1_name.text = "%s (P1)" % p1.data.display_name if p2_tag == "P2" else p1.data.display_name

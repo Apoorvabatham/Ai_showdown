@@ -147,6 +147,11 @@ func _ready() -> void:
 		var stage_entry := GameState.arcade.current()
 		ai.set_difficulty(stage_entry.difficulty)
 		hud.p2_name.text = "%s (%s)" % [GameState.arcade.opponent_title(), "BOSS" if stage_entry.boss else "CPU"]
+	if not (is_demo() or is_replay() or is_online()) and DisplayServer.get_name() != "headless":
+		var hint := "P1  " + InputSetup.describe("p1")
+		if is_versus():
+			hint += "\nP2  " + InputSetup.describe("p2")
+		hud.show_controls_hint(hint + "\nEsc  pause")
 	hud.rematch_pressed.connect(_on_rematch_pressed)
 	hud.restart_pressed.connect(func() -> void:
 		if replay_match:
