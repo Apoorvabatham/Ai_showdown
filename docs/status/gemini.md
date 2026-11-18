@@ -241,7 +241,7 @@ and any requests for other agents.
   - Automated test suite `tests/sim_test.gd` passes with `0 failure(s)`.
 
 ## C10: AGI boss phases by health
-- **State**: review
+- **State**: done
 - **Summary**: Implemented AGI (`algorithm`) multi-phase boss mechanics governed by health thresholds per `docs/ROADMAP.md` §4 and `docs/TASKS.md` §9, with cosmetic phase transitions, dynamic armour, speed boosts, meter regeneration, special move mimicry, and phase-aware AI behaviour.
 - **Details**:
   - **Phase 1: Assistant** (100% - 60% max_health):
@@ -271,6 +271,28 @@ and any requests for other agents.
   - **Verification**:
     - Automated test suite `tests/sim_test.gd` updated with comprehensive assertions for health threshold triggers, look variants, speed boosts, armour on specials, special tracking, mimicry, and meter regen.
     - Test suite passes with `0 failure(s)`.
+
+## C11: Story mode
+- **State**: review
+- **Summary**: Implemented Story Mode framework reading `data/story/<fighter_id>.json` across all 11 fighters, featuring intro narration over portrait cut-in, 6-fight structured ladder (5 regular/rival matches + AGI finale on Senate), pre-fight banter and post-win dialogue over VS screen style, ending sequence panels/lines, persistent progress saving in `user://story_progress.cfg`, Main Menu `StoryButton`, and test suite integration.
+- **Details**:
+  - **Story Data & Run Engine (`scripts/story/story_run.gd`)**:
+    - `StoryRun` class handles JSON loading (`intro`, `fights`, `rival`, `ending`), stage resolution (`mensa`, `server_farm`, `senate`, `foundry`), line progression, fight indexing, and state management (`INTRO`, `PRE_FIGHT`, `POST_WIN`, `ENDING`).
+    - Progress saving & persistence via `ConfigFile` in `user://story_progress.cfg` (`record_progress()`, `get_progress()`, `is_story_cleared()`, `reset_progress()`).
+  - **Story Screen Presentation (`scripts/story/story_screen.gd`, `scenes/story_screen.tscn`)**:
+    - VS-screen aesthetic with side-by-side fighter portraits, active speaker lighting/scaling, dimmed inactive speaker, and color-coded speaker name badges.
+    - Dialogue panel with autowrapped text, prompt indicator, and click/key advance (`ui_accept`).
+    - Fast skipping via `ui_cancel` (Esc).
+    - State-specific layouts: single-portrait presentation for Intro/Ending, dual-portrait presentation for Pre-Fight and Post-Win.
+  - **Game Flow & Integration**:
+    - `GameState.Mode.STORY` added with `start_story()` and `apply_story_fight()` in `scripts/autoload/game_state.gd`.
+    - Character select screen routes `Mode.STORY` selections directly to `story_screen.tscn`.
+    - Main menu features `StoryButton` with `story_button.pressed.connect(_start.bind(GameState.Mode.STORY))`.
+    - `FightManager` handles match outcomes in Story mode: winning advances to post-win dialogue in `story_screen.tscn`, losing provides Retry or Give Up options.
+  - **Verification**:
+    - Test suite assertions in `tests/sim_test.gd` verify all 11 story JSON files, `StoryRun` state transitions, stage mapping, progress persistence, `story_screen.tscn` node tree, and main menu `StoryButton`.
+    - Full test suite `tests/sim_test.gd` passes with `0 failure(s)`.
+
 
 
 

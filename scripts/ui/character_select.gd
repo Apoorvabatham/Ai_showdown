@@ -11,6 +11,7 @@ extends Control
 ## Vs CPU, Versus and Training continue to the stage select.
 
 const VS_SCENE := "res://scenes/vs_screen.tscn"
+const STORY_SCENE := "res://scenes/story_screen.tscn"
 const STAGE_SELECT_SCENE := "res://scenes/stage_select.tscn"
 const FIGHT_SCENE := "res://scenes/fight.tscn"
 const MAIN_MENU_SCENE := "res://scenes/main_menu.tscn"
@@ -396,6 +397,10 @@ func _select(character: CharacterData) -> void:
 	if GameState.mode == GameState.Mode.ARCADE:
 		GameState.start_arcade(character)
 		get_tree().change_scene_to_file(VS_SCENE)
+		return
+	if GameState.mode == GameState.Mode.STORY:
+		GameState.start_story(character)
+		get_tree().change_scene_to_file(STORY_SCENE)
 		return
 	GameState.player_character = character
 	GameState.p2_character = GameState.pick_random_cpu()

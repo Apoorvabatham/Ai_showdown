@@ -34,6 +34,7 @@ const CHARACTER_SELECT_SCENE := "res://scenes/character_select.tscn"
 const MAIN_MENU_SCENE := "res://scenes/main_menu.tscn"
 const VS_SCENE := "res://scenes/vs_screen.tscn"
 const ARCADE_END_SCENE := "res://scenes/arcade_end.tscn"
+const STORY_SCENE := "res://scenes/story_screen.tscn"
 const REPLAYS_SCENE := "res://scenes/replays.tscn"
 const FIGHTER_SCENE := preload("res://scenes/fighter/fighter.tscn")
 const TICKS_PER_SECOND := 60
@@ -243,6 +244,10 @@ func is_arcade() -> bool:
 	return GameState.is_arcade()
 
 
+func is_story() -> bool:
+	return GameState.is_story()
+
+
 ## Two CPU fighters with no end (main menu "Demo").
 func is_demo() -> bool:
 	return GameState.mode == GameState.Mode.DEMO
@@ -438,6 +443,8 @@ func _after_round() -> void:
 		phase_ticks = 0
 		if is_arcade():
 			_arcade_match_over(round_wins[0] > round_wins[1])
+		elif is_story():
+			_story_match_over(round_wins[0] > round_wins[1])
 		if round_wins[0] != round_wins[1]:
 			_start_victory(fighters[0] if round_wins[0] > round_wins[1] else fighters[1])
 		elif not resimulating:
@@ -470,7 +477,17 @@ func _start_victory(winner: Fighter) -> void:
 		Audio.voice("you_win" if winner == fighters[0] else "you_lose")
 
 
-# --- Arcade -----------------------------------------------------------------------
+# --- Arcade & Story ----------------------------------------------------------------
+
+var _story_won := false
+
+func _story_match_over(p1_won: bool) -> void:
+	_story_won = p1_won
+	if p1_won:
+		hud.configure_result("Continue", "", "Quit")
+	else:
+		hud.configure_result("Retry", "", "Give Up")
+
 
 ## Stage won: clear points and on to the next stage; lost (or drawn): offer a continue.
 func _arcade_match_over(p1_won: bool) -> void:
@@ -490,6 +507,13 @@ func _on_rematch_pressed() -> void:
 		netplay.request_rematch()
 	elif replay_match:
 		replay_match.restart()
+	elif is_story():
+		if _story_won:
+			GameState.story.state = StoryRun.State.POST_WIN
+			GameState.story.dialogue_index = 0
+			_go_to(STORY_SCENE)
+		else:
+			start_match()
 	elif not is_arcade():
 		start_match()
 	elif GameState.arcade.cleared:
@@ -509,6 +533,8 @@ func _on_main_menu_pressed() -> void:
 		netplay.leave()
 	elif is_arcade() and phase == Phase.MATCH_OVER:
 		_go_to(ARCADE_END_SCENE)
+	elif is_story() and phase == Phase.MATCH_OVER and _story_won and GameState.story.cleared:
+		_go_to(STORY_SCENE)
 	else:
 		_go_to(MAIN_MENU_SCENE)
 

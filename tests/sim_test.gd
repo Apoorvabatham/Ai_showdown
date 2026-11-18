@@ -5515,6 +5515,67 @@ func showdown_tests() -> void:
 	check("Showdown: as AGI, the boss is its shadow", run.stages[-1].character == algorithm
 		and run.opponent_title(run.stages[-1]) == "SHADOW AGI" and run.stages.size() == gs.roster.size())
 
+	# Story mode (C11): every fighter has a story JSON, StoryRun drives the flow, progress saves,
+	# and StoryScreen presents the dialogue over VS style.
+	var all_story_ok := true
+	for c in gs.roster:
+		var sdata := StoryRun.load_story_data(c.id)
+		if sdata.is_empty() or sdata.get("intro", []).size() < 1 or sdata.get("ending", []).size() < 1:
+			all_story_ok = false
+			break
+		if not sdata.has("rival") or gs.find_character(StringName(sdata["rival"])) == null:
+			all_story_ok = false
+			break
+		var fights: Array = sdata.get("fights", [])
+		if fights.size() != 6:
+			all_story_ok = false
+			break
+		for f: Dictionary in fights:
+			if not f.has("opponent") or gs.find_character(StringName(f.opponent)) == null:
+				all_story_ok = false
+				break
+			if not f.has("stage") or f.get("before", []).is_empty() or f.get("after_win", []).is_empty():
+				all_story_ok = false
+				break
+	check("Showdown C11: all 11 fighters have valid story JSON (intro, 6 fights, rival, ending)", all_story_ok)
+
+	var s_hero: CharacterData = gs.find_character(&"sundar")
+	var s_run := StoryRun.create(s_hero)
+	var stage1_ok: bool = str(s_run.current_fight().get("opponent", "")) == "dario" and s_run.current_stage_path() == gs.MENSA_STAGE
+	while s_run.advance_dialogue():
+		pass
+	s_run.state = StoryRun.State.PRE_FIGHT
+	s_run.dialogue_index = 0
+	while s_run.advance_dialogue():
+		pass
+	s_run.state = StoryRun.State.POST_WIN
+	s_run.dialogue_index = 0
+	while s_run.advance_dialogue():
+		pass
+	s_run.advance_fight()
+	var stage2_ok: bool = s_run.fight_index == 1 and s_run.state == StoryRun.State.PRE_FIGHT
+	check("Showdown C11: StoryRun flow, stages, and dialogue progression", stage1_ok and stage2_ok)
+
+	var prev_save := StoryRun.save_path
+	StoryRun.save_path = "user://test_story_progress.cfg"
+	StoryRun.reset_progress("sundar")
+	s_run.record_progress()
+	var saved_stage_1: bool = StoryRun.get_progress("sundar") == 1 and not StoryRun.is_story_cleared("sundar")
+	s_run.fight_index = 5
+	s_run.advance_fight()
+	var saved_cleared: bool = s_run.cleared and StoryRun.is_story_cleared("sundar") and s_run.state == StoryRun.State.ENDING
+	StoryRun.reset_progress("sundar")
+	StoryRun.save_path = prev_save
+	check("Showdown C11: Story progress saving and persistence", saved_stage_1 and saved_cleared)
+
+	change_scene_to_file("res://scenes/story_screen.tscn")
+	await process_frame; await process_frame
+	var story_sc = current_scene
+	check("Showdown C11: Story screen instantiates with dialogue and portrait presentation",
+		story_sc != null and story_sc.get_node_or_null("%LeftSide") != null and story_sc.get_node_or_null("%RightSide") != null
+		and story_sc.get_node_or_null("%DialoguePanel") != null and story_sc.get_node_or_null("%SpeakerLabel") != null
+		and story_sc.get_node_or_null("%TextLabel") != null)
+
 	# Title and menu: the disclaimer, no Online entry.
 	change_scene_to_file("res://scenes/title.tscn")
 	await process_frame; await process_frame
@@ -5530,6 +5591,8 @@ func showdown_tests() -> void:
 		current_scene.find_child("StartButton", true, false) != null and current_scene.find_child("QuickButton", true, false) != null and current_scene.find_child("VersusButton", true, false) != null
 		and current_scene.find_child("TrainingButton", true, false) != null and current_scene.find_child("OnlineButton", true, false) == null
 		and current_scene.find_child("Disclaimer", true, false) != null)
+	check("Showdown C11: main menu has Story button", current_scene.find_child("StoryButton", true, false) != null
+		and current_scene.find_child("StoryButton", true, false).text == "Story")
 	check("Showdown: best of 3 rounds", gs.ROUNDS_TO_WIN == 2)
 	check("Showdown: the game is called AI Showdown", ProjectSettings.get_setting("application/config/name") == "AI Showdown")
 	gs.use_engine_content()
