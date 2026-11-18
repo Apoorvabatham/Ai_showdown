@@ -1,0 +1,756 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P1=Kenji P2=Brutus, start dist 4.00
+PASS  walk forward moves toward opponent  [1.00 m in 0.5s]
+PASS  pushbox stops overlap  [dist 0.700]
+PASS  walk back  [dist 1.50]
+PASS  jab hits  [hp 1100 -> 1068, p2 HITSTUN]
+PASS  jab -> straight cancel combo  [combo 2, hp 992]
+PASS  stand block blocks jab  [hp 1100, BLOCKSTUN]
+PASS  low kick (low) beats stand block  [hp 1100 -> 1063]
+PASS  jab (high) whiffs on crouching  [hp 1100]
+PASS  crouch block blocks sweep  [hp 1100, BLOCKSTUN]
+PASS  uppercut launches  [AIR_HIT y=0.29]
+PASS  lands into knockdown  [KNOCKDOWN]
+PASS  gets up to neutral  [IDLE]
+PASS  KO on lethal hit  [KO]
+PASS  round resets after KO  [hp 1100, IDLE]
+PASS  sidestep moves into the screen  [z=-0.76]
+PASS  view stays perpendicular to fight axis  [dot 0.000]
+PASS  sidestep down comes back toward camera  [z=-0.01]
+PASS  double-tap forward dashes  [1.12 m]
+PASS  forward jump is airborne  [y=0.48 JUMP]
+PASS  lands back to neutral  [IDLE]
+PASS  P1 on right side faces screen-left
+PASS  counter hit: +25% damage  [hp 1100 -> 1060]
+PASS  combo scaling (jab + straight at 90%)  [hp 1100 -> 992]
+PASS  2HK sweep knocks down  [KNOCKDOWN]
+PASS  jump-in HK beats crouch block (overhead)  [hp 1100 -> 1011 HITSTUN]
+PASS  jump-in HK is stand-blockable  [hp 1100 BLOCKSTUN]
+PASS  one air attack per jump  [JUMP y=0.60]
+PASS  throw grabs a blocking opponent  [THROWN]
+PASS  throw damages and knocks down  [hp 980 AIR_HIT]
+PASS  throw tech breaks the grab  [TECH / TECH]
+PASS  throw whiffs at range  [THROW]
+PASS  throw whiff recovers  [IDLE]
+PASS  juggle limit makes airborne fighter unhittable
+PASS  below juggle limit is hittable
+PASS  corner pushback moves attacker back  [dx -0.18]
+PASS  roundhouse into the edge splats  [WALL_SPLAT normal (1.0, 0.0, 0.0)]
+PASS  the splat hurts (scaled like a combo hit)  [hp 1100 -> 966]
+PASS  stuck to the wall, then crumples  [44 ticks, then AIR_HIT]
+PASS  crumple ends in a knockdown  [KNOCKDOWN]
+PASS  wall use resets with the combo
+PASS  follow-up jab lands on the splatted fighter  [combo 1 -> 2 (HITSTUN)]
+PASS  no second splat in one combo  [HITSTUN]
+PASS  a jab into the edge doesn't splat  [HITSTUN]
+PASS  a blocked roundhouse doesn't splat  [BLOCKSTUN]
+PASS  ropes: bounces back toward the attacker  [AIR_HIT v=(-3.2, 3.833333, 0.0)]
+PASS  ropes: no wall damage  [hp 1100 -> 984]
+PASS  wall state is rollback state
+PASS  Boxing Ring edge: ROPES
+PASS  Dojo edge: WALL
+PASS  Rooftop edge: WALL
+PASS  Temple edge: WALL
+PASS  Beach edge: WALL
+PASS  Night Market edge: WALL
+PASS  Express edge: WALL
+PASS  Kowloon Courtyard edge: WALL
+PASS  camera neutral after reset
+PASS  hit raises intensity and focuses the victim  [0.15]
+PASS  launcher raises intensity further  [0.90]
+PASS  blocked hit doesn't set focus  [0.03]
+PASS  frame fit keeps both fighters visible  [strength 0.32]
+PASS  close range allows full action strength  [1.00]
+PASS  Off mode suppresses shake
+PASS  AI blocks a telegraphed high  [BLOCKSTUN hp 1100]
+PASS  AI punishes a whiffed uppercut  [p1 hp 1000 -> 937]
+PASS  AI vs AI lands hits  [14 hits, 7 blocks, 0 KOs]
+PASS  AI vs AI blocks some  [7 blocks]
+PASS  fighters stay in bounds
+PASS  AI match is deterministic  [768/1012 (-3.6, 0.0, 0.0) (-2.9, 0.0, 0.689) vs 768/1012 (-3.6, 0.0, 0.0) (-2.9, 0.0, 0.689)]
+PASS  round intro locks input
+PASS  FIGHT! unlocks input
+PASS  round timer counts down  [60]
+PASS  KO awards the round  [ROUND_OVER [1, 0]]
+PASS  next round starts
+PASS  time out goes to the healthier fighter  [[2, 0]]
+PASS  two round wins end the match
+PASS  double K.O. is a draw
+PASS  Rhea is faster than Brutus (jab startup)  [3 / 4 / 5]
+PASS  each character has signature moves
+PASS  throw damage differs by character
+PASS  6HP selects Advancing Straight  [Advancing Straight]
+PASS  lunge carries the attacker forward  [0.80 m]
+PASS  plain HP is still the Straight
+PASS  Overhead Smash beats crouch block  [hp 1000 -> 870 AIR_HIT]
+PASS  Overhead Smash knocks down  [KNOCKDOWN]
+PASS  hits spawn effects  [163 -> 164]
+PASS  Hit flash: the struck fighter's meshes get the rim flash overlay
+PASS  Hit flash: the overlay is removed once it fades
+PASS  HUD note: a new callout stays fully visible while the previous one would be fading  [a 1.00]
+PASS  audio buses exist
+PASS  the master bus has one limiter (ceiling -1 dB) so the mix never clips
+PASS  FighterModel and the shape builder agree on the shapes
+PASS  kenji: the body has every expression and a mouth  [[&"blink", &"squint", &"brow_down", &"brow_up", &"jaw_open", &"smile", &"grimace"] ["MI_Superhero_Male", "mouth"]]
+PASS  kenji: the face pieces (eyebrows, lashes) are expression-ready too  [["Eyebrows", "SuperHero_Male"]]
+PASS  rhea: the body has every expression and a mouth  [[&"blink", &"squint", &"brow_down", &"brow_up", &"jaw_open", &"smile", &"grimace"] ["MI_Superhero_Female", "mouth"]]
+PASS  rhea: the face pieces (eyebrows, lashes) are expression-ready too  [["Eyebrows", "Superhero_Female", "Eyebrows_Female"]]
+PASS  brutus: the body has every expression and a mouth  [[&"blink", &"squint", &"brow_down", &"brow_up", &"jaw_open", &"smile", &"grimace"] ["MI_Superhero_Male", "mouth"]]
+PASS  brutus: the face pieces (eyebrows, lashes, beard) are expression-ready too  [["Eyebrows", "SuperHero_Male", "Hair_Beard"]]
+PASS  valka: the body has every expression and a mouth  [[&"blink", &"squint", &"brow_down", &"brow_up", &"jaw_open", &"smile", &"grimace"] ["MI_Superhero_Female", "mouth"]]
+PASS  valka: the face pieces (eyebrows, lashes) are expression-ready too  [["Eyebrows", "Superhero_Female", "Eyebrows_Female"]]
+PASS  jin: the body has every expression and a mouth  [[&"blink", &"squint", &"brow_down", &"brow_up", &"jaw_open", &"smile", &"grimace"] ["MI_Superhero_Male", "mouth"]]
+PASS  jin: the face pieces (eyebrows, lashes) are expression-ready too  [["Eyebrows", "SuperHero_Male", "Eyebrows_Regular"]]
+PASS  mira: the body has every expression and a mouth  [[&"blink", &"squint", &"brow_down", &"brow_up", &"jaw_open", &"smile", &"grimace"] ["MI_Superhero_Female", "mouth"]]
+PASS  mira: the face pieces (eyebrows, lashes) are expression-ready too  [["Eyebrows", "Superhero_Female", "Eyebrows_Female"]]
+PASS  lian: the body has every expression and a mouth  [[&"blink", &"squint", &"brow_down", &"brow_up", &"jaw_open", &"smile", &"grimace"] ["MI_Superhero_Female", "mouth"]]
+PASS  lian: the face pieces (eyebrows, lashes) are expression-ready too  [["Eyebrows", "Superhero_Female", "Eyebrows_Female"]]
+PASS  jaw_open drops the chin; nothing above the mouth moves  [chin 0.0316, above 0.0002]
+PASS  blink closes the lids and leaves the forehead and mouth alone  [lids 0.0110, elsewhere 0.0000]
+PASS  The lips are cut apart (no triangle seals the mouth)  [0]
+PASS  The eyes have the gaze shapes, in FighterModel's order
+PASS  Looking left turns the eyeball in place (the pupil moves, the sphere doesn't)  [off sphere 0.00000, pupil 0.0050]
+PASS  Fighters' eyes can turn
+PASS  The eyes follow a target to the side  [(0.540353, -0.0)]
+PASS  ... and one above  [(0.000067, 0.291421)]
+PASS  A target behind the head is ignored  [(0.0, 0.000036)]
+PASS  Every fighter voice clip has a mouth envelope  [62 clips, 62 envelopes]
+PASS  A shout opens the jaw  [1.00]
+PASS  ... and it closes again when the shout ends
+PASS  Fighters start the round with a focused face
+PASS  A heavy attack shouts or strains  [effort]
+PASS  Getting hit hurts  [pain]
+PASS  The face eases toward the expression  [0.80]
+PASS  Fighters watch the opponent's upper body  [(1.875533, 1.407128, -0.054767) vs (2.0, 0.0, 0.0)]
+PASS  A K.O. shuts the eyes
+PASS  ... and the K.O.'d fighter looks at nothing
+PASS  motion: 236 detected
+PASS  236P starts Ki Blast
+PASS  Ki Blast fires a projectile
+PASS  projectile hits for its damage  [hp 1100 -> 1030]
+PASS  no second projectile while one is in flight  [Advancing Straight]
+PASS  blocked projectile deals chip damage  [hp 1092]
+PASS  meter: special start + blocked hit, defender gains too  [p1 55 p2 5]
+PASS  jab cancels into Ki Blast  [Ki Blast]
+PASS  623P starts Rising Dragon, invincible on startup
+PASS  Rising Dragon launches and rises  [AIR_HIT y=0.12]
+PASS  Rising Dragon has landing recovery  [19]
+PASS  no super without meter
+PASS  super starts: freeze, meter spent  [freeze 45 meter 0]
+PASS  nothing moves during the super freeze
+PASS  super lands all hits and the finisher  [combo 7, dmg 182]
+PASS  AI throws fireballs from range  [4 fired]
+PASS  multi-shot: three shots at three heights  [[0.9, 1.25, 1.6]]
+PASS  multi-shot: rollback restores every shot
+PASS  multi-shot: the shots hit for more than one shot's damage  [hp 1100 -> 911]
+PASS  burst: a shot every interval  [2 then 3]
+PASS  sky shot: starts high above the opponent  [(2.0, 4.35, 0.0)]
+PASS  sky shot: hits the opponent  [hp 1100 -> 1030]
+PASS  barrier: goes up in front, not counted as a shot
+PASS  barrier: destroys the opponent's shot
+PASS  barrier: pushes the opponent out of it  [gap 0.51]
+PASS  barrier: expires
+PASS  reflect: the shot changes hands and turns around
+PASS  reflect: it hits its old owner  [hp 1100 -> 1030]
+PASS  teleport: past the opponent, facing back  [x 2.70, facing (-1.0, 0.0, 0.0)]
+PASS  meter drain: the jab steals meter  [p1 232 p2 119]
+PASS  Rhea: Gale Slide is low profile
+PASS  Rhea: slide beats a standing block and knocks down  [AIR_HIT]
+PASS  Rhea: slide is crouch-blockable (with chip)  [BLOCKSTUN hp 992]
+PASS  Brutus: Bull Charge travels in and hits  [moved 1.73, HITSTUN]
+PASS  Brutus: Earthquake hits low through a standing block  [AIR_HIT]
+PASS  gamepad 1 -> P1, gamepad 2 -> P2
+PASS  swap setting gives gamepad 1 to P2
+PASS  P2 keyboard has numpad + fallback keys
+PASS  Versus: P2 is player-controlled
+PASS  P2's keys move only P2  [P2 dx -1.30, P1 dx 0.00]
+PASS  P1's attack button attacks with P1 only  [ATTACK / IDLE]
+PASS  mirror match gives P2 the alternate look
+PASS  Training: dummy controller, fight starts without intro
+PASS  Training: dummy survives a lethal hit  [hp 1, HITSTUN]
+PASS  Training: input history logs the jab
+PASS  Training: jab frame data measured (+5 on hit)  [{ &"name": "Jab", &"startup": 5, &"active": 2, &"recovery": 8, &"damage": 32, &"result": 0, &"ticks": 20, &"attacker_free": 15, &"defender_free": 20, &"advantage": "+5" }]
+PASS  Training: health refills  [hp 1100]
+PASS  Training: Block All crouch-blocks a low  [hp 1100, BLOCKSTUN]
+PASS  Training: Block All stand-blocks a high  [hp 1100, BLOCKSTUN]
+PASS  Training: recording moves the dummy, not P1  [dummy dx 0.60, P1 dx 0.00]
+PASS  Training: recording saved and playing back  [30 ticks, Playback]
+PASS  Training: playback replays the recording  [dx 0.56]
+PASS  Trials: kenji has 5+, every step one of its moves, a corner trial  [[]]
+PASS  Trials: rhea has 5+, every step one of its moves, a corner trial  [[]]
+PASS  Trials: brutus has 5+, every step one of its moves, a corner trial  [[]]
+PASS  Trials: valka has 5+, every step one of its moves, a corner trial  [[]]
+PASS  Trials: jin has 5+, every step one of its moves, a corner trial  [[]]
+PASS  Trials: mira has 5+, every step one of its moves, a corner trial  [[]]
+PASS  Trials: lian has 5+, every step one of its moves, a corner trial  [[]]
+PASS  Trials: aelia has 5+, every step one of its moves, a corner trial  [[]]
+PASS  Trial checker: steps in order, a move's second hit ignored  [progress 2]
+PASS  Trial checker: wall step, '~' finisher ignored, completes
+PASS  Trial checker: a wrong move starts over
+PASS  Trial checker: a dropped combo starts over
+PASS  Trial demo: motion input sequence
+PASS  Trial: starts with the panel, a standing dummy, no meter for a no-super trial
+PASS  Trial: Jab String done by hand  [SUCCESS!]
+PASS  Trial: completion saved
+PASS  Trial: moves on to the next trial  [trial 1]
+PASS  Trial: full meter for the super trial
+PASS  Trial: corner trial puts the dummy at the edge  [dummy x 3.50, gap 1.00]
+PASS  Trial demo completes "Jab String"  [168 ticks]
+PASS  Trial demo completes "Snap Kick Rush"  [163 ticks]
+PASS  Trial demo completes "Fireball Confirm"  [174 ticks]
+PASS  Trial demo completes "Rising Dragon"  [274 ticks]
+PASS  Trial demo completes "Corner Splat"  [205 ticks]
+PASS  Trial demo completes "Dragon Barrage"  [390 ticks]
+PASS  Trial: a demo doesn't count as completed
+PASS  Trial: back to free training
+PASS  Arcade: ladder = every other fighter, then the shadow boss  [["Aelia", "Jin", "Valka", "Mira", "Brutus", "Rhea", "Lian", "Kenji"]]
+PASS  Arcade: difficulty rises, boss on Hard
+PASS  Arcade: round bonus (time + life + perfect)  [{ &"time": 5000, &"life": 5000, &"perfect": 10000, &"total": 20000 }]
+PASS  Arcade: stage clear points and next stage  [30000]
+PASS  Arcade: a continue replays the stage from its starting score
+PASS  Arcade: CPU difficulty comes from the ladder
+PASS  Arcade: round 1 won, damage + bonus scored  [score 0 -> 24900]
+PASS  Arcade: round 2 won, damage + bonus scored  [score 24900 -> 49800]
+PASS  Arcade: match won -> stage 2, Next Stage
+PASS  Arcade: next stage sets the next opponent
+PASS  Arcade: the boss is the shadow (alt look) with a full meter
+PASS  Arcade: a loss offers Continue / Give Up
+PASS  Arcade: Continue restarts the stage and counts
+PASS  Stages: every listed stage and thumbnail exists
+PASS  Stages: baked contact shadows and ambient effects  [[]]
+PASS  Stages: the ring crowd is animated
+PASS  Download size: no 3D texture is imported lossless  [[]]
+PASS  Stage select: choosing the dojo sets it
+PASS  Stage select: continues to the VS screen
+PASS  Stage select: Random picks a listed stage
+PASS  Dojo: loads with the standard bounds and spawns
+PASS  Dojo: combat works the same  [hp 1100 -> 1068]
+PASS  Dojo: students between the camera and the fight hide
+PASS  Arcade: no arena twice in a run (random order), then the boss in the dojo
+PASS  Arcade: the stage order differs between runs  [12 different orders in 12 runs]
+PASS  Arcade: with fewer stages than fights, no stage twice in a row
+PASS  Arcade: a continue replays the same stage
+PASS  Rooftop: loads and combat works  [hp 1100 -> 1068]
+PASS  Rooftop: wet deck with baked contact shadows  [AO (256, 256)]
+PASS  Rooftop: reflections, drizzle and neon ambience
+PASS  Stage life: the fixture loads
+PASS  Stage life: a missing or malformed file is refused
+PASS  Stage life: actors spawn as stand-ins without NPC files (poses and roles kept)  [6 actors]
+PASS  Stage life: JSON path follows the stage scene name
+PASS  Stage life: every reaction plays on a stand-in
+PASS  Stage life: a big hit shows a bubble with a big_hit line  [{ "key": "big_hit", "line": "Did you see that?", "index": 1 }]
+PASS  Stage life: a super shows a super line  [{ "key": "super", "line": "NO WAY!", "index": 0 }]
+PASS  Stage life: at most two bubbles at once (a fresh one isn't replaced)
+PASS  Stage life: a KO replaces an older bubble  [{ "key": "ko", "line": "It\'s over!", "index": 0 }]
+PASS  Stage life: every event runs, unknown ones are refused
+PASS  Stage life: bubbles fade away
+PASS  Stage life: nothing happens while resimulating
+PASS  Stage life: bubbles hang on the people, never on fighters
+PASS  Stage life: a CPU fight ends identically with the crowd (and it reacted)  [2 shouts; [[[(-0.934489, 0.0, -0.126133), 919, 1000, 10, 0, (0.0, 0.0, 0.0)], [(1.138852,  vs [[[(-0.934489, 0.0, -0.126133), 919, 1000, 10, 0, (0.0, 0.0, 0.0)], [(1.138852, ]
+PASS  Music: dojo plays its own track
+PASS  Music: rooftop plays its own track
+PASS  Music: temple plays its own track
+PASS  Music: beach plays its own track
+PASS  Music: market plays its own track
+PASS  Music: train plays its own track
+PASS  Music: courtyard plays its own track
+PASS  Music: fight plays its own track
+PASS  Shouts: every fighter has special / super / K.O. takes  [[]]
+PASS  Dragon punch comes out straight from a walk (dash cancel)  [Rising Dragon]
+PASS  FX: projectile launch flash
+PASS  FX: projectile impact burst + ring  [3 effects]
+PASS  Graphics High: ring keeps fog, glow, both shadowed lights and its particles  [{ &"fog": true, &"glow": true, &"shadows": 2, &"particles": 2, &"ratio": 1.0, &"probes": 0 }]
+PASS  Graphics Low: ring drops fog, glow, particles and the extra shadow (key light keeps its own)  [{ &"fog": false, &"glow": false, &"shadows": 1, &"particles": 0, &"ratio": 1.0, &"probes": 0 }]
+PASS  Graphics Medium: ring keeps fog and glow, one shadow, half the particles  [{ &"fog": true, &"glow": true, &"shadows": 1, &"particles": 2, &"ratio": 0.5, &"probes": 0 }]
+PASS  Graphics: High after Low gets the shared environment back untouched  [{ &"fog": true, &"glow": true, &"shadows": 2, &"particles": 2, &"ratio": 1.0, &"probes": 0 }]
+PASS  Graphics Low: rooftop hides its reflection probe (High keeps it)  [0 / 1]
+PASS  Graphics Low: 75% render scale, FXAA instead of MSAA
+PASS  Graphics Medium: 85% render scale, 2× MSAA
+PASS  Graphics: the setting is saved and loaded
+PASS  Graphics High: 4× MSAA at full resolution (the project default)
+PASS  Resolution: 1080p on a 3024×1898 screen draws 1080 lines
+PASS  Resolution: a window smaller than the cap renders at its own size
+PASS  Resolution: Low scales on top of the cap (75% of 1080p)
+PASS  Resolution: Native at High is full resolution
+PASS  Display: mode, window size and resolution are saved
+PASS  Display: an old fullscreen setting loads as borderless fullscreen
+PASS  Display: the window size always fits the screen
+PASS  CPU personalities: Zoner / Rushdown / Punisher
+PASS  CPU spacing: Kenji zones far, Brutus mid, Rhea up close  [2.15 / 1.26 / 1.02]
+PASS  CPU: Kenji zones with fireballs  [18 fireballs]
+PASS  CPU: no accidental dashes (walk -> neutral, block -> crouch block)  [[6, 5, 5, 5, 6, 4, 5, 1]]
+PASS  CPU: Brutus whiff-punishes from range with Bull Charge  [5 charges in 6 whiffs]
+PASS  Character select: each fighter performs a personality routine  [[true, true, true, true, true, true, true, true]]
+PASS  Main menu: a fighter showcase plays behind the buttons
+PASS  Main menu: the showcase shows every fighter once before repeating, never twice in a row  [[&"kenji", &"rhea", &"mira", &"valka", &"lian", &"brutus", &"aelia", &"jin", &"aelia"]]
+PASS  Title: the game starts on the title screen
+PASS  Title: FighterModel.texture_paths lists every texture a build loads by path
+PASS  Title: loads the fighters, then opens the main menu  [2 frames]
+PASS  Title: every fighter texture is loaded and kept for the session  [12 of 12]
+PASS  Loading screen: shown on the way to a fight
+PASS  Loading screen: progress bar fills, then the fight starts on the chosen stage  [70 frames]
+PASS  Loading screen: the fight uses the stage it instantiated on a worker thread, and nothing is left over
+PASS  Loading: each fighter look's materials and the effects' are kept for the session (their shaders survive scene changes)  [["fighter/kenji/false/true", "fighter/brutus/false/true", "fight_fx", "fighter/rhea/false/true", "fighter/valka/false/true", "fighter/jin/false/true", "fighter/mira/false/true", "fighter/lian/false/true", "fighter/kenji/true/true", "fighter/aelia/false/true"]]
+PASS  Fight: starts at once without a window (tests, smoke tests)
+PASS  Fight: while waiting to be on screen the intro doesn't tick or call the round  [ticks 0, '']
+PASS  Fight: once on screen the intro runs
+PASS  Loading: a preloaded stage for another path isn't handed over
+PASS  Demo: the main menu has a Demo entry
+PASS  Demo: two different CPU fighters on a listed stage, endless, P1 tagged CPU  [aelia vs mira on ring.tscn]
+PASS  Demo: a minute of fighting, nobody is knocked out and the round never ends  [lowest health 30%]
+PASS  Demo: a fighter who's low gets refilled once they're free
+PASS  Demo: after a while it moves on to a new random matchup
+PASS  Demo: any key goes back to the main menu
+PASS  Valka: in the roster as the fourth fighter
+PASS  Valka: Grappler CPU personality
+PASS  Valka Slam grabs a blocking opponent  [THROW / THROWN]
+PASS  Valka Slam deals its damage and slams  [hp 1000 -> 865]
+PASS  Valka Slam can't be teched  [hp 865, AIR_HIT]
+PASS  ...while a normal throw still gets teched by the same input  [TECH]
+PASS  Valka Slam whiff leaves her recovering  [ATTACK]
+PASS  Spinning Lariat starts
+PASS  Spinning Lariat passes through the fireball  [hp 1050 -> 1050]
+PASS  Thunder Valkyrie: super grab through a block  [hp 1000 -> 760]
+PASS  Temple: loads with the standard bounds and combat works  [hp 1100 -> 1068]
+PASS  Jin: in the roster as the fifth fighter
+PASS  Jin: Footsies CPU personality
+PASS  Jin: kicks reach further than Kenji's
+PASS  Jin: Axe Kick hits through a crouch block (overhead)  [hp 1000 -> 900]
+PASS  Jin: Spinning Back Kick steps in from 2.2 m  [hp 1000 -> 910]
+PASS  Jin: Tornado Kick starts invincible
+PASS  Jin: Tornado Kick launches  [AIR_HIT]
+PASS  Mira: in the roster as the sixth fighter
+PASS  Mira: Brawler CPU personality
+PASS  Mira: the CPU never picks Lakas Stance as an attack
+PASS  Mira: Lakas Stance raises Focus to 3 and no further  [focus 3]
+PASS  Mira: Lakas Stance has no hitbox  [hp 1000 -> 1000]
+PASS  Mira: Bagyo Rush hits 3 times, 6 at full Focus  [[[0, 3, 97], [3, 6, 235]]]
+PASS  Mira: full Focus more than doubles Bagyo Rush's damage  [[[0, 3, 97], [3, 6, 235]]]
+PASS  Mira: a knockdown resets Focus  [KNOCKDOWN, focus 0]
+PASS  Mira: Focus is part of the rollback snapshot
+PASS  Mira: the super ends in ~hagupit_finish  [focus used true, finisher '~hagupit_finish']
+PASS  Mira: the super at full Focus ends in ~hagupit_max  [focus used true, finisher '~hagupit_max']
+PASS  Mira: Lawin Drop dives down and forward from a jump  [height 0.69]
+PASS  Mira: the move list shows the dive kick with an arrow  [j.↓ K]
+PASS  Mira: the outfit has hem shading and stitch lines  [0.58 .. 1.00]
+PASS  Mira: her draped clothes are lined inside the hems
+PASS  Mira: her body carries a second UV set
+PASS  Mira: detailed cloth (weave, hem shading) and skin detail  [{ &"mira": [true, true], &"kenji": [true, true] }]
+PASS  Kenji gets the detailed materials too  [{ &"mira": [true, true], &"kenji": [true, true] }]
+PASS  Every fighter on the base body has detailed textures
+PASS  Every fighter uses realistic shading
+PASS  Kenji: wrapped skin, wet eyes with an eye light, anisotropic hair, no scattering pass  [{ "kenji_2": { "skin": true, "sss": false, "eyes": true, "hair": true, "eye_layer": true, "eye_light": true }, "mira_2": { "skin": true, "sss": false, "eyes": true, "hair": true, "eye_layer": true, "eye_light": true }, "kenji_0": { "skin": false, "sss": false, "eyes": false, "hair": false, "eye_layer": false, "eye_light": false } }]
+PASS  Mira (female body, matte bob) gets it too  [{ "kenji_2": { "skin": true, "sss": false, "eyes": true, "hair": true, "eye_layer": true, "eye_light": true }, "mira_2": { "skin": true, "sss": false, "eyes": true, "hair": true, "eye_layer": true, "eye_light": true }, "kenji_0": { "skin": false, "sss": false, "eyes": false, "hair": false, "eye_layer": false, "eye_light": false } }]
+PASS  The Low preset skips realistic shading  [{ "kenji_2": { "skin": true, "sss": false, "eyes": true, "hair": true, "eye_layer": true, "eye_light": true }, "mira_2": { "skin": true, "sss": false, "eyes": true, "hair": true, "eye_layer": true, "eye_light": true }, "kenji_0": { "skin": false, "sss": false, "eyes": false, "hair": false, "eye_layer": false, "eye_light": false } }]
+PASS  Lian: in the roster as the seventh fighter
+PASS  Lian: Counter CPU personality
+PASS  Lian: the CPU never picks a stance as an attack
+PASS  Lian: Still Water catches a straight and throws for its damage  [{ &"caught": true, &"lian_thrown": false, &"lian_lost": 0, &"kenji_lost": 120 }]
+PASS  Lian: a low kick goes under the stance  [{ &"caught": false, &"lian_thrown": false, &"lian_lost": 46, &"kenji_lost": 0 }]
+PASS  Lian: a throw beats the stance  [{ &"caught": false, &"lian_thrown": true, &"lian_lost": 120, &"kenji_lost": 0 }]
+PASS  Lian: the stance catches overheads, not lows
+PASS  Lian: a missed stance plays out its recovery  [ATTACK]
+PASS  Lian: Still Water doesn't catch a fireball  [hp 980 -> 892]
+PASS  Lian: Willow Step glides through a fireball  [hp 980 -> 980 at tick -1, moves ["Willow Step"]]
+PASS  Lian: CPUs don't strike into the reversal stance  [0]
+PASS  Every fighter has a super cut-in, both looks  [[]]
+PASS  A super opens the cut-in band with the fighter's face
+PASS  Trails on heavy strikes, specials and supers only
+PASS  A heavy strike leaves a trail behind the striking limb  [10 samples]
+PASS  ... that fades away  [0 left]
+PASS  A thrown fighter plays the timed thrown reaction
+PASS  A reversed fighter plays the caught reaction
+PASS  A grabbed fighter's model eases into the hold instead of jumping  [0.16]
+PASS  Every fighter has an intro clip (no longer than its shot), an expression, lines, win quotes and valid rivals  [[]]
+PASS  Lines: the rival line in a rivalry, the mirror line against yourself, else one of the fighter's own
+PASS  Intro: none without a window (tests and smoke tests)
+PASS  Intro: offline matches only, and only with the option on
+PASS  Intro: P1's shot first: intro clip, eyes on the camera, letterbox, no HUD text yet
+PASS  Intro: the name and the rival line appear, with the intro face and clip  ['LIAN' “Your fists are honest. That makes them easy.”]
+PASS  Intro: the round doesn't tick while it plays
+PASS  Intro: then P2's shot; P1 back to the guard
+PASS  Intro: ends with both fighters in the guard, the fight camera and HUD back
+PASS  Intro: a button press skips it
+PASS  Match win: the winner's quote under the title (rival quote here)  [“Discipline is good. Patience is better.”]
+PASS  Match win: the quote clears on a rematch
+PASS  Aelia: in the roster as the eighth fighter
+PASS  Aelia: her own model, not the base body
+PASS  Aelia: every game bone, same parents and rest rotations (the clips play unchanged)
+PASS  Aelia: body and eyes are skinned to it
+PASS  Aelia: a mirror match recolours her armour  [(0.4, 0.07, 0.06, 1.0)]
+PASS  Aelia: Knight CPU personality
+PASS  Aelia: spent armour is rollback state
+PASS  Aelia: a jab into Gauntlet Drive lands on the armour; she takes it and hits back  [{ &"results": [[false, 3], [true, 0]], &"stunned": false, &"aelia_lost": 32, &"kenji_lost": 95 }]
+PASS  Aelia: a throw goes through the armour  [{ &"results": [], &"stunned": true, &"aelia_lost": 120, &"kenji_lost": 0 }]
+PASS  Aelia: the armour takes one strike, the next one gets through  [ARMORED COUNTER]
+PASS  Aelia: a super breaks the armour
+PASS  Aelia: no armour in the recovery
+PASS  Aelia: armour on the startup only, none once the strike is out  [HITSTUN frame 0]
+PASS  Aelia: ordinary moves have no armour
+PASS  Aelia: the CPU answers single strikes with armour, not supers  [11 / 0]
+PASS  Aelia: CPUs throw an armoured move up close  [20]
+PASS  Beach: loads with the standard bounds and combat works  [hp 1100 -> 1068]
+PASS  Market: loads with the standard bounds and combat works  [hp 1000 -> 968]
+PASS  Market: grill light flickers and the neon is wired
+PASS  Market: in the stage list as the Night Market
+PASS  Market: ambient loops play on the Ambience bus
+PASS  Market: the crowd roars on a K.O., but not during rollback
+PASS  Market: applause follows the roar
+PASS  Crowd: reaction takes load (ooh, gasp, wow, roar) and the cheering layer plays  [{ &"ooh": 8, &"gasp": 4, &"wow": 2, &"roar": 5 }]
+PASS  Crowd: a blocked jab barely stirs it and stays quiet
+PASS  Crowd: a launcher gets an "ooh"  [ooh 0.19]
+PASS  Crowd: a counter hit gets a gasp
+PASS  Crowd: another reaction waits out the cooldown
+PASS  Crowd: a 5-hit combo gets a "wow" (it outranks the cooldown)
+PASS  Crowd: a super's finisher gets a "wow"
+PASS  Crowd: a combo builds excitement and the cheering swells  [0.69, -10.6 dB]
+PASS  Crowd: it settles after the action stops  [0.00, -68.0 dB]
+PASS  Market: two modelled jeepneys, every surface painted
+PASS  Market: the jeepneys are painted differently
+PASS  Courtyard: loads with the standard bounds and combat works  [hp 1000 -> 970]
+PASS  Courtyard: in the stage list as the Kowloon Courtyard, with its own music
+PASS  Courtyard: the life is wired (pigeons, neighbours, lanterns, steam, cat, jet)
+PASS  Courtyard: a camera behind the back wall or inside a tenement hides that side, its neighbours and the cat
+PASS  Courtyard: round 1 is dawn: sun below the skyline, gate lamp and windows lit, shutter down
+PASS  Courtyard: round 2 brings the low sun, the lamp goes out and the store's shutter rolls up  [day 0.55 sun 1.83]
+PASS  Courtyard: the final round is full morning, the sun high over the floor  [elevation 0.62]
+PASS  Courtyard: neighbours come out as the rounds go by  [7]
+PASS  Courtyard: an excited crowd brings everyone out, arms up
+PASS  Courtyard: a super scatters the pigeons and billows the laundry, but not in rollback  [26 -> 1]
+PASS  Courtyard: the pigeons come back to their perches
+PASS  Courtyard: a K.O. sends the cat running off the wall
+PASS  Courtyard: the jet's shadow sweeps across the courtyard at its loudest moment, rattling the laundry, then it's gone  [shadow at (0.0, 0.0, 0.0)]
+PASS  Courtyard: before sunrise the jet passes just behind the camera, its landing light sweeping the courtyard
+PASS  Courtyard: a restarted match is dawn again, shutter down, neighbours indoors  [day 0.00 shutter 0.00 out 2 round 1]
+PASS  Train: loads and combat works  [hp 1100 -> 1068]
+PASS  Train: in the stage list as the Express, with its own music
+PASS  Train: the roof is narrow (sideways limit 1.1 m), the length is standard
+PASS  Train: sidesteps never leave the roof  [widest 1.100 m]
+PASS  Train: square stages keep one limit for both directions
+PASS  Train: projectiles expire past the roof's sides (only on narrow stages)
+PASS  Train: the moving-world driver is there
+PASS  Train: trees and telegraph poles are laid out at runtime  [420 trees, 12 poles]
+PASS  Train: the world streams past at the train's speed, every scenery material in step  [13.00 m in 0.5 s, 4 materials]
+PASS  Train: every loop and tiling divides the scroll wrap (no jump when it wraps)
+PASS  Train: a train passes the other way (with its sound), then is gone  [7.3 s on the move]
+PASS  Train: rumble, clatter and wind on the Ambience bus, no crowd
+PASS  Best scores: a record is saved
+PASS  Best scores: saved with its details  [{ &"cleared": true, &"continues": 2, &"perfects": 3, &"stages": 8, &"ticks": 7500, &"score": 123456 }]
+PASS  Best scores: a lower score doesn't replace it
+PASS  Best scores: old score-only records still load  [{ &"score": 77777 }]
+PASS  Best scores screen: a row per fighter
+PASS  Credits screen: the roll scrolls and credits the creator
+PASS  Replays: offline Vs CPU matches are recorded
+PASS  Replays: a finished match is saved with its result  [user://replays_test/2026-11-18_222612.rpl, 6228 ticks]
+PASS  Replays: a rematch is saved as a second replay  [same false, 2 listed, phase 3, wins [1, 2]]
+PASS  Replays: the file round-trips (inputs, checksums, meta)  [2651 bytes for 6228 ticks]
+PASS  Replays: playback matches every recorded checksum and ends the same way  [104 checks]
+PASS  Replays: the players' names are shown, and a replay isn't recorded again
+PASS  Replays: seeking back and forth lands on the same states
+PASS  Replays: Watch Again starts from the top
+PASS  Replays: slow motion slows the engine
+PASS  Replays: 4x runs four ticks a frame at normal engine speed
+PASS  Replays: paused holds; a frame step advances one tick
+PASS  Replays: the rematch's replay plays back exactly too
+PASS  Replays: a replay that drifts from its checksums stops (out of sync)  [stopped at 240]
+PASS  Replays: a boss replay gives P2 the boss's full meter
+PASS  Replays: damaged or foreign files don't load
+PASS  Replays: invalid input words are rejected
+PASS  Replays: other versions are listed but can't be watched
+PASS  Replays: other game data can't be watched either
+PASS  Replays: pruning leaves the newest unkept ones plus every kept one  [31 left]
+PASS  Replays: the main menu has a Replays entry
+PASS  Replays: the screen lists every replay, newest first
+PASS  Replays: one Delete press only asks
+PASS  Replays: the second press deletes
+PASS  Replays: Keep toggles and is saved
+PASS  Controls: defaults (P1 LP = U / X)
+PASS  Controls: rebinding a key updates the action
+PASS  Controls: a taken key swaps with its action  [lp K hk O]
+PASS  Controls: a trigger can be bound
+PASS  Controls: bindings survive save / load
+PASS  Controls screen: capture binds the button and the controller shows it
+PASS  kenji has an outfit
+PASS  kenji outfit surfaces are colour slots with colours and fabrics  [["main", "trim", "accent"]]
+PASS  kenji: the skin under the clothes is removed  [8511 of 12566 triangles kept]
+PASS  kenji outfit vertices have valid bone weights
+PASS  rhea has an outfit
+PASS  rhea outfit surfaces are colour slots with colours and fabrics  [["main", "trim", "accent"]]
+PASS  rhea: the skin under the clothes is removed  [10638 of 12812 triangles kept]
+PASS  rhea outfit vertices have valid bone weights
+PASS  brutus has an outfit
+PASS  brutus outfit surfaces are colour slots with colours and fabrics  [["main", "trim", "accent"]]
+PASS  brutus: the skin under the clothes is removed  [8068 of 12566 triangles kept]
+PASS  brutus outfit vertices have valid bone weights
+PASS  valka has an outfit
+PASS  valka outfit surfaces are colour slots with colours and fabrics  [["main", "trim", "accent"]]
+PASS  valka: the skin under the clothes is removed  [9204 of 12812 triangles kept]
+PASS  valka outfit vertices have valid bone weights
+PASS  jin has an outfit
+PASS  jin outfit surfaces are colour slots with colours and fabrics  [["main", "trim"]]
+PASS  jin: the skin under the clothes is removed  [8166 of 12566 triangles kept]
+PASS  jin outfit vertices have valid bone weights
+PASS  mira has an outfit
+PASS  mira outfit surfaces are colour slots with colours and fabrics  [["main", "trim", "accent", "extra"]]
+PASS  mira: the skin under the clothes is removed  [7204 of 12812 triangles kept]
+PASS  mira outfit vertices have valid bone weights
+PASS  lian has an outfit
+PASS  lian outfit surfaces are colour slots with colours and fabrics  [["main", "trim", "accent", "extra"]]
+PASS  lian: the skin under the clothes is removed  [7586 of 12812 triangles kept]
+PASS  lian outfit vertices have valid bone weights
+PASS  FighterModel dresses Kenji on the body's skin
+PASS  Kenji's outfit is matte (low specular, no blown-out whites)  [specular 0.12, albedo 0.72]
+PASS  FighterModel dresses Kenji (alt) on the body's skin
+PASS  Kenji (alt)'s outfit is matte (low specular, no blown-out whites)  [specular 0.12, albedo 0.72]
+PASS  kenji has no hair springs (short or stiff hair)
+PASS  rhea has hair springs  [HairSprings:<SpringBoneSimulator3D#1958253431426>]
+PASS  rhea: spring bones hang from the Head, each capped by the limiter after the springs
+PASS  rhea: hair weights are valid and the crown stays on the Head  [561 swinging vertices]
+PASS  rhea: the hair settles under gravity in the guard  [now 7.1°, peak 7.1°]
+PASS  rhea: a cut restarts the hair from the pose  [0.0°]
+PASS  brutus has no hair springs (short or stiff hair)
+PASS  valka has hair springs  [HairSprings:<SpringBoneSimulator3D#1962615509816>]
+PASS  valka: spring bones hang from the Head, each capped by the limiter after the springs
+PASS  valka: hair weights are valid and the crown stays on the Head  [1612 swinging vertices]
+PASS  valka: the hair settles under gravity in the guard  [now 7.1°, peak 7.1°]
+PASS  valka: a cut restarts the hair from the pose  [0.0°]
+PASS  jin has no hair springs (short or stiff hair)
+PASS  mira has hair springs  [HairSprings:<SpringBoneSimulator3D#1967011139140>]
+PASS  mira: spring bones hang from the Head, each capped by the limiter after the springs
+PASS  mira: hair weights are valid and the crown stays on the Head  [882 swinging vertices]
+PASS  mira: the hair settles under gravity in the guard  [now 7.1°, peak 7.1°]
+PASS  mira: a cut restarts the hair from the pose  [0.0°]
+PASS  lian has no hair springs (short or stiff hair)
+PASS  aelia has no hair springs (short or stiff hair)
+PASS  kenji has 4 swinging tails and 8 hem chains  [ClothSprings:<SpringBoneSimulator3D#1971759092536>, 12 chains, 8 hems]
+PASS  kenji: each tail and hem is a chain of bones from its knot or the cloth's top, with skin binds after the body's  [28 joints, bind 65 = cloth_tail_0]
+PASS  kenji: outfit weights are valid and the tails and hems ride their bones  [3690 vertices on tail bones]
+PASS  kenji: every tail and hem joint is capped by the limiter after the springs
+PASS  kenji: the tails and hems rest clear of their colliders  [0.057 m]
+PASS  kenji: the tails and hems settle under gravity in the guard  [now 18.5°, peak 18.5°]
+PASS  kenji: a cut restarts the tails and hems from the pose  [0.0°]
+PASS  rhea has 0 swinging tails and 12 hem chains  [ClothSprings:<SpringBoneSimulator3D#1974980317139>, 12 chains, 12 hems]
+PASS  rhea: each tail and hem is a chain of bones from its knot or the cloth's top, with skin binds after the body's  [24 joints, bind 65 = cloth_tail_0]
+PASS  rhea: outfit weights are valid and the tails and hems ride their bones  [1152 vertices on tail bones]
+PASS  rhea: every tail and hem joint is capped by the limiter after the springs
+PASS  rhea: the tails and hems rest clear of their colliders  [0.006 m]
+PASS  rhea: the tails and hems settle under gravity in the guard  [now 11.5°, peak 14.7°]
+PASS  rhea: a cut restarts the tails and hems from the pose  [0.0°]
+PASS  brutus has no cloth tails or hems
+PASS  valka has no cloth tails or hems
+PASS  jin has 2 swinging tails and 8 hem chains  [ClothSprings:<SpringBoneSimulator3D#1981305328446>, 10 chains, 8 hems]
+PASS  jin: each tail and hem is a chain of bones from its knot or the cloth's top, with skin binds after the body's  [14 joints, bind 65 = cloth_tail_0]
+PASS  jin: outfit weights are valid and the tails and hems ride their bones  [3450 vertices on tail bones]
+PASS  jin: every tail and hem joint is capped by the limiter after the springs
+PASS  jin: the tails and hems rest clear of their colliders  [0.072 m]
+PASS  jin: the tails and hems settle under gravity in the guard  [now 18.6°, peak 21.9°]
+PASS  jin: a cut restarts the tails and hems from the pose  [0.0°]
+PASS  mira has no cloth tails or hems
+PASS  lian has no cloth tails or hems
+PASS  aelia has no cloth tails or hems
+PASS  facing conversion mirrors left/right for the fighter on the right
+PASS  netplay reference fight has real exchanges  [12 hits, health 702 / 583]
+PASS  loaded snapshot hashes the same as when saved
+PASS  replay from a loaded snapshot matches the original run
+PASS  netplay within the input delay never rolls back  [rollbacks 0 / 0]
+PASS  lossy netplay finishes  [confirmed [1499, 1501] in 1507 real ticks]
+PASS  lossy netplay rolls back  [rollbacks 308 / 316, 1443 / 1319 ticks re-run]
+PASS  lossy netplay: no desync reported
+PASS  both peers reproduce the reference fight exactly  [48 checkpoints compared, mismatches at []]
+PASS  time sync keeps the peers close  [frames [1505, 1504]]
+  netplay stats: 1507 real ticks, stalls 2/3, sync waits 0/0
+PASS  time sync doesn't wait on a steady connection  [waits 0 / 0]
+PASS  high-ping netplay stalls instead of rolling back too far  [stalls 251, longest recent rollback 8]
+PASS  time sync slows the peer that's ahead  [waits 4 / 0, frames [902, 902]]
+PASS  netplay detects a desync  [desync at tick 240]
+PASS  netplay ignores packets from another match  [remote frame -1]
+PASS  netplay accepts packets from its own match  [confirmed 1]
+PASS  netplay over UDP matches the reference fight  [connected true, 30 checkpoints, rollbacks 222 / 216, rtt 152 ms]
+PASS  the host key is made in the background
+PASS  the game exits cleanly right after boot (background key task)  [exit code 0]
+PASS  the game exits cleanly during the title screen's loading  [exit code 0]
+PASS  game data hash is stable
+PASS  host binds a UDP port
+PASS  guest connects to host  [4 / 4]
+PASS  both players get the same 6-digit security code  [273 265 / 273 265]
+PASS  a busy host turns away a second guest  [The host is already in a match]
+PASS  different game versions can't connect  [Different game version (host 1.0, you 0.9)]
+PASS  different game data can't connect  [Different game data: both players need the same build]
+PASS  reliable messages: all delivered, in order, despite loss  [20 of 20]
+PASS  ping measures the round trip  [82 / 82 ms]
+PASS  leaving notifies the opponent  [Your opponent left]
+PASS  a silent connection times out  [Connection lost]
+PASS  LAN browser starts
+PASS  LAN browser finds each host once  [2 entries: ["LanHost@192.168.0.45", "OldHost@192.168.0.45"]]
+PASS  LAN browser lists the joinable host first, with its port
+PASS  LAN browser flags a different version
+PASS  LAN browser reports a ping  [16 ms]
+PASS  LAN browser shows a host that's in a match
+PASS  LAN browser drops hosts that stop answering  [0 left]
+PASS  discovery answers only private addresses
+PASS  broadcast targets include the limited broadcast and localhost
+PASS  fuzzed packets don't crash, error or disconnect  [script errors +0, host 4, guest 4]
+PASS  fuzzed packets don't make the engine log errors  [+0, last: Condition "!is_inside_tree()" is true.  (scene/gui/control.cpp:3001)]
+PASS  a HELLO from an unproven address only gets a challenge  [1 replies, status 1]
+PASS  the challenge is no bigger than the HELLO (no amplification)  [17 vs 41 bytes]
+PASS  an unproven wrong-version HELLO gets no detailed (larger) reply
+PASS  a forged cookie doesn't get in
+PASS  unverified replies are rate limited  [30 replies to 200 HELLOs]
+PASS  the host is asked before anyone joins  [["Asker"] / pending Picky]
+PASS  declining turns the player away  [The host declined]
+PASS  a declined address can't keep asking  [1 requests]
+PASS  accepting lets the player in
+PASS  forged BYE / lobby messages without the token are ignored
+PASS  out-of-order reliable messages are held only within the window  [63 held]
+PASS  the real guest's BYE (with the token) still works
+PASS  a forged REJECT (wrong nonce) can't break a join
+PASS  a joiner who gives up stops blocking the host
+PASS  names are cleaned of control / bidi characters
+PASS  a packet claiming a far-future frame is dropped
+PASS  a fake ack can't stop us sending new inputs  [acked 1, newest 2]
+PASS  the INPUT header size matches the packet layout
+PASS  a packet one byte short is dropped cleanly
+PASS  far-future inputs are ignored
+PASS  checksums for impossible ticks are ignored
+PASS  garbage inputs are reduced to a real direction and buttons  [501]
+PASS  unsolicited LAN announcements are ignored
+PASS  the LAN list is capped  [32 entries]
+PASS  LAN names are cleaned
+PASS  a man in the middle connects to both sides
+PASS  ...but the two players' security codes differ  [host 777 855, guest 433 152]
+PASS  sealed packets don't show their contents
+PASS  a replayed packet is refused
+PASS  a tampered packet is refused
+PASS  out-of-order packets inside the window still arrive
+PASS  changing a packet's type breaks its tag
+PASS  a packet can't be bounced back to its sender (keys per direction)
+PASS  real traffic flows through the encryption
+PASS  a bogus KEY before the real one blocks the exchange (one decryption per connection)  [injected true, host status 3]
+PASS  a forged KEYOK fails the security check  [The connection's security check failed (status 5)]
+PASS  Net hosts
+PASS  Net: guest connects
+PASS  Net: the guest's pick arrives
+PASS  Net: the host's pick reaches the guest
+PASS  Net: the host starts the match for both  [2 messages]
+PASS  Net: a rematch request arrives
+PASS  Net: when both want a rematch the host restarts at once (no VS screen)  [[1, 2, 3, 2]]
+PASS  Net: back to character select takes the guest too and clears the picks
+PASS  Net: the guest leaving ends the session  [Your opponent left]
+PASS  Net joins an ip:port address
+PASS  Net: connected as the guest
+PASS  Net: the guest applies the host's START
+PASS  Net: leaving tells the host  [Your opponent left]
+PASS  Net: a bad address is refused
+PASS  feed INPUTS matches the protocol vector  [02070000000000000002001600050016000500]
+PASS  feed INPUTS decodes
+PASS  feed MATCH_START round trip (long names cut, names cleaned)  [龍龍龍龍龍龍龍龍龍龍龍龍龍龍龍龍龍龍龍龍龍 / Lufi]
+PASS  feed decoding refuses bad input words, sizes and versions
+PASS  feed decoding survives garbage without errors
+PASS  a publisher flushing every tick still sends every checksum  [21 of 21]
+PASS  the published match had rollbacks to hide
+PASS  every published frame is valid and contiguous  [240 frames, 1300 ticks]
+PASS  feed carries every host checksum up to the last published tick  [21 of 21]
+PASS  feed is small (about 4 bytes a tick)  [7587 bytes for 1300 ticks]
+PASS  watching uses a SpectatorMatch
+PASS  a late spectator replays the whole match from the feed  [frame 1300 / 1300, 21 of 21 checks, 26 calls]
+PASS  the spectator caught up fast (fast-forward)  [26 calls]
+PASS  after MATCH_END the spectator plays on (victory scene)
+PASS  a watched match is saved as a replay
+PASS  an online match's replay plays back offline, every host checksum matching  [21 checks]
+PASS  a feed that doesn't match the host's checksums stops the replay  [diverged true at 240]
+PASS  an out-of-sync match isn't saved as a replay
+PASS  watch_problem accepts this version and refuses others
+PASS  both players BIND and get BOUND  [127.0.0.1:56339 / 127.0.0.1:56340]
+PASS  BIND is token, role and up to 4 LAN candidates
+PASS  no addresses: the players connect through the relay  [4 / 4, 9 relayed]
+PASS  the relayed connection is encrypted end to end (same security code)
+PASS  lobby messages cross the relay
+PASS  an internet host ignores everyone it wasn't matched with  [0 replies]
+PASS  BYE goes through the relay too
+PASS  with each other's address the players connect directly (hole punched)  [4 / 4 via direct, 0 relayed]
+PASS  direct connection security codes match
+PASS  an address that never answers falls back to the relay after 3000 ms  [4 via relay after 190 rounds]
+PASS  a HELLO with a wrong pair_secret proof is ignored (direct and relay)  [1 / 2, host talking to '']
+PASS  a HELLO with a none pair_secret proof is ignored (direct and relay)  [1 / 2, host talking to '']
+PASS  a server without pair_secret still connects the players
+PASS  a replayed pair_secret proof can't move the key exchange to another address  [secured with the guest true, kept true, valid proof moves it true]
+PASS  a direct path that stalls after one reply falls back to the relay  [locked true, 4 / 4 via relay after 4016 ms, failure '']
+PASS  the restarted exchange still agrees on one security code
+PASS  a direct path that dies mid-match moves both players to the relay  [was direct true, now relay / relay, lost '', switches ["guest relay", "host relay"]]
+PASS  messages keep arriving after the failover  [after the failover]
+PASS  the connection bar names the path (and nothing on a LAN)  ['RELAY   ' / '']
+PASS  no peer endpoints from the server: the join gives up  [The server couldn't connect you to the host]
+PASS  LobbyClient says hello and gets welcome  [status 2]
+PASS  LobbyClient learns the server clock
+PASS  LobbyClient sends messages and passes on server messages and feed frames
+PASS  LobbyClient pings when it has been quiet (keeps the latency and clock fresh)
+PASS  a dropped lobby connection resumes with the token  [2 hellos, status 2, lost '']
+PASS  a deliberate close from the server isn't retried  [The server closed the connection: banned]
+PASS  server error codes read as sentences
+PASS  the official server address comes from servers.json
+PASS  online/servers.json in the repository names the default server  [wss://104-248-147-130.sslip.io/v1/ws]
+PASS  the lobby header reads the server's online counts  [23 online  ·  6 in matches  ·  3 watching]
+PASS  no online counts from an older server or bad data
+PASS  room codes are typed in any case
+PASS  Showdown: all 11 fighters load, in select order  [[&"ram", &"tesla", &"dario", &"zuckerbot", &"jensen", &"yann", &"geoff", &"sundar", &"donald", &"xi", &"algorithm"]]
+PASS  Showdown: every fighter has a kit, its own moveset with one super, CPU style, portrait, outfit and cut-in
+PASS  Showdown: the supers are renamed for the parody  [{ &"ram": "Scaling Law", &"tesla": "Rocket Launch", &"dario": "Constitutional Shield", &"zuckerbot": "Metaverse Trap", &"jensen": "Leather Jacket Tornado", &"yann": "It\'s Just Autocomplete", &"geoff": "I Regret Nothing… Wait", &"sundar": "404 Not Found", &"donald": "Shower of Tariffs", &"xi": "Open-Source Squad", &"algorithm": "Engagement Loop" }]
+PASS  Showdown: Sundar is a trapper, not a copy of Jensen  [["LP", "HP", "LK", "HK", "2LP", "2LK", "2HP", "2HK", "j.LP", "j.HP", "j.LK", "j.HK", "6HP", "6LK", "236P", "623P", "214P", "214K", "63214P", "236236P"]]
+PASS  Showdown: power moves throw animated objects (Rocket Barrage, GPU Rain, Search Result)  [[&"tesla", &"jensen", &"sundar"]]
+PASS  Showdown: Donald is an armoured powerhouse with his own moveset, not a copy of Zuckerbot
+PASS  Showdown: Xi is a fortress, not a copy of Geoff's armoured kit
+PASS  Showdown: voice fallback for specials, none for supers
+PASS  Showdown: shouts accept .ogg, .wav and .mp3 drop-ins
+PASS  Showdown: four stages with thumbnails
+PASS  Showdown: Server Farm, Mensa, Senate and Foundry load with their props  [[]]
+PASS  Showdown: a CPU-vs-CPU match finishes for every fighter (best of 3)  [[]]
+PASS  Showdown: a 1v1 quick match is over after one round  [round 1, wins [1, 0]]
+PASS  Super scene: Rocket Launch hits, freezes the fight and plays its scene  [started true, freeze 405]
+PASS  Super scene: the fight resumes after the scene  [freeze 0]
+PASS  Victory scene: tesla man plants his flag on Mars
+PASS  Victory scene: ends when a new match starts
+PASS  Super scene: Xi's Open-Source Squad runs in (Qwen, Alibaba, Kimi)
+PASS  Super scene: Xi's scene ends and the fight resumes
+PASS  Super scene: Shower of Tariffs connects, freezes the fight and plays its scene  [started true, freeze 360]
+PASS  Super scene: the fight resumes after Shower of Tariffs  [freeze 0]
+PASS  Victory scene: Donald raises golden statues and flags on the stage
+PASS  Victory scene: Donald's ends when a new match starts
+PASS  Super scene: Metaverse Trap connects, freezes the fight and plays its scene  [started true, freeze 390]
+PASS  Super scene: the fight resumes after the Metaverse Trap  [freeze 0]
+PASS  Victory scene: Zuckerbot's win changes the map to the metaverse
+PASS  Victory scene: the metaverse ends when a new match starts
+PASS  Super scene: 404 Not Found connects, freezes the fight and plays its scene  [started true, freeze 320]
+PASS  Super scene: the fight resumes after 404 Not Found  [freeze 0]
+PASS  Victory scene: sundar starts
+PASS  Victory scene: sundar ends when a new match starts
+PASS  Super scene: Leather Jacket Tornado connects, freezes the fight and plays its scene  [started true, freeze 320]
+PASS  Super scene: the fight resumes after Leather Jacket Tornado  [freeze 0]
+PASS  Victory scene: jensen starts
+PASS  Victory scene: jensen ends when a new match starts
+PASS  Victory scene: Xi Winping's red lanterns and fireworks starts
+PASS  Victory scene: xi ends when a new match starts
+PASS  Victory scene: Dario Amodei's golden scroll starts
+PASS  Victory scene: dario ends when a new match starts
+PASS  Victory scene: Yann LeCun's giant cat starts
+PASS  Victory scene: yann ends when a new match starts
+PASS  Victory scene: Geoffrey Hinton's worried medal podium starts
+PASS  Victory scene: geoff ends when a new match starts
+PASS  Victory scene: Rama's AGI ACHIEVED banner starts
+PASS  Victory scene: ram ends when a new match starts
+PASS  Victory scene: AGI's digitized stage and glowing eye screens starts
+PASS  Victory scene: algorithm ends when a new match starts
+PASS  Showdown: Arcade ends with AGI in the Senate
+PASS  Showdown: as AGI, the boss is its shadow
+PASS  Showdown: the title screen shows the parody disclaimer
+PASS  Showdown: main menu keeps Vs CPU, 1v1 Quick Match, Versus and Training, hides Online, shows the disclaimer
+PASS  Showdown: best of 3 rounds
+PASS  Showdown: the game is called AI Showdown
+PASS  the player's settings file is left as it was
+PASS  no script errors during the run  [0, first: ]
+
+0 failure(s)
+ERROR: 5 RID allocations of type 'N13RendererDummy15MaterialStorage13DummyMaterialE' were leaked at exit.
+ERROR: 2 RID allocations of type 'N13RendererDummy15MaterialStorage11DummyShaderE' were leaked at exit.
+ERROR: 8 RID allocations of type 'N13RendererDummy9DummyMeshE' were leaked at exit.
+ERROR: 9 RID allocations of type 'N17RendererSceneCull8InstanceE' were leaked at exit.

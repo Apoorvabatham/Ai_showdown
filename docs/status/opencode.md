@@ -30,7 +30,7 @@ end.
 | `tesla_idle` | 0.80 | — (loop) | bouncing guard, two light bounces, up on the balls of the feet |
 | `tesla_jab` | 0.28 | 0.08 | lead-hand snap, shoulder rolls in behind the chin |
 | `tesla_cross` | 0.34 | 0.14 | rear straight, hip drive, rear heel pivots |
-| `tesla_flying_knee` | 0.56 | 0.18 | leaping rear knee at chest height, both hands pull the head in |
+| `tesla_flying_knee` | 0.56 | 0.18 | leaping rear knee at chest height, toes down, both hands pull toward the knee |
 | `tesla_spin_back_kick` | 0.56 | 0.22 | turns his back, rear heel spears straight back, spin completes |
 | `tesla_dash` | 0.42 | — (movement) | low forward burst, lead knee up, rear leg drives behind |
 
@@ -42,10 +42,22 @@ end.
 |---|---|---|---|
 | `donald_idle` | 2.40 | — (loop) | wide stance, feet turned out, hands hanging low, slow breath and weight rock |
 | `donald_haymaker` | 1.00 | 0.58 | torso coils away, rear fist swings wide through the centreline, follows past |
-| `donald_overhead` | 1.08 | 0.60 | both fists rise above the head, deep knee fold, double hammer down to the floor |
+| `donald_overhead` | 1.08 | 0.60 | both fists rise above the head, then lock together with arms straight down at hip height |
 | `donald_shove` | 0.86 | 0.32 | step in, palms drawn to the chest, both arms drive out at chest height |
-| `donald_walk` | 2.00 | — (loop) | slow Walk_Carry cycle in place, arms hanging heavy in front |
+| `donald_walk` | 2.00 | — (loop) | Walk_Carry legs in place; head and chest upright over the hips, slight forward lean, heavy side-to-side sway, arms low in front |
 
+### sundar (upright and precise)
+
+`docs/review/opencode/style_sundar.jpg`.
+
+| clip | length (s) | animation_impact (s) | notes |
+|---|---|---|---|
+| `sundar_idle` | 2.00 | — (loop) | upright technical guard, small weight shifts, head level |
+| `sundar_jab` | 0.36 | 0.10 | precise lead jab, chin stays behind the shoulder |
+| `sundar_cross` | 0.44 | 0.14 | rear straight with a clean hip drive |
+| `sundar_cast` | 0.72 | 0.26 | lead hand traces a curve, then a palm flick forward |
+| `sundar_sweep` | 0.72 | 0.26 | lead leg swings low and wide across the front, foot near the floor |
+| `sundar_walk` | 1.57 | — (loop) | alert walk in guard, hands tucked at the chin |
 
 
 ## O5: Xi's OpenCode helpers (helper_qwen, helper_alibaba, helper_kimi)
