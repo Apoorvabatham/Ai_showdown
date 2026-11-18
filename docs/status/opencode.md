@@ -4,6 +4,50 @@ OpenCode updates this file (branch `opencode/work`). One section per task: id, s
 (`in progress` / `review` / `done`), what changed, screenshots in `docs/review/opencode/`,
 and any requests for other agents.
 
+## O6: Fighting-style animations (contract §3.6)
+
+State: **in progress** — tesla man delivered; Donald, Sundar, Jensen, Zuckerbot and Xi follow
+one commit each. Clips are **not** wired into the moves (Gemini does that).
+
+- `tools/build_style_animations.gd` (new): builds `assets/animations/style_anims.res`, an
+  `AnimationLibrary` meant to be added under the name `style` (move clips then read
+  `style/<fighter>_<move>`). The pose/IK toolkit is copied from
+  `tools/build_fight_animations.gd`; that file was not edited. Run headless to rebuild:
+  `godot --headless --path . -s res://tools/build_style_animations.gd`.
+- Every one-shot clip starts and ends on the `fight/guard` pose (0.08 s blend), so it drops
+  in and out of the guard loop. Idle and walk clips loop; movement clips are in place.
+- Review strips: `godot --rendering-driver opengl3 --path . -s
+  res://tools/build_style_animations.gd -- render [<fighter>]` renders four poses per clip
+  into `docs/review/opencode/style_<fighter>.jpg` and prints the lengths.
+
+### tesla man (fast, jumpy)
+
+`docs/review/opencode/style_tesla.jpg` — row per clip, sampled at start / wind-up / impact /
+end.
+
+| clip | length (s) | animation_impact (s) | notes |
+|---|---|---|---|
+| `tesla_idle` | 0.80 | — (loop) | bouncing guard, two light bounces, up on the balls of the feet |
+| `tesla_jab` | 0.28 | 0.08 | lead-hand snap, shoulder rolls in behind the chin |
+| `tesla_cross` | 0.34 | 0.14 | rear straight, hip drive, rear heel pivots |
+| `tesla_flying_knee` | 0.56 | 0.18 | leaping rear knee at chest height, both hands pull the head in |
+| `tesla_spin_back_kick` | 0.56 | 0.22 | turns his back, rear heel spears straight back, spin completes |
+| `tesla_dash` | 0.42 | — (movement) | low forward burst, lead knee up, rear leg drives behind |
+
+### donald (slow, heavy)
+
+`docs/review/opencode/style_donald.jpg`.
+
+| clip | length (s) | animation_impact (s) | notes |
+|---|---|---|---|
+| `donald_idle` | 2.40 | — (loop) | wide stance, feet turned out, hands hanging low, slow breath and weight rock |
+| `donald_haymaker` | 1.00 | 0.58 | torso coils away, rear fist swings wide through the centreline, follows past |
+| `donald_overhead` | 1.08 | 0.60 | both fists rise above the head, deep knee fold, double hammer down to the floor |
+| `donald_shove` | 0.86 | 0.32 | step in, palms drawn to the chest, both arms drive out at chest height |
+| `donald_walk` | 2.00 | — (loop) | slow Walk_Carry cycle in place, arms hanging heavy in front |
+
+
+
 ## O5: Xi's OpenCode helpers (helper_qwen, helper_alibaba, helper_kimi)
 
 State: **review** — `open_source_squad.gd` now loads the real NPCs instead of the kit
