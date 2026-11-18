@@ -63,7 +63,9 @@ func _ready() -> void:
 		window_size_option.disabled = i != Settings.DisplayMode.WINDOWED)
 	window_size_option.item_selected.connect(func(i: int) -> void: _change(&"window_size", i))
 	resolution_option.item_selected.connect(func(i: int) -> void: _change(&"resolution", i))
-	graphics_option.item_selected.connect(func(i: int) -> void: _change(&"graphics", i))
+	graphics_option.item_selected.connect(func(i: int) -> void:
+		Settings.auto_graphics = false # the player chose: no more automatic steps
+		_change(&"graphics", i))
 	swap_pads_check.toggled.connect(func(on: bool) -> void: _change(&"swap_pads", on))
 	intros_check.toggled.connect(func(on: bool) -> void: _change(&"fight_intros", on))
 	%BackButton.pressed.connect(_back)

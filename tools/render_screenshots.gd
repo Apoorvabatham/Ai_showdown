@@ -23,6 +23,7 @@ func _initialize() -> void:
 	await process_frame
 	var settings: Node = root.get_node("Settings")
 	settings.graphics = settings.Graphics.HIGH
+	settings.auto_graphics = false # software rendering here is slow; keep High
 	settings.resolution = settings.RESOLUTIONS.size() - 1
 	settings.display_mode = settings.DisplayMode.WINDOWED
 	settings.window_size = settings.WINDOW_SIZES.find(Vector2i(1920, 1080))

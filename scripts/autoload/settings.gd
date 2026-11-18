@@ -36,6 +36,16 @@ var resolution := 2
 enum Graphics { LOW, MEDIUM, HIGH }
 const GRAPHICS_NAMES := ["Low", "Medium", "High"]
 var graphics: Graphics = Graphics.HIGH
+## Laptop-friendly: on first launch the preset follows the GPU (integrated: Medium), and
+## while this is on a fight that runs below AUTO_MIN_FPS steps the preset down one level.
+## Choosing a preset in Options turns it off.
+var auto_graphics := true
+const AUTO_MIN_FPS := 42.0
+const AUTO_SAMPLE_SECONDS := 5.0
+const AUTO_WARMUP_SECONDS := 2.5
+var _fps_time := 0.0
+var _fps_frames := 0
+var _fight_time := 0.0
 ## Give gamepad 1 to Player 2 (useful with a single pad in Versus).
 var swap_pads := false
 ## Online: the name shown to opponents, and the last address joined.
@@ -52,6 +62,7 @@ var client_id := ""
 func _ready() -> void:
 	load_settings()
 	apply()
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().root.size_changed.connect(func() -> void: apply_graphics(get_tree().root)) # the scale follows the window
 
 
@@ -63,6 +74,7 @@ var _applied_display := Vector2i(-1, -1)
 func load_settings() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load(PATH) != OK:
+		graphics = _graphics_for_gpu() # first launch
 		return
 	music_volume = cfg.get_value("audio", "music", music_volume)
 	sfx_volume = cfg.get_value("audio", "sfx", sfx_volume)
@@ -76,7 +88,8 @@ func load_settings() -> void:
 	display_mode = clampi(cfg.get_value("video", "display_mode", legacy_mode), DisplayMode.WINDOWED, DisplayMode.EXCLUSIVE) as DisplayMode
 	window_size = clampi(cfg.get_value("video", "window_size", window_size), 0, WINDOW_SIZES.size() - 1)
 	resolution = clampi(cfg.get_value("video", "resolution", resolution), 0, RESOLUTIONS.size() - 1)
-	graphics = clampi(cfg.get_value("video", "graphics", graphics), Graphics.LOW, Graphics.HIGH) as Graphics
+	graphics = clampi(cfg.get_value("video", "graphics", _graphics_for_gpu()), Graphics.LOW, Graphics.HIGH) as Graphics
+	auto_graphics = cfg.get_value("video", "auto_graphics", auto_graphics)
 	swap_pads = cfg.get_value("input", "swap_pads", swap_pads)
 	player_name = cfg.get_value("online", "player_name", player_name)
 	last_join_address = cfg.get_value("online", "last_join_address", last_join_address)
@@ -99,6 +112,7 @@ func save_settings() -> void:
 	cfg.set_value("video", "window_size", window_size)
 	cfg.set_value("video", "resolution", resolution)
 	cfg.set_value("video", "graphics", graphics)
+	cfg.set_value("video", "auto_graphics", auto_graphics)
 	cfg.set_value("input", "swap_pads", swap_pads)
 	cfg.set_value("online", "player_name", player_name)
 	cfg.set_value("online", "last_join_address", last_join_address)
@@ -173,6 +187,53 @@ func render_scale(height: int) -> float:
 	if RESOLUTIONS[resolution] > 0 and height > RESOLUTIONS[resolution]:
 		cap = float(RESOLUTIONS[resolution]) / height
 	return maxf(cap * [0.75, 0.85, 1.0][graphics], 0.25)
+
+
+## First-launch preset: High on a dedicated GPU, Medium on integrated (laptop) graphics,
+## Low on a software or unknown renderer.
+func _graphics_for_gpu() -> Graphics:
+	if DisplayServer.get_name() == "headless":
+		return Graphics.HIGH
+	match RenderingServer.get_video_adapter_type():
+		RenderingDevice.DEVICE_TYPE_DISCRETE_GPU:
+			return Graphics.HIGH
+		RenderingDevice.DEVICE_TYPE_INTEGRATED_GPU, RenderingDevice.DEVICE_TYPE_VIRTUAL_GPU:
+			return Graphics.MEDIUM
+		RenderingDevice.DEVICE_TYPE_CPU:
+			return Graphics.LOW
+	return Graphics.MEDIUM
+
+
+## Watches the frame rate during fights (auto_graphics): a fight that stays under
+## AUTO_MIN_FPS steps the preset down one level, live, and remembers it.
+func _process(delta: float) -> void:
+	if not auto_graphics or graphics == Graphics.LOW or get_tree().paused or DisplayServer.get_name() == "headless":
+		return
+	var scene := get_tree().current_scene
+	if scene == null or scene.scene_file_path != "res://scenes/fight.tscn":
+		_fight_time = 0.0
+		_fps_time = 0.0
+		_fps_frames = 0
+		return
+	_fight_time += delta
+	if _fight_time < AUTO_WARMUP_SECONDS: # loading hitches don't count
+		return
+	_fps_time += delta
+	_fps_frames += 1
+	if _fps_time < AUTO_SAMPLE_SECONDS:
+		return
+	var fps := _fps_frames / _fps_time
+	_fps_time = 0.0
+	_fps_frames = 0
+	if fps >= AUTO_MIN_FPS:
+		return
+	graphics = (graphics - 1) as Graphics
+	print("Graphics: %.0f fps, stepping down to %s" % [fps, GRAPHICS_NAMES[graphics]])
+	apply_graphics(get_tree().root)
+	var stage = scene.get("stage")
+	if stage is Node:
+		apply_graphics_to_stage(stage)
+	save_settings()
 
 
 ## The preset's viewport side: anti-aliasing and render scale (resolution × preset).
