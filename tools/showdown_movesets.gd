@@ -73,6 +73,17 @@ const MOVESETS := {
 		tweak = {
 			inch_palm = {damage = 80, recovery = 20},
 			double_palm = {damage = 88, recovery = 20},
+			# Super finisher: Constitutional Scroll wraps opponent in legal text, sealed with SAFE stamp.
+			thousand_finish = {cinematic = &"constitution_scroll", cinematic_ticks = 230, super_fx = &"constitution_scroll"},
+		},
+		add = {
+			# Power move: a glowing rulebook shield that reflects projectile attacks and flies forward.
+			rulebook_shield = {from = "kenji/ki_blast", set = {name = "Rulebook Shield", input = "236K",
+				reflect_projectiles = true, projectile_look = &"rulebook", projectile_speed = 4.2, projectile_lifetime = 75,
+				hitbox_radius = 0.38, damage = 65, chip_damage = 8,
+				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.65,
+				startup = 14, active = 18, recovery = 22, projectile_color = Color(0.95, 0.85, 0.55),
+				camera_intensity = 0.2}},
 		},
 	},
 	# Mark Zuckerbot: the Metaverse Trap (command grab) plays its scene when it connects.

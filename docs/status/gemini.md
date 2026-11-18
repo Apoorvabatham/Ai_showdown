@@ -371,6 +371,27 @@ and any requests for other agents.
     - Checked combo trials for all three fighters: `godot --headless --path . -s res://tools/check_trials.gd -- tesla donald sundar` passed with `0 failed`.
     - Automated test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
 
+## C8: Dario power move and super scene
+- **State**: review
+- **Summary**: Implemented Dario Amoday's power move (Rulebook Shield) and owner-approved super scene (Constitutional Scroll & SAFE Stamp).
+- **Details**:
+  - **Power Move (Rulebook Shield)**:
+    - Move input: `236K` (quarter-circle forward Kick).
+    - Reflects incoming projectiles (`reflect_projectiles = true`), hits for 65 damage, 8 chip damage, travels forward at speed 4.2.
+    - Projectile visual: `&"rulebook"` in `scripts/supers/projectile_looks.gd`, procedural 3D leather-bound rulebook with gilded edges and glowing gold "★ SAFE ★" emblem. Supports hook to `assets/props/supers/dario/rulebook.tscn`.
+  - **Super Scene & Set (Constitutional Scroll)**:
+    - Set: `scenes/supers/sets/constitution_hall.tscn` (built via `tools/super_sets/dario.gd` and `tools/build_super_sets.gd`), a neoclassical rotunda with marble pillars, gold-trimmed architrave, red carpet dais, and framed safety banners.
+    - Script: `scripts/supers/scenes/constitution_scroll.gd`. Dario invokes Article 1 Safety; a giant parchment scroll unrolls and spirals tightly around the opponent pinning their limbs; a giant brass seal stamper descends from the heavens and slams down with a crimson wax seal ("★ SAFE ★ RLHF VERIFIED"); Dario bows in respectful compliance as the wrapped opponent topples comically.
+    - Wired `thousand_finish` finisher in `tools/showdown_movesets.gd`: `cinematic = &"constitution_scroll"`, `cinematic_ticks = 230`, `super_fx = &"constitution_scroll"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_constitution_scroll.jpg` generated via `tools/render_scene_sheets.gd -- dario` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/dario/rulebook.tscn`: Leather-bound constitution book with gold foil corner protectors and safety emblem.
+    - `assets/props/supers/dario/constitution_scroll.tscn`: Giant unrolled parchment scroll model with calligraphy / legal clauses.
+    - `assets/props/supers/dario/safe_stamp.tscn`: Giant brass wax seal stamper with carved red wax face.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- dario`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
 
 
 

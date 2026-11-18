@@ -34,6 +34,8 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _mini_rocket(color)
 		&"paper_dragon":
 			return _paper_dragon(color)
+		&"rulebook":
+			return _rulebook(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
@@ -44,7 +46,7 @@ static func orient(look: StringName, direction: Vector3, seed_value: int) -> Bas
 	if look == &"paper_dragon":
 		var flat := Vector3(direction.x, 0.0, direction.z)
 		return Basis.looking_at(flat.normalized()) if flat.length_squared() > 0.001 else Basis.IDENTITY
-	if look == &"mini_rocket":
+	if look == &"mini_rocket" or look == &"rulebook":
 		# Nose (-Z) along the flight direction.
 		return Basis.looking_at(direction.normalized() if direction.length_squared() > 0.001 else Vector3.FORWARD)
 	if look == &"gpu" or look == &"container":
@@ -90,6 +92,8 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 				var fan := node.get_node_or_null(NodePath(fan_name)) as Node3D
 				if fan:
 					fan.rotate_object_local(Vector3.FORWARD, 30.0 * delta)
+		&"rulebook":
+			node.rotation.z = 0.08 * sin(age * 7.0)
 
 
 # --- Mini rocket -----------------------------------------------------------------
@@ -324,6 +328,56 @@ static func _cylinder(top: float, bottom: float, height: float, position: Vector
 	mesh.material_override = material
 	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mesh
+
+
+# --- Rulebook shield (Dario's power move) ----------------------------------------
+
+## An open glowing hardcover rulebook shield facing forward.
+static func _rulebook(color: Color) -> Node3D:
+	var prop := _load_prop("dario/rulebook")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "Rulebook"
+	var leather := _flat(Color(0.28, 0.14, 0.08))
+	var gold := _glow(Color(1.0, 0.84, 0.35), 2.0)
+	var paper := _flat(Color(0.94, 0.92, 0.82))
+	# Open book: two angled covers and page blocks forming a V/shield facing forward
+	var left_wing := Node3D.new()
+	left_wing.position = Vector3(-0.24, 0, 0)
+	left_wing.rotation.y = deg_to_rad(22.0)
+	left_wing.add_child(_box(Vector3(0.48, 0.65, 0.04), Vector3.ZERO, leather))
+	left_wing.add_child(_box(Vector3(0.44, 0.60, 0.06), Vector3(0.02, 0, -0.02), paper))
+	root.add_child(left_wing)
+
+	var right_wing := Node3D.new()
+	right_wing.position = Vector3(0.24, 0, 0)
+	right_wing.rotation.y = deg_to_rad(-22.0)
+	right_wing.add_child(_box(Vector3(0.48, 0.65, 0.04), Vector3.ZERO, leather))
+	right_wing.add_child(_box(Vector3(0.44, 0.60, 0.06), Vector3(-0.02, 0, -0.02), paper))
+	root.add_child(right_wing)
+
+	# Spine in the middle
+	root.add_child(_box(Vector3(0.08, 0.66, 0.08), Vector3(0, 0, 0.08), gold))
+
+	# Glowing golden "RULES" shield seal in front of book
+	var label := Label3D.new()
+	label.text = "RULES\n★ SAFE ★"
+	label.font_size = 48
+	label.pixel_size = 0.003
+	label.modulate = Color(1.0, 0.88, 0.3)
+	label.outline_size = 4
+	label.outline_modulate = Color(0.15, 0.08, 0.02)
+	label.position = Vector3(0, 0, -0.08)
+	label.shaded = false
+	root.add_child(label)
+
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 2.0
+	light.omni_range = 2.4
+	root.add_child(light)
+	return root
 
 
 static func _flat(color: Color) -> StandardMaterial3D:

@@ -5499,6 +5499,40 @@ func showdown_tests() -> void:
 		await process_frame
 		check("Victory scene: %s ends when a new match starts" % case[0], cvictories.scene == null and cf.stage.visible)
 
+	# Super scene: Dario's Constitutional Scroll
+	gs.player_character = gs.find_character(&"dario")
+	gs.p2_character = gs.find_character(&"ram")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var darf = current_scene
+	darf.set_physics_process(false)
+	darf.start_match(); darf.start_fight_immediately()
+	var dar_p1: Fighter = darf.fighters[0]
+	darf.fighters[1].controller = darf.dummy
+	darf.dummy.mode = DummyController.Mode.STAND
+	dar_p1.position.x = -0.45; darf.fighters[1].position.x = 0.45
+	dar_p1.add_meter(Fighter.MAX_METER)
+	var dar_started := [false]
+	darf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: dar_started[0] = true)
+	dar_p1._start_move(dar_p1._move_for_input("236236P"), false)
+	var darg := 0
+	while not dar_started[0] and darg < 400:
+		darf._physics_process(1.0 / 60.0); darg += 1
+	await process_frame; await process_frame
+	var dar_scene = darf.get_node("SuperScenePlayer").scene
+	check("Super scene: Dario's Constitutional Scroll wraps opponent", dar_started[0] and dar_scene != null
+		and dar_scene.find_child("ConstitutionScroll", true, false) != null and darf.freeze_ticks > 100)
+	for i in 250:
+		darf._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: Dario's scene ends and fight resumes", darf.get_node("SuperScenePlayer").scene == null and darf.stage.visible)
+
+	# Dario power move check
+	var dar_shield: MoveData = dar_p1._move_for_input("236K")
+	check("Showdown C8: Dario has Rulebook Shield reflecting projectiles", dar_shield != null and dar_shield.reflect_projectiles
+		and dar_shield.projectile_look == &"rulebook")
+
 	# Victory scenes: Xi, Dario, Yann, Geoff, Ram, and AGI (algorithm)
 	var victory_cases: Array = [
 		[&"xi", "RedLantern", "Xi Winping's red lanterns and fireworks", false],
