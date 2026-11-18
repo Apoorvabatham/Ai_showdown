@@ -419,16 +419,16 @@ func build_donald_overhead() -> Animation:
 			top + Vector3(x, 0, 0), Vector3(x * 4.0, 0.2, -1.0))
 
 	var slam := duplicate_pose(base)
-	move_bone(slam, "pelvis", Vector3(0, -0.04, 0.02))   # slight sink, stay upright
-	lean(slam, -8.0, 0.0)                                 # slight forward lean, not a crouch
+	move_bone(slam, "pelvis", Vector3(0, -0.1, 0.08))    # sink into the blow
+	lean(slam, -36.0, 0.0)                                # bent over: shoulders follow through
 	plant_both(slam, lf, rf)
 	var hip := global_origin(slam, "pelvis")
-	var fist_y := hip.y                                   # hip height
 	for side in ["l", "r"]:
 		var x := 0.02 if side == "l" else -0.02
-		# Both fists locked together at hip height in front, arms straight down.
+		# Both fists locked together, arms straight, finishing low and well in front
+		# (about knee height): a hammer blow, not a crouch.
 		solve_ik(slam, "upperarm_" + side, "lowerarm_" + side, "hand_" + side,
-			Vector3(x, fist_y, 0.55), Vector3(x * 2.0, -1.0, 0.1))
+			Vector3(x, hip.y - 0.3, hip.z + 0.8), Vector3(x * 2.0, 1.0, 0.2))
 
 	var hold := duplicate_pose(slam)
 	move_bone(hold, "pelvis", Vector3(0, 0.015, 0))
@@ -640,11 +640,13 @@ func build_sundar_sweep() -> Animation:
 	lean(sweep, -18.0, 0.0)
 	plant_foot(sweep, rear, rf)
 	hip = global_origin(sweep, "thigh_" + lead)
-	# Lead leg swings low and wide across the front; foot near the floor, clearly away
-	# from the body.
+	# Lead leg sweeps out low toward the opponent (+Z): nearly straight, the foot skimming
+	# the floor about a leg's length in front, so it reads from the side camera.
+	var floor_y := global_origin(guard, "foot_" + lead).y
+	var sweep_foot := Vector3(hip.x + out * 0.18, floor_y + 0.03, hip.z + 0.78)
 	solve_ik(sweep, "thigh_" + lead, "calf_" + lead, "foot_" + lead,
-		hip + Vector3(out * 0.6, -0.55, 0.0), Vector3(out * 0.3, 0.8, 0.4))
-	point_foot(sweep, lead, Vector3(out * 0.6, -0.9, 0.1))
+		sweep_foot, Vector3(out * 0.3, 1.0, 0.2))
+	point_foot(sweep, lead, Vector3(out * 0.3, -0.15, 1.0))
 	var chest := global_origin(sweep, "spine_03")
 	reach_arm(sweep, rear, Vector3(-out * 0.34, chest.y - 0.22, chest.z + 0.3))
 	tuck_hand(sweep, lead)

@@ -42,7 +42,7 @@ end.
 |---|---|---|---|
 | `donald_idle` | 2.40 | — (loop) | wide stance, feet turned out, hands hanging low, slow breath and weight rock |
 | `donald_haymaker` | 1.00 | 0.58 | torso coils away, rear fist swings wide through the centreline, follows past |
-| `donald_overhead` | 1.08 | 0.60 | both fists rise above the head, then lock together with arms straight down at hip height |
+| `donald_overhead` | 1.08 | 0.60 | both fists rise above the head, then he bends over and drives both locked fists down in front (Claude, Nov 18) |
 | `donald_shove` | 0.86 | 0.32 | step in, palms drawn to the chest, both arms drive out at chest height |
 | `donald_walk` | 2.00 | — (loop) | Walk_Carry legs in place; head and chest upright over the hips, slight forward lean, heavy side-to-side sway, arms low in front |
 
@@ -56,7 +56,7 @@ end.
 | `sundar_jab` | 0.36 | 0.10 | precise lead jab, chin stays behind the shoulder |
 | `sundar_cross` | 0.44 | 0.14 | rear straight with a clean hip drive |
 | `sundar_cast` | 0.72 | 0.26 | lead hand traces a curve, then a palm flick forward |
-| `sundar_sweep` | 0.72 | 0.26 | lead leg swings low and wide across the front, foot near the floor |
+| `sundar_sweep` | 0.72 | 0.26 | drops onto the rear leg, lead leg shoots out straight and low toward the opponent, foot skimming the floor (Claude, Nov 18) |
 | `sundar_walk` | 1.57 | — (loop) | alert walk in guard, hands tucked at the chin |
 
 
