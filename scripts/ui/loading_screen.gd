@@ -16,11 +16,15 @@ const TIPS := [
 	"Fill the SUPER meter, then input the motion twice + punch or kick for your super.",
 	"Light Punch + Light Kick up close throws. Press it again as you're grabbed to break free.",
 	"Sidestep (L / RB) to dodge fireballs and step around attacks.",
-	"Rising Dragon and Crescent Rise are invincible as they start: perfect against jump-ins.",
+	"Dragon-punch motions (forward, down, down-forward + punch) are invincible as they start: perfect against jump-ins.",
 	"Tap forward twice to dash in, back twice to backdash out.",
 	"Hitting an opponent during their attack's startup is a COUNTER hit: more damage, more stun.",
 	"Training mode shows live frame data. Plus frames mean it's your turn.",
-	"Brutus's Earthquake hits low: crouch-block it, or jump it.",
+	"Donald's Trade War containers tumble along the floor: jump them or sidestep.",
+	"Jensen's GPU Rain falls from above: keep moving, don't just block.",
+	"Sundar's Search Result bars come from every side; a sidestep beats most of them.",
+	"AGI changes at 60% and 25% health: in its last phase it copies your favourite special.",
+	"Supers that connect cut to a scene: blocked or whiffed, they're just a big move.",
 ]
 
 var _paths: Array[String] = []
@@ -100,6 +104,7 @@ func _build() -> void:
 	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	art.set_anchors_preset(Control.PRESET_FULL_RECT)
+	art.modulate = Color(0.55, 0.55, 0.6) # the key art sits back; the matchup leads
 	add_child(art)
 	# Darken the lower part so the text reads.
 	var shade := TextureRect.new()
@@ -127,7 +132,9 @@ func _build() -> void:
 	GameState.ensure_selections()
 	var matchup := "%s  VS  %s" % [GameState.player_character.display_name.to_upper(), GameState.p2_character.display_name.to_upper()]
 	var stage_name: String = GameState.stage_name(GameState.stage_path)
-	column.add_child(_label(matchup, 54, GOLD))
+	var headline := _label(matchup, 58, Color.WHITE)
+	UiStyle.use_display_font([headline])
+	column.add_child(headline)
 	if stage_name != "":
 		column.add_child(_label(stage_name.to_upper(), 30, Color(0.85, 0.87, 0.95)))
 	var row := HBoxContainer.new()
@@ -136,17 +143,16 @@ func _build() -> void:
 	_bar = ProgressBar.new()
 	_bar.max_value = 1.0
 	_bar.show_percentage = false
-	_bar.custom_minimum_size = Vector2(0, 22)
+	_bar.custom_minimum_size = Vector2(0, 8)
 	_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var back := StyleBoxFlat.new()
 	back.bg_color = Color(0, 0, 0, 0.6)
-	back.set_border_width_all(2)
-	back.border_color = Color(1, 1, 1, 0.35)
-	back.set_corner_radius_all(4)
+	back.bg_color = Color(1, 1, 1, 0.1)
+	back.set_corner_radius_all(2)
 	var fill := StyleBoxFlat.new()
-	fill.bg_color = GOLD
-	fill.set_corner_radius_all(4)
+	fill.bg_color = UiStyle.ACCENT
+	fill.set_corner_radius_all(2)
 	_bar.add_theme_stylebox_override("background", back)
 	_bar.add_theme_stylebox_override("fill", fill)
 	row.add_child(_bar)
