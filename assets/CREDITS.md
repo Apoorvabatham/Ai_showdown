@@ -113,6 +113,8 @@ Third-party assets are CC0, except the "Aelia" character model (CC-BY, credited 
 | Senate hearing gavel strike sound | `assets/audio/stage/senate/gavel.ogg` | Generated for this project | — | CC0 1.0 (project original) |
 | Stage life crowd voice shouts (Senate, Mensa, Foundry, Server Farm) | `assets/audio/stage/*/voice/` | Synthesized for this project (`tools/build_stage_voices.py`) | — | CC0 1.0 (project original) |
 | Super move and victory sounds (Tesla, Donald, Jensen, Zuckerbot, Sundar, Xi) | `assets/audio/supers/` | Generated for this project (`tools/build_audio_assets.py`) | — | CC0 1.0 (project original) |
+| Inter Display font (Black Italic) | `assets/fonts/InterDisplay-BlackItalic.otf` | Rasmus Andersson | https://rsms.me/inter/ | SIL Open Font License 1.1 |
+| Permanent Marker font | `assets/fonts/PermanentMarker-Regular.ttf` | Font Diner / Google Fonts | https://fonts.google.com/specimen/Permanent+Marker | Apache 2.0 |
 
 Notes:
 - `Superhero_Male_FullBody.gltf` was edited to point to `T_Hair_1_Normal.png` / `T_Eye_Normal.png` (the shipped file referenced missing `*_png.png` names).

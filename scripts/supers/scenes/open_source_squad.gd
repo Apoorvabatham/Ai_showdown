@@ -54,7 +54,7 @@ func run() -> void:
 	xi.play(&"fight/intro_power")
 	xi.face = &"shout"
 	sound("gong_strike")
-	big_text("SQUAD!", xi.global_position + Vector3(0.0, 2.6, 0.0), Color(1.0, 0.2, 0.15), 0.8, CALL_TIME - 0.2)
+	big_text("SQUAD ASSEMBLE!", xi.global_position + Vector3(0.0, 3.2, 0.0), Color(1.0, 0.28, 0.2), 0.78, CALL_TIME - 0.2)
 	await wait(CALL_TIME)
 
 	# They sprint in from all sides; the opponent looks around.
@@ -98,7 +98,7 @@ func run() -> void:
 	xi.face = &"grin"
 	victim.play(&"fight/thrown", 1.4)
 	victim.face = &"out"
-	big_text("OPEN SOURCE!", victim.global_position + Vector3(0, 3.8, 0), Color(1.0, 0.85, 0.2), 0.6)
+	big_text("100% OPEN SOURCE!", victim.global_position + Vector3(0, 3.5, 0), Color(1.0, 0.94, 0.72), 0.75)
 	var fly := create_tween()
 	fly.tween_property(victim, "global_position", victim.global_position + Vector3(0, 6.0, -1.0), FINISH_TIME) \
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -120,9 +120,10 @@ func _face(p: ScenePuppet, target: Vector3) -> void:
 ## Stand-in shirt print: the word floating on the helper's chest (front = -Z).
 func _shirt_word(helper: ScenePuppet, word: String, color: Color) -> void:
 	var label := Label3D.new()
+	label.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
 	label.text = word
-	label.font_size = 72
-	label.pixel_size = 0.0045
+	label.font_size = 96
+	label.pixel_size = 0.004
 	label.modulate = color.lightened(0.5)
 	label.outline_size = 14
 	label.outline_modulate = Color(0.05, 0.05, 0.05)

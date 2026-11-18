@@ -61,7 +61,7 @@ func run() -> void:
 	# Whip it off: the jacket flies up over his head.
 	jensen.play(&"fight/victory_point")
 	sound("whoosh")
-	big_text("JACKET OFF!", _center + Vector3(-0.8, 3.6, 1.0), Color(0.6, 0.95, 0.15), 0.35, 0.7)
+	big_text("JACKET OFF!", _center + Vector3(-0.5, 3.2, 1.0), Color(0.92, 0.98, 1.0), 0.55, 0.7)
 	await wait(0.25)
 	_jacket_spinning = true
 	var toss := create_tween().set_parallel(true)
@@ -106,7 +106,7 @@ func run() -> void:
 	victim.rotation = marker("keynote_stage", "Victim").basis.get_euler()
 	victim.hold(&"fight/wall_splat", 0.4)
 	victim.face = &"pain"
-	big_text("SPAT OUT", victim.global_position + Vector3(0, 2.6, 0.5), Color(1.0, 0.9, 0.3), 0.3, 0.55)
+	big_text("1000x TURBO FLUNG!", victim.global_position + Vector3(0, 2.3, 0.5), Color(1.0, 0.94, 0.72), 0.52, 0.65)
 	var dust := SuperStandins.smoke_particles(1.0, 1.0)
 	add_child(dust)
 	dust.global_position = victim.global_position + Vector3(0, 0.1, 0)

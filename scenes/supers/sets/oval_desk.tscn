@@ -1,322 +1,457 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://assets/stage_props/senate/chairDesk.glb" id="1_chair"]
+[ext_resource type="PackedScene" path="res://assets/stage_props/senate/lampRoundTable.glb" id="2_lamp"]
+[ext_resource type="PackedScene" path="res://assets/stage_props/senate/bookcaseClosedWide.glb" id="3_bookcase_wide"]
+[ext_resource type="PackedScene" path="res://assets/stage_props/senate/bookcaseClosed.glb" id="4_bookcase_narrow"]
+[ext_resource type="PackedScene" path="res://assets/stage_props/senate/books.glb" id="5_books"]
+[ext_resource type="PackedScene" path="res://assets/stage_props/senate/laptop.glb" id="6_laptop"]
+[ext_resource type="PackedScene" path="res://assets/stage_props/senate/plantSmall1.glb" id="7_plant"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/senate/textures/lacquered_cherry_wood_diff_1k.jpg" id="8_wood_diff"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/senate/textures/lacquered_cherry_wood_nor_1k.jpg" id="9_wood_nor"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/senate/textures/lacquered_cherry_wood_rough_1k.jpg" id="10_wood_rough"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_Oval"]
+sky_top_color = Color(0.35, 0.55, 0.85, 1)
+sky_horizon_color = Color(0.75, 0.82, 0.9, 1)
+ground_bottom_color = Color(0.2, 0.25, 0.3, 1)
+ground_horizon_color = Color(0.65, 0.72, 0.8, 1)
+
+[sub_resource type="Sky" id="Sky_Node"]
+sky_material = SubResource("Sky_Oval")
+
 [sub_resource type="Environment" id="Environment_hu4jc"]
-background_mode = 1
-background_color = Color(0.45, 0.6, 0.8, 1)
+background_mode = 2
+sky = SubResource("Sky_Node")
 ambient_light_source = 2
-ambient_light_color = Color(0.85, 0.8, 0.72, 1)
-ambient_light_energy = 0.5
+ambient_light_color = Color(0.9, 0.86, 0.78, 1)
+ambient_light_energy = 0.65
 tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.4
+glow_bloom = 0.15
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ne1as"]
-albedo_color = Color(0.5, 0.08, 0.1, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_Carpet"]
+albedo_color = Color(0.12, 0.18, 0.32, 1)
 roughness = 0.95
+metallic = 0.0
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_5wxfh"]
-size = Vector2(26, 20)
+[sub_resource type="PlaneMesh" id="Mesh_Floor"]
+size = Vector2(30, 24)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n26rw"]
-albedo_color = Color(0.75, 0.62, 0.25, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_RugBase"]
+albedo_color = Color(0.18, 0.28, 0.48, 1)
 roughness = 0.9
+metallic = 0.05
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_im6hh"]
-size = Vector2(8, 6)
+[sub_resource type="CylinderMesh" id="Mesh_Rug"]
+top_radius = 5.2
+bottom_radius = 5.2
+height = 0.02
+radial_segments = 48
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fcsrr"]
-albedo_color = Color(0.5, 0.33, 0.18, 1)
-roughness = 0.6
-
-[sub_resource type="BoxMesh" id="BoxMesh_8t34g"]
-size = Vector3(26, 12, 0.4)
-
-[sub_resource type="BoxMesh" id="BoxMesh_pi0ky"]
-size = Vector3(0.4, 12, 20)
-
-[sub_resource type="BoxMesh" id="BoxMesh_f2v5u"]
-size = Vector3(0.4, 12, 20)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jk175"]
-albedo_color = Color(0.9, 0.88, 0.82, 1)
-roughness = 0.9
-
-[sub_resource type="BoxMesh" id="BoxMesh_2g2yl"]
-size = Vector3(26, 0.4, 20)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y8gnv"]
-albedo_color = Color(0.34, 0.2, 0.1, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_RugGoldBorder"]
+albedo_color = Color(0.85, 0.7, 0.25, 1)
+metallic = 0.4
 roughness = 0.5
 
-[sub_resource type="BoxMesh" id="BoxMesh_kw3dx"]
-size = Vector3(26, 0.8, 0.2)
+[sub_resource type="TorusMesh" id="Mesh_RugBorder"]
+inner_radius = 5.0
+outer_radius = 5.25
+rings = 48
+ring_segments = 6
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dmw5y"]
+[sub_resource type="TorusMesh" id="Mesh_RugInnerRing"]
+inner_radius = 3.6
+outer_radius = 3.75
+rings = 48
+ring_segments = 6
+
+[sub_resource type="StandardMaterial3D" id="Mat_WoodPBR"]
+albedo_texture = ExtResource("8_wood_diff")
+normal_enabled = true
+normal_texture = ExtResource("9_wood_nor")
+roughness_texture = ExtResource("10_wood_rough")
+uv1_scale = Vector3(2, 2, 2)
+
+[sub_resource type="StandardMaterial3D" id="Mat_WallUpper"]
+albedo_color = Color(0.93, 0.91, 0.86, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="Mesh_WallBack"]
+size = Vector3(26, 12, 0.4)
+
+[sub_resource type="BoxMesh" id="Mesh_WallSide"]
+size = Vector3(0.4, 12, 24)
+
+[sub_resource type="StandardMaterial3D" id="Mat_Ceiling"]
+albedo_color = Color(0.95, 0.94, 0.92, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="Mesh_Ceiling"]
+size = Vector3(26, 0.4, 24)
+
+[sub_resource type="StandardMaterial3D" id="Mat_GoldTrim"]
+albedo_color = Color(0.88, 0.74, 0.28, 1)
+metallic = 0.8
+roughness = 0.25
+
+[sub_resource type="BoxMesh" id="Mesh_MoldingCornice"]
+size = Vector3(26, 0.35, 0.35)
+
+[sub_resource type="BoxMesh" id="Mesh_WainscotBack"]
+size = Vector3(26, 3.2, 0.45)
+
+[sub_resource type="BoxMesh" id="Mesh_WainscotSide"]
+size = Vector3(0.45, 3.2, 24)
+
+[sub_resource type="BoxMesh" id="Mesh_WindowGlass"]
+size = Vector3(9, 6.0, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="Mat_GlassGlow"]
 shading_mode = 0
-albedo_color = Color(0.55, 0.75, 1, 1)
+albedo_color = Color(0.7, 0.85, 1, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_57ioh"]
-size = Vector3(9, 5.5, 0.1)
+[sub_resource type="BoxMesh" id="Mesh_WindowMullionV"]
+size = Vector3(0.2, 6.2, 0.25)
 
-[sub_resource type="BoxMesh" id="BoxMesh_81ude"]
-size = Vector3(0.25, 5.8, 0.25)
+[sub_resource type="BoxMesh" id="Mesh_WindowMullionH"]
+size = Vector3(9.2, 0.2, 0.25)
 
-[sub_resource type="BoxMesh" id="BoxMesh_btksg"]
-size = Vector3(9.4, 0.25, 0.25)
+[sub_resource type="BoxMesh" id="Mesh_WindowFrameTop"]
+size = Vector3(9.6, 0.35, 0.35)
 
-[sub_resource type="BoxMesh" id="BoxMesh_o0uyh"]
-size = Vector3(9.4, 0.3, 0.3)
+[sub_resource type="StandardMaterial3D" id="Mat_CurtainVelvet"]
+albedo_color = Color(0.55, 0.06, 0.1, 1)
+roughness = 0.85
 
-[sub_resource type="BoxMesh" id="BoxMesh_4o4lb"]
-size = Vector3(9.4, 0.3, 0.3)
+[sub_resource type="BoxMesh" id="Mesh_CurtainSide"]
+size = Vector3(1.1, 6.8, 0.6)
 
-[sub_resource type="BoxMesh" id="BoxMesh_nh3jk"]
-size = Vector3(0.3, 5.8, 0.3)
+[sub_resource type="BoxMesh" id="Mesh_CurtainValance"]
+size = Vector3(10.6, 0.8, 0.7)
 
-[sub_resource type="BoxMesh" id="BoxMesh_7qlyh"]
-size = Vector3(0.3, 5.8, 0.3)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kmyhu"]
-albedo_color = Color(0.35, 0.42, 0.55, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_1atee"]
-size = Vector3(1, 1.2, 0.05)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d432n"]
-albedo_color = Color(0.35, 0.42, 0.55, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_jqhmj"]
-size = Vector3(1, 2.2, 0.05)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vr0j4"]
-albedo_color = Color(0.35, 0.42, 0.55, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_4ogsx"]
-size = Vector3(1, 3.2, 0.05)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xosfl"]
-albedo_color = Color(0.35, 0.42, 0.55, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_637m4"]
-size = Vector3(1, 1.7, 0.05)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0o7aq"]
-albedo_color = Color(0.35, 0.42, 0.55, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_2e0hq"]
-size = Vector3(1, 2.7, 0.05)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j2mcd"]
-albedo_color = Color(0.35, 0.42, 0.55, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_tjqqu"]
-size = Vector3(1, 1.2, 0.05)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_haxkl"]
-albedo_color = Color(0.6, 0.08, 0.1, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_Skyline"]
+albedo_color = Color(0.5, 0.58, 0.68, 1)
 roughness = 0.9
 
-[sub_resource type="BoxMesh" id="BoxMesh_55mp1"]
-size = Vector3(0.9, 6.2, 0.5)
+[sub_resource type="CylinderMesh" id="Mesh_Monument"]
+top_radius = 0.1
+bottom_radius = 0.5
+height = 5.0
+radial_segments = 4
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n4xw5"]
-albedo_color = Color(0.6, 0.08, 0.1, 1)
-roughness = 0.9
+[sub_resource type="BoxMesh" id="Mesh_SkylineBox1"]
+size = Vector3(2.5, 3.0, 0.5)
 
-[sub_resource type="BoxMesh" id="BoxMesh_fdmjp"]
-size = Vector3(0.9, 6.2, 0.5)
+[sub_resource type="BoxMesh" id="Mesh_SkylineBox2"]
+size = Vector3(3.2, 2.2, 0.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d06w3"]
-albedo_color = Color(0.22, 0.11, 0.05, 1)
-metallic = 0.15
-roughness = 0.35
+[sub_resource type="BoxMesh" id="Mesh_DeskTop"]
+size = Vector3(8.4, 0.24, 3.2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_dq7wj"]
-size = Vector3(6.6, 0.2, 2.6)
+[sub_resource type="BoxMesh" id="Mesh_DeskPedestal"]
+size = Vector3(1.8, 0.98, 2.8)
 
-[sub_resource type="BoxMesh" id="BoxMesh_lwbnx"]
-size = Vector3(1.6, 0.9, 2.2)
+[sub_resource type="BoxMesh" id="Mesh_DeskModesty"]
+size = Vector3(8.4, 0.98, 0.12)
 
-[sub_resource type="BoxMesh" id="BoxMesh_kkhdv"]
-size = Vector3(1.6, 0.9, 2.2)
+[sub_resource type="StandardMaterial3D" id="Mat_LeatherBlotter"]
+albedo_color = Color(0.12, 0.28, 0.18, 1)
+roughness = 0.8
+metallic = 0.05
 
-[sub_resource type="BoxMesh" id="BoxMesh_r4qn3"]
-size = Vector3(6.6, 0.9, 0.1)
+[sub_resource type="BoxMesh" id="Mesh_Blotter"]
+size = Vector3(6.0, 0.02, 2.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ja1nq"]
-albedo_color = Color(0.12, 0.3, 0.2, 1)
-roughness = 0.9
+[sub_resource type="CylinderMesh" id="Mesh_FlagPole"]
+top_radius = 0.04
+bottom_radius = 0.04
+height = 6.2
 
-[sub_resource type="BoxMesh" id="BoxMesh_2k4mk"]
-size = Vector3(6, 0.02, 2)
+[sub_resource type="SphereMesh" id="Mesh_EagleFinial"]
+radius = 0.16
+height = 0.32
 
-[node name="oval_desk" type="Node3D" unique_id=873283566]
+[sub_resource type="CylinderMesh" id="Mesh_FlagBase"]
+top_radius = 0.3
+bottom_radius = 0.45
+height = 0.25
 
-[node name="@WorldEnvironment@2" type="WorldEnvironment" parent="." unique_id=1335730482]
+[sub_resource type="StandardMaterial3D" id="Mat_USFlag"]
+albedo_color = Color(0.85, 0.15, 0.2, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_PresFlag"]
+albedo_color = Color(0.08, 0.15, 0.35, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="Mesh_FlagCloth"]
+size = Vector3(0.06, 2.8, 1.8)
+
+[node name="oval_desk" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hu4jc")
 
-[node name="@DirectionalLight3D@3" type="DirectionalLight3D" parent="." unique_id=694678341]
-transform = Transform3D(0.8660254, -0.38302222, 0.32139382, 0, 0.64278764, 0.76604444, -0.5, -0.66341394, 0.5566704, 0, 0, 0)
-light_color = Color(1, 0.95, 0.85, 1)
-light_energy = 0.7
+[node name="SunLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.383022, 0.321394, 0, 0.642788, 0.766044, -0.5, -0.663414, 0.55667, 0, 0, 0)
+light_color = Color(1, 0.96, 0.88, 1)
+light_energy = 0.9
 shadow_enabled = true
 
-[node name="@OmniLight3D@4" type="OmniLight3D" parent="." unique_id=1180122311]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 2)
-light_color = Color(1, 0.9, 0.75, 1)
-light_energy = 0.6
-omni_range = 30.0
+[node name="CeilingChandelier" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.5, 1.5)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 0.75
+omni_range = 28.0
 
-[node name="@MeshInstance3D@5" type="MeshInstance3D" parent="." unique_id=157611354]
+[node name="FloorCarpet" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
-material_override = SubResource("StandardMaterial3D_ne1as")
-mesh = SubResource("PlaneMesh_5wxfh")
+material_override = SubResource("Mat_Carpet")
+mesh = SubResource("Mesh_Floor")
 
-[node name="@MeshInstance3D@6" type="MeshInstance3D" parent="." unique_id=1185949833]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
-material_override = SubResource("StandardMaterial3D_n26rw")
-mesh = SubResource("PlaneMesh_im6hh")
+[node name="PresidentialRug" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.3, 0, 0.01, 0.2)
+material_override = SubResource("Mat_RugBase")
+mesh = SubResource("Mesh_Rug")
 
-[node name="@MeshInstance3D@7" type="MeshInstance3D" parent="." unique_id=1923410134]
+[node name="RugGoldBorder" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.3, 0, 0.015, 0.2)
+material_override = SubResource("Mat_RugGoldBorder")
+mesh = SubResource("Mesh_RugBorder")
+
+[node name="RugInnerRing" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.3, 0, 0.015, 0.2)
+material_override = SubResource("Mat_RugGoldBorder")
+mesh = SubResource("Mesh_RugInnerRing")
+
+[node name="WallBack" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, -8)
-material_override = SubResource("StandardMaterial3D_fcsrr")
-mesh = SubResource("BoxMesh_8t34g")
+material_override = SubResource("Mat_WallUpper")
+mesh = SubResource("Mesh_WallBack")
 
-[node name="@MeshInstance3D@8" type="MeshInstance3D" parent="." unique_id=180041367]
+[node name="WallLeft" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 6, -2)
-material_override = SubResource("StandardMaterial3D_fcsrr")
-mesh = SubResource("BoxMesh_pi0ky")
+material_override = SubResource("Mat_WallUpper")
+mesh = SubResource("Mesh_WallSide")
 
-[node name="@MeshInstance3D@9" type="MeshInstance3D" parent="." unique_id=223631733]
+[node name="WallRight" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 6, -2)
-material_override = SubResource("StandardMaterial3D_fcsrr")
-mesh = SubResource("BoxMesh_f2v5u")
+material_override = SubResource("Mat_WallUpper")
+mesh = SubResource("Mesh_WallSide")
 
-[node name="@MeshInstance3D@10" type="MeshInstance3D" parent="." unique_id=314274553]
+[node name="Ceiling" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, -2)
-material_override = SubResource("StandardMaterial3D_jk175")
-mesh = SubResource("BoxMesh_2g2yl")
+material_override = SubResource("Mat_Ceiling")
+mesh = SubResource("Mesh_Ceiling")
 
-[node name="@MeshInstance3D@11" type="MeshInstance3D" parent="." unique_id=525187213]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -7.7)
-material_override = SubResource("StandardMaterial3D_y8gnv")
-mesh = SubResource("BoxMesh_kw3dx")
+[node name="WainscotBack" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -7.8)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_WainscotBack")
 
-[node name="@MeshInstance3D@12" type="MeshInstance3D" parent="." unique_id=2128691926]
+[node name="WainscotLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8, 1.6, -2)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_WainscotSide")
+
+[node name="WainscotRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.8, 1.6, -2)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_WainscotSide")
+
+[node name="MoldingBack" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.8, -7.8)
+material_override = SubResource("Mat_GoldTrim")
+mesh = SubResource("Mesh_MoldingCornice")
+
+[node name="WindowSky" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.2, -7.75)
-material_override = SubResource("StandardMaterial3D_dmw5y")
-mesh = SubResource("BoxMesh_57ioh")
+material_override = SubResource("Mat_GlassGlow")
+mesh = SubResource("Mesh_WindowGlass")
 
-[node name="@MeshInstance3D@13" type="MeshInstance3D" parent="." unique_id=1063556842]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.2, -7.65)
-material_override = SubResource("StandardMaterial3D_y8gnv")
-mesh = SubResource("BoxMesh_81ude")
+[node name="WindowMullionV1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 6.2, -7.65)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_WindowMullionV")
 
-[node name="@MeshInstance3D@14" type="MeshInstance3D" parent="." unique_id=715546355]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.2, -7.65)
-material_override = SubResource("StandardMaterial3D_y8gnv")
-mesh = SubResource("BoxMesh_btksg")
+[node name="WindowMullionV2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 6.2, -7.65)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_WindowMullionV")
 
-[node name="@MeshInstance3D@15" type="MeshInstance3D" parent="." unique_id=137696951]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.35, -7.6)
-material_override = SubResource("StandardMaterial3D_y8gnv")
-mesh = SubResource("BoxMesh_o0uyh")
+[node name="WindowMullionH1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, -7.65)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_WindowMullionH")
 
-[node name="@MeshInstance3D@16" type="MeshInstance3D" parent="." unique_id=1046702918]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.05, -7.6)
-material_override = SubResource("StandardMaterial3D_y8gnv")
-mesh = SubResource("BoxMesh_4o4lb")
+[node name="WindowMullionH2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.8, -7.65)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_WindowMullionH")
 
-[node name="@MeshInstance3D@17" type="MeshInstance3D" parent="." unique_id=1083313712]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, 6.2, -7.6)
-material_override = SubResource("StandardMaterial3D_y8gnv")
-mesh = SubResource("BoxMesh_nh3jk")
+[node name="WindowFrameTop" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.2, -7.6)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_WindowFrameTop")
 
-[node name="@MeshInstance3D@18" type="MeshInstance3D" parent="." unique_id=431370487]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6, 6.2, -7.6)
-material_override = SubResource("StandardMaterial3D_y8gnv")
-mesh = SubResource("BoxMesh_7qlyh")
+[node name="CurtainLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3, 6.0, -7.4)
+material_override = SubResource("Mat_CurtainVelvet")
+mesh = SubResource("Mesh_CurtainSide")
 
-[node name="@MeshInstance3D@19" type="MeshInstance3D" parent="." unique_id=2005389288]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 4.1, -7.68)
-material_override = SubResource("StandardMaterial3D_kmyhu")
-mesh = SubResource("BoxMesh_1atee")
+[node name="CurtainRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.3, 6.0, -7.4)
+material_override = SubResource("Mat_CurtainVelvet")
+mesh = SubResource("Mesh_CurtainSide")
 
-[node name="@MeshInstance3D@20" type="MeshInstance3D" parent="." unique_id=1802579102]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1, 4.6, -7.68)
-material_override = SubResource("StandardMaterial3D_d432n")
-mesh = SubResource("BoxMesh_jqhmj")
+[node name="CurtainValance" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.4, -7.35)
+material_override = SubResource("Mat_CurtainVelvet")
+mesh = SubResource("Mesh_CurtainValance")
 
-[node name="@MeshInstance3D@21" type="MeshInstance3D" parent="." unique_id=877753240]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 5.1, -7.68)
-material_override = SubResource("StandardMaterial3D_vr0j4")
-mesh = SubResource("BoxMesh_4ogsx")
+[node name="CurtainValanceTrim" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.95, -7.3)
+material_override = SubResource("Mat_GoldTrim")
+mesh = SubResource("Mesh_MoldingCornice")
 
-[node name="@MeshInstance3D@22" type="MeshInstance3D" parent="." unique_id=284081780]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 4.35, -7.68)
-material_override = SubResource("StandardMaterial3D_xosfl")
-mesh = SubResource("BoxMesh_637m4")
+[node name="SkylineMonument" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, -7.7)
+material_override = SubResource("Mat_Skyline")
+mesh = SubResource("Mesh_Monument")
 
-[node name="@MeshInstance3D@23" type="MeshInstance3D" parent="." unique_id=339497877]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 4.85, -7.68)
-material_override = SubResource("StandardMaterial3D_0o7aq")
-mesh = SubResource("BoxMesh_2e0hq")
+[node name="SkylineCapitolLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 4.5, -7.7)
+material_override = SubResource("Mat_Skyline")
+mesh = SubResource("Mesh_SkylineBox1")
 
-[node name="@MeshInstance3D@24" type="MeshInstance3D" parent="." unique_id=439906329]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 4.1, -7.68)
-material_override = SubResource("StandardMaterial3D_j2mcd")
-mesh = SubResource("BoxMesh_tjqqu")
+[node name="SkylineCapitolRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 4.2, -7.7)
+material_override = SubResource("Mat_Skyline")
+mesh = SubResource("Mesh_SkylineBox2")
 
-[node name="@MeshInstance3D@25" type="MeshInstance3D" parent="." unique_id=1957586371]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6, 6.2, -7.4)
-material_override = SubResource("StandardMaterial3D_haxkl")
-mesh = SubResource("BoxMesh_55mp1")
+[node name="DeskTop" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_DeskTop")
 
-[node name="@MeshInstance3D@26" type="MeshInstance3D" parent="." unique_id=619816588]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6, 6.2, -7.4)
-material_override = SubResource("StandardMaterial3D_n4xw5")
-mesh = SubResource("BoxMesh_fdmjp")
+[node name="DeskPedestalLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0, 0.49, 0)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_DeskPedestal")
 
-[node name="@MeshInstance3D@27" type="MeshInstance3D" parent="." unique_id=1065809067]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-material_override = SubResource("StandardMaterial3D_d06w3")
-mesh = SubResource("BoxMesh_dq7wj")
+[node name="DeskPedestalRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0, 0.49, 0)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_DeskPedestal")
 
-[node name="@MeshInstance3D@28" type="MeshInstance3D" parent="." unique_id=1393214569]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0.45, 0)
-material_override = SubResource("StandardMaterial3D_d06w3")
-mesh = SubResource("BoxMesh_lwbnx")
+[node name="DeskModesty" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -1.35)
+material_override = SubResource("Mat_WoodPBR")
+mesh = SubResource("Mesh_DeskModesty")
 
-[node name="@MeshInstance3D@29" type="MeshInstance3D" parent="." unique_id=924343353]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0.45, 0)
-material_override = SubResource("StandardMaterial3D_d06w3")
-mesh = SubResource("BoxMesh_kkhdv")
+[node name="DeskBlotter" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0.1)
+material_override = SubResource("Mat_LeatherBlotter")
+mesh = SubResource("Mesh_Blotter")
 
-[node name="@MeshInstance3D@30" type="MeshInstance3D" parent="." unique_id=210382128]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -1.1)
-material_override = SubResource("StandardMaterial3D_d06w3")
-mesh = SubResource("BoxMesh_r4qn3")
+[node name="ExecChairDonald" parent="." instance=ExtResource("1_chair")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, -4.1)
 
-[node name="@MeshInstance3D@31" type="MeshInstance3D" parent="." unique_id=331195046]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.11, 0)
-material_override = SubResource("StandardMaterial3D_ja1nq")
-mesh = SubResource("BoxMesh_2k4mk")
+[node name="GuestChairLeft" parent="." instance=ExtResource("1_chair")]
+transform = Transform3D(1.31557, 0, 0.47883, 0, 1.4, 0, -0.47883, 0, 1.31557, -2.2, 0, 2.8)
 
-[node name="Attacker" type="Marker3D" parent="." unique_id=1065530104]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -2.9)
+[node name="GuestChairRight" parent="." instance=ExtResource("1_chair")]
+transform = Transform3D(1.31557, 0, -0.47883, 0, 1.4, 0, 0.47883, 0, 1.31557, 2.2, 0, 2.8)
 
-[node name="Opponent" type="Marker3D" parent="." unique_id=1197873516]
+[node name="BankerLamp" parent="." instance=ExtResource("2_lamp")]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, -2.4, 1.11, 0.3)
+
+[node name="BankerLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 1.45, 0.3)
+light_color = Color(1, 0.88, 0.55, 1)
+light_energy = 0.8
+omni_range = 2.8
+
+[node name="DeskBooks" parent="." instance=ExtResource("5_books")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -2.6, 1.11, -0.4)
+
+[node name="DeskLaptop" parent="." instance=ExtResource("6_laptop")]
+transform = Transform3D(1.15911, 0, -0.310583, 0, 1.2, 0, 0.310583, 0, 1.15911, 2.4, 1.11, 0.1)
+
+[node name="DeskPlant" parent="." instance=ExtResource("7_plant")]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 2.6, 1.11, -0.4)
+
+[node name="BookcaseLeftWide" parent="." instance=ExtResource("3_bookcase_wide")]
+transform = Transform3D(-6.99382e-08, 0, 1.6, 0, 1.6, 0, -1.6, 0, -6.99382e-08, -12.4, 0, -2.5)
+
+[node name="BookcaseLeftNarrow" parent="." instance=ExtResource("4_bookcase_narrow")]
+transform = Transform3D(-6.99382e-08, 0, 1.6, 0, 1.6, 0, -1.6, 0, -6.99382e-08, -12.4, 0, 1.2)
+
+[node name="BookcaseRightWide" parent="." instance=ExtResource("3_bookcase_wide")]
+transform = Transform3D(-6.99382e-08, 0, -1.6, 0, 1.6, 0, 1.6, 0, -6.99382e-08, 12.4, 0, -2.5)
+
+[node name="BookcaseRightNarrow" parent="." instance=ExtResource("4_bookcase_narrow")]
+transform = Transform3D(-6.99382e-08, 0, -1.6, 0, 1.6, 0, 1.6, 0, -6.99382e-08, 12.4, 0, 1.2)
+
+[node name="USFlagBase" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8, 0.125, -6.8)
+material_override = SubResource("Mat_GoldTrim")
+mesh = SubResource("Mesh_FlagBase")
+
+[node name="USFlagPole" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8, 3.1, -6.8)
+material_override = SubResource("Mat_GoldTrim")
+mesh = SubResource("Mesh_FlagPole")
+
+[node name="USFlagEagle" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8, 6.25, -6.8)
+material_override = SubResource("Mat_GoldTrim")
+mesh = SubResource("Mesh_EagleFinial")
+
+[node name="USFlagCloth" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -4.8, 4.6, -6.0)
+material_override = SubResource("Mat_USFlag")
+mesh = SubResource("Mesh_FlagCloth")
+
+[node name="PresFlagBase" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8, 0.125, -6.8)
+material_override = SubResource("Mat_GoldTrim")
+mesh = SubResource("Mesh_FlagBase")
+
+[node name="PresFlagPole" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8, 3.1, -6.8)
+material_override = SubResource("Mat_GoldTrim")
+mesh = SubResource("Mesh_FlagPole")
+
+[node name="PresFlagEagle" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8, 6.25, -6.8)
+material_override = SubResource("Mat_GoldTrim")
+mesh = SubResource("Mesh_EagleFinial")
+
+[node name="PresFlagCloth" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 4.8, 4.6, -6.0)
+material_override = SubResource("Mat_PresFlag")
+mesh = SubResource("Mesh_FlagCloth")
+
+[node name="Attacker" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -2.6)
+
+[node name="Opponent" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0.3)
 
-[node name="Stamp" type="Marker3D" parent="." unique_id=1803275753]
+[node name="Stamp" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0.3)
 
-[node name="Cam_Wide" type="Marker3D" parent="." unique_id=1057585834]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 15)
+[node name="Cam_Wide" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 11)
 
-[node name="Cam_Desk" type="Marker3D" parent="." unique_id=1260430314]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 4.2)
+[node name="Cam_Desk" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 4.4)
 
-[node name="Cam_Cower" type="Marker3D" parent="." unique_id=384104480]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 1.6, 2.6)
+[node name="Cam_Cower" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 1.45, 2.4)
 
-[node name="Cam_Slam" type="Marker3D" parent="." unique_id=74394195]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 2.2, 5.2)
+[node name="Cam_Slam" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 1.6, 4.2)

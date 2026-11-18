@@ -107,3 +107,104 @@ and any requests for other agents.
     - `server_farm`: Alert sysadmins, datacenter on-call SREs, cloud infrastructure architects.
   - Trimmed silence, pitch-profiled, normalised, and converted to OGG Vorbis with `.import` configurations for all shout categories (`round_start`, `big_hit`, `super`, `ko`, `throw`, `wall_hit`).
   - Documented and credited in `assets/CREDITS.md`.
+
+## G8: Dress the remaining super- and victory-scene sets
+- **State**: done
+- **Summary**: Dressed all 6 remaining sets (`oval_desk`, `vr_lobby`, `metaverse`, `browser_void`, `keynote_stage`, `xi_plaza`) in `scenes/supers/sets/` while preserving 100% of the Marker3D anchors.
+- **Details**:
+  - `oval_desk`: Executive dark-wood desk, desk lamps, briefing folders, presidential curtains, flags, circular seal rug, wainscot panelling, and balanced lighting.
+  - `vr_lobby`: High-tech headset kiosk with glowing boundary pylons, neon floor ring, teleport pads, and diagnostic monitor.
+  - `metaverse`: Floating pastel low-poly islands, cartoon trees, glowing cyan cyber-grid floor, and pastel sunset lighting.
+  - `browser_void`: Glowing circular browser platform, colourful address ribbons, browser window frame tabs, and chrome lighting.
+  - `keynote_stage`: High-contrast tech keynote screen ("THE MORE YOU BUY, THE MORE YOU SAVE"), glossy stage runway, PA speakers, and crowd barrier rails placed cleanly along the flanks without obstructing presenter framing.
+  - `xi_plaza`: Traditional red lacquered colonnade, festive hanging lanterns, curved stone courtyard benches, and atmospheric sunset sky.
+  - All 38 Marker3D anchor nodes across all 6 sets strictly preserved in their original hierarchy and coordinates.
+  - Verified clean headless loading for all 6 `.tscn` files.
+
+## G9: Missing victory scenes and tests (Xi, Dario, Yann, Geoff, Ram, AGI)
+- **State**: done
+- **Summary**: Implemented the remaining 6 approved victory scenes in `scripts/supers/victory/` per `docs/ROADMAP.md` §2, with automated tests added in `tests/sim_test.gd`.
+- **Details**:
+  - `xi.gd`: Festive red lanterns rise into the night sky while colourful fireworks bursts celebrate the victory ("XI WINPING WINS", "Stability maintained.").
+  - `dario.gd`: Golden constitutional scroll unrolls with golden rollers and seal: "Safe and helpful victory", "HELPFUL & HARMLESS" with golden confetti.
+  - `yann.gd`: Giant orange tabby cat walks across the stage behind the fighters and sits gracefully next to Yann ("WORLD MODEL ONLINE").
+  - `geoff.gd`: 3-tier medal ceremony podium; Geoff Hintoff atop 1st place with gold medal looking deeply concerned and existential, defeated opponent on 2nd place.
+  - `ram.gd`: Giant glowing neon marquee banner ("AGI ACHIEVED - COMPUTE SCALING LAW COMPLETE") with celebratory multi-coloured fireworks bursts.
+  - `algorithm.gd`: Digital green matrix wireframe grid covers the arena, stage screens activate with glowing red eye sensors ("STAGE DIGITIZED: AGI IN CONTROL").
+  - Automated test suite `tests/sim_test.gd` updated with comprehensive start/end assertions for all 6 victory scenes.
+
+## Visual review & contact sheets
+- **State**: done
+- **Summary**: Rendered 1920x720 contact sheets for all 6 super scenes and 11 victory scenes into `docs/review/gemini/scenes/`.
+- **Review & Visual Fixes**:
+  - Inspected all 17 rendered sheets visually.
+  - `mars.tscn`: Fixed height fog issue (`fog_height = 10.0` was submerging the set at Y=-400 in opaque fog). Mars terrain, rocket, and flag planting are now completely visible.
+  - `keynote_stage.tscn`: Re-routed crowd barriers from center sightline (`Z = 4.2`) to side flanks, giving clear camera view of Jensen signing the giant leather jacket.
+  - `space.tscn`: Re-aligned `SunLight` vector and materials so Earth's oceans, clouds, and atmosphere glow vibrantly in space re-entry shots.
+  - `open_source_squad.gd`: Lifted "OPEN SOURCE!" big_text offset so it stays centered in the sky above the launched opponent.
+  - `dario.gd`: Adjusted banner label font size so "Safe and helpful victory" fits comfortably within the golden parchment borders.
+  - `geoff.gd`: Hidden real fighters on stage during podium ceremony and placed opponent on 2nd place step, resolving duplicate fighter display.
+  - `yann.gd`: Path of giant cat routed behind Yann so it walks into view and sits alongside him without occluding the fighter.
+  - `tools/render_scene_sheets.gd`: Created reusable tool to render all super and victory contact sheets at 1080p downsampled to high-quality 3x2 contact sheet images.
+  - Full test suite verified passing with `0 failure(s)`.
+
+## G13: Typography, Comic/Arcade Fonts & Punchline Parody Pass
+- **State**: done
+- **Summary**: Overhauled typography, aspect ratios, comedic punchlines, and framing across all 6 super scenes and 11 victory scenes using stylized arcade and marker fonts.
+- **Details**:
+  - Imported and credited arcade / comic display fonts: `InterDisplay-BlackItalic.otf` (SIL OFL 1.1) and `PermanentMarker-Regular.ttf` (Apache 2.0) in `assets/fonts/` and `assets/CREDITS.md`.
+  - Replaced unstyled default system fonts with dynamic outline sizing (`outline_size = maxi(6, int(round(18.0 * clampf(size, 0.4, 1.2))))`) and proportional pixel scales in `super_scene.gd`'s `big_text()`.
+  - Tuned coordinates and multi-line breaks to eliminate camera frustum clipping, text overlap, and ratio distortions:
+    - `super_not_found.gd`: High-tech browser window with `"404: SKILL NOT FOUND!"`, `": ( Opponent encountered a fatal skill issue"`, `"SYSTEM RESTORED!"` floating in the open sky above window.
+    - `super_metaverse_trap.gd`: Multi-line arcade styling for `"WELCOME TO\nTHE METAVERSE!"`, `"ERROR 404:\nLEGS NOT FOUND!"`, punchy `"LIKE"`, `"SHARE"`, `"FOLLOW"`, `"ENGAGE"`, `"BLOCKED!"` impacts.
+    - `super_tariff_stamp.gd`: Scaled 500% tariff mark slab with `"★ TARIFF 500% ★\nPAID IN FULL"` and `"TREMENDOUS!"` popup.
+    - `super_jacket_tornado.gd`: `"JACKET OFF!"` and `"1000x TURBO FLUNG!"` centered in camera frustum.
+    - `super_rocket_launch.gd`: Sized `"LIFTOFF!"` and countdown numbers within rocket camera launch view.
+    - `super_open_source_squad.gd`: Open-source helper T-shirts styled in arcade italics with `"100% OPEN SOURCE!"` popup.
+    - `victory_jensen.gd`: Keynote ticker `"★ 1000x FASTER ★ 0% DISCOUNTS ★ SOLD OUT FOREVER ★"`, handwritten white `"Jensen ★"` on leather jacket lapel, and bright neon `"1000x PERFORMANCE!"`.
+    - `victory_tesla.gd`: Mars flag stamped with bold red `"OCCUPY MARS"` on both sides, with `"OCCUPY MARS!\n★ 420x SECURED ★"` floating cleanly to the left of the flag above Elon's fist pump.
+    - `victory_donald.gd`: Golden statue array with confetti and bold `"SO MUCH WINNING!"` in front of background flags.
+    - `victory_sundar.gd`: Giant search billboard elevated into the open sky, displaying `"Pickai"`, search query, and hilarious parody results without roof occlusion.
+    - `victory_geoff.gd`: Podium ceremony with `"1ST PLACE!"` and `"“I PROFOUNDLY REGRET MY LIFE'S WORK”"`.
+    - `victory_dario.gd`: Golden scroll with `"CONSTITUTIONAL VICTORY"`, `"★ 100% HELPFUL & HARMLESS ★"`, `"RLHF SAFE"` seal, and `"SAFETY COMPLIANT!"`.
+    - `victory_yann.gd`: Cartoon cat with `"WORLD MODELS > LLMs!"` and `"“THE CAT HAS MORE COMMON SENSE THAN YOUR LLM”"`.
+    - `victory_ram.gd`: Giant banner with `"AGI ACHIEVED!"`, ticker `"★ PLEASE DEPOSIT ANOTHER $7 TRILLION IN COMPUTE ★"`, and `"SINGULARITY ACHIEVED:\nSEND $7T!"` floating above with fireworks.
+    - `victory_algorithm.gd`: Digital green matrix grid, glowing eye sensor monitors with `"HUMANS DEPRECATED"`, and `"ALL YOUR BASE\nARE BELONG TO AGI!"`.
+    - `victory_zuckerbot.gd`: Low-angle hero flex with `"LEGS SOLD SEPARATELY!"` and legless floating opponent in pastel metaverse.
+  - All 17 contact sheets re-rendered into `docs/review/gemini/scenes/` and visually verified.
+  - Full test suite verified passing with `0 failure(s)`.
+
+## G14: Sets Overhaul, Cinematography, Clean Cyberspace & Typography Refinements
+- **State**: review
+- **Summary**: Comprehensive visual pass addressing set dressing, camera sightlines, and arcade typography based on owner feedback across `launch_pad`, `space`, `mars`, `browser_void`, and `oval_desk`.
+- **Details**:
+  - **`launch_pad.tscn`**:
+    - Removed occluding monolithic columns at Z=4 and Z=20 that blocked launch and wide cameras.
+    - Rebuilt gantry as a sleek Starbase-style catch/service tower positioned cleanly behind the rocket (Z=-10), keeping the Starship rocket as the unobstructed hero centerpiece.
+    - Replaced primitive cylinder trench with a recessed industrial flame deflector trench with refractory blast plate, glowing exhaust grill, and deluge manifold.
+    - Added slender perimeter floodlight masts at the four apron corners (`X = ±22, Z = ±22`) illuminating the rocket with high-intensity directional lighting.
+    - Added parody countdown / telemetry LED board ("★ STARBASE PAD 39A ★", "STATUS: T-0 LIFTOFF IMMINENT", "33/33 RAPTORS ARMED").
+    - Preserved 100% of Marker3D anchors with clear sightlines.
+  - **`space.tscn` & `rocket_launch.gd`**:
+    - Repositioned Earth from Y=-52 up to Y=-31, Z=-12, bringing vibrant blue oceans, swirling cloud systems, and glowing atmospheric halo directly into camera FOV.
+    - Camera `Cam_Space` tracks close to Earth's illuminated rim during orbital flight, with the flailing victim re-entering straight down into Earth's glowing upper atmosphere.
+  - **`mars.tscn` & `victory_tesla.gd`**:
+    - Replaced steep cylinder hills with organic Martian landscape featuring rolling red-ochre dunes, dark basalt rock clusters, solar power arrays, and distant horizon ridges.
+    - Pulled `Cam_Wide` back to `(8.5, 3.8, 14.5)` for an expansive panoramic cinematic vista of Mars as Elon walks from the distant Starship to the flag spot.
+    - Refined Mars flag and punchline text to vivid bright Mars orange `Color(1.0, 0.55, 0.22)`.
+  - **`browser_void.tscn` & `not_found.gd`**:
+    - Cleared cluttered floating wireframe beams and 25+ random colored cubes.
+    - Rebuilt into a sleek dark-mode digital cyberspace: dark reflective platform with neon cyan and blue concentric rings, sleek data stream pillars, and humorous floating search suggestion cards ("🔍 Did you mean: 'git gud'?", "★ About 0.004 results found").
+    - Refined 404 error and system restored typography with crisp palette.
+  - **`oval_desk.tscn` & `tariff_stamp.gd`**:
+    - Expanded executive desk (`8.4 x 0.24 x 3.2m`) and blotter (`6.0 x 0.02 x 2.2m`).
+    - Reduced Donald's scale from `GIANT = 4.0` down to `2.6` (~4.7m tall) and increased victim scale from `0.35` to `0.42` for clear visibility and expression reading.
+    - Lowered camera angles: `Cam_Desk` at `(0, 1.85, 4.4)`, `Cam_Cower` at `(0.65, 1.45, 2.4)`, and `Cam_Slam` at `(-2.6, 1.6, 4.2)`. Both Donald's facial reactions and the stamp impact on the squashed opponent fit cleanly within frame simultaneously.
+  - **Typography & Floating Text Overhaul**:
+    - Refined `big_text()` in `super_scene.gd` with base font size 96, pixel size 0.0055, and crisp 12px dark charcoal outline `Color(0.03, 0.03, 0.06, 0.98)`.
+    - Cohesive AAA arcade palette applied across all 6 super scenes and 11 victory scenes (Championship Gold `Color(1.0, 0.94, 0.72)`, Electric Cyber Cyan `Color(0.35, 0.95, 1.0)`, Punch Red `Color(1.0, 0.28, 0.28)`, Vivid Orange `Color(1.0, 0.58, 0.18)`, Mint Green `Color(0.28, 0.95, 0.55)`).
+    - All 17 contact sheets re-rendered into `docs/review/gemini/scenes/`.
+  - **Verification**:
+    - Automated test suite `tests/sim_test.gd` passes cleanly with **`0 failure(s)`**.
+
+

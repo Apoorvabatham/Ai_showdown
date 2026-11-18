@@ -66,14 +66,14 @@ func run() -> void:
 	# 3, 2, 1.
 	shot("launch_pad", "Cam_Wide", rocket.global_position + Vector3(0, 3, 0))
 	for n in ["3", "2", "1"]:
-		big_text(n, rocket.global_position + Vector3(2.5, 6.5, 2.0), Color(1, 0.9, 0.3), 1.2, COUNT_STEP - 0.12)
+		big_text(n, rocket.global_position + Vector3(2.5, 6.5, 2.0), Color(1.0, 0.94, 0.72), 0.9, COUNT_STEP - 0.12)
 		await wait(COUNT_STEP)
 
 	# Liftoff: the camera stays low and follows the rocket up.
 	var flame := rocket.find_child("Flame", true, false) as Node3D
 	if flame:
 		flame.visible = true
-	big_text("LIFTOFF!", rocket.global_position + Vector3(0, 9, 3), Color(1, 0.6, 0.2), 1.0, 0.8)
+	big_text("LIFTOFF!", rocket.global_position + Vector3(0, 7.5, 2.5), Color(1.0, 0.58, 0.18), 0.75, 0.8)
 	sound("rocket_launch_roar")
 	shot("launch_pad", "Cam_Launch")
 	track = rocket
@@ -94,7 +94,7 @@ func run() -> void:
 	victim.play(&"fight/thrown", 1.5)
 	shot("space", "Cam_Space")
 	track = rocket
-	track_offset = Vector3.ZERO
+	track_offset = Vector3(0, -1.2, 0)
 	sound("space_whoosh")
 	var cross := create_tween()
 	cross.tween_property(rocket, "global_position", end.origin, SPACE_TIME)

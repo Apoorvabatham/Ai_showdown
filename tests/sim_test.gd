@@ -5356,6 +5356,41 @@ func showdown_tests() -> void:
 		await process_frame
 		check("Victory scene: %s ends when a new match starts" % case[0], cvictories.scene == null and cf.stage.visible)
 
+	# Victory scenes: Xi, Dario, Yann, Geoff, Ram, and AGI (algorithm)
+	var victory_cases: Array = [
+		[&"xi", "RedLantern", "Xi Winping's red lanterns and fireworks", false],
+		[&"dario", "GoldenScroll", "Dario Amodei's golden scroll", false],
+		[&"yann", "GiantCat", "Yann LeCun's giant cat", false],
+		[&"geoff", "AwardPodium", "Geoffrey Hinton's worried medal podium", false],
+		[&"ram", "AgiBanner", "Rama's AGI ACHIEVED banner", false],
+		[&"algorithm", "DigitalGrid", "AGI's digitized stage and glowing eye screens", false],
+	]
+	for vcase: Array in victory_cases:
+		var v_id: StringName = vcase[0]
+		var v_node: String = vcase[1]
+		var v_desc: String = vcase[2]
+		var v_own_set: bool = vcase[3]
+		gs.player_character = gs.find_character(v_id)
+		gs.p2_character = gs.find_character(&"jensen" if v_id != &"jensen" else &"tesla")
+		change_scene_to_file("res://scenes/fight.tscn")
+		await process_frame; await process_frame
+		var vf = current_scene
+		vf.set_physics_process(false)
+		vf.start_match(); vf.start_fight_immediately()
+		var vp1: Fighter = vf.fighters[0]
+		var v_victories = vf.get_node("VictoryScenePlayer")
+		vf.phase = vf.Phase.MATCH_OVER
+		vf._start_victory(vp1)
+		await process_frame; await process_frame
+		check("Victory scene: %s starts" % v_desc, v_victories.scene != null and v_victories.scene.own_set == v_own_set
+			and v_victories.scene.find_child(v_node, true, false) != null and vf.stage.visible != v_own_set)
+		for i in 180:
+			vf._physics_process(1.0 / 60.0)
+			if i % 30 == 0: await process_frame
+		vf.start_match()
+		await process_frame
+		check("Victory scene: %s ends when a new match starts" % v_id, v_victories.scene == null and vf.stage.visible)
+
 	# Arcade: AGI is the final boss; picking it gives the shadow boss instead.
 	var algorithm: CharacterData = gs.find_character(gs.FINAL_BOSS)
 	var run := ArcadeRun.create(gs.roster[0], gs.roster, 1, 4, gs.arcade_arenas(), gs.boss_stage, algorithm)

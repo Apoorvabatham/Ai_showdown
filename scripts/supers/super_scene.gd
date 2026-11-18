@@ -149,15 +149,20 @@ func sound(sound_name: String, volume_db := 0.0) -> void:
 			return
 
 
+const FONT_PUNCH: Font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+const FONT_MARKER: Font = preload("res://assets/fonts/PermanentMarker-Regular.ttf")
+
+
 ## Big billboard text that pops in (and out after `seconds`, if > 0).
-func big_text(text: String, at: Vector3, color := Color(1.0, 0.85, 0.2), size := 1.0, seconds := 0.0) -> Label3D:
+func big_text(text: String, at: Vector3, color := Color(1.0, 0.94, 0.72), size := 1.0, seconds := 0.0, marker_font := false) -> Label3D:
 	var label := Label3D.new()
 	label.text = text
-	label.font_size = 200
-	label.pixel_size = 0.01 * size
-	label.outline_size = 40
+	label.font = FONT_MARKER if marker_font else FONT_PUNCH
+	label.font_size = 96
+	label.pixel_size = 0.0055 * size
+	label.outline_size = maxi(6, int(round(12.0 * clampf(size, 0.4, 1.2))))
 	label.modulate = color
-	label.outline_modulate = Color(0.05, 0.05, 0.08)
+	label.outline_modulate = Color(0.03, 0.03, 0.06, 0.98)
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.no_depth_test = true
 	label.shaded = false
