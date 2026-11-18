@@ -22,13 +22,16 @@ func _ready() -> void:
 	background.color = Color(0.04, 0.045, 0.07)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
+	UiStyle.add_backdrop(self, background)
 
 	var column := VBoxContainer.new()
 	column.set_anchors_preset(Control.PRESET_FULL_RECT)
 	column.alignment = BoxContainer.ALIGNMENT_CENTER
 	column.add_theme_constant_override("separation", 34)
 	add_child(column)
-	column.add_child(_label("SELECT STAGE", 72, Color.WHITE))
+	var heading := _label("SELECT STAGE", 72, Color.WHITE)
+	UiStyle.use_display_font([heading])
+	column.add_child(heading)
 
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -44,6 +47,7 @@ func _ready() -> void:
 		row.add_child(_make_card(entry))
 
 	_name_label = _label("", 56, GOLD)
+	UiStyle.use_display_font([_name_label])
 	column.add_child(_name_label)
 	_blurb_label = _label("", 28, Color(0.75, 0.78, 0.85))
 	column.add_child(_blurb_label)
