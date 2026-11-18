@@ -47,5 +47,24 @@ these instead of Claude's stand-ins; the scenes and their timings are unchanged.
 - `tools/build_super_props.gd` builds the set (user args now filter folders, e.g.
   `-- donald`); `tools/render_super_props.gd` (new) renders
   `docs/review/opencode/props_donald.jpg` (fitted cells, front-left view).
+- Note: the TARIFF mark reads correctly from the scene's `Cam_Desk` (+Z); the review sheet
+  looks from the prop contract's front (-Z), so the text appears mirrored there.
 - `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
+
+## O2c: Jensen leather jacket
+
+State: **review** — the tornado scene already loads `jensen/leather_jacket` when it exists,
+so no scene change was needed.
+
+- `assets/props/supers/jensen/leather_jacket.tscn`: open black leather jacket, ~1.9 m
+  across with the sleeves out; back, side and flared front panels, open zip edges with
+  pulls, collar and lapels, rounded shoulders, bent sleeves with cuffs, dark lining,
+  waistband and a small red maker's tag. Origin at the middle of the chest like the scene's
+  stand-in (the scene places it on Jensen's chest), front = -Z.
+- `tools/build_super_props.gd` now builds Jensen's folder too (`-- jensen`).
+- `tools/render_super_props.gd`: wide props are now framed from a lower front-left angle,
+  and a centered prop (this jacket) is grounded at its own bounds; regenerated the Donald
+  sheet with the same tool. New `docs/review/opencode/props_jensen.jpg`.
+- `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
+
 

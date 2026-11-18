@@ -13,6 +13,8 @@ func _initialize() -> void:
 		_build_tesla_props()
 	if only.is_empty() or "donald" in only:
 		_build_donald_props()
+	if only.is_empty() or "jensen" in only:
+		_build_jensen_props()
 	quit()
 
 # --- Materials ---------------------------------------------------------------
@@ -409,6 +411,84 @@ func _tariff_mark() -> void:
 	label.position = Vector3(0, 0.02, 0)
 	root.add_child(label)
 	_save(root, PROP_DIR + "donald/tariff_mark.tscn")
+
+# =============================================================================
+# O2c - jensen props
+# =============================================================================
+
+func _build_jensen_props() -> void:
+	_dir_for("jensen")
+	_leather_jacket()
+
+## Open black leather jacket, spread out with the sleeves out (for the tornado super):
+## back and side panels, two flared front panels with open zip edges, collar and lapels,
+## bent sleeves with cuffs and a dark lining. About 1.9 m across and 1.0 m tall.
+## Origin at the middle of the chest, like the scene's stand-in (the scene puts it on
+## Jensen's chest); front = -Z.
+func _leather_jacket() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "LeatherJacket"
+	var leather := _metal(Color(0.145, 0.125, 0.13), 0.16, 0.34)
+	var leather_light := _metal(Color(0.2, 0.175, 0.18), 0.12, 0.27)
+	var lining := _cloth(Color(0.07, 0.058, 0.058))
+	var zip := _metal(Color(0.72, 0.74, 0.78), 1.0, 0.22)
+	var buckle := _metal(Color(0.55, 0.56, 0.6), 0.9, 0.3)
+	var tag := _metal(Color(0.55, 0.09, 0.07), 0.05, 0.55)
+
+	root.add_child(_box(Vector3(0.72, 0.78, 0.09), Vector3(0, 0.0, 0.1), leather, "Back"))
+	root.add_child(_box(Vector3(0.62, 0.12, 0.02), Vector3(0, 0.3, 0.045), leather_light, "Yoke"))
+	root.add_child(_box(Vector3(0.5, 0.64, 0.02), Vector3(0, -0.02, 0.045), lining, "Lining"))
+	for side in [-1.0, 1.0]:
+		# Side panel from the back around the ribs, under the arm.
+		root.add_child(_box(Vector3(0.15, 0.6, 0.34), Vector3(0.42 * side, -0.02, 0.08), leather, "Side"))
+		# Front panel, flared open: the zip edge runs down its inner side.
+		var flap := _box(Vector3(0.31, 0.76, 0.06), Vector3(0.27 * side, -0.01, -0.1), leather_light, "Front")
+		flap.rotation.y = -0.34 * side
+		root.add_child(flap)
+		var zip_line := _box(Vector3(0.022, 0.74, 0.02), Vector3(0.115 * side, -0.01, -0.145), zip, "Zip")
+		zip_line.rotation.y = -0.34 * side
+		root.add_child(zip_line)
+		# Piping along the outer edge of the front panel.
+		var piping := _box(Vector3(0.016, 0.74, 0.02), Vector3(0.41 * side, -0.01, -0.155), leather, "Piping")
+		piping.rotation.y = -0.34 * side
+		root.add_child(piping)
+		# A small welt pocket on the chest.
+		root.add_child(_box(Vector3(0.14, 0.025, 0.03), Vector3(0.31 * side, -0.16, -0.165), leather, "Welt"))
+		# Rounded shoulder, collar wing and lapel.
+		var shoulder := _sphere(0.15, Vector3(0.35 * side, 0.33, 0.02), leather, "Shoulder")
+		shoulder.scale = Vector3(1.1, 0.6, 1.0)
+		root.add_child(shoulder)
+		var collar := _box(Vector3(0.24, 0.13, 0.08), Vector3(0.12 * side, 0.44, -0.02), leather_light, "Collar")
+		collar.rotation.z = 0.38 * side
+		collar.rotation.y = -0.3 * side
+		root.add_child(collar)
+		var lapel := _box(Vector3(0.2, 0.33, 0.035), Vector3(0.2 * side, 0.27, -0.14), leather_light, "Lapel")
+		lapel.rotation.z = 0.14 * side
+		lapel.rotation.y = -0.42 * side
+		root.add_child(lapel)
+		# Sleeve: upper arm out and slightly down, forearm further out and down, cuff.
+		var upper := _cylinder(0.12, 0.1, 0.62, Vector3(0.55 * side, 0.17, 0.03),
+			leather, "Sleeve", Vector3(0, 0, -1.83 * side))
+		root.add_child(upper)
+		var lower := _cylinder(0.1, 0.085, 0.5, Vector3(0.93 * side, -0.06, 0.02),
+			leather_light, "SleeveLower", Vector3(0, 0, -2.27 * side))
+		root.add_child(lower)
+		var cuff := _cylinder(0.095, 0.1, 0.1, Vector3(1.11 * side, -0.22, 0.02),
+			leather, "Cuff", Vector3(0, 0, -2.27 * side))
+		root.add_child(cuff)
+		var cuff_seam := _cylinder(0.101, 0.101, 0.018, Vector3(1.08 * side, -0.2, 0.02),
+			leather_light, "CuffSeam", Vector3(0, 0, -2.27 * side))
+		root.add_child(cuff_seam)
+		# Waistband and a buckle at each side.
+		var band := _box(Vector3(0.34, 0.09, 0.07), Vector3(0.19 * side, -0.4, -0.08), leather_light, "Waistband")
+		band.rotation.y = -0.2 * side
+		root.add_child(band)
+		root.add_child(_box(Vector3(0.07, 0.06, 0.025), Vector3(0.34 * side, -0.4, -0.1), buckle, "Buckle"))
+	# Zipper pull at the top of the left zip, and a small red maker's tag.
+	root.add_child(_box(Vector3(0.026, 0.07, 0.014), Vector3(-0.085, 0.34, -0.16), zip, "ZipPull"))
+	root.add_child(_box(Vector3(0.07, 0.05, 0.012), Vector3(0.3, -0.3, -0.16), tag, "Tag"))
+
+	_save(root, PROP_DIR + "jensen/leather_jacket.tscn")
 
 ## Makes sure every node below `root` is owned by `root` so PackedScene.pack()
 ## keeps the whole subtree (see tools/build_custom_hair.gd).

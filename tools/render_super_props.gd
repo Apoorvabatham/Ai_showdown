@@ -84,12 +84,14 @@ func _render(path: String) -> Image:
 	floor_material.albedo_color = Color(0.18, 0.18, 0.21)
 	floor_material.roughness = 0.9
 	ground.material_override = floor_material
-	ground.position = Vector3(centre.x, 0.0, centre.z)
+	ground.position = Vector3(centre.x, minf(bounds.position.y, 0.0), centre.z)
 	vp.add_child(ground)
 	var camera := Camera3D.new()
 	vp.add_child(camera)
 	camera.fov = 38.0
 	var direction := Vector3(1.15, 0.72, -1.5).normalized()
+	if bounds.size.x > bounds.size.y * 1.4:
+		direction = Vector3(0.8, 0.32, -1.5).normalized() # wide props read better from lower
 	var distance := radius / tan(deg_to_rad(camera.fov) * 0.5) * 1.25
 	camera.look_at_from_position(centre + direction * distance, centre + Vector3(0, -radius * 0.04, 0))
 	camera.current = true
