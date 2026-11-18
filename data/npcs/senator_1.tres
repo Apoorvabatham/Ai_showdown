@@ -1,0 +1,76 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Showdown_Male_Warm.png" id="1_qbgcr"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Grey.png" id="2_gt6n7"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SilverSweep.tscn" id="3_b8fg1"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_xt3st"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_jcgay"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/senator_1_body.res" id="6_b8fg1"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="6_n0624"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/senator_1_outfit.res" id="7_xt3st"]
+
+[resource]
+script = ExtResource("6_n0624")
+id = &"senator_1"
+display_name = "Senator 1"
+archetype = "committee"
+select_order = 4
+model_scene = ExtResource("4_xt3st")
+hair_scenes = Array[PackedScene]([ExtResource("3_b8fg1")])
+body_albedo = ExtResource("1_qbgcr")
+model_scale = 1.04
+hair_color = Color(0.76, 0.77, 0.79, 1)
+alt_body_albedo = ExtResource("1_qbgcr")
+alt_hair_color = Color(0.7888, 0.7976, 0.81520003, 1)
+outfit_mesh = ExtResource("7_xt3st")
+outfit_body_mesh = ExtResource("6_b8fg1")
+outfit_colors = PackedColorArray(0.13, 0.14, 0.16, 1, 0.05, 0.05, 0.05, 1, 0.6, 0.45, 0.12, 1, 0.93, 0.91, 0.85, 1, 0.065, 0.07, 0.08, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"stretch", &"cotton", &"leather"])
+alt_outfit_colors = PackedColorArray(0.25, 0.18, 0.12, 1, 0.2, 0.12, 0.06, 1, 0.45, 0.1, 0.1, 1, 0.85, 0.85, 0.83, 1, 0.125, 0.09, 0.06, 1)
+detailed_textures = true
+realistic_shading = true
+placeholder_color = Color(0.55, 0.55, 0.58, 1)
+body_shape = {
+&"calf": Vector3(1.0494899, 1, 1.0035342),
+&"lowerarm": Vector3(1.0135578, 1, 1.0397667),
+&"neck_01": Vector3(0.95244426, 1, 1.0108968),
+&"pelvis": Vector3(0.9881441, 1, 0.9667037),
+&"spine_01": Vector3(1.045489, 1, 0.99386907),
+&"spine_02": Vector3(0.97475195, 1, 0.9825947),
+&"spine_03": Vector3(1.0544171, 1, 1.0469301),
+&"thigh": Vector3(0.9782142, 1, 0.98257565),
+&"upperarm": Vector3(1.0048329, 1, 0.94598436)
+}
+face_shape = {
+&"brow": 0.0013975116,
+&"cheekbones": -0.0018192899,
+&"chin": 0.0012243988,
+&"chin_forward": 0.0011949982,
+&"chin_round": 0.007070589,
+&"eye_open": 0.00038249436,
+&"eye_tilt": 0.0002798861,
+&"face_length": 0.9808392,
+&"fullness": 0.0036378002,
+&"jaw": 1.0192008,
+&"lips": 0.0005975396,
+&"mouth_width": 0.97860146,
+&"nose_bridge": 0.0004255329,
+&"nose_length": 0.0011890344,
+&"nose_width": 0.957332
+}
+brow_scale = Vector3(0.9751303, 0.81090283, 1)
+eye_texture = ExtResource("2_gt6n7")
+face_rest = {
+&"brow_up": 0.08455843,
+&"smile": 0.33685648
+}
+posture = {
+&"Head": Vector3(0.30645752, 0, -0.66186094),
+&"neck_01": Vector3(-1.4895507, 0, -0.97875434),
+&"spine_02": Vector3(1.004852, 0, 0.4141513),
+&"spine_03": Vector3(1.0013909, 0, -0.7937927)
+}
+accessories = Array[StringName]([&"glasses"])
+accessory_color = Color(0.07, 0.07, 0.08, 1)
+intro_lines = PackedStringArray()
+win_quotes = PackedStringArray()

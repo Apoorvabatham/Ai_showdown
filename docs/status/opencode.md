@@ -142,3 +142,35 @@ in when a prop exists. The child names match what the animation looks for (`Fan1
   `tools/render_super_props.gd` views both from +Z on the refreshed
   `props_sundar.jpg` and `props_jensen.jpg`.
 - `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
+
+## O3: stage NPCs
+
+State: **review** — every id `data/stage_life/*.json` references now has a look
+(`data/npcs/<id>.tres`), so `StageActor` no longer falls back to the capsule stand-in.
+
+- 44 new NPCs across the four stages, in `tools/build_npcs.gd`: the Senate (chair,
+  senator_1..4, stenographer, press_1..3, aide_1..3, citizen_1..3), the mensa (cook,
+  cashier, student_1..10, grad_student), the foundry (technician_1..4, lead_architect,
+  quality_inspector, cleanroom_guard, cleanroom_aide) and the server farm (sysadmin_1..2,
+  noc_lead, cloud_architect, devops_tech, site_reliability, intern, field_engineer).
+  They share the generated table with the three helpers; optional fields (hair, skin,
+  eyes, shape, posture, accessories) are filled by `_expand()` and per-id seeded random
+  face/shape/posture, so they stay reproducible.
+- Female NPCs use `Superhero_Female_FullBody.gltf` and the two female skins; 15 of the 44
+  are female. Body shapes (stocky, tall and slim, broad), posture presets (upright,
+  slouch, lean-forward) and scales vary the silhouettes; sizes sit between 0.92 and 1.09.
+- `tools/build_outfits.gd`: outfit specs for all 44 (suits and blazers for the Senate and
+  offices, zhongshan for the cook and lead architect, cardigans, sweaters, hoodies, tees
+  and leather jackets for the crowds and the server farm) plus a new `_coverall_spec()`:
+  cleanroom coverall with standing collar, front zip and pull, ankle cuffs, pale booties
+  and the hood bunched on the back. `_suit_spec`'s `alt_tie` now accepts `null` (open
+  collar variants).
+- `tools/render_npcs.gd`: still renders the four-panel helper sheet; a stage name now
+  renders that stage's people as a full-body grid with the id under each person, ids read
+  from `data/stage_life/<stage>.json`.
+- `docs/review/opencode/npcs_senate.jpg`, `npcs_mensa.jpg`, `npcs_foundry.jpg`,
+  `npcs_server_farm.jpg` (new). Rebuilt `npcs_helpers.jpg`.
+- Notes: glasses and thick glasses are the only accessory pieces the model supports, so
+  the NPCs vary by hair and face rather than by hats or badges; the outfits are fitted to
+  the body, which reads tighter on the female base (fine at stage distance).
+- `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.

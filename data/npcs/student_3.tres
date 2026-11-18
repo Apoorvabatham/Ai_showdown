@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/jin/T_Jin_Body.png" id="1_gd278"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Brown.png" id="2_f18tx"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Caesar.tscn" id="3_oho5g"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_k5oh7"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_57bar"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="6_gwnoh"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/student_3_body.res" id="6_oho5g"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/student_3_outfit.res" id="7_k5oh7"]
+
+[resource]
+script = ExtResource("6_gwnoh")
+id = &"student_3"
+display_name = "Student 3"
+archetype = "crowd"
+select_order = 22
+model_scene = ExtResource("4_k5oh7")
+hair_scenes = Array[PackedScene]([ExtResource("3_oho5g")])
+body_albedo = ExtResource("1_gd278")
+model_scale = 1.07
+hair_color = Color(0.24, 0.16, 0.1, 1)
+alt_body_albedo = ExtResource("1_gd278")
+alt_hair_color = Color(0.17999999, 0.12, 0.075, 1)
+outfit_mesh = ExtResource("7_k5oh7")
+outfit_body_mesh = ExtResource("6_oho5g")
+outfit_colors = PackedColorArray(0.32, 0.33, 0.36, 1, 0.24, 0.2475, 0.27, 1, 0.16, 0.16, 0.18, 1, 0.1, 0.1, 0.1, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"stretch", &"cotton", &"leather"])
+alt_outfit_colors = PackedColorArray(0.14, 0.2, 0.34, 1, 0.105000004, 0.15, 0.255, 1, 0.22, 0.2, 0.18, 1, 0.2, 0.15, 0.1, 1)
+detailed_textures = true
+realistic_shading = true
+placeholder_color = Color(0.55, 0.55, 0.58, 1)
+body_shape = {
+&"spine_01": Vector3(1.16, 1, 1.18),
+&"spine_02": Vector3(1.1, 1, 1.12),
+&"spine_03": Vector3(1.06, 1, 1.06),
+&"thigh": Vector3(1.08, 1, 1.08),
+&"upperarm": Vector3(1.12, 1, 1.12)
+}
+face_shape = {
+&"brow": 0.0004973922,
+&"cheekbones": 0.0025085362,
+&"chin": -0.001476933,
+&"chin_forward": 0.00028585305,
+&"chin_round": 0.0057737166,
+&"eye_open": 0.000527199,
+&"eye_tilt": 0.0003534081,
+&"face_length": 1.0213394,
+&"fullness": -0.00082739675,
+&"jaw": 1.009376,
+&"lips": 0.00049235096,
+&"mouth_width": 0.9618192,
+&"nose_bridge": 0.001261997,
+&"nose_length": 0.0032416272,
+&"nose_width": 1.0338665
+}
+brow_scale = Vector3(1.0180041, 0.86355454, 1)
+eye_texture = ExtResource("2_f18tx")
+face_rest = {
+&"brow_up": 0.1740975,
+&"smile": 0.12728833
+}
+posture = {
+&"Head": Vector3(-0.99630785, 0, -0.8508275),
+&"neck_01": Vector3(1.6235902, 0, -0.5429513),
+&"spine_02": Vector3(0.35658264, 0, 1.4081833),
+&"spine_03": Vector3(0.8768296, 0, -0.038933218)
+}
+accessory_color = Color(0.07, 0.07, 0.08, 1)
+intro_lines = PackedStringArray()
+win_quotes = PackedStringArray()

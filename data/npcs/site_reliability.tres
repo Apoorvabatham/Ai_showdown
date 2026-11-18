@@ -1,0 +1,75 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Showdown_Male_Warm.png" id="1_u165k"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_Brown.png" id="2_w6y17"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_Caesar.tscn" id="3_rgw73"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_sexbn"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_cu0ra"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="6_a5tjc"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/site_reliability_body.res" id="6_rgw73"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/site_reliability_outfit.res" id="7_sexbn"]
+
+[resource]
+script = ExtResource("6_a5tjc")
+id = &"site_reliability"
+display_name = "Site Reliability"
+archetype = "crowd"
+select_order = 44
+model_scene = ExtResource("4_sexbn")
+hair_scenes = Array[PackedScene]([ExtResource("3_rgw73")])
+body_albedo = ExtResource("1_u165k")
+model_scale = 1.01
+hair_color = Color(0.1, 0.08, 0.07, 1)
+alt_body_albedo = ExtResource("1_u165k")
+alt_hair_color = Color(0.075, 0.06, 0.052500002, 1)
+outfit_mesh = ExtResource("7_sexbn")
+outfit_body_mesh = ExtResource("6_rgw73")
+outfit_colors = PackedColorArray(0.3, 0.3, 0.32, 1, 0.22500001, 0.22500001, 0.24, 1, 0.5, 0.38, 0.25, 1, 0.16, 0.1, 0.06, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"stretch", &"cotton", &"leather"])
+alt_outfit_colors = PackedColorArray(0.14, 0.2, 0.34, 1, 0.105000004, 0.15, 0.255, 1, 0.24, 0.22, 0.2, 1, 0.1, 0.1, 0.1, 1)
+detailed_textures = true
+realistic_shading = true
+placeholder_color = Color(0.55, 0.55, 0.58, 1)
+body_shape = {
+&"calf": Vector3(0.97523963, 1, 1.0291553),
+&"lowerarm": Vector3(0.947058, 1, 1.097547),
+&"neck_01": Vector3(0.95074755, 1, 1.0150864),
+&"pelvis": Vector3(1.048381, 1, 1.0133759),
+&"spine_01": Vector3(0.98215145, 1, 1.0102576),
+&"spine_02": Vector3(0.982968, 1, 1.0653042),
+&"spine_03": Vector3(1.0326959, 1, 0.96131605),
+&"thigh": Vector3(1.0426517, 1, 1.0280385),
+&"upperarm": Vector3(0.9154705, 1, 1.0661423)
+}
+face_shape = {
+&"brow": 0.0007292656,
+&"cheekbones": 0.002655038,
+&"chin": 0.0005655028,
+&"chin_forward": 0.0010309347,
+&"chin_round": 0.007934119,
+&"eye_open": 0.00069250795,
+&"eye_tilt": 0.00040504645,
+&"face_length": 1.0040585,
+&"fullness": 0.005566122,
+&"jaw": 1.0181496,
+&"lips": 0.0005751609,
+&"mouth_width": 0.99025786,
+&"nose_bridge": 0.00071870594,
+&"nose_length": 0.0032859966,
+&"nose_width": 0.9979509
+}
+brow_scale = Vector3(0.99737495, 0.8345361, 1)
+eye_texture = ExtResource("2_w6y17")
+face_rest = {
+&"brow_up": 0.081434056,
+&"smile": 0.25037938
+}
+posture = {
+&"Head": Vector3(-0.7531369, 0, -0.43113995),
+&"neck_01": Vector3(-0.24058509, 0, 0.30731165),
+&"spine_02": Vector3(-1.8943942, 0, 0.7915218),
+&"spine_03": Vector3(-0.4699626, 0, 0.8117416)
+}
+accessory_color = Color(0.07, 0.07, 0.08, 1)
+intro_lines = PackedStringArray()
+win_quotes = PackedStringArray()
