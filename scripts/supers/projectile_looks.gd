@@ -7,8 +7,19 @@ extends RefCounted
 ## To add a look: a case in build(), orient() and animate(). Bigger props (3D models from
 ## assets/props/supers/, docs/TASKS.md O2) can replace these later.
 
+const PROP_DIR := "res://assets/props/supers/"
+
 const SEARCH_QUERIES := ["how to win a fight", "am I losing?", "best combo 2026", "ten blue links",
 	"is it over?", "near me: pain"]
+
+
+static func _load_prop(subpath: String) -> Node3D:
+	var path := PROP_DIR + subpath + ".tscn"
+	if ResourceLoader.exists(path):
+		var scene := load(path) as PackedScene
+		if scene:
+			return scene.instantiate() as Node3D
+	return null
 
 
 static func build(look: StringName, color: Color) -> Node3D:
@@ -85,6 +96,9 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 
 ## ~0.6 m white rocket: nose toward -Z, flame at the back (+Z).
 static func _mini_rocket(_color: Color) -> Node3D:
+	var prop := _load_prop("tesla/mini_rocket")
+	if prop:
+		return prop
 	var root := Node3D.new()
 	root.name = "MiniRocket"
 	var white := _metal(Color(0.9, 0.9, 0.92), 0.1)
@@ -116,6 +130,9 @@ static func _mini_rocket(_color: Color) -> Node3D:
 # --- Shipping container ----------------------------------------------------------
 
 static func _container(color: Color) -> Node3D:
+	var prop := _load_prop("donald/shipping_container")
+	if prop:
+		return prop
 	var root := Node3D.new()
 	root.name = "Container"
 	var body_color := color
@@ -150,6 +167,12 @@ static func _container(color: Color) -> Node3D:
 # --- Search bar ------------------------------------------------------------------
 
 static func _search_bar(color: Color) -> Node3D:
+	var prop := _load_prop("sundar/search_bar")
+	if prop:
+		var query := prop.get_node_or_null("Query") as Label3D
+		if query:
+			query.text = SEARCH_QUERIES[randi() % SEARCH_QUERIES.size()]
+		return prop
 	var root := Node3D.new()
 	root.name = "SearchBar"
 	# Coloured outline behind a white pill.
@@ -169,6 +192,7 @@ static func _search_bar(color: Color) -> Node3D:
 	handle.rotation.z = PI * 0.25
 	root.add_child(handle)
 	var text := Label3D.new()
+	text.name = "Query"
 	text.text = SEARCH_QUERIES[randi() % SEARCH_QUERIES.size()] # cosmetic: any query will do
 	text.font_size = 56
 	text.pixel_size = 0.0032
@@ -190,6 +214,9 @@ static func _search_bar(color: Color) -> Node3D:
 
 ## A festival paper dragon facing -Z: a big red-and-gold head and a weaving body.
 static func _paper_dragon(color: Color) -> Node3D:
+	var prop := _load_prop("xi/paper_dragon")
+	if prop:
+		return prop
 	var root := Node3D.new()
 	root.name = "PaperDragon"
 	var red := _metal(color, 0.0)
@@ -230,6 +257,10 @@ static func _paper_dragon(color: Color) -> Node3D:
 # --- Graphics card ---------------------------------------------------------------
 
 static func _gpu(color: Color) -> Node3D:
+	var prop := _load_prop("jensen/gpu_card")
+	if prop:
+		prop.set_meta(&"tumble_axis", Vector3(randf_range(-1, 1), randf_range(-1, 1), randf_range(-1, 1)).normalized())
+		return prop
 	var root := Node3D.new()
 	root.name = "GPU"
 	root.set_meta(&"tumble_axis", Vector3(randf_range(-1, 1), randf_range(-1, 1), randf_range(-1, 1)).normalized())

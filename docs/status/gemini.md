@@ -207,4 +207,17 @@ and any requests for other agents.
   - **Verification**:
     - Automated test suite `tests/sim_test.gd` passes cleanly with **`0 failure(s)`**.
 
+## O7: Projectile looks load OpenCode super props
+- **State**: review
+- **Summary**: Updated `scripts/supers/projectile_looks.gd` to load OpenCode props from `assets/props/supers/` while preserving code-built meshes as fallback if scene files are missing.
+- **Details**:
+  - `sundar/search_bar` (`assets/props/supers/sundar/search_bar.tscn`): Loads prop scene, selects random query text from `SEARCH_QUERIES` on the `Query` Label3D node.
+  - `jensen/gpu_card` (`assets/props/supers/jensen/gpu_card.tscn`): Loads prop scene, sets `&"tumble_axis"` metadata, and rotates `Fan1`/`Fan2` in `animate()`.
+  - `donald/shipping_container` (`assets/props/supers/donald/shipping_container.tscn`): Loads prop scene with container corrugation and "IMPORTS" labels; tumbles end-over-end.
+  - `tesla/mini_rocket` (`assets/props/supers/tesla/mini_rocket.tscn`): Loads prop scene with rocket hull, fins, and animated flickering `Flame`.
+  - `xi/paper_dragon` (`assets/props/supers/xi/paper_dragon.tscn`): Loads prop scene with head and 7 body segments carrying `segment` and `rest_y` metadata, weaving in `animate()`.
+  - Added automated test in `tests/sim_test.gd` verifying all 5 projectile looks load OpenCode props with interactive hooks.
+  - Test suite passes with `0 failure(s)`.
+
+
 

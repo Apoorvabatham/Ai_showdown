@@ -5054,6 +5054,9 @@ func showdown_tests() -> void:
 		for mv in gs.find_character(id).moves:
 			if mv.input in ["214K", "214P", "63214P"] and mv.projectile_look != &"" and not mv.super_move:
 				power_moves[id] = mv
+	var test_rocket := ProjectileLooks.build(&"mini_rocket", Color.WHITE)
+	var rocket_flame := test_rocket.get_node_or_null("Flame") != null
+	test_rocket.free()
 	check("Showdown: power moves throw animated objects (Rocket Barrage, GPU Rain, Search Result)",
 		power_moves.size() == 3 and power_moves.tesla.name == "Rocket Barrage" and power_moves.tesla.projectile_look == &"mini_rocket"
 		and power_moves.tesla.projectile_count == 3 and power_moves.jensen.name == "GPU Rain"
@@ -5061,8 +5064,35 @@ func showdown_tests() -> void:
 		and power_moves.sundar.name == "Search Result" and power_moves.sundar.projectile_origin == &"around"
 		and power_moves.sundar.projectile_count == 5 and not power_moves.sundar.knockdown
 		and gs.find_character(&"jensen").moves.any(func(mv: MoveData) -> bool: return mv.input == "236P" and mv.name == "Tensor Blast")
-		and ProjectileLooks.build(&"mini_rocket", Color.WHITE).get_node_or_null("Flame") != null,
+		and rocket_flame,
 		str(power_moves.keys()))
+
+	# O7: Projectile looks load OpenCode props and animate
+	var sb := ProjectileLooks.build(&"search_bar", Color.WHITE)
+	var sb_query := sb.get_node_or_null("Query") as Label3D
+	var gpu_node := ProjectileLooks.build(&"gpu", Color.WHITE)
+	var gpu_fan1 := gpu_node.get_node_or_null("Fan1") as Node3D
+	var gpu_fan2 := gpu_node.get_node_or_null("Fan2") as Node3D
+	var initial_fan_rot: float = gpu_fan1.rotation.z if gpu_fan1 else 0.0
+	ProjectileLooks.animate(gpu_node, &"gpu", Vector3.FORWARD, 0.5, 0.1)
+	var fan_spun: bool = gpu_fan1 != null and gpu_fan1.rotation.z != initial_fan_rot
+	var cont := ProjectileLooks.build(&"container", Color.WHITE)
+	var rocket := ProjectileLooks.build(&"mini_rocket", Color.WHITE)
+	var dragon := ProjectileLooks.build(&"paper_dragon", Color.WHITE)
+	var dragon_segments: int = 0
+	for child in dragon.get_children():
+		if child is Node3D and child.has_meta(&"segment"):
+			dragon_segments += 1
+	check("Showdown O7: ProjectileLooks loads props with interactive hooks",
+		sb_query != null and ProjectileLooks.SEARCH_QUERIES.has(sb_query.text)
+		and gpu_fan1 != null and gpu_fan2 != null and gpu_node.has_meta(&"tumble_axis") and fan_spun
+		and cont != null and rocket.get_node_or_null("Flame") != null
+		and dragon_segments >= 7)
+	sb.free()
+	gpu_node.free()
+	cont.free()
+	rocket.free()
+	dragon.free()
 	var zuck: CharacterData = gs.find_character(&"zuckerbot")
 	var donald: CharacterData = gs.find_character(&"donald")
 	var donald_moves := {}
