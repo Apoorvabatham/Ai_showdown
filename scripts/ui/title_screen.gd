@@ -57,8 +57,8 @@ func _ready() -> void:
 	track.bg_color = Color(0, 0, 0, 0.6)
 	track.set_corner_radius_all(4)
 	var fill := StyleBoxFlat.new()
-	fill.bg_color = GOLD
-	fill.set_corner_radius_all(4)
+	fill.bg_color = UiStyle.ACCENT
+	fill.set_corner_radius_all(2)
 	_bar.add_theme_stylebox_override("background", track)
 	_bar.add_theme_stylebox_override("fill", fill)
 	box.add_child(_bar)

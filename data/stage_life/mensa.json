@@ -8,11 +8,11 @@
     {"npc": "student_4", "pos": [0.8, 0.0, -6.7], "yaw": 180, "pose": "sit", "reacts": ["clap", "cheer", "stand_up"], "role": "crowd"},
     {"npc": "student_5", "pos": [3.7, 0.0, -5.3], "yaw": 0, "pose": "sit", "reacts": ["gasp", "point", "cheer"], "role": "crowd"},
     {"npc": "student_6", "pos": [4.5, 0.0, -6.7], "yaw": 180, "pose": "sit", "reacts": ["bang_table", "cheer", "clap"], "role": "crowd"},
-    {"npc": "student_7", "pos": [-7.0, 0.0, -3.2], "yaw": 30, "pose": "stand", "reacts": ["gasp", "point", "cheer"], "role": "crowd"},
-    {"npc": "student_8", "pos": [-8.2, 0.0, -4.0], "yaw": 45, "pose": "stand", "reacts": ["cheer", "clap"], "role": "crowd"},
-    {"npc": "student_9", "pos": [7.0, 0.0, -3.2], "yaw": -30, "pose": "stand", "reacts": ["point", "cheer", "clap"], "role": "crowd"},
-    {"npc": "student_10", "pos": [8.0, 0.0, -4.0], "yaw": -45, "pose": "lean", "reacts": ["gasp", "point"], "role": "crowd"},
-    {"npc": "grad_student", "pos": [-2.5, 0.0, -7.5], "yaw": 15, "pose": "stand", "reacts": ["gasp", "point", "stand_up"], "role": "crowd"}
+    {"npc": "student_7", "pos": [-7.0, 0.0, -3.2], "yaw": -150, "pose": "stand", "reacts": ["gasp", "point", "cheer"], "role": "crowd"},
+    {"npc": "student_8", "pos": [-8.2, 0.0, -4.0], "yaw": -135, "pose": "stand", "reacts": ["cheer", "clap"], "role": "crowd"},
+    {"npc": "student_9", "pos": [7.0, 0.0, -3.2], "yaw": 150, "pose": "stand", "reacts": ["point", "cheer", "clap"], "role": "crowd"},
+    {"npc": "student_10", "pos": [8.0, 0.0, -4.0], "yaw": 135, "pose": "lean", "reacts": ["gasp", "point"], "role": "crowd"},
+    {"npc": "grad_student", "pos": [-2.5, 0.0, -7.5], "yaw": -165, "pose": "stand", "reacts": ["gasp", "point", "stand_up"], "role": "crowd"}
   ],
   "shouts": {
     "round_start": [

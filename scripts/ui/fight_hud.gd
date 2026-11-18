@@ -181,7 +181,7 @@ func _style_top() -> void:
 	var timer_panel := timer_label.get_parent() as PanelContainer
 	if timer_panel:
 		timer_panel.add_theme_stylebox_override("panel", timer_box)
-	UiStyle.use_display_font([p1_name, p2_name, timer_label, p1_combo, p2_combo])
+	UiStyle.use_display_font([p1_name, p2_name, timer_label, p1_combo, p2_combo, center_label, sub_label, p1_note, p2_note])
 	UiStyle.use_glass(get_node_or_null("PauseMenu/Center/Row/Panel"), 36.0)
 
 

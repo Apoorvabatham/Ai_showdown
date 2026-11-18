@@ -2,12 +2,12 @@
   "actors": [
     {"npc": "sysadmin_1", "pos": [-8.4, 0.0, -4.2], "yaw": 45, "pose": "work", "reacts": ["gasp", "point", "bang_table"], "role": "sysadmin"},
     {"npc": "sysadmin_2", "pos": [8.4, 0.0, -4.2], "yaw": -45, "pose": "work", "reacts": ["gasp", "cheer", "point"], "role": "sysadmin"},
-    {"npc": "noc_lead", "pos": [-4.5, 0.0, -4.2], "yaw": 20, "pose": "stand", "reacts": ["point", "gasp", "cheer"], "role": "engineer"},
-    {"npc": "cloud_architect", "pos": [4.5, 0.0, -4.2], "yaw": -20, "pose": "stand", "reacts": ["cheer", "clap", "point"], "role": "engineer"},
-    {"npc": "devops_tech", "pos": [-2.0, 0.0, -4.2], "yaw": 10, "pose": "lean", "reacts": ["gasp", "point", "cheer"], "role": "crowd"},
-    {"npc": "site_reliability", "pos": [2.0, 0.0, -4.2], "yaw": -10, "pose": "stand", "reacts": ["point", "clap", "cheer"], "role": "crowd"},
-    {"npc": "intern", "pos": [-6.5, 0.0, -4.2], "yaw": 30, "pose": "stand", "reacts": ["gasp", "stand_up", "cheer"], "role": "crowd"},
-    {"npc": "field_engineer", "pos": [6.5, 0.0, -4.2], "yaw": -30, "pose": "lean", "reacts": ["clap", "cheer"], "role": "crowd"}
+    {"npc": "noc_lead", "pos": [-4.5, 0.0, -4.2], "yaw": -160, "pose": "stand", "reacts": ["point", "gasp", "cheer"], "role": "engineer"},
+    {"npc": "cloud_architect", "pos": [4.5, 0.0, -4.2], "yaw": 160, "pose": "stand", "reacts": ["cheer", "clap", "point"], "role": "engineer"},
+    {"npc": "devops_tech", "pos": [-2.0, 0.0, -4.2], "yaw": -170, "pose": "lean", "reacts": ["gasp", "point", "cheer"], "role": "crowd"},
+    {"npc": "site_reliability", "pos": [2.0, 0.0, -4.2], "yaw": 170, "pose": "stand", "reacts": ["point", "clap", "cheer"], "role": "crowd"},
+    {"npc": "intern", "pos": [-6.5, 0.0, -4.2], "yaw": -150, "pose": "stand", "reacts": ["gasp", "stand_up", "cheer"], "role": "crowd"},
+    {"npc": "field_engineer", "pos": [6.5, 0.0, -4.2], "yaw": 150, "pose": "lean", "reacts": ["clap", "cheer"], "role": "crowd"}
   ],
   "shouts": {
     "round_start": [

@@ -2,12 +2,12 @@
   "actors": [
     {"npc": "technician_1", "pos": [-7.2, 0.0, -4.2], "yaw": 40, "pose": "work", "reacts": ["gasp", "point", "cheer"], "role": "operator"},
     {"npc": "technician_2", "pos": [7.2, 0.0, -4.2], "yaw": -40, "pose": "work", "reacts": ["gasp", "point", "bang_table"], "role": "operator"},
-    {"npc": "technician_3", "pos": [-4.8, 0.0, -5.2], "yaw": 20, "pose": "stand", "reacts": ["point", "cheer", "clap"], "role": "engineer"},
-    {"npc": "technician_4", "pos": [4.8, 0.0, -5.2], "yaw": -20, "pose": "stand", "reacts": ["point", "gasp", "clap"], "role": "engineer"},
-    {"npc": "lead_architect", "pos": [-2.5, 0.0, -5.5], "yaw": 10, "pose": "lean", "reacts": ["gasp", "point", "stand_up"], "role": "crowd"},
-    {"npc": "quality_inspector", "pos": [2.5, 0.0, -5.5], "yaw": -10, "pose": "stand", "reacts": ["gasp", "bang_table", "cheer"], "role": "crowd"},
-    {"npc": "cleanroom_guard", "pos": [-8.2, 0.0, -3.2], "yaw": 60, "pose": "stand", "reacts": ["point", "stand_up"], "role": "crowd"},
-    {"npc": "cleanroom_aide", "pos": [8.2, 0.0, -3.2], "yaw": -60, "pose": "stand", "reacts": ["cheer", "clap"], "role": "crowd"}
+    {"npc": "technician_3", "pos": [-4.8, 0.0, -5.2], "yaw": -160, "pose": "stand", "reacts": ["point", "cheer", "clap"], "role": "engineer"},
+    {"npc": "technician_4", "pos": [4.8, 0.0, -5.2], "yaw": 160, "pose": "stand", "reacts": ["point", "gasp", "clap"], "role": "engineer"},
+    {"npc": "lead_architect", "pos": [-2.5, 0.0, -5.5], "yaw": -170, "pose": "lean", "reacts": ["gasp", "point", "stand_up"], "role": "crowd"},
+    {"npc": "quality_inspector", "pos": [2.5, 0.0, -5.5], "yaw": 170, "pose": "stand", "reacts": ["gasp", "bang_table", "cheer"], "role": "crowd"},
+    {"npc": "cleanroom_guard", "pos": [-8.2, 0.0, -3.2], "yaw": -120, "pose": "stand", "reacts": ["point", "stand_up"], "role": "crowd"},
+    {"npc": "cleanroom_aide", "pos": [8.2, 0.0, -3.2], "yaw": 120, "pose": "stand", "reacts": ["cheer", "clap"], "role": "crowd"}
   ],
   "shouts": {
     "round_start": [
