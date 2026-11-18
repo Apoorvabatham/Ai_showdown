@@ -17,40 +17,6 @@ const SHADOW_TINT := Color(0.55, 0.35, 0.75)
 
 var _leaving := false
 
-## Backdrop: the screen splits on a diagonal (P1 blue, P2 red) with speed lines rushing
-## toward the middle and a hot seam where the sides meet.
-const BACKDROP_SHADER := """
-shader_type canvas_item;
-uniform vec4 left_color : source_color = vec4(0.10, 0.22, 0.62, 1.0);
-uniform vec4 right_color : source_color = vec4(0.62, 0.08, 0.16, 1.0);
-void fragment() {
-	vec2 uv = UV;
-	float split = uv.x + (uv.y - 0.5) * 0.22;
-	float side = step(0.5, split);
-	vec3 base = mix(left_color.rgb, right_color.rgb, side);
-	float dist = abs(split - 0.5);
-	base *= 0.35 + 0.65 * smoothstep(0.75, 0.0, dist); // darker toward the outer edges
-	float row = floor(uv.y * 64.0);
-	float h = fract(sin(row * 78.233) * 43758.5);
-	float dir = side * 2.0 - 1.0; // lines rush toward the seam
-	float x = fract(uv.x * (1.2 + h) + dir * TIME * (0.9 + h * 1.6) + h * 5.0);
-	float streak = smoothstep(0.86, 0.9, x) * smoothstep(1.0, 0.95, x) * step(0.45, h);
-	base += mix(left_color.rgb, right_color.rgb, side) * streak * 0.9;
-	float seam = exp(-dist * 90.0);
-	base += vec3(1.0, 0.85, 0.5) * seam * 1.4;
-	COLOR = vec4(base, 1.0);
-}
-"""
-## Portraits fade out at the bottom instead of ending in a hard edge.
-const FADE_SHADER := """
-shader_type canvas_item;
-void fragment() {
-	vec4 c = texture(TEXTURE, UV);
-	c.a *= smoothstep(1.0, 0.72, UV.y);
-	COLOR = c * COLOR;
-}
-"""
-const DISPLAY_FONT := "res://assets/fonts/InterDisplay-BlackItalic.otf"
 
 
 func _ready() -> void:
@@ -84,31 +50,8 @@ func _ready() -> void:
 
 
 func _decorate() -> void:
-	for glow_name in ["LeftGlow", "RightGlow"]:
-		var glow := get_node_or_null(glow_name) as CanvasItem
-		if glow:
-			glow.hide()
-	var backdrop := ColorRect.new()
-	backdrop.name = "Backdrop"
-	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
-	backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var shader := Shader.new()
-	shader.code = BACKDROP_SHADER
-	var material := ShaderMaterial.new()
-	material.shader = shader
-	backdrop.material = material
-	add_child(backdrop)
-	move_child(backdrop, 1) # just above the plain background
-	var fade := Shader.new()
-	fade.code = FADE_SHADER
-	for portrait: TextureRect in [left_portrait, right_portrait]:
-		var fade_material := ShaderMaterial.new()
-		fade_material.shader = fade
-		portrait.material = fade_material
-	if ResourceLoader.exists(DISPLAY_FONT):
-		var font: Font = load(DISPLAY_FONT)
-		for label: Label in [left_name, right_name, vs_label]:
-			label.add_theme_font_override("font", font)
+	UiStyle.versus_look(self, left_portrait, right_portrait)
+	UiStyle.use_display_font([left_name, right_name, vs_label])
 
 
 func _show_stage_name() -> void:

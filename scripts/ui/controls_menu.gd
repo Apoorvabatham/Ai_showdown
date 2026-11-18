@@ -25,6 +25,7 @@ func _ready() -> void:
 	background.color = Color(0.04, 0.045, 0.07)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
+	UiStyle.add_backdrop(self, background)
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -34,7 +35,9 @@ func _ready() -> void:
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 18)
 	margin.add_child(column)
-	column.add_child(_label("CONTROLS", 60, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER))
+	var heading := _label("CONTROLS", 60, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER)
+	UiStyle.use_display_font([heading])
+	column.add_child(heading)
 
 	var tabs := HBoxContainer.new()
 	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
