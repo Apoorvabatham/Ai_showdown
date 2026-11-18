@@ -42,6 +42,18 @@ const CLIPS := {
 		{name = "tesla_dash", impact = 0.0, loop = false,
 			about = "low forward burst, one knee up"},
 	],
+	"donald": [
+		{name = "donald_idle", impact = 0.0, loop = true,
+			about = "wide heavy stance, hands low, slow breathing"},
+		{name = "donald_haymaker", impact = 0.58, loop = false,
+			about = "big rear wind-up, wide hook through the target"},
+		{name = "donald_overhead", impact = 0.60, loop = false,
+			about = "both fists overhead, hammer down to the floor"},
+		{name = "donald_shove", impact = 0.32, loop = false,
+			about = "step in and two big palms push out"},
+		{name = "donald_walk", impact = 0.0, loop = true,
+			about = "slow, heavy carry walk"},
+	],
 }
 
 var skeleton: Skeleton3D
@@ -89,6 +101,7 @@ func _initialize() -> void:
 func build_library() -> AnimationLibrary:
 	var lib := AnimationLibrary.new()
 	add_tesla(lib)
+	add_donald(lib)
 	return lib
 
 
@@ -99,6 +112,14 @@ func add_tesla(lib: AnimationLibrary) -> void:
 	lib.add_animation("tesla_flying_knee", build_tesla_flying_knee())
 	lib.add_animation("tesla_spin_back_kick", build_tesla_spin_back_kick())
 	lib.add_animation("tesla_dash", build_tesla_dash())
+
+
+func add_donald(lib: AnimationLibrary) -> void:
+	lib.add_animation("donald_idle", build_donald_idle())
+	lib.add_animation("donald_haymaker", build_donald_haymaker())
+	lib.add_animation("donald_overhead", build_donald_overhead())
+	lib.add_animation("donald_shove", build_donald_shove())
+	lib.add_animation("donald_walk", build_donald_walk())
 
 
 # --- tesla man: fast and jumpy ------------------------------------------------------
@@ -290,6 +311,151 @@ func build_tesla_dash() -> Animation:
 		[0.32, land], [0.42, guard]], false)
 
 
+# --- Donald: slow and heavy ---------------------------------------------------------
+
+## Wide-stance idle: feet planted wide and turned out, knees loaded, hands hanging low in
+## front, the chest slowly swelling and the weight rocking side to side. 2.40 s loop.
+func build_donald_idle() -> Animation:
+	var base := _wide_stance(0.10)
+	_heavy_arms(base)
+	var breathe := duplicate_pose(base)
+	move_bone(breathe, "pelvis", Vector3(0, -0.022, 0))
+	lean(breathe, 2.5, 0.0)
+	rotate_bone(breathe, "neck_01", Vector3.RIGHT, -3.0)
+	var sway := duplicate_pose(base)
+	move_bone(sway, "pelvis", Vector3(0.014, -0.006, 0))
+	lean(sway, 0.5, 3.0)
+	var breathe_b := duplicate_pose(base)
+	move_bone(breathe_b, "pelvis", Vector3(-0.01, -0.018, 0))
+	lean(breathe_b, 2.0, -2.0)
+	return make_animation([[0.0, base], [0.6, breathe], [1.2, sway], [1.8, breathe_b],
+		[2.4, base]], true)
+
+
+## Haymaker: the weight shifts back and the whole torso coils away (0-0.46 s), then the
+## rear fist swings in a wide horizontal arc as the hips drive through, follows past the
+## centreline and the big body settles back into the stance. 1.00 s; lands at 0.58 s.
+func build_donald_haymaker() -> Animation:
+	var s := rear_sign()
+	var base := _wide_stance(0.10)
+	_heavy_arms(base)
+	var lf := global_origin(base, "foot_" + lead)
+	var rf := global_origin(base, "foot_" + rear)
+
+	var wind := duplicate_pose(base)
+	move_bone(wind, "pelvis", Vector3(0, -0.035, -0.03))
+	hip_turn(wind, -38.0)
+	lean(wind, 7.0, 5.0)
+	plant_both(wind, lf, rf)
+	var shoulder := global_origin(wind, "upperarm_" + rear)
+	solve_ik(wind, "upperarm_" + rear, "lowerarm_" + rear, "hand_" + rear,
+		shoulder + Vector3(s * 0.3, 0.16, -0.52), Vector3(s * 0.8, 0.35, -0.3))
+	tuck_hand(wind, lead)
+
+	var strike := duplicate_pose(base)
+	move_bone(strike, "pelvis", Vector3(0, -0.015, 0.09))
+	hip_turn(strike, 46.0)
+	lean(strike, -8.0, 4.0)
+	plant_foot(strike, lead, lf)
+	plant_foot(strike, rear, rf + Vector3(0, 0.04, 0.03))
+	point_foot(strike, rear, foot_direction(guard, rear).rotated(Vector3.UP, deg_to_rad(-s * 55.0)) + Vector3(0, -0.55, 0))
+	var chest := global_origin(strike, "spine_03")
+	solve_ik(strike, "upperarm_" + rear, "lowerarm_" + rear, "hand_" + rear,
+		Vector3(-s * 0.05, chest.y - 0.02, chest.z + 0.58), Vector3(s * 0.9, 0.35, 0.1))
+	tuck_hand(strike, lead)
+
+	var follow := duplicate_pose(strike)
+	hip_turn(follow, 10.0)
+	lean(follow, -12.0, 2.0)
+	solve_ik(follow, "upperarm_" + rear, "lowerarm_" + rear, "hand_" + rear,
+		Vector3(-s * 0.32, chest.y - 0.12, chest.z + 0.36), Vector3(s * 0.7, 0.1, -0.2))
+
+	return make_animation([[0.0, guard], [0.18, base], [0.34, wind], [0.46, wind],
+		[0.58, strike], [0.72, follow], [0.88, base], [1.00, guard]], false)
+
+
+## Overhead hammer: both fists rise together above the head with the back arched, then the
+## knees fold and the double fist hammers down in front. 1.08 s; lands at 0.60 s.
+func build_donald_overhead() -> Animation:
+	var base := _wide_stance(0.08)
+	_heavy_arms(base)
+	var lf := global_origin(base, "foot_" + lead)
+	var rf := global_origin(base, "foot_" + rear)
+
+	var raise := duplicate_pose(base)
+	move_bone(raise, "pelvis", Vector3(0, 0.03, -0.04))
+	lean(raise, 13.0, 0.0)
+	plant_both(raise, lf, rf)
+	var shoulders := (global_origin(raise, "upperarm_l") + global_origin(raise, "upperarm_r")) * 0.5
+	var top := shoulders + Vector3(0, 0.55, -0.05)
+	for side in ["l", "r"]:
+		var x := 0.055 if side == "l" else -0.055
+		solve_ik(raise, "upperarm_" + side, "lowerarm_" + side, "hand_" + side,
+			top + Vector3(x, 0, 0), Vector3(x * 4.0, 0.2, -1.0))
+
+	var slam := duplicate_pose(base)
+	move_bone(slam, "pelvis", Vector3(0, -0.16, 0.1))
+	lean(slam, -34.0, 0.0)
+	plant_both(slam, lf, rf)
+	var floor := Vector3(0, 0.12, 0.55)
+	for side in ["l", "r"]:
+		var x := 0.055 if side == "l" else -0.055
+		solve_ik(slam, "upperarm_" + side, "lowerarm_" + side, "hand_" + side,
+			floor + Vector3(x, 0, 0), Vector3(x * 4.0, 0.3, 0.2))
+
+	var hold := duplicate_pose(slam)
+	move_bone(hold, "pelvis", Vector3(0, 0.015, 0))
+	return make_animation([[0.0, guard], [0.20, base], [0.38, raise], [0.48, raise],
+		[0.60, slam], [0.72, hold], [0.92, base], [1.08, guard]], false)
+
+
+## Big shove: a step in, both palms drawn to the chest, then both arms drive out at chest
+## height with the hips and a hard forward lean, and hold. 0.86 s; lands at 0.32 s.
+func build_donald_shove() -> Animation:
+	var base := _wide_stance(0.08)
+	_heavy_arms(base)
+	var lf := global_origin(base, "foot_" + lead)
+	var rf := global_origin(base, "foot_" + rear)
+
+	var draw := duplicate_pose(base)
+	move_bone(draw, "pelvis", Vector3(0, -0.045, -0.04))
+	lean(draw, 8.0, 0.0)
+	plant_both(draw, lf, rf)
+	var chest := global_origin(draw, "spine_03")
+	reach_arm(draw, lead, Vector3(0.16, chest.y - 0.04, chest.z + 0.22))
+	reach_arm(draw, rear, Vector3(-0.16, chest.y - 0.02, chest.z + 0.18))
+
+	var push := duplicate_pose(base)
+	move_bone(push, "pelvis", Vector3(0, -0.02, 0.15))
+	lean(push, -18.0, 0.0)
+	plant_both(push, lf + Vector3(0, 0, 0.04), rf + Vector3(0, 0, 0.02))
+	chest = global_origin(push, "spine_03")
+	var palm := Vector3(0, chest.y + 0.02, chest.z + 0.6)
+	for side in [lead, rear]:
+		var x := 0.13 if side == "l" else -0.13
+		punch_arm(push, side, palm + Vector3(x, 0, 0))
+		rotate_bone(push, "hand_" + side, Vector3.RIGHT, -55.0) # wrist back: palm forward
+
+	var hold := duplicate_pose(push)
+	move_bone(hold, "pelvis", Vector3(0, -0.008, 0.02))
+	return make_animation([[0.0, guard], [0.12, base], [0.24, draw], [0.32, push],
+		[0.46, push], [0.60, hold], [0.74, base], [0.86, guard]], false)
+
+
+## Heavy walk: the slow Walk_Carry cycle in place with the arms hanging heavy in front.
+## 2.00 s loop.
+func build_donald_walk() -> Animation:
+	var source := ual2.get_animation("Walk_Carry")
+	var keys := []
+	var t := 0.0
+	while t <= source.length + 0.001:
+		var pose := sample(source, t)
+		_heavy_arms(pose)
+		keys.append([t, pose])
+		t += 1.0 / SAMPLE_FPS
+	return make_animation(keys, true)
+
+
 # --- Pose helpers -------------------------------------------------------------------
 
 ## Both hands tucked tight in front of the chin, elbows down (a tight, mobile boxer guard).
@@ -304,6 +470,31 @@ func tuck_hand(pose: Dictionary, side: String) -> void:
 	var chin := global_origin(pose, "neck_01") + Vector3(0, -0.24, 0.16)
 	var x := 0.06 if side == "l" else -0.06
 	reach_arm(pose, side, chin + Vector3(x, 0.0, -0.02))
+
+
+## Heavy low arms: both hands hanging in front of the belly, elbows out (a big man's
+## relaxed guard).
+func _heavy_arms(pose: Dictionary) -> void:
+	var chest := global_origin(pose, "spine_03")
+	reach_arm(pose, lead, Vector3(0.2 if lead == "l" else -0.2, chest.y - 0.24, chest.z + 0.28))
+	reach_arm(pose, rear, Vector3(-0.2 if lead == "l" else 0.2, chest.y - 0.28, chest.z + 0.22))
+	rotate_bone(pose, "hand_" + lead, Vector3.RIGHT, -22.0)
+	rotate_bone(pose, "hand_" + rear, Vector3.RIGHT, -22.0)
+
+
+## Donald's wide stance: feet `extra` metres wider apart than the guard and turned out,
+## the pelvis sunk 6 cm and the hips squared up a little.
+func _wide_stance(extra: float) -> Dictionary:
+	var s := rear_sign()
+	var pose := duplicate_pose(guard)
+	var lf := global_origin(guard, "foot_" + lead)
+	var rf := global_origin(guard, "foot_" + rear)
+	move_bone(pose, "pelvis", Vector3(0, -0.06, 0))
+	hip_turn(pose, 14.0)
+	plant_both(pose, lf + Vector3(-s * extra, 0, 0.03), rf + Vector3(s * extra, 0, -0.02))
+	point_foot(pose, lead, foot_direction(guard, lead).rotated(Vector3.UP, deg_to_rad(-s * 18.0)))
+	point_foot(pose, rear, foot_direction(guard, rear).rotated(Vector3.UP, deg_to_rad(s * 18.0)))
+	return pose
 
 
 # --- Toolkit copied from tools/build_fight_animations.gd ----------------------------

@@ -34,6 +34,19 @@ end.
 | `tesla_spin_back_kick` | 0.56 | 0.22 | turns his back, rear heel spears straight back, spin completes |
 | `tesla_dash` | 0.42 | — (movement) | low forward burst, lead knee up, rear leg drives behind |
 
+### donald (slow, heavy)
+
+`docs/review/opencode/style_donald.jpg`.
+
+| clip | length (s) | animation_impact (s) | notes |
+|---|---|---|---|
+| `donald_idle` | 2.40 | — (loop) | wide stance, feet turned out, hands hanging low, slow breath and weight rock |
+| `donald_haymaker` | 1.00 | 0.58 | torso coils away, rear fist swings wide through the centreline, follows past |
+| `donald_overhead` | 1.08 | 0.60 | both fists rise above the head, deep knee fold, double hammer down to the floor |
+| `donald_shove` | 0.86 | 0.32 | step in, palms drawn to the chest, both arms drive out at chest height |
+| `donald_walk` | 2.00 | — (loop) | slow Walk_Carry cycle in place, arms hanging heavy in front |
+
+
 
 ## O5: Xi's OpenCode helpers (helper_qwen, helper_alibaba, helper_kimi)
 
