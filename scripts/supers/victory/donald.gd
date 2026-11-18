@@ -76,6 +76,7 @@ func run() -> void:
 	_confetti()
 	_goldify_all() # late model pieces (hair, accessories) get the gold too
 	await wait(rise_end)
+	big_text("SO MUCH WINNING!", _centre + Vector3(0.0, 4.4, -0.5), Color(1.0, 0.85, 0.2), 0.72)
 	_confetti()
 	await wait(1.6)
 	_confetti()

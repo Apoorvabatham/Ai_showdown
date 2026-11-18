@@ -59,7 +59,7 @@ func run() -> void:
 			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	donald.play(&"fight/victory_flex")
 	donald.face = &"roar"
-	big_text("HUGE!", desk + Vector3(3.2, 7.0, 0), Color(1.0, 0.85, 0.2), 1.3, GROW_TIME)
+	big_text("TREMENDOUS!", desk + Vector3(3.2, 7.0, 0), Color(1.0, 0.85, 0.2), 1.1, GROW_TIME)
 	await wait(GROW_TIME)
 
 	# 2. Close on the tiny opponent, cowering, the giant looming behind.
@@ -95,7 +95,7 @@ func run() -> void:
 	shot("oval_desk", "Cam_Desk", desk + Vector3(0, 0.5, 0))
 	var lift := create_tween()
 	lift.tween_property(stamp, "global_position:y", desk.y + 7.0, 0.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	big_text("TARIFF!", desk + Vector3(0, 1.9, 0.5), Color(0.95, 0.15, 0.12), 0.28)
+	big_text("500% TARIFFED!", desk + Vector3(0, 1.35, 0.5), Color(1.0, 0.12, 0.1), 0.75)
 	donald.play(&"fight/victory_flex")
 	donald.face = &"grin"
 	await wait(AFTER_TIME - 0.35)
@@ -192,11 +192,13 @@ func _stamp_standin() -> Node3D:
 	knob.position.y = 2.2
 	root.add_child(knob)
 	var label := Label3D.new()
-	label.text = "TARIFF"
-	label.font_size = 96
-	label.pixel_size = 0.0035
+	label.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	label.text = "★ TARIFF 500% ★"
+	label.font_size = 110
+	label.pixel_size = 0.005
 	label.modulate = Color(1, 1, 1)
-	label.outline_size = 0
+	label.outline_size = 8
+	label.outline_modulate = Color(0.2, 0.02, 0.02)
 	label.double_sided = false
 	label.shaded = false
 	label.rotation_degrees = Vector3(90, 0, 0) # faces down
@@ -209,14 +211,16 @@ func _stamp_standin() -> Node3D:
 func _mark_standin() -> Node3D:
 	var root := Node3D.new()
 	root.name = "TariffMark"
-	root.add_child(SuperStandins.box(Vector3(1.9, 0.01, 1.4), Vector3.ZERO, SuperStandins.metal(Color(0.85, 0.1, 0.1), 0.0, 0.9)))
-	root.add_child(SuperStandins.box(Vector3(1.6, 0.012, 1.1), Vector3.ZERO, SuperStandins.metal(Color(0.97, 0.93, 0.85), 0.0, 0.9)))
+	root.add_child(SuperStandins.box(Vector3(2.6, 0.01, 1.4), Vector3.ZERO, SuperStandins.metal(Color(0.85, 0.1, 0.1), 0.0, 0.9)))
+	root.add_child(SuperStandins.box(Vector3(2.4, 0.012, 1.2), Vector3.ZERO, SuperStandins.metal(Color(0.97, 0.93, 0.85), 0.0, 0.9)))
 	var label := Label3D.new()
-	label.text = "TARIFF"
+	label.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	label.text = "★ TARIFF 500% ★\nPAID IN FULL"
 	label.font_size = 96
-	label.pixel_size = 0.0068
+	label.pixel_size = 0.0042
 	label.modulate = Color(0.85, 0.08, 0.08)
-	label.outline_size = 0
+	label.outline_size = 10
+	label.outline_modulate = Color(0.25, 0.02, 0.02)
 	label.shaded = false
 	label.rotation_degrees = Vector3(-90, 0, 0) # faces up, the stamp's text read from the front
 	label.position = Vector3(0, 0.014, 0)

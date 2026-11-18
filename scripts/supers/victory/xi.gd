@@ -60,7 +60,20 @@ func run() -> void:
 		rise.tween_property(l, "global_position:y", target_y, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 	await wait(0.4)
-	big_text("VICTORY", _centre + Vector3(0.0, 4.5, -2.0), Color(1.0, 0.85, 0.2), 0.35)
+	big_text("+1,000,000 SOCIAL CREDIT!", _centre + Vector3(0.0, 3.8, -2.0), Color(1.0, 0.88, 0.15), 0.85)
+	var sub := Label3D.new()
+	sub.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	sub.text = "★ HARMONIOUS STABILITY MAINTAINED ★"
+	sub.font_size = 80
+	sub.pixel_size = 0.005
+	sub.modulate = Color(1.0, 0.95, 0.7)
+	sub.outline_size = 14
+	sub.outline_modulate = Color(0.25, 0.02, 0.02)
+	sub.position = _centre + Vector3(0.0, 2.9, -2.0)
+	sub.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	sub.no_depth_test = true
+	sub.shaded = false
+	add_child(sub)
 
 	# Sequential fireworks bursts in the night sky.
 	for f in 6:

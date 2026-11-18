@@ -147,3 +147,30 @@ and any requests for other agents.
   - `yann.gd`: Path of giant cat routed behind Yann so it walks into view and sits alongside him without occluding the fighter.
   - `tools/render_scene_sheets.gd`: Created reusable tool to render all super and victory contact sheets at 1080p downsampled to high-quality 3x2 contact sheet images.
   - Full test suite verified passing with `0 failure(s)`.
+
+## G13: Typography, Comic/Arcade Fonts & Punchline Parody Pass
+- **State**: done
+- **Summary**: Overhauled typography, aspect ratios, comedic punchlines, and framing across all 6 super scenes and 11 victory scenes using stylized arcade and marker fonts.
+- **Details**:
+  - Imported and credited arcade / comic display fonts: `InterDisplay-BlackItalic.otf` (SIL OFL 1.1) and `PermanentMarker-Regular.ttf` (Apache 2.0) in `assets/fonts/` and `assets/CREDITS.md`.
+  - Replaced unstyled default system fonts with dynamic outline sizing (`outline_size = maxi(6, int(round(18.0 * clampf(size, 0.4, 1.2))))`) and proportional pixel scales in `super_scene.gd`'s `big_text()`.
+  - Tuned coordinates and multi-line breaks to eliminate camera frustum clipping, text overlap, and ratio distortions:
+    - `super_not_found.gd`: High-tech browser window with `"404: SKILL NOT FOUND!"`, `": ( Opponent encountered a fatal skill issue"`, `"SYSTEM RESTORED!"` floating in the open sky above window.
+    - `super_metaverse_trap.gd`: Multi-line arcade styling for `"WELCOME TO\nTHE METAVERSE!"`, `"ERROR 404:\nLEGS NOT FOUND!"`, punchy `"LIKE"`, `"SHARE"`, `"FOLLOW"`, `"ENGAGE"`, `"BLOCKED!"` impacts.
+    - `super_tariff_stamp.gd`: Scaled 500% tariff mark slab with `"★ TARIFF 500% ★\nPAID IN FULL"` and `"TREMENDOUS!"` popup.
+    - `super_jacket_tornado.gd`: `"JACKET OFF!"` and `"1000x TURBO FLUNG!"` centered in camera frustum.
+    - `super_rocket_launch.gd`: Sized `"LIFTOFF!"` and countdown numbers within rocket camera launch view.
+    - `super_open_source_squad.gd`: Open-source helper T-shirts styled in arcade italics with `"100% OPEN SOURCE!"` popup.
+    - `victory_jensen.gd`: Keynote ticker `"★ 1000x FASTER ★ 0% DISCOUNTS ★ SOLD OUT FOREVER ★"`, handwritten white `"Jensen ★"` on leather jacket lapel, and bright neon `"1000x PERFORMANCE!"`.
+    - `victory_tesla.gd`: Mars flag stamped with bold red `"OCCUPY MARS"` on both sides, with `"OCCUPY MARS!\n★ 420x SECURED ★"` floating cleanly to the left of the flag above Elon's fist pump.
+    - `victory_donald.gd`: Golden statue array with confetti and bold `"SO MUCH WINNING!"` in front of background flags.
+    - `victory_sundar.gd`: Giant search billboard elevated into the open sky, displaying `"Pickai"`, search query, and hilarious parody results without roof occlusion.
+    - `victory_geoff.gd`: Podium ceremony with `"1ST PLACE!"` and `"“I PROFOUNDLY REGRET MY LIFE'S WORK”"`.
+    - `victory_dario.gd`: Golden scroll with `"CONSTITUTIONAL VICTORY"`, `"★ 100% HELPFUL & HARMLESS ★"`, `"RLHF SAFE"` seal, and `"SAFETY COMPLIANT!"`.
+    - `victory_yann.gd`: Cartoon cat with `"WORLD MODELS > LLMs!"` and `"“THE CAT HAS MORE COMMON SENSE THAN YOUR LLM”"`.
+    - `victory_ram.gd`: Giant banner with `"AGI ACHIEVED!"`, ticker `"★ PLEASE DEPOSIT ANOTHER $7 TRILLION IN COMPUTE ★"`, and `"SINGULARITY ACHIEVED:\nSEND $7T!"` floating above with fireworks.
+    - `victory_algorithm.gd`: Digital green matrix grid, glowing eye sensor monitors with `"HUMANS DEPRECATED"`, and `"ALL YOUR BASE\nARE BELONG TO AGI!"`.
+    - `victory_zuckerbot.gd`: Low-angle hero flex with `"LEGS SOLD SEPARATELY!"` and legless floating opponent in pastel metaverse.
+  - All 17 contact sheets re-rendered into `docs/review/gemini/scenes/` and visually verified.
+  - Full test suite verified passing with `0 failure(s)`.
+

@@ -56,15 +56,28 @@ func build() -> void:
 	# The golden motto text.
 	banner_label = Label3D.new()
 	banner_label.name = "Slogan"
-	banner_label.text = "Safe and helpful victory"
-	banner_label.font_size = 84
-	banner_label.pixel_size = 0.0065
-	banner_label.modulate = Color(0.2, 0.12, 0.05)
-	banner_label.outline_size = 18
-	banner_label.outline_modulate = Color(1.0, 0.85, 0.3)
+	banner_label.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	banner_label.text = "CONSTITUTIONAL VICTORY"
+	banner_label.font_size = 96
+	banner_label.pixel_size = 0.0055
+	banner_label.modulate = Color(0.25, 0.12, 0.02)
+	banner_label.outline_size = 14
+	banner_label.outline_modulate = Color(1.0, 0.88, 0.35)
 	banner_label.shaded = false
-	banner_label.position = Vector3(0.0, 0.15, 0.06)
+	banner_label.position = Vector3(0.0, 0.2, 0.06)
 	parchment.add_child(banner_label)
+
+	var sub_motto := Label3D.new()
+	sub_motto.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	sub_motto.text = "★ 100% HELPFUL & HARMLESS ★"
+	sub_motto.font_size = 60
+	sub_motto.pixel_size = 0.005
+	sub_motto.modulate = Color(0.4, 0.22, 0.05)
+	sub_motto.outline_size = 10
+	sub_motto.outline_modulate = Color(1.0, 0.88, 0.4)
+	sub_motto.shaded = false
+	sub_motto.position = Vector3(0.0, -0.42, 0.06)
+	parchment.add_child(sub_motto)
 
 	# Gold/Red Constitutional Seal.
 	seal = Node3D.new()
@@ -80,11 +93,13 @@ func build() -> void:
 	seal.add_child(seal_body)
 
 	var seal_text := Label3D.new()
-	seal_text.text = "SAFE"
-	seal_text.font_size = 64
-	seal_text.pixel_size = 0.006
+	seal_text.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	seal_text.text = "RLHF\nSAFE"
+	seal_text.font_size = 54
+	seal_text.pixel_size = 0.005
 	seal_text.modulate = Color(1.0, 0.88, 0.2)
-	seal_text.outline_size = 0
+	seal_text.outline_size = 8
+	seal_text.outline_modulate = Color(0.3, 0.02, 0.02)
 	seal_text.position.z = 0.05
 	seal.add_child(seal_text)
 	seal.position = Vector3(2.4, -0.65, 0.06)
@@ -117,7 +132,7 @@ func run() -> void:
 	_gold_sparkles(_centre + Vector3(0.0, 3.8, -2.5))
 
 	await wait(0.5)
-	big_text("HELPFUL & HARMLESS", _centre + Vector3(0.0, 5.4, -2.0), Color(1.0, 0.88, 0.2), 0.25)
+	big_text("SAFETY COMPLIANT!", _centre + Vector3(0.0, 5.2, -2.0), Color(1.0, 0.88, 0.25), 0.8)
 
 
 func _process(delta: float) -> void:

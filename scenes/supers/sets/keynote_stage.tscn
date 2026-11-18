@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://assets/stage_props/server_farm/container-tall.glb" id="3_container_tall"]
 [ext_resource type="PackedScene" path="res://assets/stage_props/server_farm/container-wide.glb" id="4_container_wide"]
 [ext_resource type="PackedScene" path="res://assets/stage_props/foundry/catwalk-straight.glb" id="5_catwalk"]
+[ext_resource type="FontFile" uid="uid://w5xllttmlvm3" path="res://assets/fonts/InterDisplay-BlackItalic.otf" id="6_font"]
 
 [sub_resource type="Environment" id="Environment_8eoi1"]
 background_mode = 1
@@ -108,12 +109,25 @@ material_override = SubResource("Mat_NvidiaGreen")
 mesh = SubResource("Mesh_ScreenBorderV")
 
 [node name="ScreenSlogan" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.6, -6.8)
-pixel_size = 0.008
-modulate = Color(0.55, 0.9, 0.1, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.1, -6.8)
+font = ExtResource("6_font")
+pixel_size = 0.007
+modulate = Color(0.55, 0.95, 0.1, 1)
+outline_modulate = Color(0.02, 0.05, 0.01, 1)
+outline_size = 18
 text = "THE MORE YOU BUY,
-THE MORE YOU SAVE"
-font_size = 120
+THE MORE YOU SAVE!"
+font_size = 110
+
+[node name="ScreenTicker" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, -6.8)
+font = ExtResource("6_font")
+pixel_size = 0.006
+modulate = Color(1, 0.85, 0.2, 1)
+outline_modulate = Color(0.04, 0.04, 0.02, 1)
+outline_size = 12
+text = "★ 1000x FASTER ★ 0% DISCOUNTS ★ SOLD OUT FOREVER ★"
+font_size = 64
 
 [node name="StageFrontEdgeGlow" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 3.5)

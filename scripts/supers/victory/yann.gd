@@ -61,20 +61,33 @@ func run() -> void:
 
 	# Walk across the arena toward Yann.
 	var walk := create_tween()
-	walk.tween_property(cat, "global_position", walk_dest, 3.2).set_trans(Tween.TRANS_LINEAR)
-	await wait(3.2)
+	walk.tween_property(cat, "global_position", walk_dest, 1.4).set_trans(Tween.TRANS_LINEAR)
+	await wait(1.4)
 
 	# Cat stops and faces the camera.
 	_walking = false
 	var turn := create_tween()
-	turn.tween_property(cat, "rotation:y", PI * 0.15, 0.4)
-	await wait(0.4)
+	turn.tween_property(cat, "rotation:y", PI * 0.15, 0.3)
+	await wait(0.3)
 
 	# Cat sits down next to Yann.
 	_sit_down()
-	await wait(0.4)
+	await wait(0.3)
 
-	big_text("WORLD MODEL ONLINE", _centre + Vector3(0.0, 3.8, -1.0), Color(0.4, 0.9, 0.6), 0.3)
+	big_text("WORLD MODELS > LLMs!", _centre + Vector3(0.0, 3.6, -1.0), Color(0.3, 1.0, 0.6), 0.8)
+	var quote := Label3D.new()
+	quote.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	quote.text = "“THE CAT HAS MORE COMMON SENSE THAN YOUR LLM”"
+	quote.font_size = 76
+	quote.pixel_size = 0.005
+	quote.modulate = Color(1.0, 0.95, 0.7)
+	quote.outline_size = 14
+	quote.outline_modulate = Color(0.05, 0.2, 0.1)
+	quote.position = _centre + Vector3(0.0, 2.8, -1.0)
+	quote.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	quote.no_depth_test = true
+	quote.shaded = false
+	add_child(quote)
 
 
 func _process(delta: float) -> void:

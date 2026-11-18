@@ -20,14 +20,33 @@ func build() -> void:
 	flag.global_transform = flag_spot
 	flag.position.y -= 2.8 # still in the ground
 	var cloth := flag.find_child("Cloth", true, false)
-	if cloth and cloth.find_children("*", "Label3D").is_empty():
-		var label := Label3D.new() # a real flag prop has a blank cloth: write on it
-		label.text = "CAPTURED"
-		label.font_size = 64
-		label.pixel_size = 0.004
-		label.modulate = Color(0.75, 0.1, 0.1)
-		label.position.z = 0.02
-		cloth.add_child(label)
+	if cloth:
+		var labels := cloth.find_children("*", "Label3D")
+		if labels.is_empty():
+			for side in [1.0, -1.0]:
+				var l := Label3D.new()
+				l.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+				l.text = "OCCUPY\nMARS"
+				l.font_size = 72
+				l.pixel_size = 0.0028
+				l.modulate = Color(0.95, 0.15, 0.15)
+				l.outline_size = 8
+				l.outline_modulate = Color(0.1, 0.02, 0.02)
+				l.position = Vector3(0, 0, 0.02 * side)
+				l.rotation.y = 0.0 if side > 0.0 else PI
+				cloth.add_child(l)
+		else:
+			for child in labels:
+				var l := child as Label3D
+				l.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+				l.text = "OCCUPY\nMARS"
+				l.font_size = 72
+				l.pixel_size = 0.0028
+				l.modulate = Color(0.95, 0.15, 0.15)
+				l.outline_size = 8
+				l.outline_modulate = Color(0.1, 0.02, 0.02)
+				var side_sign := 1.0 if l.position.z >= 0.0 else -1.0
+				l.position.z = 0.02 * side_sign
 	winner = puppet(attacker, mars)
 	winner.global_transform = marker("mars", "Rocket")
 	winner.position += Vector3(1.2, 0, 1.0)
@@ -64,4 +83,4 @@ func run() -> void:
 	winner.look_at(to_camera)
 	winner.play(&"fight/victory_fist_pump")
 	winner.face = &"grin"
-	big_text("CAPTURED", spot + Vector3(-0.6, 2.9, -1.2), Color(1.0, 0.35, 0.2), 0.3)
+	big_text("OCCUPY MARS!\n★ 420x SECURED ★", spot + Vector3(-0.65, 2.35, -0.6), Color(1.0, 0.45, 0.2), 0.4)

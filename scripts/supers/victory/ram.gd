@@ -47,26 +47,28 @@ func build() -> void:
 	# Huge "AGI ACHIEVED" typography.
 	banner_label = Label3D.new()
 	banner_label.name = "AgiLabel"
-	banner_label.text = "AGI ACHIEVED"
-	banner_label.font_size = 180
-	banner_label.pixel_size = 0.008
+	banner_label.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	banner_label.text = "AGI ACHIEVED!"
+	banner_label.font_size = 110
+	banner_label.pixel_size = 0.007
 	banner_label.modulate = Color(1.0, 0.9, 0.25)
-	banner_label.outline_size = 32
-	banner_label.outline_modulate = Color(0.1, 0.5, 0.8)
+	banner_label.outline_size = 18
+	banner_label.outline_modulate = Color(0.05, 0.25, 0.45)
 	banner_label.shaded = false
-	banner_label.position = Vector3(0.0, 0.0, 0.06)
+	banner_label.position = Vector3(0.0, 0.15, 0.06)
 	banner_cloth.add_child(banner_label)
 
 	# Subtitle ticker.
 	var sub_label := Label3D.new()
-	sub_label.text = "COMPUTE SCALING LAW COMPLETE"
+	sub_label.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	sub_label.text = "★ PLEASE DEPOSIT ANOTHER $7 TRILLION IN COMPUTE ★"
 	sub_label.font_size = 54
-	sub_label.pixel_size = 0.008
-	sub_label.modulate = Color(0.4, 0.9, 1.0)
-	sub_label.outline_size = 10
+	sub_label.pixel_size = 0.007
+	sub_label.modulate = Color(0.35, 0.95, 1.0)
+	sub_label.outline_size = 12
 	sub_label.outline_modulate = Color(0.02, 0.05, 0.1)
 	sub_label.shaded = false
-	sub_label.position = Vector3(0.0, -0.85, 0.06)
+	sub_label.position = Vector3(0.0, -0.75, 0.06)
 	banner_cloth.add_child(sub_label)
 
 
@@ -81,6 +83,8 @@ func run() -> void:
 	drop.tween_property(banner_root, "global_position:y", _centre.y + 4.2, 0.85).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 	await wait(0.85)
 
+	big_text("SINGULARITY ACHIEVED:\nSEND $7T!", _centre + Vector3(0.0, 5.85, -2.0), Color(0.3, 0.95, 1.0), 0.52)
+
 	# Fireworks barrage around the triumphant banner.
 	var colors := [Color(0.2, 0.85, 1.0), Color(1.0, 0.8, 0.2), Color(1.0, 0.2, 0.5), Color(0.4, 1.0, 0.5)]
 	for i in 8:
@@ -88,8 +92,6 @@ func run() -> void:
 		var fx_pos := _centre + Vector3(side + randf_range(-1.5, 1.5), randf_range(5.0, 8.5), randf_range(-4.0, -1.0))
 		_firework(fx_pos, colors[i % colors.size()])
 		await wait(0.35)
-
-	big_text("SINGULARITY UNLOCKED", _centre + Vector3(0.0, 6.2, -2.0), Color(0.3, 0.9, 1.0), 0.28)
 
 
 func _process(delta: float) -> void:

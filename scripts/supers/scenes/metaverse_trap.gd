@@ -86,7 +86,7 @@ func run() -> void:
 	victim.model.flash(Color(0.3, 0.9, 1.0), 0.5)
 	glitch.burst(0.25)
 	Fx.pixels(self, victim_eyes, 12, 1.2)
-	big_text("LOADING...", victim_eyes + Vector3(-0.2, 0.45, 0.4), Color(0.4, 0.95, 1.0), 0.15, WEAR_TIME - 0.1)
+	big_text("LOADING METAVERSE...", victim_eyes + Vector3(0.0, 0.42, 0.3), Color(0.4, 0.95, 1.0), 0.35, WEAR_TIME - 0.1)
 	await wait(WEAR_TIME)
 
 	# 2. Glitch cut to the metaverse.
@@ -104,7 +104,7 @@ func run() -> void:
 	shot("metaverse", "Cam_Welcome", spot + Vector3(0, 0.5, 0))
 	sound("teleport", -4.0)
 	await wait(CUT_TIME * 0.5)
-	big_text("WELCOME TO THE METAVERSE", spot + Vector3(-0.5, 2.5, 0), Color(1.0, 0.75, 0.9), 0.14, WELCOME_TIME - 0.1)
+	big_text("WELCOME TO\nTHE METAVERSE!", spot + Vector3(0.0, 1.9, 0), Color(1.0, 0.75, 0.95), 0.45, WELCOME_TIME - 0.1)
 	await wait(WELCOME_TIME)
 
 	# 3. The legs go missing.
@@ -116,8 +116,7 @@ func run() -> void:
 		if value <= 0.5:
 			Fx.pixels(self, spot + Vector3(0, 0.4, 0), 5, 1.0)
 		await wait(LEGS_TIME * 0.5 / LEG_FLICKER.size())
-	big_text("404", spot + Vector3(0.0, 1.7, 0.6), Color(1.0, 0.45, 0.6), 0.3, LEGS_TIME * 0.5)
-	big_text("LEGS NOT FOUND", spot + Vector3(0.0, 1.5, 0.6), Color(1.0, 1.0, 1.0), 0.12, LEGS_TIME * 0.5)
+	big_text("ERROR 404:\nLEGS NOT FOUND!", spot + Vector3(0.0, 1.25, 0.5), Color(1.0, 0.35, 0.5), 0.42, LEGS_TIME * 0.5)
 	# His avatar logs in (bigger head), in a puff of pixels.
 	await wait(LEGS_TIME * 0.5)
 	zuck.visible = true
@@ -169,7 +168,7 @@ func _hit(index: int, at: Vector3) -> void:
 	victim.model.flash(color, 0.3)
 	Fx.pixels(self, at, 10, 1.3)
 	glitch.burst(0.08)
-	big_text(HIT_WORDS[index], at + Vector3(-0.1, 0.5, 0.9), color, 0.16, PUNCH_TIME)
+	big_text(HIT_WORDS[index], at + Vector3(-0.1, 0.35, 0.4), color, 0.38, PUNCH_TIME * 0.8)
 	var home := marker("metaverse", "Victim").origin
 	var clip := &"ual1/Hit_Head" if index % 2 == 0 else &"ual1/Hit_Chest"
 	var tween := create_tween()

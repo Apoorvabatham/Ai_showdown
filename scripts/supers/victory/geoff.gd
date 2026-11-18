@@ -124,7 +124,20 @@ func run() -> void:
 
 	# Geoff continues to look deeply concerned about the future.
 	geoff_puppet.face = &"pain"
-	big_text("FIRST PLACE (DEEPLY CONCERNED)", _centre + Vector3(0.0, 4.8, -1.0), Color(1.0, 0.85, 0.2), 0.22)
+	big_text("1ST PLACE!", _centre + Vector3(0.0, 3.8, -1.0), Color(1.0, 0.85, 0.2), 0.85)
+	var worry := Label3D.new()
+	worry.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	worry.text = "“I PROFOUNDLY REGRET MY LIFE'S WORK”"
+	worry.font_size = 80
+	worry.pixel_size = 0.005
+	worry.modulate = Color(1.0, 0.9, 0.6)
+	worry.outline_size = 12
+	worry.outline_modulate = Color(0.15, 0.05, 0.02)
+	worry.position = _centre + Vector3(0.0, 3.0, -1.0)
+	worry.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	worry.no_depth_test = true
+	worry.shaded = false
+	add_child(worry)
 
 
 func _process(delta: float) -> void:
@@ -140,12 +153,13 @@ func _process(delta: float) -> void:
 
 func _make_step_label(num: String, color: Color) -> Label3D:
 	var l := Label3D.new()
+	l.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
 	l.text = num
 	l.font_size = 140
 	l.pixel_size = 0.008
 	l.modulate = color
 	l.outline_size = 20
-	l.outline_modulate = Color(0.05, 0.05, 0.08)
+	l.outline_modulate = Color(0.02, 0.02, 0.05)
 	l.shaded = false
 	return l
 

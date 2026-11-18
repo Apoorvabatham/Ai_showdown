@@ -73,7 +73,7 @@ func run() -> void:
 	var flame := rocket.find_child("Flame", true, false) as Node3D
 	if flame:
 		flame.visible = true
-	big_text("LIFTOFF!", rocket.global_position + Vector3(0, 9, 3), Color(1, 0.6, 0.2), 1.0, 0.8)
+	big_text("LIFTOFF!", rocket.global_position + Vector3(0, 7.5, 2.5), Color(1, 0.6, 0.2), 0.8, 0.8)
 	sound("rocket_launch_roar")
 	shot("launch_pad", "Cam_Launch")
 	track = rocket

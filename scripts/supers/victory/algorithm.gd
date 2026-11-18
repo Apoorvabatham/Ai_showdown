@@ -54,6 +54,7 @@ func build() -> void:
 		var spot := _centre + Vector3(sin(angle) * dist, randf_range(2.0, 3.6), -cos(angle) * dist * 0.5 - 1.5)
 		s.global_position = spot
 		s.look_at(_centre + Vector3(0.0, 1.5, 0.0), Vector3.UP)
+		s.rotate_y(PI)
 		s.scale = Vector3.ZERO
 		screens.append(s)
 
@@ -78,7 +79,7 @@ func run() -> void:
 		await wait(0.14)
 
 	await wait(0.6)
-	big_text("STAGE DIGITIZED: AGI IN CONTROL", _centre + Vector3(0.0, 4.8, -1.5), Color(1.0, 0.15, 0.2), 0.28)
+	big_text("ALL YOUR BASE\nARE BELONG TO AGI!", _centre + Vector3(0.0, 4.35, -1.5), Color(1.0, 0.2, 0.25), 0.48)
 
 
 func _process(delta: float) -> void:
@@ -110,8 +111,19 @@ func _make_screen(node_name: String) -> Node3D:
 	# Central glowing red eye sensor.
 	var eye_root := Node3D.new()
 	eye_root.name = "GlowingEye"
-	eye_root.position = Vector3(0.0, 0.0, 0.07)
+	eye_root.position = Vector3(0.0, -0.05, 0.07)
 	root.add_child(eye_root)
+
+	var screen_label := Label3D.new()
+	screen_label.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
+	screen_label.text = "HUMANS DEPRECATED"
+	screen_label.font_size = 54
+	screen_label.pixel_size = 0.0045
+	screen_label.modulate = Color(1.0, 0.25, 0.25)
+	screen_label.outline_size = 8
+	screen_label.outline_modulate = Color(0.1, 0.0, 0.0)
+	screen_label.position = Vector3(0.0, 0.38, 0.08)
+	root.add_child(screen_label)
 
 	var iris := MeshInstance3D.new()
 	var sphere := SphereMesh.new()

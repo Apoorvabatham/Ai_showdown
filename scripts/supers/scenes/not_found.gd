@@ -121,7 +121,7 @@ func run() -> void:
 	victim.visible = false
 	victim.scale = Vector3.ONE
 	pixels.visible = true
-	big_text("NOT FOUND", window.global_position + Vector3(0, 3.7, 1.0), Color(1.0, 0.35, 0.3), 0.22, 1.0)
+	big_text("404: SKILL NOT FOUND!", window.global_position + Vector3(0, 3.6, 0.8), Color(1.0, 0.25, 0.2), 0.5, 1.0)
 	scatter_pixels()
 	await wait(SCATTER_TIME)
 	await wait(EMPTY_TIME)
@@ -139,7 +139,7 @@ func run() -> void:
 		_progress.scale.x = 0.001
 		var reload := create_tween()
 		reload.tween_property(_progress, "scale:x", 1.0, RELOAD_TIME * 0.6)
-	big_text("RELOAD", window.global_position + Vector3(0, 3.7, 1.0), Color(0.3, 0.85, 0.4), 0.22, 0.5)
+	big_text("SYSTEM RESTORED!", window.global_position + Vector3(0, 3.6, 0.8), Color(0.2, 0.9, 0.4), 0.5, 0.5)
 	victim.visible = true
 	victim.scale = Vector3.ONE * 0.05
 	victim.face = &"pain"
@@ -271,14 +271,14 @@ static func browser_window() -> Node3D:
 	# Page contents: "Loading..." first, then the error.
 	var loading := Node3D.new()
 	loading.name = "PageLoading"
-	loading.add_child(label("Loading...", 0.22, Color(0.5, 0.5, 0.55), Vector3(0, y0 + 0.35, -0.44)))
+	loading.add_child(label("Loading...", 0.28, Color(0.45, 0.45, 0.5), Vector3(0, y0 + 1.1, -0.44)))
 	root.add_child(loading)
 	var error := Node3D.new()
 	error.name = "PageError"
 	error.position = Vector3(0, y0 + 1.4, 0.06)
-	error.add_child(label("404", 1.0, Color(0.85, 0.15, 0.15), Vector3(0, 0.45, 0)))
-	error.add_child(label("NOT FOUND", 0.42, Color(0.6, 0.1, 0.1), Vector3(0, -0.35, 0)))
-	error.add_child(label(":(  this page is gone", 0.14, Color(0.4, 0.4, 0.45), Vector3(0, -0.75, 0)))
+	error.add_child(label("404", 0.9, Color(0.95, 0.18, 0.18), Vector3(0, 0.45, 0)))
+	error.add_child(label("SKILL NOT FOUND", 0.38, Color(0.9, 0.2, 0.2), Vector3(0, -0.25, 0)))
+	error.add_child(label(":( Opponent encountered a fatal skill issue", 0.16, Color(0.35, 0.35, 0.4), Vector3(0, -0.62, 0)))
 	root.add_child(error)
 	var inside := Marker3D.new()
 	inside.name = "Inside"
@@ -308,11 +308,13 @@ static func flat(color: Color) -> StandardMaterial3D:
 
 static func label(text: String, size: float, color: Color, position: Vector3) -> Label3D:
 	var l := Label3D.new()
+	l.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
 	l.text = text
-	l.font_size = 64
-	l.pixel_size = size * 0.0155
+	l.font_size = 96
+	l.pixel_size = size * 0.01
 	l.modulate = color
 	l.shaded = false
-	l.outline_size = 0
+	l.outline_size = 8
+	l.outline_modulate = Color(0.05, 0.05, 0.08)
 	l.position = position
 	return l

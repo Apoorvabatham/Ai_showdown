@@ -40,14 +40,15 @@ func build() -> void:
 	_stage.add_child(pole)
 	# The signature, written in silver on the chest as the marker scribbles.
 	signature = Label3D.new()
-	signature.text = "Jensen"
-	signature.font_size = 64
-	signature.pixel_size = 0.016
-	signature.modulate = Color(0.85, 0.88, 0.95)
+	signature.font = preload("res://assets/fonts/PermanentMarker-Regular.ttf")
+	signature.font_size = 72
+	signature.pixel_size = 0.001
+	signature.modulate = Color(0.95, 0.98, 1.0)
+	signature.outline_size = 8
+	signature.outline_modulate = Color(0.08, 0.08, 0.12)
 	signature.shaded = false
-	signature.outline_size = 0
-	signature.rotation.z = 0.2
-	signature.position = Vector3(0.12, -0.2, 0.2)
+	signature.rotation.z = 0.15
+	signature.position = Vector3(0.15, -0.05, 0.22)
 	signature.text = ""
 	jacket.add_child(signature)
 	# The giant marker.
@@ -79,12 +80,12 @@ func run() -> void:
 	await wait(0.6)
 	sound("gpu_sparks", -4.0)
 	var write := create_tween()
-	write.tween_method(func(t: float) -> void: signature.text = "Jensen".substr(0, ceili(t * 6.0)), 0.0, 1.0, 1.4)
+	write.tween_method(func(t: float) -> void: signature.text = "Jensen ★".substr(0, ceili(t * 8.0)), 0.0, 1.0, 1.4)
 	await wait(1.8)
 	_signing = false
 	# Done: the jacket flexes, the screen says it.
 	pen.visible = false
-	big_text("SIGNED!", spot + Vector3(0.6, 4.4, 1.5), Color(0.55, 0.9, 0.1), 0.4)
+	big_text("1000x PERFORMANCE!", spot + Vector3(0.0, 2.2, 1.0), Color(0.55, 0.95, 0.1), 0.5, 3.5)
 	sound("gpu_sparks", -2.0)
 	winner.look_at(Vector3(camera.global_position.x, winner.global_position.y, camera.global_position.z))
 	winner.play(&"fight/victory_fist_pump")
