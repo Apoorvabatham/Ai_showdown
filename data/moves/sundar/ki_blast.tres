@@ -6,11 +6,12 @@
 script = ExtResource("1_n4s51")
 name = "Ten Blue Links"
 input = "236P"
-animation = &"fight/palm_blast"
+animation = &"style/sundar_cast"
+animation_impact = 0.26
 animation_end = 0.65
-startup = 10
+startup = 14
 active = 1
-recovery = 35
+recovery = 28
 damage = 14
 hitstun = 18
 blockstun = 14

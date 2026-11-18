@@ -6,11 +6,11 @@
 script = ExtResource("1_7wj6d")
 name = "Roundhouse"
 input = "HK"
-animation = &"fight/high_kick"
-animation_impact = 0.26
-startup = 14
+animation = &"style/donald_haymaker"
+animation_impact = 0.58
+startup = 16
 active = 4
-recovery = 22
+recovery = 20
 damage = 109
 hit_level = 0
 hitstun = 22

@@ -8,6 +8,7 @@ const LIBRARIES := {
 	&"ual1": preload("res://assets/animations/UAL1_Standard.glb"),
 	&"ual2": preload("res://assets/animations/UAL2_Standard.glb"),
 	&"fight": preload("res://assets/animations/fight_anims.res"),
+	&"style": preload("res://assets/animations/style_anims.res"),
 }
 const BLEND_TIME := 0.08
 ## Outfit fabrics: weave normal map, roughness map ("" = flat roughness), UV tiling,
@@ -463,6 +464,10 @@ func _keep_materials(key: String) -> void:
 				materials.append(mesh.get_surface_override_material(surface))
 	materials.append(_flash())
 	game_state.keep_materials("fighter/" + key, materials)
+
+
+func has_clip(clip: StringName) -> bool:
+	return player != null and player.has_animation(clip)
 
 
 func clip_length(clip: StringName) -> float:

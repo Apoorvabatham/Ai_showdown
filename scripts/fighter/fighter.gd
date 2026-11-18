@@ -1587,15 +1587,25 @@ func gaze_target() -> Vector3:
 
 
 ## Logic → animation: [clip, time (s, or -1 to free-run), speed].
+func _style_clip(suffix: String) -> StringName:
+	if data and model:
+		var clip_name := StringName("style/%s_%s" % [data.id, suffix])
+		if model.has_clip(clip_name):
+			return clip_name
+	return &""
+
+
 func _animation_request(frozen: bool) -> Array:
 	# Interpolate between ticks so timed clips stay smooth at high refresh rates.
 	var f := float(state_frame) + (0.0 if frozen else Engine.get_physics_interpolation_fraction())
 	var t := f * DT
 	match state:
 		State.WALK_FWD:
-			return [&"fight/walk_guard", -1.0, data.walk_speed / 1.5]
+			var walk := _style_clip("walk")
+			return [walk if walk != &"" else &"fight/walk_guard", -1.0, data.walk_speed / 1.5]
 		State.WALK_BACK:
-			return [&"fight/walk_guard", -1.0, -data.back_walk_speed / 1.5]
+			var walk := _style_clip("walk")
+			return [walk if walk != &"" else &"fight/walk_guard", -1.0, -data.back_walk_speed / 1.5]
 		State.CROUCH:
 			return [&"fight/crouch_guard", -1.0, 1.0]
 		State.JUMP_SQUAT:
@@ -1605,6 +1615,10 @@ func _animation_request(frozen: bool) -> Array:
 		State.LANDING:
 			return [&"ual1/Jump_Land", 0.05 + t, 1.0]
 		State.DASH, State.SIDESTEP:
+			if state == State.DASH:
+				var dash := _style_clip("dash")
+				if dash != &"":
+					return [dash, lerpf(0.0, model.clip_length(dash), f / DASH_FRAMES), 1.0]
 			return [&"fight/walk_guard", -1.0, 2.5]
 		State.BACKDASH:
 			return [&"fight/walk_guard", -1.0, -2.5]
@@ -1641,7 +1655,8 @@ func _animation_request(frozen: bool) -> Array:
 		return [victory_clip, _victory_time, 1.0]
 	if victory:
 		return [&"ual2/Idle_FoldArms", -1.0, 1.0]
-	return [&"fight/guard", -1.0, 1.0]
+	var idle := _style_clip("idle")
+	return [idle if idle != &"" else &"fight/guard", -1.0, 1.0]
 
 
 ## Maps the move's frame onto clip time: startup covers [0, impact], so the strike lands

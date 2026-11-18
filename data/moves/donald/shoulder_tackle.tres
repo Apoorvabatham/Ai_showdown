@@ -6,10 +6,10 @@
 script = ExtResource("1_xjgss")
 name = "Trade War Tackle"
 input = "6HP"
-animation = &"fight/shoulder_charge"
-animation_impact = 0.15
+animation = &"style/donald_shove"
+animation_impact = 0.32
 animation_end = 0.83
-startup = 12
+startup = 18
 active = 4
 recovery = 20
 damage = 84
