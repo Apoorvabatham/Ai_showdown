@@ -17,6 +17,8 @@ func _initialize() -> void:
 		_build_jensen_props()
 	if only.is_empty() or "zuckerbot" in only:
 		_build_zuckerbot_props()
+	if only.is_empty() or "sundar" in only:
+		_build_sundar_props()
 	quit()
 
 # --- Materials ---------------------------------------------------------------
@@ -652,6 +654,158 @@ func _cluster(at: Vector3, height: float, crystal: Material, rock: Material) -> 
 	side.rotation.z = -0.5
 	group.add_child(side)
 	return group
+
+# =============================================================================
+# O2e - sundar props
+# =============================================================================
+
+func _build_sundar_props() -> void:
+	_dir_for("sundar")
+	_browser_window()
+
+const BROWSER_URL := "https://www.skill-issue.com/you/are/here"
+const PAGE_COLOR := Color(0.62, 0.72, 0.9)
+
+## A giant ~4 x 3 m browser window. The scene (`not_found.gd`) looks for these children by
+## name: `Url` (Label3D in the address bar), `Progress` (loading bar, scaled in x),
+## `PageLoading` and `PageError` (page contents), `PageTint` (page backing, its
+## material_override's albedo is changed) and `Inside` (Marker3D where the trapped
+## fighter's feet stand). The page faces +Z, like the scene's stand-in (the set's camera
+## and the trapped fighter are on that side); the root origin is the floor under the
+## window's centre.
+func _browser_window() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "BrowserWindow"
+	var y0 := 0.15
+	var frame := _metal(Color(0.16, 0.18, 0.24), 0.35, 0.3)
+	var frame_dark := _metal(Color(0.1, 0.12, 0.18), 0.4, 0.28)
+	var frame_light := _metal(Color(0.26, 0.29, 0.36), 0.3, 0.35)
+	var chrome := _metal(Color(0.08, 0.09, 0.13), 0.5, 0.25)
+	var white := _metal(Color(0.94, 0.96, 1.0), 0.0, 0.35)
+	var tint_mat := _metal(PAGE_COLOR, 0.0, 0.85)
+	var page_beam := _metal(PAGE_COLOR.darkened(0.18), 0.0, 0.85)
+	var skeleton := _metal(PAGE_COLOR.darkened(0.28), 0.0, 0.8)
+	var ink := _metal(Color(0.12, 0.16, 0.35), 0.0, 0.5)
+	var red_glow := _glow(Color(0.95, 0.3, 0.28), 0.8)
+	var green_glow := _glow(Color(0.3, 0.8, 0.35), 0.8)
+	var yellow_glow := _glow(Color(0.98, 0.78, 0.2), 0.8)
+	var blue_glow := _glow(Color(0.26, 0.52, 0.96), 1.0)
+
+	# Page backing, in two layers (the frame sits in front of its rim).
+	var tint := _box(Vector3(3.8, 2.2, 0.04), Vector3(0, y0 + 1.1, -0.5), tint_mat, "PageTint")
+	root.add_child(tint)
+	root.add_child(_box(Vector3(3.8, 0.05, 0.03), Vector3(0, y0 + 2.175, -0.47), page_beam))
+	root.add_child(_box(Vector3(3.8, 0.05, 0.03), Vector3(0, y0 + 0.025, -0.47), page_beam))
+	root.add_child(_box(Vector3(0.05, 2.2, 0.03), Vector3(-1.875, y0 + 1.1, -0.47), page_beam))
+	root.add_child(_box(Vector3(0.05, 2.2, 0.03), Vector3(1.875, y0 + 1.1, -0.47), page_beam))
+	# A page scrollbar on the right of the page.
+	root.add_child(_box(Vector3(0.06, 1.8, 0.02), Vector3(1.82, y0 + 1.1, -0.46), skeleton, "ScrollTrack"))
+	root.add_child(_box(Vector3(0.06, 0.5, 0.03), Vector3(1.82, y0 + 1.55, -0.45), frame_light, "ScrollThumb"))
+
+	# Window chrome: title bar, toolbar, side and bottom borders, inner bevels.
+	root.add_child(_box(Vector3(4.0, 0.4, 0.14), Vector3(0, y0 + 2.8, 0), frame_dark, "TitleBar"))
+	root.add_child(_box(Vector3(3.92, 0.05, 0.02), Vector3(0, y0 + 2.985, 0.075), frame_light)) # gloss
+	root.add_child(_box(Vector3(4.0, 0.36, 0.14), Vector3(0, y0 + 2.42, 0), frame, "Toolbar"))
+	root.add_child(_box(Vector3(4.0, 0.025, 0.02), Vector3(0, y0 + 2.6, 0.075), chrome)) # toolbar seam
+	for side in [-1.0, 1.0]:
+		root.add_child(_box(Vector3(0.1, 2.2, 0.14), Vector3(1.95 * side, y0 + 1.1, 0), frame))
+		root.add_child(_box(Vector3(0.03, 2.14, 0.02), Vector3(1.89 * side, y0 + 1.1, 0.075), frame_light))
+	root.add_child(_box(Vector3(4.0, 0.1, 0.14), Vector3(0, y0 + 0.0, 0), frame))
+	root.add_child(_box(Vector3(3.8, 0.03, 0.02), Vector3(0, y0 + 0.045, 0.075), frame_light))
+
+	# App icon and window title.
+	root.add_child(_box(Vector3(0.16, 0.16, 0.035), Vector3(-1.72, y0 + 2.8, 0.085), white, "AppIcon"))
+	root.add_child(_box(Vector3(0.1, 0.05, 0.01), Vector3(-1.72, y0 + 2.8, 0.105), frame_dark))
+	root.add_child(_label("404 Not Found", 0.16, Color(0.85, 0.88, 0.95), Vector3(-1.15, y0 + 2.8, 0.09)))
+	# Close, maximise, minimise: a dark rim and a glowing dot each.
+	for i in 3:
+		var colors := [red_glow, green_glow, yellow_glow]
+		var x := 0.91 + 0.32 * i
+		var rim := _cylinder(0.13, 0.13, 0.03, Vector3(x, y0 + 2.8, 0.085), chrome, "LightRim")
+		rim.rotation.x = PI * 0.5
+		root.add_child(rim)
+		var dot := _cylinder(0.095, 0.095, 0.03, Vector3(x, y0 + 2.8, 0.095), colors[i], "Light")
+		dot.rotation.x = PI * 0.5
+		root.add_child(dot)
+
+	# Toolbar: back / forward / reload buttons, address bar and its URL.
+	for i in 3:
+		var glyphs := ["<", ">", "C"]
+		var x := -1.8 + 0.18 * i
+		var disc := _cylinder(0.075, 0.075, 0.025, Vector3(x, y0 + 2.42, 0.085), chrome, "NavButton")
+		disc.rotation.x = PI * 0.5
+		root.add_child(disc)
+		root.add_child(_label(glyphs[i], 0.11, Color(0.9, 0.93, 1.0), Vector3(x, y0 + 2.42, 0.1)))
+	root.add_child(_box(Vector3(3.0, 0.24, 0.03), Vector3(0.35, y0 + 2.42, 0.09), white, "AddressBar"))
+	root.add_child(_box(Vector3(3.0, 0.02, 0.01), Vector3(0.35, y0 + 2.3, 0.105), chrome)) # bar shadow
+	var url := _label(BROWSER_URL, 0.115, Color(0.15, 0.2, 0.55), Vector3(-1.02, y0 + 2.42, 0.115), "Url")
+	url.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	root.add_child(url)
+	# A tiny padlock at the left of the address bar.
+	root.add_child(_box(Vector3(0.05, 0.05, 0.015), Vector3(-1.12, y0 + 2.42, 0.11), frame_dark))
+	root.add_child(_box(Vector3(0.03, 0.035, 0.015), Vector3(-1.12, y0 + 2.455, 0.11), white))
+
+	# Loading progress: the scene scales `Progress.x`; the track stays put.
+	root.add_child(_box(Vector3(3.0, 0.07, 0.02), Vector3(0.35, y0 + 2.27, 0.08), chrome, "ProgressTrack"))
+	var progress: Node3D = Node3D.new()
+	progress.name = "Progress"
+	progress.position = Vector3(-1.15, y0 + 2.27, 0.1)
+	var bar := _box(Vector3(3.0, 0.045, 0.03), Vector3(1.5, 0, 0), blue_glow)
+	bar.name = "ProgressBar"
+	progress.add_child(bar)
+	root.add_child(progress)
+
+	# Page contents while loading: a soft skeleton and a spinner.
+	var loading: Node3D = Node3D.new()
+	loading.name = "PageLoading"
+	loading.add_child(_box(Vector3(2.6, 0.55, 0.02), Vector3(0, y0 + 1.75, -0.47), white))
+	loading.add_child(_box(Vector3(1.4, 0.12, 0.02), Vector3(0, y0 + 1.92, -0.455), skeleton))
+	for i in 3:
+		loading.add_child(_box(Vector3(2.4 - i * 0.5, 0.08, 0.02),
+			Vector3(0, y0 + 1.25 - i * 0.2, -0.455), skeleton))
+	var spinner := TorusMesh.new()
+	spinner.inner_radius = 0.16
+	spinner.outer_radius = 0.2
+	spinner.rings = 24
+	spinner.ring_segments = 8
+	var ring := _mesh(spinner, Vector3(0, y0 + 1.75, -0.45), blue_glow, "Spinner")
+	ring.rotation.x = PI * 0.5
+	loading.add_child(ring)
+	var loading_label := _label("Loading...", 0.2, Color(0.35, 0.38, 0.45),
+		Vector3(0, y0 + 0.72, -0.44), "LoadingLabel")
+	loading.add_child(loading_label)
+	root.add_child(loading)
+
+	# The 404 page, hidden until the scene pops it in.
+	var error: Node3D = Node3D.new()
+	error.name = "PageError"
+	error.position = Vector3(0, y0 + 1.4, 0.06)
+	error.visible = false
+	error.add_child(_label("404", 1.0, Color(0.85, 0.15, 0.15), Vector3(0, 0.45, 0)))
+	error.add_child(_label("NOT FOUND", 0.42, Color(0.6, 0.1, 0.1), Vector3(0, -0.35, 0)))
+	error.add_child(_label(":(  this page is gone", 0.14, Color(0.4, 0.4, 0.45), Vector3(0, -0.75, 0)))
+	root.add_child(error)
+	var inside := Marker3D.new()
+	inside.name = "Inside"
+	inside.position = Vector3(0, y0 + 0.12, -0.25)
+	root.add_child(inside)
+
+	_save(root, PROP_DIR + "sundar/browser_window.tscn")
+
+## Label3D sized like the scene's stand-ins: `size` is roughly the world height.
+func _label(text: String, size: float, color: Color, position: Vector3, name := "") -> Label3D:
+	var label: Label3D = Label3D.new()
+	label.text = text
+	label.font_size = 64
+	label.pixel_size = size * 0.0155
+	label.modulate = color
+	label.shaded = false
+	label.outline_size = 0
+	label.position = position
+	label.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if name != "":
+		label.name = name
+	return label
 
 ## Makes sure every node below `root` is owned by `root` so PackedScene.pack()
 ## keeps the whole subtree (see tools/build_custom_hair.gd).

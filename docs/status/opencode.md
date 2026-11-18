@@ -86,4 +86,21 @@ load these through `prop()` / `Fx.wear`.
   from a lower angle. New `docs/review/opencode/props_zuckerbot.jpg`.
 - `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
 
+## O2e: Sundar browser window
+
+State: **review** — `not_found.gd` already loads it; every child it looks up is present with
+the expected type (`Url` Label3D, `Progress`, `PageLoading`, `PageError`, `PageTint`,
+`Inside` Marker3D).
+
+- `assets/props/supers/sundar/browser_window.tscn`: giant 4 x 3 m browser window: title bar
+  with app icon and window buttons, toolbar with back/forward/reload buttons, address bar
+  and typed URL, loading progress track/bar, page backing with bevel, scrollbar, a skeleton
+  loading page with spinner and "Loading...", and the hidden 404 page. The page faces +Z,
+  like the scene's stand-in (the cameras and the trapped fighter are on that side); root
+  origin is the floor under the window's centre.
+- `tools/build_super_props.gd` builds Sundar's folder (`-- sundar`);
+  `tools/render_super_props.gd` views it from the page side. New
+  `docs/review/opencode/props_sundar.jpg`.
+- `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
+
 
