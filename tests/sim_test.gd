@@ -5202,6 +5202,35 @@ func showdown_tests() -> void:
 		agi_f.tick()
 	check("Showdown C10: AGI phase 3 regenerates meter over time", agi_f.meter > 0)
 
+	# Rollback safety test for Phase 3 mimicry and state restoration
+	var saved_state := agi_f.save_state()
+	var saved_mimicked := agi_f.mimicked_move
+	var saved_specials := agi_f._specials.duplicate(true)
+	var phase_changed_fired := [false]
+	var on_phase_changed := func(_new_p: int, _old_p: int) -> void: phase_changed_fired[0] = true
+	agi_f.phase_changed.connect(on_phase_changed)
+
+	# Run on with different specials from opponent
+	var opp_special2: MoveData = null
+	for m: MoveData in opp_f.data.moves:
+		if m.is_special() and not m.super_move and m != opp_special:
+			opp_special2 = m
+			break
+	if opp_special2:
+		for i in 5:
+			opp_f._start_move(opp_special2, false)
+	check("Showdown C10: AGI adapted to new special during run-on",
+		agi_f.mimicked_move == opp_special2 and agi_f.mimicked_move != saved_mimicked)
+
+	# Load state back to saved snapshot
+	agi_f.load_state(saved_state)
+	check("Showdown C10: load_state does not emit phase_changed", not phase_changed_fired[0])
+	check("Showdown C10: load_state restores mimicked_move and _specials exactly",
+		agi_f.mimicked_move == saved_mimicked and agi_f._specials == saved_specials)
+	check("Showdown C10: look variant follows boss_phase after load",
+		agi_f.model != null and agi_f.model.look_variant == 1)
+	agi_f.phase_changed.disconnect(on_phase_changed)
+
 	agi_f.queue_free()
 	opp_f.queue_free()
 	await process_frame

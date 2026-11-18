@@ -142,7 +142,7 @@ const SIM_FIELDS := [&"input_locked", &"view_right", &"view_depth", &"state", &"
 	&"current_move", &"move_has_hit", &"hits_landed", &"next_hit_frame", &"meter", &"frozen",
 	&"_landing_frames", &"sidestep_dir", &"victory", &"last_hit_level", &"immortal", &"focus",
 	&"move_focus", &"wall_used", &"wall_normal", &"hit_push", &"armor_used", &"shots_left",
-	&"shot_timer", &"shot_index", &"boss_phase"]
+	&"shot_timer", &"shot_index", &"boss_phase", &"mimicked_move"]
 ## (victory_clip is cosmetic: each machine picks its own victory animation.)
 
 var data: CharacterData
@@ -164,10 +164,12 @@ var view_depth := Vector3.FORWARD
 var state: State = State.IDLE
 var state_frame := 0 # ticks spent in the current state
 var crouching := false
+var _restoring_state := false
 var health := 0:
 	set(value):
 		health = value
-		update_boss_phase()
+		if not _restoring_state:
+			update_boss_phase()
 var boss_phase := 1
 var opponent_specials_used: Dictionary = {}
 var mimicked_move: MoveData = null
@@ -347,7 +349,9 @@ func reset_to(spawn_position: Vector3) -> void:
 ## Rollback snapshot of this fighter's whole simulation state.
 func save_state() -> Dictionary:
 	var state := {transform = transform, input = input.save_state(),
-		projectiles = projectiles.map(func(p: Projectile) -> Array: return p.save_state())}
+		projectiles = projectiles.map(func(p: Projectile) -> Array: return p.save_state()),
+		opponent_specials_used = opponent_specials_used.duplicate(),
+		mimicked_move = mimicked_move}
 	for field in SIM_FIELDS:
 		state[field] = get(field)
 	return state
@@ -355,14 +359,34 @@ func save_state() -> Dictionary:
 
 ## Restores a snapshot from save_state(). The HUD is refreshed through the usual signals.
 func load_state(state: Dictionary) -> void:
+	_restoring_state = true
 	var old_health := health
 	var old_meter := meter
 	var old_focus := focus
 	var old_combo := combo_hits
 	for field in SIM_FIELDS:
-		set(field, state[field])
+		if state.has(field):
+			set(field, state[field])
 	transform = state.transform
 	input.load_state(state.input)
+	if state.has("opponent_specials_used"):
+		opponent_specials_used = state.opponent_specials_used.duplicate()
+	elif state.has(&"opponent_specials_used"):
+		opponent_specials_used = state[&"opponent_specials_used"].duplicate()
+	else:
+		opponent_specials_used.clear()
+	if state.has("mimicked_move"):
+		mimicked_move = state.mimicked_move
+	elif state.has(&"mimicked_move"):
+		mimicked_move = state[&"mimicked_move"]
+	_rebuild_mimicked_specials()
+	if is_boss() and model:
+		if boss_phase == 1:
+			model.set_look_variant(-1)
+		elif boss_phase == 2:
+			model.set_look_variant(0)
+		elif boss_phase >= 3:
+			model.set_look_variant(1)
 	# Reuse the projectile nodes by index (their visuals rebuild themselves).
 	var saved: Array = state.projectiles
 	while projectiles.size() > saved.size():
@@ -392,6 +416,7 @@ func load_state(state: Dictionary) -> void:
 		focus_changed.emit(focus)
 	if combo_hits != old_combo:
 		combo_changed.emit(combo_hits)
+	_restoring_state = false
 
 
 # --- Simulation (60 Hz, called by FightManager) ---------------------------------
@@ -1064,7 +1089,7 @@ func effective_dash_speed() -> float:
 
 
 func update_boss_phase() -> void:
-	if not is_boss():
+	if not is_boss() or _restoring_state:
 		return
 	var max_hp := maxi(data.max_health, 1)
 	var ratio := health / float(max_hp)
@@ -1107,20 +1132,28 @@ func phase_line() -> String:
 func record_opponent_special(move: MoveData) -> void:
 	if not move.is_special() or move.super_move:
 		return
-	opponent_specials_used[move] = opponent_specials_used.get(move, 0) + 1
+	var key: String = move.input
+	opponent_specials_used[key] = opponent_specials_used.get(key, 0) + 1
 	if is_boss() and boss_phase >= 3:
 		_update_mimicked_move()
 
 
 func get_most_used_opponent_special() -> MoveData:
-	var best_move: MoveData = null
+	var best_input := ""
 	var best_count := 0
-	for m: MoveData in opponent_specials_used:
-		var count: int = opponent_specials_used[m]
+	for key in opponent_specials_used:
+		var count: int = opponent_specials_used[key]
 		if count > best_count:
 			best_count = count
-			best_move = m
-	return best_move
+			if key is MoveData:
+				best_input = key.input
+			else:
+				best_input = str(key)
+	if best_input != "" and opponent and opponent.data:
+		for m in opponent.data.moves:
+			if m.input == best_input:
+				return m
+	return null
 
 
 func _update_mimicked_move() -> void:
@@ -1143,6 +1176,15 @@ func _register_mimicked_move(move: MoveData) -> void:
 	var entry := [move, motion, _motion_sequence(motion), _special_buttons(move.input.substr(motion.length())), window]
 	_specials = _specials.filter(func(s: Array) -> bool: return s[0] != mimicked_move and s[0] != move)
 	_specials.push_front(entry)
+
+
+func _rebuild_mimicked_specials() -> void:
+	if not is_boss():
+		return
+	if data and data.moves:
+		_specials = _specials.filter(func(s: Array) -> bool: return data.moves.has(s[0]))
+	if mimicked_move != null:
+		_register_mimicked_move(mimicked_move)
 
 
 ## Called on the attacker after its hitbox connected (hit or block).

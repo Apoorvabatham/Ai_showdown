@@ -330,6 +330,19 @@ and any requests for other agents.
     - Roster regenerated via `godot --headless --path . -s res://tools/build_showdown_roster.gd`.
     - Full test suite `godot --headless --path . -s res://tests/sim_test.gd` executed and passed cleanly with **`0 failure(s)`**.
 
+## C10-fix: Rollback-safe AGI mimicry
+- **State**: review
+- **Summary**: Made AGI's Phase 3 boss mimicry rollback-safe.
+- **Details**:
+  - `scripts/fighter/fighter.gd`:
+    - Added `&"mimicked_move"` to `SIM_FIELDS`.
+    - `save_state()` snapshots `opponent_specials_used` as a plain duplicated dictionary (mapping move inputs to counts) and `mimicked_move`.
+    - `load_state()` restores `opponent_specials_used`, `mimicked_move`, and calls `_rebuild_mimicked_specials()` to rebuild the mimicked move entry in `_specials` without replaying transition FX.
+    - Added `_restoring_state` guard so that `load_state()` does not fire `phase_changed` or glitch audio/visuals. Look variant strictly tracks `boss_phase` upon restoration.
+  - `tests/sim_test.gd`:
+    - Added unit test: save state in Phase 3, execute opponent specials to alter mimicry state, restore state, and assert that `phase_changed` was not emitted, `mimicked_move` and `_specials` match saved snapshots, and `look_variant` remains consistent.
+  - Full test suite `sim_test.gd` passes with **`0 failure(s)`**.
+
 
 
 
