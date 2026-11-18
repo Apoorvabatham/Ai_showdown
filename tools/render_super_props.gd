@@ -11,6 +11,8 @@ const PROP_DIR := "res://assets/props/supers/"
 const OUT_DIR := "res://docs/review/opencode/"
 const CELL := Vector2i(420, 360)
 const COLUMNS := 3
+## Props that face +Z (their consumer convention overrides contract 3.1's front = -Z).
+const FRONT_PLUS_Z := ["vr_goggles"]
 
 
 func _initialize() -> void:
@@ -90,8 +92,12 @@ func _render(path: String) -> Image:
 	vp.add_child(camera)
 	camera.fov = 38.0
 	var direction := Vector3(1.15, 0.72, -1.5).normalized()
-	if bounds.size.x > bounds.size.y * 1.4:
+	if maxf(bounds.size.x, maxf(bounds.size.y, bounds.size.z)) < 0.6:
+		direction = Vector3(0.8, 0.25, -1.5).normalized() # small props read better up close
+	elif bounds.size.x > bounds.size.y * 1.15:
 		direction = Vector3(0.8, 0.32, -1.5).normalized() # wide props read better from lower
+	if path.get_file().get_basename() in FRONT_PLUS_Z:
+		direction.z = absf(direction.z)
 	var distance := radius / tan(deg_to_rad(camera.fov) * 0.5) * 1.25
 	camera.look_at_from_position(centre + direction * distance, centre + Vector3(0, -radius * 0.04, 0))
 	camera.current = true

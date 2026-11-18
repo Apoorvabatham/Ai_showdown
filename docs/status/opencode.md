@@ -67,4 +67,23 @@ so no scene change was needed.
   sheet with the same tool. New `docs/review/opencode/props_jensen.jpg`.
 - `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
 
+## O2d: Zuckerbot props
+
+State: **review** — both consumers (`metaverse_trap.gd`, `victory/zuckerbot.gd`) already
+load these through `prop()` / `Fx.wear`.
+
+- `assets/props/supers/zuckerbot/vr_goggles.tscn`: chunky VR headset with a dark shell, a
+  glowing lens band behind a dark frame, rubber face pads with a nose notch, side arms,
+  top strap and head band. Origin between the eyes, +Z front — this follows the consumer
+  convention documented in `zuckerbot_fx.gd` rather than contract §3.1's -Z, because the
+  goggles are worn on the head bone.
+- `assets/props/supers/zuckerbot/metaverse_kit.tscn`: low-poly floating island (pastel
+  grass slab, two faceted rock layers, pink rock tip, a pond and grass tufts), a cartoon
+  tree with four pastel canopies, three glowing crystals on little rock bases, and a small
+  cloud. Named groups `Island`, `Tree`, `Crystals`, `Cloud`; origin at the rock tip.
+- `tools/build_super_props.gd` builds Zuckerbot's folder (`-- zuckerbot`);
+  `tools/render_super_props.gd` views `vr_goggles` from its +Z front and frames wide props
+  from a lower angle. New `docs/review/opencode/props_zuckerbot.jpg`.
+- `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
+
 

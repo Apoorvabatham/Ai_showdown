@@ -15,6 +15,8 @@ func _initialize() -> void:
 		_build_donald_props()
 	if only.is_empty() or "jensen" in only:
 		_build_jensen_props()
+	if only.is_empty() or "zuckerbot" in only:
+		_build_zuckerbot_props()
 	quit()
 
 # --- Materials ---------------------------------------------------------------
@@ -489,6 +491,167 @@ func _leather_jacket() -> void:
 	root.add_child(_box(Vector3(0.07, 0.05, 0.012), Vector3(0.3, -0.3, -0.16), tag, "Tag"))
 
 	_save(root, PROP_DIR + "jensen/leather_jacket.tscn")
+
+# =============================================================================
+# O2d - zuckerbot props
+# =============================================================================
+
+func _build_zuckerbot_props() -> void:
+	_dir_for("zuckerbot")
+	_vr_goggles()
+	_metaverse_kit()
+
+## Chunky VR goggles: dark shell with a glowing lens strip, rubber face pads, side arms,
+## a top strap and a head band. Origin is the point between the eyes, +Z is the front
+## (the convention in scripts/supers/zuckerbot_fx.gd, which wears it on the head bone).
+func _vr_goggles() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "VRGoggles"
+	var shell := _metal(Color(0.1, 0.105, 0.12), 0.35, 0.36)
+	var shell_top := _metal(Color(0.17, 0.175, 0.2), 0.3, 0.3)
+	var rubber := _rubber(Color(0.035, 0.035, 0.04))
+	var frame := _metal(Color(0.03, 0.03, 0.035), 0.5, 0.2)
+	var lens := _glow(Color(0.12, 0.7, 0.95), 1.2)
+	var led := _glow(Color(0.3, 0.95, 0.4), 1.5)
+	var strap_mat := _cloth(Color(0.5, 0.51, 0.56))
+	var metal := _metal(Color(0.6, 0.62, 0.66), 0.85, 0.3)
+
+	# Face pads leave a notch for the nose.
+	root.add_child(_box(Vector3(0.095, 0.1, 0.035), Vector3(-0.052, -0.005, 0.03), rubber, "Pad_L"))
+	root.add_child(_box(Vector3(0.095, 0.1, 0.035), Vector3(0.052, -0.005, 0.03), rubber, "Pad_R"))
+	root.add_child(_box(Vector3(0.2, 0.03, 0.035), Vector3(0, 0.045, 0.03), rubber, "Pad_Top"))
+	# Chunky shell, top vent and the glowing lens behind a dark frame.
+	root.add_child(_box(Vector3(0.21, 0.11, 0.07), Vector3(0, 0.005, 0.075), shell, "Visor"))
+	root.add_child(_box(Vector3(0.18, 0.035, 0.02), Vector3(0, 0.075, 0.07), shell_top, "Vent"))
+	root.add_child(_box(Vector3(0.205, 0.06, 0.018), Vector3(0, 0.0, 0.112), frame, "LensFrame"))
+	root.add_child(_box(Vector3(0.17, 0.045, 0.014), Vector3(0, 0.0, 0.12), lens, "Lens"))
+	root.add_child(_box(Vector3(0.06, 0.02, 0.01), Vector3(0.075, -0.045, 0.115), led, "LED"))
+	root.add_child(_box(Vector3(0.035, 0.035, 0.012), Vector3(0, -0.048, 0.112), frame, "Sensor"))
+	for side in [-1.0, 1.0]:
+		root.add_child(_box(Vector3(0.03, 0.055, 0.13), Vector3(0.115 * side, 0.0, 0.03), shell, "Arm"))
+		root.add_child(_box(Vector3(0.02, 0.04, 0.03), Vector3(0.125 * side, 0.0, -0.03), metal, "StrapMount"))
+	# Over-the-head strap and the band around the back.
+	var top_strap := _box(Vector3(0.07, 0.018, 0.2), Vector3(0, 0.085, -0.02), shell, "TopStrap")
+	top_strap.rotation.x = -0.12
+	root.add_child(top_strap)
+	var ring := TorusMesh.new()
+	ring.inner_radius = 0.1
+	ring.outer_radius = 0.118
+	ring.rings = 24
+	ring.ring_segments = 8
+	var band := _mesh(ring, Vector3(0, 0, -0.02), strap_mat, "Strap")
+	band.scale = Vector3(1.0, 1.02, 1.2)
+	root.add_child(band)
+	root.add_child(_box(Vector3(0.045, 0.05, 0.03), Vector3(0, 0, -0.135), metal, "StrapBuckle"))
+	root.add_child(_box(Vector3(0.03, 0.022, 0.012), Vector3(-0.075, -0.045, 0.115), frame, "Button"))
+
+	_save(root, PROP_DIR + "zuckerbot/vr_goggles.tscn")
+
+## Cartoon metaverse kit: a small floating island (pastel grass over stacked rock), a tree
+## with pastel canopies, three glowing crystals and a little cloud. Low-poly, bright colours.
+## Origin at the bottom of the island's rock tip, front = -Z (nothing directional here).
+func _metaverse_kit() -> void:
+	var kit: Node3D = Node3D.new()
+	kit.name = "MetaverseKit"
+	var island: Node3D = Node3D.new()
+	island.name = "Island"
+	var tree: Node3D = Node3D.new()
+	tree.name = "Tree"
+	var crystals: Node3D = Node3D.new()
+	crystals.name = "Crystals"
+	var cloud: Node3D = Node3D.new()
+	cloud.name = "Cloud"
+	kit.add_child(island)
+	kit.add_child(tree)
+	kit.add_child(crystals)
+	kit.add_child(cloud)
+
+	var grass := _metal(Color(0.3, 0.76, 0.48), 0.0, 0.85)
+	var grass_dark := _metal(Color(0.2, 0.6, 0.38), 0.0, 0.9)
+	var rock_a := _metal(Color(0.63, 0.52, 0.95), 0.0, 0.8)
+	var rock_b := _metal(Color(0.47, 0.37, 0.82), 0.0, 0.85)
+	var rock_tip := _metal(Color(0.9, 0.48, 0.75), 0.0, 0.8)
+	var pond := _glow(Color(0.25, 0.75, 1.0), 0.25)
+	var trunk_mat := _metal(Color(0.42, 0.27, 0.17), 0.0, 0.8)
+	var leaf_mint := _metal(Color(0.4, 0.9, 0.58), 0.0, 0.8)
+	var leaf_pink := _metal(Color(0.95, 0.52, 0.8), 0.0, 0.8)
+	var leaf_lemon := _metal(Color(0.95, 0.85, 0.4), 0.0, 0.8)
+
+	# Island: faceted grass slab, a rim, two rock layers and a pointed tip.
+	island.add_child(_disk(1.5, 0.08, Vector3(0, 1.36, 0), grass, "Grass", 12))
+	island.add_child(_disk(1.56, 0.1, Vector3(0, 1.28, 0), grass_dark, "Rim", 12))
+	island.add_child(_disk(1.35, 0.45, Vector3(0, 1.075, 0), rock_a, "RockA", 10, 0.95))
+	island.add_child(_disk(1.0, 0.55, Vector3(0, 0.625, 0), rock_b, "RockB", 9, 0.55))
+	island.add_child(_disk(0.58, 0.4, Vector3(0, 0.2, 0), rock_tip, "RockTip", 7, 0.05))
+	island.add_child(_disk(0.42, 0.02, Vector3(-0.35, 1.405, 0.35), pond, "Pond", 12))
+	for i in 4:
+		var angle := TAU * i / 4.0 + 0.4
+		island.add_child(_cone(0.075, 0.26, Vector3(cos(angle) * 1.1, 1.52, sin(angle) * 1.1),
+			grass_dark, "Tuft"))
+
+	# Tree: a warm trunk under four pastel canopy blobs.
+	tree.add_child(_cylinder(0.12, 0.22, 1.3, Vector3(0, 2.05, 0), trunk_mat, "Trunk"))
+	tree.add_child(_blob(0.62, Vector3(0, 3.0, 0), leaf_mint, "Canopy"))
+	tree.add_child(_blob(0.5, Vector3(-0.45, 2.7, 0.25), leaf_pink, "Canopy_L"))
+	tree.add_child(_blob(0.46, Vector3(0.44, 2.65, 0.2), leaf_lemon, "Canopy_R"))
+	tree.add_child(_blob(0.42, Vector3(0.05, 2.6, -0.35), leaf_pink, "Canopy_Front"))
+	tree.add_child(_blob(0.34, Vector3(0.02, 3.45, 0.02), leaf_mint, "Canopy_Top"))
+
+	# Three glowing crystals, each on a little rock.
+	var crystal_pink := _glow(Color(1.0, 0.4, 0.75), 0.9)
+	var crystal_cyan := _glow(Color(0.3, 0.9, 1.0), 0.9)
+	var crystal_lemon := _glow(Color(1.0, 0.9, 0.35), 0.8)
+	crystals.add_child(_cluster(Vector3(-0.95, 1.42, 0.25), 0.7, crystal_pink, rock_a))
+	crystals.add_child(_cluster(Vector3(-0.7, 1.42, 0.5), 0.5, crystal_cyan, rock_a))
+	crystals.add_child(_cluster(Vector3(1.0, 1.42, -0.3), 0.6, crystal_lemon, rock_b))
+
+	# A small cloud off to the side.
+	var cloud_mat := _cloth(Color(0.98, 0.98, 1.0))
+	cloud.add_child(_blob(0.42, Vector3(2.25, 2.5, 0.1), cloud_mat, "Puff"))
+	cloud.add_child(_blob(0.34, Vector3(1.95, 2.42, -0.2), cloud_mat, "Puff_L"))
+	cloud.add_child(_blob(0.3, Vector3(2.5, 2.4, -0.15), cloud_mat, "Puff_R"))
+
+	_save(kit, PROP_DIR + "zuckerbot/metaverse_kit.tscn")
+
+## Flat low-poly disc (a cylinder with few sides).
+func _disk(top: float, height: float, position: Vector3, material: Material, name := "",
+		segments := 10, bottom := -1.0) -> MeshInstance3D:
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = top
+	mesh.bottom_radius = bottom if bottom >= 0.0 else top
+	mesh.height = height
+	mesh.radial_segments = segments
+	return _mesh(mesh, position, material, name)
+
+## Low-poly cone (top radius 0).
+func _cone(radius: float, height: float, position: Vector3, material: Material, name := "") -> MeshInstance3D:
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = 0.0
+	mesh.bottom_radius = radius
+	mesh.height = height
+	mesh.radial_segments = 6
+	return _mesh(mesh, position, material, name)
+
+## Low-poly faceted sphere.
+func _blob(radius: float, position: Vector3, material: Material, name := "") -> MeshInstance3D:
+	var blob := _sphere(radius, position, material, name)
+	var sphere := blob.mesh as SphereMesh
+	sphere.radial_segments = 10
+	sphere.rings = 6
+	return blob
+
+## A crystal spike (with a smaller side spike) on a flattened rock.
+func _cluster(at: Vector3, height: float, crystal: Material, rock: Material) -> Node3D:
+	var group: Node3D = Node3D.new()
+	group.add_child(_disk(0.22, 0.12, at + Vector3(0, 0.02, 0), rock, "Base", 7, 0.26))
+	var main := _cone(0.12, height, at + Vector3(0, height * 0.5 + 0.06, 0), crystal, "Crystal")
+	main.rotation.z = 0.22
+	main.rotation.x = -0.15
+	group.add_child(main)
+	var side := _cone(0.07, height * 0.6, at + Vector3(0.15, height * 0.3 + 0.06, 0.04), crystal, "CrystalSide")
+	side.rotation.z = -0.5
+	group.add_child(side)
+	return group
 
 ## Makes sure every node below `root` is owned by `root` so PackedScene.pack()
 ## keeps the whole subtree (see tools/build_custom_hair.gd).
