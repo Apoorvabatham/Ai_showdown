@@ -342,3 +342,46 @@ by a person yet.**
 ### Still needs the owner
 Power moves and supers for Dario, Yann, Geoff, Ram and AGI (designs **proposed** in ROADMAP §2),
 the AGI boss (C6, C10), story mode screens (C11), fighting-style animations (O6), Geoff's balance.
+
+## 9. Status Nov 18 (evening) and the next round (Gemini + OpenCode)
+
+**Merged into `claude/serene-maxwell-3djncb`** (the new main for this round): `gemini/work`
+(visual review of all 17 scenes, G8 all sets dressed, G9 victory scenes for Xi, Dario, Yann,
+Geoff, Ram, AGI, G13/G14 typography and sets overhaul) and `opencode/work` (O5 Xi's helpers,
+O2b–O2f props, O7 search bar and GPU card, O3 stage NPCs, O4 AGI phase looks). Both merged
+without conflicts. Start each branch with
+`git fetch origin && git merge origin/claude/serene-maxwell-3djncb`.
+
+### Gemini (`gemini/work`), in order (code; owns everything Claude owned)
+1. **O7 swap**: `scripts/supers/projectile_looks.gd` loads `sundar/search_bar` and
+   `jensen/gpu_card` (keep the code looks as fallback; set `Query` text, spin `Fan1`/`Fan2`).
+   Do the same for any other `prop()` stand-in that now has a file in `assets/props/supers/`.
+2. **C6 AGI kit** (ROADMAP §4): projectile, command grab, reversal, armour, teleport, super
+   Engagement Loop, in `tools/showdown_movesets.gd`; tests and `check_trials.gd -- algorithm`.
+3. **C10 AGI phases** (ROADMAP §4): 100–60 % Assistant, 60–25 % Agent (faster, armour on
+   specials), < 25 % Superintelligence (mimics the player's most used special, meter regen).
+   Transition: glitch + red stage lights + `FighterModel.set_look_variant(0 / 1)` (OpenCode's
+   O4 palettes). Phase-aware AI in `scripts/ai/ai_controller.gd`. Simulation stays deterministic.
+4. **C11 story mode**: screens over the VS style (dialogue boxes with portraits, cut-ins),
+   reading `data/story/<id>.json`; intro → 5 fights → rival → AGI → ending. Menu entry, save
+   progress, tests.
+5. **Balance**: Geoff (~25 % in CPU sims) up, Jensen (~60 %) down, with `tools/balance_sim.gd`;
+   target 40–60 % for everyone. Note before/after numbers in the status file.
+6. **Wire O6 clips** as OpenCode delivers them (tesla, Donald first), tune frame data.
+
+### OpenCode (`opencode/work`), in order (people, props, animations)
+1. **O6 fighting styles** (contract §3.6), unblocked: you write the clip list yourself.
+   `tools/build_style_animations.gd` → `assets/animations/style_anims.res`, library `style`.
+   - `tesla_*`: fast, jumpy (idle bounce, jab, cross, flying knee, spinning back kick, dash).
+   - `donald_*`: slow, heavy (wide stance idle, haymaker, overhead hammer, big shove, walk).
+   - Then Sundar, Jensen, Zuckerbot, Xi, in that order.
+   For each clip: length and impact time in `docs/status/opencode.md`; render a strip into
+   `docs/review/opencode/`.
+2. **Prop fixes** from Gemini's contact sheets (`docs/review/gemini/scenes/`): if a prop reads
+   badly in a scene (scale, origin, facing), fix it in `tools/build_super_props.gd`.
+3. **O1** on request.
+
+### Still needs the owner
+Power moves and super scenes for Dario, Yann, Geoff, Ram and AGI (designs proposed in ROADMAP
+§2) — approve each before anyone builds them. Look at the 17 scene sheets in
+`docs/review/gemini/scenes/` and the NPC sheets in `docs/review/opencode/`.
