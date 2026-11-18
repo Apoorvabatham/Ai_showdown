@@ -178,6 +178,8 @@ var _face_rest := {} # CharacterData.face_rest, keyed by StringName
 var _head_scale := Vector3.ONE # CharacterData.body_shape's "Head" (accessories follow it)
 var _voice_player: AudioStreamPlayer
 var _voice_stream: AudioStream
+var _look_data: CharacterData # for set_look_variant() after the build
+var _look_alt := false
 var _voice_envelope := PackedByteArray()
 var _voice_level := 0.0 # smoothed envelope, 0-1
 var _voice_mix := 0.0 # 1 while a clip drives the jaw
@@ -186,6 +188,8 @@ static var _envelopes: Dictionary # clip file name -> PackedByteArray, loaded on
 
 ## `alt` uses the character's alternate skin texture and hair colour (mirror matches).
 func build(data: CharacterData, alt: bool = false) -> void:
+	_look_data = data
+	_look_alt = alt
 	var body := data.model_scene.instantiate() as Node3D
 	_body = body
 	add_child(body)
@@ -587,6 +591,34 @@ func _dress(data: CharacterData, alt: bool) -> void:
 			cloth.emission_enabled = true
 			cloth.emission = colors[slot] if slot < colors.size() else Color.WHITE
 			cloth.emission_energy_multiplier = GLOW_ENERGY
+		outfit.set_surface_override_material(surface, cloth)
+
+
+## Repaints the generated outfit from a stored palette without rebuilding the model:
+## -1 = the normal look (or the mirror-match look on an alt build), 0.. picks
+## CharacterData.variant_outfit_colors. Cosmetic only (AGI's phase looks).
+func set_look_variant(index: int) -> void:
+	if _look_data == null or _look_data.outfit_mesh == null:
+		return
+	var outfit := skeleton.find_child("Outfit", false, false) as MeshInstance3D
+	if outfit == null:
+		return
+	var colors := _look_data.alt_outfit_colors if _look_alt and not _look_data.alt_outfit_colors.is_empty() else _look_data.outfit_colors
+	if index >= 0 and index < _look_data.variant_outfit_colors.size():
+		colors = _look_data.variant_outfit_colors[index]
+	for surface in _look_data.outfit_mesh.get_surface_count():
+		var material := outfit.get_surface_override_material(surface) as StandardMaterial3D
+		if material == null:
+			continue
+		var slot := _surface_slot(_look_data, surface)
+		var color: Color = colors[slot] if slot < colors.size() else Color.WHITE
+		var brightest := maxf(color.r, maxf(color.g, color.b))
+		if brightest > MAX_FABRIC_ALBEDO:
+			color = Color(color * (MAX_FABRIC_ALBEDO / brightest), 1.0)
+		var cloth := material.duplicate() as StandardMaterial3D
+		cloth.albedo_color = color
+		if _fabric_name(_look_data, slot) == &"glow":
+			cloth.emission = colors[slot] if slot < colors.size() else Color.WHITE
 		outfit.set_surface_override_material(surface, cloth)
 
 

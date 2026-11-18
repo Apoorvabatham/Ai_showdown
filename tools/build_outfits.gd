@@ -85,6 +85,7 @@ func _initialize() -> void:
 		data.outfit_body_mesh = load(body_path)
 		data.outfit_colors = spec.colors
 		data.alt_outfit_colors = spec.alt_colors
+		data.variant_outfit_colors.assign(spec.get("variants", []))
 		data.outfit_fabrics.assign(spec.fabrics)
 		ResourceSaver.save(data, data.resource_path)
 		print("%-7s outfit: %d surfaces, %d triangles; body %d -> %d triangles" % [id, result.outfit.get_surface_count(),
@@ -341,7 +342,10 @@ func _showdown_specs() -> Dictionary:
 			Color(0.12, 0.12, 0.13), Color(0.12, 0.2, 0.55), true),
 		"xi": _zhongshan_spec(Color(0.12, 0.13, 0.16), Color(0.05, 0.05, 0.05),
 			Color(0.18, 0.22, 0.19), Color(0.06, 0.06, 0.06)),
-		"algorithm": _bodysuit_spec(Color(0.04, 0.045, 0.06), Color(0.15, 0.95, 1.0), Color(1.0, 0.25, 0.85)),
+		"algorithm": _bodysuit_spec(Color(0.04, 0.045, 0.06), Color(0.15, 0.95, 1.0), Color(1.0, 0.25, 0.85), [
+			[Color(0.03, 0.075, 0.045), Color(0.45, 1.0, 0.3)],
+			[Color(0.12, 0.02, 0.03), Color(1.0, 0.15, 0.05)],
+		]),
 	}
 
 
@@ -846,7 +850,9 @@ func _cardigan_spec(cardigan: Color, band: Color, trousers: Color, shirt: Color,
 ## AGI: a seamless bodysuit over everything, head included (a faceless
 ## figure), with glowing lines down the sides, round the chest and down the front.
 ## Slots: suit, glowing lines (fabric "glow": emissive, FighterModel).
-func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color) -> Dictionary:
+## `variants` are further suit/glow palettes FighterModel.set_look_variant() can swap to
+## at runtime (AGI's phases).
+func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color, variants: Array = []) -> Dictionary:
 	return {
 		detailed = false,
 		pieces = func(L: Dictionary) -> Array:
@@ -864,6 +870,7 @@ func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color) -> Dictionary:
 			],
 		colors = [suit, glow],
 		alt_colors = [Color(0.9, 0.9, 0.92), alt_glow],
+		variants = variants,
 		fabrics = [&"stretch", &"glow"],
 	}
 

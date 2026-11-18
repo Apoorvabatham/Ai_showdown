@@ -174,3 +174,23 @@ State: **review** — every id `data/stage_life/*.json` references now has a loo
   the NPCs vary by hair and face rather than by hats or badges; the outfits are fitted to
   the body, which reads tighter on the female base (fine at stage distance).
 - `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
+
+## O4: AGI phase looks
+
+State: **review** — the three palettes ship with `algorithm`; C10 only has to call the
+hook on a phase change.
+
+- `tools/build_outfits.gd`: `_bodysuit_spec()` takes optional `variants` (extra suit/glow
+  palettes). `algorithm` now carries two: phase 2 "agent" (near-black green suit, acid
+  green glow) and phase 3 "superintelligence" (dark maroon suit, hot red glow). The
+  generator writes them to the new `CharacterData.variant_outfit_colors`.
+- `scripts/character_data.gd`: new additive `variant_outfit_colors: Array[PackedColorArray]`
+  (same per-slot layout as `outfit_colors`).
+- `scripts/fighter/fighter_model.gd`: new `set_look_variant(index)`: -1 = the normal look
+  (or the mirror-match look on an alt build), 0.. = a variant palette. It repaints the
+  outfit's surface materials in place (albedo and the glow slot's emission), cosmetic
+  only, no rebuild and no simulation state. C10 can call it from the phase transition;
+  the existing glitch overlay and red stage lights stay C10's.
+- `tools/render_phase_looks.gd` (new): renders the three looks full length with an
+  upper-body close-up each; `docs/review/opencode/agi_phases.jpg` (new).
+- `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.

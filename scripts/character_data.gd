@@ -47,6 +47,9 @@ extends Resource
 @export var outfit_fabrics: Array[StringName] = []
 ## Outfit colours for mirror matches.
 @export var alt_outfit_colors: PackedColorArray = PackedColorArray()
+## Extra outfit palettes for cosmetic state variants (AGI's phases): the same per-slot
+## layout as outfit_colors. FighterModel.set_look_variant() swaps to one at runtime.
+@export var variant_outfit_colors: Array[PackedColorArray] = []
 ## Higher-detail materials: fabric weave in the colour, 2K fabric maps, hem shading and
 ## stitch lines (vertex colours from build_outfits.gd), and skin pore detail.
 @export var detailed_textures: bool = false

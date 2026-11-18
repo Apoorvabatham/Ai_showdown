@@ -46,6 +46,7 @@ outfit_body_mesh = ExtResource("23_233vy")
 outfit_colors = PackedColorArray(0.04, 0.045, 0.06, 1, 0.15, 0.95, 1, 1)
 outfit_fabrics = Array[StringName]([&"stretch", &"glow"])
 alt_outfit_colors = PackedColorArray(0.9, 0.9, 0.92, 1, 1, 0.25, 0.85, 1)
+variant_outfit_colors = Array[PackedColorArray]([PackedColorArray(0.03, 0.075, 0.045, 1, 0.45, 1, 0.3, 1), PackedColorArray(0.12, 0.02, 0.03, 1, 1, 0.15, 0.05, 1)])
 realistic_shading = true
 victory_animations = Array[StringName]([&"fight/victory_point", &"fight/victory_fist_pump"])
 placeholder_color = Color(0.2, 0.95, 0.95, 1)
