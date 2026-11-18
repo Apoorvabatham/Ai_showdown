@@ -15,21 +15,21 @@ roughness = 0.95
 [sub_resource type="BoxMesh" id="BoxMesh_dqfjb"]
 size = Vector3(1.62, 0.012, 1.12)
 
-[node name="TariffMark" type="Node3D" unique_id=1289886220]
+[node name="TariffMark" type="Node3D" unique_id=705795734]
 
-[node name="@MeshInstance3D@100" type="MeshInstance3D" parent="." unique_id=989538730]
+[node name="@MeshInstance3D@100" type="MeshInstance3D" parent="." unique_id=171239181]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.005, 0)
 material_override = SubResource("StandardMaterial3D_emr8h")
 cast_shadow = 0
 mesh = SubResource("BoxMesh_e8ml1")
 
-[node name="@MeshInstance3D@101" type="MeshInstance3D" parent="." unique_id=1065858392]
+[node name="@MeshInstance3D@101" type="MeshInstance3D" parent="." unique_id=934021177]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.011, 0)
 material_override = SubResource("StandardMaterial3D_6jc5b")
 cast_shadow = 0
 mesh = SubResource("BoxMesh_dqfjb")
 
-[node name="Text" type="Label3D" parent="." unique_id=2061875502]
+[node name="Text" type="Label3D" parent="." unique_id=432396211]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.02, 0)
 pixel_size = 0.0068
 modulate = Color(0.82, 0.07, 0.07, 1)

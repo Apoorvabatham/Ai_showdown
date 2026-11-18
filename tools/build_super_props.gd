@@ -19,6 +19,8 @@ func _initialize() -> void:
 		_build_zuckerbot_props()
 	if only.is_empty() or "sundar" in only:
 		_build_sundar_props()
+	if only.is_empty() or "xi" in only:
+		_build_xi_props()
 	quit()
 
 # --- Materials ---------------------------------------------------------------
@@ -81,8 +83,18 @@ func _cylinder(top: float, bottom: float, height: float, position: Vector3,
 func _sphere(radius: float, position: Vector3, material: Material, name: String = "") -> MeshInstance3D:
 	var sphere: SphereMesh = SphereMesh.new()
 	sphere.radius = radius
+	sphere.height = radius * 2.0
 	sphere.radial_segments = 16
 	return _mesh(sphere, position, material, name)
+
+func _torus(inner: float, outer: float, position: Vector3, material: Material, name := "",
+		rotation := Vector3.ZERO) -> MeshInstance3D:
+	var torus: TorusMesh = TorusMesh.new()
+	torus.inner_radius = inner
+	torus.outer_radius = outer
+	torus.rings = 20
+	torus.ring_segments = 8
+	return _mesh(torus, position, material, name, rotation)
 
 # =============================================================================
 # O2a - tesla man props
@@ -806,6 +818,132 @@ func _label(text: String, size: float, color: Color, position: Vector3, name := 
 	if name != "":
 		label.name = name
 	return label
+
+# =============================================================================
+# O2f - xi props
+# =============================================================================
+
+func _build_xi_props() -> void:
+	_dir_for("xi")
+	_paper_dragon()
+
+const DRAGON_SEGMENTS := 7
+
+## Festival paper dragon for Xi's power move: a big red-and-gold head with horns, glowing
+## eyes and whiskers, and seven hooped body segments trailing along +Z. Front = -Z.
+## `ProjectileLooks.animate` weaves the head and each segment, so the head and
+## `Segment1`..`Segment7` carry the same `segment`/`rest_y` metadata as the code look it
+## replaces; the root origin is the head's centre (a projectile origin, not the floor).
+func _paper_dragon() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "PaperDragon"
+	var red := _metal(Color(0.72, 0.1, 0.08), 0.0, 0.55)
+	var red_dark := _metal(Color(0.48, 0.05, 0.04), 0.0, 0.6)
+	var red_light := _metal(Color(0.85, 0.16, 0.12), 0.0, 0.5)
+	var gold := _metal(Color(0.95, 0.72, 0.2), 0.65, 0.3)
+	var gold_dark := _metal(Color(0.7, 0.48, 0.1), 0.6, 0.35)
+	var gold_flat := _metal(Color(0.88, 0.65, 0.16), 0.0, 0.65)
+	var cream := _metal(Color(0.97, 0.93, 0.8), 0.0, 0.5)
+	var dark := _rubber(Color(0.07, 0.04, 0.04))
+	var eye_glow := _glow(Color(1.0, 0.85, 0.3), 1.5)
+
+	# Head (metadata 0 like the code look so the weave animation picks it up).
+	var head: Node3D = Node3D.new()
+	head.name = "Head"
+	head.set_meta(&"segment", 0)
+	head.set_meta(&"rest_y", 0.0)
+	head.add_child(_box(Vector3(0.4, 0.3, 0.42), Vector3(0, 0.05, 0.03), red, "Skull"))
+	head.add_child(_box(Vector3(0.3, 0.3, 0.14), Vector3(0, 0.05, 0.21), red, "Neck"))
+	for side in [-1.0, 1.0]:
+		head.add_child(_box(Vector3(0.06, 0.16, 0.26), Vector3(0.21 * side, 0.0, -0.04), red_dark, "Cheek"))
+		# Eye: glowing ball, dark pupil, gold rim.
+		head.add_child(_sphere(0.062, Vector3(0.13 * side, 0.17, -0.18), eye_glow, "Eye"))
+		head.add_child(_sphere(0.028, Vector3(0.135 * side, 0.17, -0.235), dark, "Pupil"))
+		head.add_child(_torus(0.062, 0.08, Vector3(0.13 * side, 0.17, -0.222), gold, "EyeRim",
+			Vector3(PI * 0.5, 0, 0)))
+		var brow := _box(Vector3(0.16, 0.04, 0.07), Vector3(0.13 * side, 0.25, -0.17), gold_dark, "Brow")
+		brow.rotation.z = 0.25 * side
+		head.add_child(brow)
+		# Antler-like horn: two tapering pieces and a forward branch.
+		head.add_child(_cylinder(0.028, 0.055, 0.26, Vector3(0.11 * side, 0.31, 0.08), gold,
+			"Horn", Vector3(0.35, 0, -0.15 * side)))
+		head.add_child(_cylinder(0.012, 0.028, 0.22, Vector3(0.145 * side, 0.49, 0.17), gold,
+			"HornTip", Vector3(0.7, 0, -0.35 * side)))
+		head.add_child(_cylinder(0.008, 0.02, 0.14, Vector3(0.06 * side, 0.43, 0.12), gold_dark,
+			"HornBranch", Vector3(0.3, 0, 0.85 * side)))
+		# Whiskers: thin gold rods, bent at the tip, with a bead.
+		var whisker := _box(Vector3(0.22, 0.012, 0.012), Vector3(0.23 * side, -0.02, -0.34), gold_flat, "Whisker")
+		whisker.rotation.z = 0.1 * side
+		whisker.rotation.y = 0.3 * side
+		head.add_child(whisker)
+		var w_tip := _box(Vector3(0.1, 0.01, 0.01), Vector3(0.32 * side, -0.04, -0.38), gold_flat, "WhiskerTip")
+		w_tip.rotation.z = 0.25 * side
+		w_tip.rotation.y = 0.5 * side
+		head.add_child(w_tip)
+		head.add_child(_sphere(0.016, Vector3(0.37 * side, -0.06, -0.4), gold_flat, "WhiskerBead"))
+		# Fangs on the upper jaw.
+		head.add_child(_box(Vector3(0.025, 0.05, 0.025), Vector3(0.09 * side, -0.05, -0.39), cream, "Fang"))
+	# A gold stripe over the snout.
+	head.add_child(_box(Vector3(0.06, 0.02, 0.28), Vector3(0, 0.09, -0.28), gold, "NoseBridge"))
+	# Snout, nose, mouth and jaw.
+	head.add_child(_box(Vector3(0.3, 0.16, 0.3), Vector3(0, 0.0, -0.28), red, "Snout"))
+	head.add_child(_box(Vector3(0.32, 0.1, 0.08), Vector3(0, 0.03, -0.43), red_dark, "Nose"))
+	head.add_child(_box(Vector3(0.28, 0.02, 0.26), Vector3(0, -0.075, -0.29), dark, "Mouth"))
+	head.add_child(_box(Vector3(0.26, 0.08, 0.26), Vector3(0, -0.12, -0.28), red_dark, "Jaw"))
+	head.add_child(_box(Vector3(0.26, 0.03, 0.24), Vector3(0, -0.165, -0.28), gold_dark, "JawTrim"))
+	for side in [-1.0, 1.0]:
+		head.add_child(_box(Vector3(0.04, 0.03, 0.02), Vector3(0.07 * side, 0.07, -0.475), dark, "Nostril"))
+	# Forehead crest and the gold mane behind the head.
+	var crest := _box(Vector3(0.16, 0.03, 0.13), Vector3(0, 0.235, -0.12), gold, "Crest")
+	crest.rotation.x = 0.25
+	head.add_child(crest)
+	for i in 5:
+		var x := -0.12 + 0.06 * i
+		var mane := _box(Vector3(0.035, 0.19, 0.05), Vector3(x, 0.28, 0.15), gold, "Mane")
+		mane.rotation.z = x * 3.5
+		mane.rotation.x = 0.3
+		head.add_child(mane)
+	head.add_child(_box(Vector3(0.16, 0.03, 0.18), Vector3(0, 0.22, -0.02), gold_dark, "Spine"))
+	root.add_child(head)
+
+	# Seven hooped body segments trailing behind the head (+Z).
+	for i in DRAGON_SEGMENTS:
+		var segment: Node3D = Node3D.new()
+		segment.name = "Segment%d" % (i + 1)
+		var rest_y := -0.02 * i
+		segment.set_meta(&"segment", i + 1)
+		segment.set_meta(&"rest_y", rest_y)
+		segment.position = Vector3(0, rest_y, 0.45 + 0.3 * i)
+		var radius := 0.19 - 0.012 * i
+		segment.add_child(_cylinder(radius - 0.02, radius, 0.26, Vector3.ZERO, red, "Body",
+			Vector3(PI * 0.5, 0, 0)))
+		for z in [-0.13, 0.13]:
+			segment.add_child(_torus(radius - 0.03, radius + 0.01, Vector3(0, 0, z), gold, "Hoop",
+				Vector3(PI * 0.5, 0, 0)))
+		var fin := _box(Vector3(0.025, 0.13, 0.18), Vector3(0, radius + 0.05, 0.0), gold, "Fin")
+		fin.rotation.x = 0.3
+		segment.add_child(fin)
+		var fringe := _box(Vector3(0.02, 0.09, 0.18), Vector3(0, -radius - 0.04, 0.0), red_light, "Fringe")
+		fringe.rotation.x = -0.2
+		segment.add_child(fringe)
+		if i == DRAGON_SEGMENTS - 1:
+			# Tail fan at the very back.
+			for k in 3:
+				var fan := _box(Vector3(0.02, 0.16 + 0.03 * (1 - absi(k - 1)), 0.24),
+					Vector3(0.0, 0.03, 0.2), gold if k != 1 else red_light, "Tail")
+				fan.rotation.y = (k - 1) * 0.45
+				segment.add_child(fan)
+		root.add_child(segment)
+
+	var light := OmniLight3D.new()
+	light.name = "Light"
+	light.light_color = Color(1.0, 0.55, 0.25)
+	light.light_energy = 1.2
+	light.omni_range = 2.0
+	light.position = Vector3(0, 0.25, -0.15)
+	root.add_child(light)
+
+	_save(root, PROP_DIR + "xi/paper_dragon.tscn")
 
 ## Makes sure every node below `root` is owned by `root` so PackedScene.pack()
 ## keeps the whole subtree (see tools/build_custom_hair.gd).

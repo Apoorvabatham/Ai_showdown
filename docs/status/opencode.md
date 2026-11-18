@@ -103,4 +103,25 @@ the expected type (`Url` Label3D, `Progress`, `PageLoading`, `PageError`, `PageT
   `docs/review/opencode/props_sundar.jpg`.
 - `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
 
+## O2f: Xi paper dragon
+
+State: **review** — `projectile_looks.gd` builds its code look only when the prop is
+missing, so the scene picks this up; the `segment` / `rest_y` meta match what its
+`animate()` expects.
+
+- `assets/props/supers/xi/paper_dragon.tscn`: ~2.6 m festival dragon, front -Z, root origin
+  at the head's centre (a projectile, like the code look, not a floor prop). `Head`
+  (metadata `segment` 0, `rest_y` 0): red skull/snout/jaw, glowing gold eyes with pupils and
+  gold rims, brows, antler horns with branches, whiskers with beads, fangs, gold nose
+  bridge, jaw trim, mane and crest, plus a warm omni light. `Segment1`..`Segment7`
+  (metadata `segment` 1..7, `rest_y` -0.02 i): tapered red hoops, gold rings, top fins, red
+  under-fringes and a gold tail fan.
+- `tools/build_super_props.gd`: `-- xi` builds the set. Also fixed `_sphere()`: it never set
+  `SphereMesh.height`, so every sphere was a 1 m tall ellipsoid. Rebuilt and re-rendered
+  Donald, Jensen and Zuckerbot (flag finial, shoulder pads, tree canopy/cloud now round);
+  refreshed those sheets.
+- `docs/review/opencode/props_xi.jpg` (new); regenerated `props_donald.jpg`,
+  `props_jensen.jpg`, `props_zuckerbot.jpg`.
+- `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
+
 
