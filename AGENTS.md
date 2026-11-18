@@ -11,7 +11,7 @@ parallel, each with its own area:
 
 | Agent | Branch |
 |---|---|
-| Claude | `claude/brave-rubin-b43he7` (the main branch; Claude merges into it) |
+| Claude | `main` (the main branch; Claude merges into it) |
 | Gemini (code tasks, see docs/TASKS.md §9) | `gemini/work` |
 | OpenCode | `opencode/work` |
 

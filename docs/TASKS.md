@@ -21,7 +21,7 @@ what is next.
 ### Branches
 | Branch | Who works there |
 |---|---|
-| `claude/brave-rubin-b43he7` | **Main branch** (integration). Claude works here and merges the others in. |
+| `main` | **Main branch** (integration). Claude works here and merges the others in. |
 | `opencode/work` | OpenCode (DeepSeek) only |
 | `gemini/work` | Gemini, then Kilo Code |
 | `cline/work` | Cline (Nemotron 3.5 Super VL): super props |
@@ -29,7 +29,7 @@ what is next.
 1. Work **only on your own branch**: `git fetch origin && git checkout <your branch>`.
    Never push to another agent's branch or to the main branch.
 2. Stay up to date: at the start of every task run
-   `git fetch origin && git merge origin/claude/brave-rubin-b43he7` (the main branch).
+   `git fetch origin && git merge origin/main` (the main branch).
 3. Edit **only files you own** (§2). If you need a change in someone else's file, write it
    in your status file (step 5) under "Requests".
 4. Commit small, with the task id: `[O2] Rocket prop`, `[G3] Mensa lighting`. Push your branch.
@@ -238,9 +238,9 @@ Add a line: `- [from <agent> to <agent>] what and why`. The owner of the file do
 Gemini's remaining tasks (G4, G6, G7b, G8–G10, G12) and Claude's tasks (C*) move to
 **Opus 4.6 working on `gemini/work`**, which also takes over the
 orchestrator role (keep this board, the ROADMAP and the contracts up to date). Start with:
-`git fetch origin && git checkout gemini/work && git merge origin/claude/brave-rubin-b43he7`.
+`git fetch origin && git checkout gemini/work && git merge origin/main`.
 
-### State of main (`claude/brave-rubin-b43he7`)
+### State of main (`main`)
 Full suite `0 failure(s)` at handoff. Done: per-fighter movesets (C1), engine features
 (multi-shot/sky/around shots, barriers, reflect, teleport, meter drain, low shots) (C2), own
 movesets for Sundar, Donald, Xi (C3–C5), super- and victory-scene frameworks (C7), stage-life
@@ -303,7 +303,7 @@ Ownership: Cline owns `scenes/supers/sets/**`, `scripts/stages/**`, `scenes/stag
 edit those set/stage files; new sets it needs: add the builder in `tools/super_sets/` and run
 `tools/build_super_sets.gd`, then tell Cline in its status file). Each merges the others' branches
 only through main: the owner merges `gemini/work`, `cline/work`, `opencode/work` into
-`claude/brave-rubin-b43he7` when a task is done.
+`main` when a task is done.
 
 ### Update: Cline joins on `cline/work`; OpenCode keeps only people
 - **Cline** takes all prop tasks: **O2a–O2f** and **O7** (contract §3.1), in that order. Props
@@ -345,15 +345,15 @@ the AGI boss (C6, C10), story mode screens (C11), fighting-style animations (O6)
 
 ## 9. Status Nov 18 (evening) and the next round (Gemini + OpenCode)
 
-**Merged into main (`claude/brave-rubin-b43he7`)**: `gemini/work`
+**Merged into main (`main`)**: `gemini/work`
 (visual review of all 17 scenes, G8 all sets dressed, G9 victory scenes for Xi, Dario, Yann,
 Geoff, Ram, AGI, G13/G14 typography and sets overhaul) and `opencode/work` (O5 Xi's helpers,
 O2b–O2f props, O7 search bar and GPU card, O3 stage NPCs, O4 AGI phase looks). Both merged
 without conflicts. Start each branch with
-`git fetch origin && git merge origin/claude/brave-rubin-b43he7`.
+`git fetch origin && git merge origin/main`.
 Retired branches (all content is on main; delete them, don't work on them): `cline/work`,
 `wip/donald-scenes`, `wip/zuckerbot-scenes`, `wip/sundar-jensen-scenes`,
-`claude/blissful-meitner-2wmcms`. Only main, `gemini/work` and `opencode/work` are active.
+`claude/blissful-meitner-2wmcms`, `claude/brave-rubin-b43he7` (old main, renamed to `main`). Only `main`, `gemini/work` and `opencode/work` are active.
 
 ### Gemini (`gemini/work`), in order (code; owns everything Claude owned)
 1. **O7 swap**: `scripts/supers/projectile_looks.gd` loads `sundar/search_bar` and
