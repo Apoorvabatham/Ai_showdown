@@ -312,3 +312,33 @@ only through main: the owner merges `gemini/work`, `cline/work`, `opencode/work`
   to load `assets/props/supers/<fighter>/<name>.tscn` when it exists (O7).
 - **OpenCode** keeps only people: **O5** (Xi's helpers), **O3** (stage NPCs), **O4** (AGI
   phase looks), **O1** on request; **O6** later.
+
+## 8. Status Nov 18 and the next round (Gemini + OpenCode)
+
+**Merged into main** (suite `0 failure(s)`, combo trials pass): super and victory scenes for
+tesla, Xi (super), Donald, Zuckerbot, Sundar, Jensen (Kilo finished the wip branches); Cline's
+tesla props (`assets/props/supers/tesla/`); dressed `launch_pad`, `space`, `mars` sets; Gemini's
+crowds, voices, sounds, realism pass 2. Kilo Code and Cline are done; `cline/work` and the
+`wip/*` branches are merged and can be deleted. **The new scenes have not been checked visually
+by a person yet.**
+
+### Gemini (`gemini/work`), in order
+1. **Look at every super and victory scene** (render contact sheets like the `[C8]` commits, into
+   `docs/review/gemini/scenes/`) and fix what reads badly: framing, scale, timing, things hidden.
+2. **G8 for the remaining sets**: dress `oval_desk`, `vr_lobby`, `metaverse`, `browser_void`,
+   `keynote_stage`, `xi_plaza` (keep every Marker3D; load each in Godot before committing).
+3. **Victory scenes** still missing (approved, ROADMAP §2): Xi (lanterns + fireworks), Dario
+   (golden scroll), Yann (giant cat), Geoff (worried medal ceremony), Ram ("AGI ACHIEVED"
+   banner), AGI (glowing eye on every screen). Pattern: `scripts/supers/victory/donald.gd` (on
+   the stage) or `tesla.gd` (own set); add a test each like the existing victory tests.
+
+### OpenCode (`opencode/work`), in order
+1. **O5**: Xi's helpers `helper_qwen`, `helper_alibaba`, `helper_kimi` (the squad scene loads
+   them automatically from `data/npcs/`).
+2. **Props** (Cline only did tesla): **O2b** Donald, **O2c** Jensen, **O2d** Zuckerbot, **O2e** Sundar,
+   **O2f** Xi, then **O7**; `tools/build_super_props.gd` already exists: add to it.
+3. **O3** stage NPCs (replace the crowd stand-ins), then **O4**.
+
+### Still needs the owner
+Power moves and supers for Dario, Yann, Geoff, Ram and AGI (designs **proposed** in ROADMAP §2),
+the AGI boss (C6, C10), story mode screens (C11), fighting-style animations (O6), Geoff's balance.
