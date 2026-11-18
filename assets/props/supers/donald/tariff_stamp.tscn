@@ -1,0 +1,123 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_beio5"]
+albedo_color = Color(0.72, 0.07, 0.07, 1)
+metallic = 0.05
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_130de"]
+size = Vector3(1.7, 0.5, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ph0a5"]
+albedo_color = Color(0.48, 0.04, 0.04, 1)
+metallic = 0.05
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_rmyto"]
+size = Vector3(1.62, 0.04, 1.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3ujm7"]
+albedo_color = Color(0.3, 0.16, 0.07, 1)
+roughness = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_jb48h"]
+size = Vector3(1.78, 0.1, 1.28)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_otjyt"]
+albedo_color = Color(0.42, 0.24, 0.11, 1)
+roughness = 0.45
+
+[sub_resource type="BoxMesh" id="BoxMesh_21803"]
+size = Vector3(1.62, 0.08, 1.12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_s34fh"]
+size = Vector3(1.9, 0.12, 1.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o1m1m"]
+albedo_color = Color(0.82, 0.62, 0.25, 1)
+metallic = 0.9
+roughness = 0.3
+
+[sub_resource type="BoxMesh" id="BoxMesh_erq86"]
+size = Vector3(0.24, 0.04, 0.24)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_w2p24"]
+top_radius = 0.16
+bottom_radius = 0.2
+height = 1.4
+radial_segments = 16
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_kd0lx"]
+top_radius = 0.12
+bottom_radius = 0.12
+height = 0.08
+radial_segments = 16
+
+[sub_resource type="SphereMesh" id="SphereMesh_ytsn1"]
+radius = 0.36
+height = 0.72
+
+[node name="TariffStamp" type="Node3D" unique_id=2080379341]
+
+[node name="Base" type="MeshInstance3D" parent="." unique_id=577535979]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.27, 0)
+material_override = SubResource("StandardMaterial3D_beio5")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_130de")
+
+[node name="Sole" type="MeshInstance3D" parent="." unique_id=588806684]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+material_override = SubResource("StandardMaterial3D_ph0a5")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_rmyto")
+
+[node name="@MeshInstance3D@48" type="MeshInstance3D" parent="." unique_id=1348263405]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.57, 0)
+material_override = SubResource("StandardMaterial3D_3ujm7")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_jb48h")
+
+[node name="@MeshInstance3D@49" type="MeshInstance3D" parent="." unique_id=1086782243]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+material_override = SubResource("StandardMaterial3D_otjyt")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_21803")
+
+[node name="Plate" type="MeshInstance3D" parent="." unique_id=2047232379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.66, 0)
+material_override = SubResource("StandardMaterial3D_otjyt")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_s34fh")
+
+[node name="Collar" type="MeshInstance3D" parent="." unique_id=448212068]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.735, 0)
+material_override = SubResource("StandardMaterial3D_o1m1m")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_erq86")
+
+[node name="Handle" type="MeshInstance3D" parent="." unique_id=1116391092]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.42, 0)
+material_override = SubResource("StandardMaterial3D_otjyt")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_w2p24")
+
+[node name="@MeshInstance3D@50" type="MeshInstance3D" parent="." unique_id=858994646]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.14, 0)
+material_override = SubResource("StandardMaterial3D_3ujm7")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_kd0lx")
+
+[node name="Knob" type="MeshInstance3D" parent="." unique_id=525290582]
+transform = Transform3D(1, 0, 0, 0, 0.85, 0, 0, 0, 1, 0, 2.32, 0)
+material_override = SubResource("StandardMaterial3D_otjyt")
+cast_shadow = 0
+mesh = SubResource("SphereMesh_ytsn1")
+
+[node name="Underside" type="Label3D" parent="." unique_id=850525129]
+transform = Transform3D(-1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.002, 0)
+pixel_size = 0.0034
+double_sided = false
+modulate = Color(0.95, 0.9, 0.86, 1)
+text = "TARIFF"
+font_size = 112
+outline_size = 0

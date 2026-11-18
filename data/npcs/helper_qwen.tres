@@ -1,0 +1,77 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Showdown_Male_Tan.png" id="1_5jjc5"]
+[ext_resource type="Texture2D" path="res://assets/characters/base/T_Eye_DarkBrown.png" id="2_vxc86"]
+[ext_resource type="PackedScene" path="res://assets/characters/hair/Hair_SimpleParted.gltf" id="3_n44r7"]
+[ext_resource type="PackedScene" path="res://assets/characters/base/Superhero_Male_FullBody.gltf" id="4_x4ck8"]
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="5_i3f4v"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/helper_qwen_body.res" id="6_n44r7"]
+[ext_resource type="Texture2D" path="res://assets/characters/prints/T_helper_qwen_tee.png" id="6_tu225"]
+[ext_resource type="Script" path="res://scripts/character_data.gd" id="7_koyax"]
+[ext_resource type="ArrayMesh" path="res://assets/characters/outfits/helper_qwen_outfit.res" id="7_x4ck8"]
+
+[resource]
+script = ExtResource("7_koyax")
+id = &"helper_qwen"
+display_name = "Qwen Helper"
+archetype = "engineer"
+model_scene = ExtResource("4_x4ck8")
+hair_scenes = Array[PackedScene]([ExtResource("3_n44r7")])
+body_albedo = ExtResource("1_5jjc5")
+model_scale = 1.02
+hair_color = Color(0.1, 0.09, 0.09, 1)
+alt_body_albedo = ExtResource("1_5jjc5")
+alt_hair_color = Color(0.32, 0.26, 0.2, 1)
+outfit_mesh = ExtResource("7_x4ck8")
+outfit_body_mesh = ExtResource("6_n44r7")
+outfit_textures = {
+0: ExtResource("6_tu225")
+}
+outfit_colors = PackedColorArray(0.13, 0.11, 0.3, 1, 0.8, 0.8, 0.78, 1, 0.13, 0.16, 0.24, 1, 0.86, 0.86, 0.82, 1)
+outfit_fabrics = Array[StringName]([&"cotton", &"leather", &"denim", &"leather"])
+alt_outfit_colors = PackedColorArray(0.85, 0.85, 0.9, 1, 0.1, 0.1, 0.1, 1, 0.1, 0.1, 0.12, 1, 0.12, 0.12, 0.14, 1)
+detailed_textures = true
+realistic_shading = true
+placeholder_color = Color(0.55, 0.55, 0.58, 1)
+body_shape = {
+&"calf": Vector3(0.92, 1, 0.92),
+&"lowerarm": Vector3(0.87, 1, 0.87),
+&"neck_01": Vector3(0.94, 1, 0.94),
+&"spine_01": Vector3(0.9, 1, 0.9),
+&"spine_02": Vector3(0.88, 1, 0.88),
+&"spine_03": Vector3(0.9, 1, 0.9),
+&"thigh": Vector3(0.9, 1, 0.9),
+&"upperarm": Vector3(0.84, 1, 0.84)
+}
+face_shape = {
+&"cheekbones": 0.002,
+&"chin": -0.002,
+&"chin_round": 0.006,
+&"eye_open": 0.0008,
+&"eye_tilt": 0.0004,
+&"face_length": 1.02,
+&"fullness": -0.003,
+&"jaw": 0.94,
+&"mouth_width": 0.95,
+&"nose_bridge": 0.001,
+&"nose_length": 0.003,
+&"nose_width": 0.96
+}
+brow_scale = Vector3(0.96, 0.82, 1)
+hair_scale = Vector3(1.03, 1.07, 1.04)
+hair_offset = Vector3(0, 0.005, -0.003)
+eye_texture = ExtResource("2_vxc86")
+face_rest = {
+&"brow_up": 0.16,
+&"smile": 0.38
+}
+posture = {
+&"Head": Vector3(-1, 0, 0),
+&"neck_01": Vector3(1, 0, 0),
+&"spine_02": Vector3(-2, 0, 0),
+&"spine_03": Vector3(-2, 0, 0)
+}
+accessories = Array[StringName]([&"glasses"])
+accessory_color = Color(0.08, 0.08, 0.09, 1)
+intro_lines = PackedStringArray()
+win_quotes = PackedStringArray()

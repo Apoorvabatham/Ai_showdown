@@ -30,6 +30,7 @@ extends SceneTree
 const OUT_DIR := "res://assets/characters/outfits/"
 const CHARACTER_DIR := "res://data/characters/"
 const KIT_DIR := "res://data/kits/" # the original 3D Fighter cast
+const NPC_DIR := "res://data/npcs/" # stage and super-scene people (tools/build_npcs.gd)
 const HIDE_INSET := 0.015 # body skin this far inside a garment's edge is removed
 const NECK_RADIUS := 0.072 # the neck hole of tops and jackets
 const ARM_LIMIT := 0.35 # |x| beyond this (T-pose) is arm, never legs or torso
@@ -68,6 +69,8 @@ func _initialize() -> void:
 		var data_path := CHARACTER_DIR + id + ".tres"
 		if not ResourceLoader.exists(data_path):
 			data_path = KIT_DIR + id + ".tres"
+		if not ResourceLoader.exists(data_path):
+			data_path = NPC_DIR + id + ".tres"
 		var data := load(data_path) as CharacterData
 		if data == null:
 			push_error("No character data for %s" % id)
@@ -82,6 +85,7 @@ func _initialize() -> void:
 		data.outfit_body_mesh = load(body_path)
 		data.outfit_colors = spec.colors
 		data.alt_outfit_colors = spec.alt_colors
+		data.variant_outfit_colors.assign(spec.get("variants", []))
 		data.outfit_fabrics.assign(spec.fabrics)
 		ResourceSaver.save(data, data.resource_path)
 		print("%-7s outfit: %d surfaces, %d triangles; body %d -> %d triangles" % [id, result.outfit.get_surface_count(),
@@ -100,6 +104,7 @@ func _initialize() -> void:
 func _specs() -> Dictionary:
 	var specs := _kit_specs()
 	specs.merge(_showdown_specs())
+	specs.merge(_npc_specs())
 	return specs
 
 
@@ -337,14 +342,133 @@ func _showdown_specs() -> Dictionary:
 			Color(0.12, 0.12, 0.13), Color(0.12, 0.2, 0.55), true),
 		"xi": _zhongshan_spec(Color(0.12, 0.13, 0.16), Color(0.05, 0.05, 0.05),
 			Color(0.18, 0.22, 0.19), Color(0.06, 0.06, 0.06)),
-		"algorithm": _bodysuit_spec(Color(0.04, 0.045, 0.06), Color(0.15, 0.95, 1.0), Color(1.0, 0.25, 0.85)),
+		"algorithm": _bodysuit_spec(Color(0.04, 0.045, 0.06), Color(0.15, 0.95, 1.0), Color(1.0, 0.25, 0.85), [
+			[Color(0.03, 0.075, 0.045), Color(0.45, 1.0, 0.3)],
+			[Color(0.12, 0.02, 0.03), Color(1.0, 0.15, 0.05)],
+		]),
+	}
+
+
+# --- Stage and super-scene NPCs (all on the male base body) ---------------------------
+
+## Xi's helpers (O5): plain tee, jeans and sneakers; the chest print reading Qwen,
+## Alibaba or Kimi comes from tools/build_prints.py. The tee colour here is the fallback
+## for the alternate outfit (the print covers the main one).
+func _npc_specs() -> Dictionary:
+	return {
+		"helper_qwen": _tee_spec(Color(0.13, 0.11, 0.3), Color(0.13, 0.16, 0.24), Color(0.86, 0.86, 0.82),
+			Color(0.85, 0.85, 0.9), Color(0.1, 0.1, 0.12), Color(0.12, 0.12, 0.14)),
+		"helper_alibaba": _tee_spec(Color(0.86, 0.35, 0.07), Color(0.16, 0.17, 0.2), Color(0.1, 0.1, 0.1),
+			Color(0.2, 0.2, 0.22), Color(0.12, 0.12, 0.14), Color(0.9, 0.9, 0.88)),
+		"helper_kimi": _tee_spec(Color(0.07, 0.08, 0.1), Color(0.17, 0.2, 0.25), Color(0.9, 0.9, 0.9),
+			Color(0.75, 0.78, 0.82), Color(0.1, 0.1, 0.12), Color(0.12, 0.12, 0.14)),
+
+		# --- O3: Senate (suits, offices, press) ---
+		"chair": _suit_spec(Color(0.08, 0.1, 0.2), Color(0.93, 0.92, 0.88), Color(0.65, 0.06, 0.07),
+			Color(0.05, 0.05, 0.05), Color(0.14, 0.14, 0.16), Color(0.2, 0.3, 0.6), true),
+		"senator_1": _suit_spec(Color(0.13, 0.14, 0.16), Color(0.93, 0.91, 0.85), Color(0.6, 0.45, 0.12),
+			Color(0.05, 0.05, 0.05), Color(0.25, 0.18, 0.12), Color(0.45, 0.1, 0.1)),
+		"senator_2": _suit_spec(Color(0.18, 0.24, 0.36), Color(0.94, 0.94, 0.92), null,
+			Color(0.06, 0.05, 0.05), Color(0.32, 0.1, 0.14), null),
+		"senator_3": _suit_spec(Color(0.25, 0.16, 0.1), Color(0.92, 0.9, 0.82), Color(0.1, 0.25, 0.14),
+			Color(0.08, 0.06, 0.04), Color(0.32, 0.32, 0.34), Color(0.5, 0.35, 0.1)),
+		"senator_4": _suit_spec(Color(0.3, 0.08, 0.12), Color(0.94, 0.93, 0.9), null,
+			Color(0.06, 0.05, 0.05), Color(0.1, 0.14, 0.28), null),
+		"stenographer": _blazer_spec(Color(0.36, 0.37, 0.4), Color(0.94, 0.94, 0.92),
+			Color(0.1, 0.11, 0.14), Color(0.05, 0.05, 0.05), Color(0.2, 0.22, 0.26), Color(0.16, 0.12, 0.1)),
+		"press_1": _blazer_spec(Color(0.3, 0.22, 0.14), Color(0.3, 0.34, 0.2),
+			Color(0.1, 0.11, 0.14), Color(0.08, 0.06, 0.04), Color(0.18, 0.18, 0.2), Color(0.2, 0.2, 0.22)),
+		"press_2": _leather_jacket_spec(Color(0.08, 0.08, 0.09), Color(0.92, 0.92, 0.9),
+			Color(0.1, 0.1, 0.12), Color(0.25, 0.06, 0.07), Color(0.6, 0.6, 0.6), Color(0.06, 0.06, 0.07)),
+		"press_3": _cardigan_spec(Color(0.35, 0.35, 0.38), Color(0.2, 0.2, 0.22),
+			Color(0.18, 0.18, 0.2), Color(0.85, 0.85, 0.8), Color(0.28, 0.3, 0.2), Color(0.24, 0.22, 0.2)),
+		"aide_1": _cardigan_spec(Color(0.4, 0.42, 0.46), Color(0.22, 0.24, 0.28),
+			Color(0.14, 0.16, 0.22), Color(0.93, 0.93, 0.9), Color(0.34, 0.12, 0.15), Color(0.18, 0.18, 0.2)),
+		"aide_2": _blazer_spec(Color(0.12, 0.16, 0.28), Color(0.94, 0.94, 0.92),
+			Color(0.12, 0.12, 0.15), Color(0.05, 0.05, 0.05), Color(0.36, 0.36, 0.38), Color(0.18, 0.16, 0.14)),
+		"aide_3": _suit_spec(Color(0.38, 0.39, 0.42), Color(0.94, 0.94, 0.92), null,
+			Color(0.06, 0.05, 0.05), Color(0.1, 0.14, 0.26), null),
+		"citizen_1": _sweater_spec(Color(0.28, 0.32, 0.16), Color(0.18, 0.16, 0.14),
+			Color(0.24, 0.16, 0.09), &"cotton", Color(0.5, 0.26, 0.1), Color(0.22, 0.2, 0.18),
+			Color(0.12, 0.12, 0.12)),
+		"citizen_2": _cardigan_spec(Color(0.33, 0.12, 0.16), Color(0.2, 0.08, 0.1),
+			Color(0.2, 0.18, 0.16), Color(0.9, 0.88, 0.8), Color(0.16, 0.26, 0.18), Color(0.24, 0.22, 0.2)),
+		"citizen_3": _tee_spec(Color(0.1, 0.32, 0.32), Color(0.16, 0.18, 0.22), Color(0.86, 0.86, 0.84),
+			Color(0.75, 0.35, 0.1), Color(0.1, 0.1, 0.12), Color(0.1, 0.1, 0.1)),
+
+		# --- O3: mensa (kitchen, students) ---
+		"cook": _zhongshan_spec(Color(0.9, 0.9, 0.88), Color(0.06, 0.06, 0.06),
+			Color(0.82, 0.82, 0.8), Color(0.4, 0.4, 0.42)),
+		"cashier": _cardigan_spec(Color(0.16, 0.3, 0.2), Color(0.1, 0.2, 0.14),
+			Color(0.2, 0.2, 0.22), Color(0.92, 0.9, 0.84), Color(0.55, 0.4, 0.12), Color(0.16, 0.16, 0.18)),
+		"student_1": _hoodie_spec(Color(0.16, 0.3, 0.18), Color(0.12, 0.14, 0.18), Color(0.9, 0.9, 0.88),
+			Color(0.32, 0.2, 0.45), Color(0.1, 0.1, 0.12), Color(0.2, 0.2, 0.2)),
+		"student_2": _tee_spec(Color(0.88, 0.85, 0.75), Color(0.2, 0.24, 0.3), Color(0.92, 0.92, 0.9),
+			Color(0.1, 0.1, 0.12), Color(0.14, 0.14, 0.16), Color(0.12, 0.12, 0.12)),
+		"student_3": _sweater_spec(Color(0.32, 0.33, 0.36), Color(0.16, 0.16, 0.18),
+			Color(0.1, 0.1, 0.1), &"cotton", Color(0.14, 0.2, 0.34), Color(0.22, 0.2, 0.18),
+			Color(0.2, 0.15, 0.1), true),
+		"student_4": _tee_spec(Color(0.6, 0.1, 0.1), Color(0.12, 0.13, 0.16), Color(0.12, 0.12, 0.12),
+			Color(0.7, 0.55, 0.12), Color(0.2, 0.2, 0.22), Color(0.9, 0.9, 0.88)),
+		"student_5": _hoodie_spec(Color(0.45, 0.4, 0.58), Color(0.1, 0.1, 0.12), Color(0.92, 0.92, 0.9),
+			Color(0.7, 0.35, 0.5), Color(0.16, 0.16, 0.18), Color(0.2, 0.2, 0.2)),
+		"student_6": _leather_jacket_spec(Color(0.08, 0.08, 0.09), Color(0.88, 0.86, 0.8),
+			Color(0.1, 0.1, 0.12), Color(0.3, 0.18, 0.1), Color(0.1, 0.1, 0.1), Color(0.24, 0.24, 0.26)),
+		"student_7": _hoodie_spec(Color(0.4, 0.42, 0.45), Color(0.16, 0.18, 0.2), Color(0.9, 0.9, 0.88),
+			Color(0.14, 0.26, 0.18), Color(0.1, 0.1, 0.12), Color(0.12, 0.12, 0.12)),
+		"student_8": _sweater_spec(Color(0.82, 0.78, 0.68), Color(0.28, 0.22, 0.16),
+			Color(0.9, 0.9, 0.88), &"cotton", Color(0.3, 0.4, 0.55), Color(0.18, 0.18, 0.2),
+			Color(0.12, 0.12, 0.12)),
+		"student_9": _tee_spec(Color(0.12, 0.16, 0.3), Color(0.2, 0.2, 0.22), Color(0.9, 0.9, 0.88),
+			Color(0.45, 0.65, 0.15), Color(0.12, 0.12, 0.14), Color(0.12, 0.12, 0.12)),
+		"student_10": _cardigan_spec(Color(0.2, 0.32, 0.22), Color(0.12, 0.2, 0.14),
+			Color(0.22, 0.2, 0.18), Color(0.92, 0.9, 0.84), Color(0.55, 0.24, 0.1), Color(0.18, 0.18, 0.2)),
+		"grad_student": _blazer_spec(Color(0.34, 0.28, 0.2), Color(0.55, 0.65, 0.8),
+			Color(0.14, 0.14, 0.16), Color(0.24, 0.16, 0.09), Color(0.2, 0.2, 0.22), Color(0.1, 0.1, 0.12)),
+
+		# --- O3: foundry (cleanroom) ---
+		"technician_1": _coverall_spec(Color(0.88, 0.89, 0.9), Color(0.5, 0.7, 0.85),
+			Color(0.8, 0.82, 0.86), Color(0.35, 0.5, 0.8)),
+		"technician_2": _coverall_spec(Color(0.88, 0.89, 0.9), Color(0.35, 0.5, 0.8),
+			Color(0.82, 0.84, 0.88), Color(0.5, 0.7, 0.85)),
+		"technician_3": _coverall_spec(Color(0.9, 0.89, 0.9), Color(0.65, 0.55, 0.8),
+			Color(0.82, 0.84, 0.88), Color(0.4, 0.45, 0.55)),
+		"technician_4": _coverall_spec(Color(0.88, 0.9, 0.88), Color(0.45, 0.7, 0.5),
+			Color(0.8, 0.82, 0.86), Color(0.35, 0.5, 0.8)),
+		"lead_architect": _zhongshan_spec(Color(0.14, 0.15, 0.17), Color(0.06, 0.06, 0.06),
+			Color(0.16, 0.2, 0.18), Color(0.1, 0.1, 0.1)),
+		"quality_inspector": _blazer_spec(Color(0.14, 0.18, 0.3), Color(0.94, 0.94, 0.92),
+			Color(0.12, 0.13, 0.16), Color(0.05, 0.05, 0.05), Color(0.3, 0.1, 0.12), Color(0.18, 0.16, 0.14)),
+		"cleanroom_guard": _suit_spec(Color(0.05, 0.05, 0.06), Color(0.9, 0.9, 0.88), Color(0.08, 0.08, 0.1),
+			Color(0.04, 0.04, 0.04), Color(0.1, 0.12, 0.2), Color(0.3, 0.3, 0.34)),
+		"cleanroom_aide": _coverall_spec(Color(0.87, 0.89, 0.9), Color(0.55, 0.62, 0.72),
+			Color(0.8, 0.82, 0.86), Color(0.45, 0.5, 0.6)),
+
+		# --- O3: server farm (operators, sysadmins) ---
+		"sysadmin_1": _hoodie_spec(Color(0.2, 0.2, 0.22), Color(0.14, 0.14, 0.16), Color(0.1, 0.1, 0.1),
+			Color(0.16, 0.24, 0.18), Color(0.1, 0.1, 0.12), Color(0.2, 0.2, 0.2)),
+		"sysadmin_2": _hoodie_spec(Color(0.12, 0.16, 0.28), Color(0.1, 0.1, 0.12), Color(0.92, 0.92, 0.9),
+			Color(0.35, 0.22, 0.45), Color(0.16, 0.16, 0.18), Color(0.2, 0.2, 0.2)),
+		"noc_lead": _cardigan_spec(Color(0.32, 0.12, 0.14), Color(0.2, 0.08, 0.1),
+			Color(0.2, 0.2, 0.22), Color(0.88, 0.88, 0.86), Color(0.12, 0.3, 0.3), Color(0.18, 0.18, 0.2)),
+		"cloud_architect": _blazer_spec(Color(0.1, 0.16, 0.3), Color(0.94, 0.94, 0.92),
+			Color(0.14, 0.14, 0.16), Color(0.24, 0.16, 0.09), Color(0.34, 0.34, 0.36), Color(0.1, 0.1, 0.12)),
+		"devops_tech": _tee_spec(Color(0.08, 0.08, 0.09), Color(0.2, 0.22, 0.25), Color(0.08, 0.08, 0.08),
+			Color(0.9, 0.9, 0.88), Color(0.12, 0.12, 0.14), Color(0.9, 0.9, 0.88)),
+		"site_reliability": _sweater_spec(Color(0.3, 0.3, 0.32), Color(0.5, 0.38, 0.25),
+			Color(0.16, 0.1, 0.06), &"cotton", Color(0.14, 0.2, 0.34), Color(0.24, 0.22, 0.2),
+			Color(0.1, 0.1, 0.1), true),
+		"intern": _hoodie_spec(Color(0.75, 0.35, 0.08), Color(0.18, 0.2, 0.24), Color(0.92, 0.92, 0.9),
+			Color(0.8, 0.7, 0.12), Color(0.1, 0.1, 0.12), Color(0.2, 0.2, 0.2)),
+		"field_engineer": _leather_jacket_spec(Color(0.3, 0.18, 0.1), Color(0.35, 0.36, 0.38),
+			Color(0.18, 0.2, 0.22), Color(0.08, 0.08, 0.09), Color(0.88, 0.86, 0.8), Color(0.1, 0.1, 0.12)),
 	}
 
 
 ## Two-piece suit: a jacket with a V front and lapels over a shirt (and a tie unless `tie`
 ## is null), two buttons, trousers in the suit's colour and leather shoes. `long_tie`
 ## hangs below the belt. Slots: suit, shoes, tie, shirt, buttons.
-func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit: Color, alt_tie: Color,
+func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit: Color, alt_tie: Variant,
 		long_tie := false) -> Dictionary:
 	var pieces := func(L: Dictionary) -> Array:
 		var v_bottom: float = (L.chest + L.waist) * 0.5 - 0.03
@@ -400,7 +524,8 @@ func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit:
 		detailed = true,
 		pieces = pieces,
 		colors = [suit, shoes, tie if tie != null else shirt, shirt, suit.darkened(0.5)],
-		alt_colors = [alt_suit, Color(0.2, 0.12, 0.06), alt_tie, Color(0.85, 0.85, 0.83), alt_suit.darkened(0.5)],
+		alt_colors = [alt_suit, Color(0.2, 0.12, 0.06), alt_tie if alt_tie != null else shirt,
+			Color(0.85, 0.85, 0.83), alt_suit.darkened(0.5)],
 		fabrics = [&"cotton", &"leather", &"stretch", &"cotton", &"leather"],
 	}
 
@@ -725,7 +850,9 @@ func _cardigan_spec(cardigan: Color, band: Color, trousers: Color, shirt: Color,
 ## AGI: a seamless bodysuit over everything, head included (a faceless
 ## figure), with glowing lines down the sides, round the chest and down the front.
 ## Slots: suit, glowing lines (fabric "glow": emissive, FighterModel).
-func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color) -> Dictionary:
+## `variants` are further suit/glow palettes FighterModel.set_look_variant() can swap to
+## at runtime (AGI's phases).
+func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color, variants: Array = []) -> Dictionary:
 	return {
 		detailed = false,
 		pieces = func(L: Dictionary) -> Array:
@@ -743,7 +870,59 @@ func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color) -> Dictionary:
 			],
 		colors = [suit, glow],
 		alt_colors = [Color(0.9, 0.9, 0.92), alt_glow],
+		variants = variants,
 		fabrics = [&"stretch", &"glow"],
+	}
+
+
+## Cleanroom coverall (bunny suit) with the hood bunched at the back: jacket and trousers
+## in one colour, a standing collar, a front zip with a pull, ankle cuffs and pale
+## booties. Slots: suit, trim, zipper (metal), booties, pull.
+func _coverall_spec(suit: Color, trim: Color, alt_suit: Color, alt_trim: Color) -> Dictionary:
+	return {
+		detailed = true,
+		pieces = func(L: Dictionary) -> Array:
+			var hem: float = L.hip - 0.06
+			var cuff: float = L.wrist - 0.02
+			var cover := func(p, n): return _top(p, L, hem, cuff, 0.9)
+			return [
+				{slot = Slot.MAIN, offset = 0.018, region = cover},
+				# Standing collar: a short tube round the neck that rises above the coverall.
+				{slot = Slot.TRIM, offset = 0.026, hide = false, stitches = false, region = func(p, n):
+					var d := Vector2(p.x, (p.z - L.neck_z) * 1.1).length()
+					if d > 0.10:
+						return -1.0
+					return minf(p.y - (L.neck + 0.002), (L.neck + 0.072) - p.y)},
+				# Zip tape down the front.
+				{slot = Slot.TRIM, offset = 0.024, hide = false, stitches = false, region = func(p, n):
+					return minf(_zip(p, n, 0.007), minf(p.y - (L.waist - 0.02), (L.neck + 0.005) - p.y))},
+				# Zip pull.
+				{slot = Slot.DETAIL, offset = 0.026, hide = false, stitches = false, region = func(p, n):
+					if p.z <= 0.0:
+						return -1.0
+					return 0.012 - Vector2(p.x, p.y - (L.chest - 0.06)).length()},
+				# Hood panel on the upper back.
+				{slot = Slot.TRIM, offset = 0.028, hide = false, stitches = false, region = func(p, n):
+					var dx: float = p.x / 0.11
+					var dy: float = (p.y - (L.neck - 0.10)) / 0.09
+					var panel: float = 1.0 - Vector2(dx, dy).length()
+					return minf(panel, (L.neck_z - 0.01) - p.z)},
+				# Trousers, loose.
+				{slot = Slot.MAIN, offset = 0.015, region = func(p, n): return _legs(p, L.ankle + 0.09, hem + 0.03),
+					drape = _pants_drape(L, {base = 0.015, flare = 0.012, hem = L.ankle + 0.09, amount = 0.8,
+						cover = hem, cover_max = 0.018, pin = func(p: Vector3) -> bool: return p.y > hem})},
+				# Ankle cuffs.
+				{slot = Slot.TRIM, offset = 0.018, hide = false, stitches = false,
+					region = func(p, n): return _legs(p, L.ankle + 0.07, L.ankle + 0.13)},
+				# Booties.
+				{slot = Slot.EXTRA, offset = 0.02, flat_soles = true,
+					region = func(p, n): return _legs(p, -1.0, L.ankle + 0.1)},
+			],
+		hood_roll = {slot = Slot.TRIM},
+		colors = [suit, trim, Color(0.55, 0.58, 0.62), Color(0.9, 0.9, 0.88), Color(0.3, 0.32, 0.35)],
+		alt_colors = [alt_suit, alt_trim, Color(0.4, 0.42, 0.45), Color(0.85, 0.85, 0.85),
+			Color(0.2, 0.2, 0.22)],
+		fabrics = [&"stretch", &"stretch", &"metal", &"leather", &"metal"],
 	}
 
 
