@@ -101,6 +101,8 @@ func _build_server_farm() -> void:
 		"res://assets/stage_props/server_farm/Textures/anti_skid_tiles_nor_1k.jpg",
 		"res://assets/stage_props/server_farm/Textures/anti_skid_tiles_rough_1k.jpg",
 		Vector3(14, 8, 1), 0.25, 0.4)
+	# Dark graphite tiles: the light texture under the pink neon washed out to pale peach.
+	floor_mat.albedo_color = Color(0.3, 0.32, 0.38)
 	_box(Vector3(18.0, 0.02, 10.0), Vector3(0, 0.01, 0.0), floor_mat)
 	# Floor grid seams with drainage channels
 	for x in range(-8, 9, 2):
@@ -241,9 +243,9 @@ func _build_mensa() -> void:
 	if we and we.environment:
 		we.environment = we.environment.duplicate()
 		we.environment.tonemap_mode = Environment.TONE_MAPPER_ACES
-		we.environment.tonemap_exposure = 1.05
+		we.environment.tonemap_exposure = 0.86 # 1.05 blew the windows and the marble out
 		we.environment.glow_enabled = true
-		we.environment.glow_bloom = 0.14
+		we.environment.glow_bloom = 0.1
 		we.environment.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
 		we.environment.adjustment_enabled = true
 		we.environment.adjustment_contrast = 1.15
@@ -271,6 +273,7 @@ func _build_mensa() -> void:
 		"res://assets/stage_props/mensa/textures/floor_tiles_06_nor_1k.jpg",
 		"res://assets/stage_props/mensa/textures/floor_tiles_06_rough_1k.jpg",
 		Vector3(14, 12, 1), 0.35)
+	tiles.albedo_color = Color(0.78, 0.76, 0.74) # a touch darker: the white tiles glared
 	if tiles.albedo_texture == null:
 		tiles.albedo_texture = _checker(Color(0.62, 0.6, 0.55), Color(0.55, 0.56, 0.54))
 		tiles.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
