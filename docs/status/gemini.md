@@ -240,6 +240,39 @@ and any requests for other agents.
   - Added sim test assertions in `tests/sim_test.gd` verifying all moves, super, trials, personality, and showcase routine.
   - Automated test suite `tests/sim_test.gd` passes with `0 failure(s)`.
 
+## C10: AGI boss phases by health
+- **State**: review
+- **Summary**: Implemented AGI (`algorithm`) multi-phase boss mechanics governed by health thresholds per `docs/ROADMAP.md` §4 and `docs/TASKS.md` §9, with cosmetic phase transitions, dynamic armour, speed boosts, meter regeneration, special move mimicry, and phase-aware AI behaviour.
+- **Details**:
+  - **Phase 1: Assistant** (100% - 60% max_health):
+    - Standard speed and base moveset.
+    - Look variant reset to -1 (`FighterModel.set_look_variant(-1)`).
+    - Polite assistance dialogue lines (`phase_line()`).
+    - AI focuses on zoning at long range (boosted fireball `data_stream` and spacing).
+  - **Phase 2: Agent** (60% - 25% max_health):
+    - Triggered at <= 60% max_health.
+    - Faster movement (25% boost to walk and dash speeds).
+    - Automatic super armour granted on startup for all special attacks (`has_armor()`).
+    - Look variant switched to 0 (`FighterModel.set_look_variant(0)` with acid-green glow palette).
+    - Cosmetic transition: full-screen digital glitch burst (`ZuckerbotFx.Glitch`), stage lights turn alarm red, and digital glitch audio cue.
+    - AI switches to aggressive close-range pressure, leveraging armoured specials (`compute_rush`) and command grabs (`model_collapse`).
+  - **Phase 3: Superintelligence** (< 25% max_health):
+    - Triggered at < 25% max_health.
+    - Special move mimicry: tracks player/opponent special usage during the match (`record_opponent_special()`), selects the most-used special, and registers it into AGI's executable moveset (`mimicked_move`).
+    - Passive meter regeneration (2 meter per tick) enabling relentless supers.
+    - Look variant switched to 1 (`FighterModel.set_look_variant(1)` with hot red glow palette).
+    - Cosmetic glitch transition and red stage atmosphere.
+    - AI aggressively prioritizes mimicked specials, teleport mixups, and canceling combo strings into `super_move` ("Engagement Loop").
+  - **Deterministic Simulation**:
+    - `&"boss_phase"` included in `Fighter.SIM_FIELDS` for rollback compatibility.
+    - Cosmetic effects (glitch, stage lights, audio) remain purely client/presentation-side without affecting rollback state.
+  - **Preserved Custom Outfits**:
+    - Updated `tools/build_showdown_roster.gd` to preserve `variant_outfit_colors` from previous character data across roster rebuilds.
+  - **Verification**:
+    - Automated test suite `tests/sim_test.gd` updated with comprehensive assertions for health threshold triggers, look variants, speed boosts, armour on specials, special tracking, mimicry, and meter regen.
+    - Test suite passes with `0 failure(s)`.
+
+
 
 
 

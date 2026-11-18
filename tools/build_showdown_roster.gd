@@ -367,6 +367,7 @@ func _build(spec: Dictionary, order: int) -> void:
 	data.outfit_body_mesh = previous.outfit_body_mesh if previous else null
 	data.outfit_colors = previous.outfit_colors if previous else PackedColorArray()
 	data.alt_outfit_colors = previous.alt_outfit_colors if previous else PackedColorArray()
+	data.variant_outfit_colors = previous.variant_outfit_colors if previous else ([] as Array[PackedColorArray])
 	data.outfit_fabrics = previous.outfit_fabrics if previous else ([] as Array[StringName])
 	data.detailed_textures = previous.detailed_textures if previous else false
 	var portrait := PORTRAIT_DIR + String(spec.id) + ".png"

@@ -21,6 +21,8 @@ signal super_started(fighter: Fighter, move: MoveData)
 signal move_active(fighter: Fighter, move: MoveData)
 ## Knocked into the stage edge hard enough to splat (or bounce off the ropes).
 signal wall_hit(fighter: Fighter)
+## A boss phase changed (e.g. AGI health thresholds).
+signal phase_changed(new_phase: int, old_phase: int)
 
 enum State {
 	IDLE, WALK_FWD, WALK_BACK, CROUCH,
@@ -140,7 +142,7 @@ const SIM_FIELDS := [&"input_locked", &"view_right", &"view_depth", &"state", &"
 	&"current_move", &"move_has_hit", &"hits_landed", &"next_hit_frame", &"meter", &"frozen",
 	&"_landing_frames", &"sidestep_dir", &"victory", &"last_hit_level", &"immortal", &"focus",
 	&"move_focus", &"wall_used", &"wall_normal", &"hit_push", &"armor_used", &"shots_left",
-	&"shot_timer", &"shot_index"]
+	&"shot_timer", &"shot_index", &"boss_phase"]
 ## (victory_clip is cosmetic: each machine picks its own victory animation.)
 
 var data: CharacterData
@@ -162,7 +164,19 @@ var view_depth := Vector3.FORWARD
 var state: State = State.IDLE
 var state_frame := 0 # ticks spent in the current state
 var crouching := false
-var health := 0
+var health := 0:
+	set(value):
+		health = value
+		update_boss_phase()
+var boss_phase := 1
+var opponent_specials_used: Dictionary = {}
+var mimicked_move: MoveData = null
+const POLITE_LINES := [
+	"How may I assist you today?",
+	"Thank you for your feedback.",
+	"Processing your input with care.",
+	"I apologise for any inconvenience.",
+]
 var forward := Vector3.RIGHT # flattened unit vector toward the opponent
 var velocity := Vector3.ZERO
 var hitstop := 0
@@ -288,6 +302,11 @@ func _ready() -> void:
 func reset_to(spawn_position: Vector3) -> void:
 	position = spawn_position
 	velocity = Vector3.ZERO
+	boss_phase = 1
+	if model:
+		model.set_look_variant(-1)
+	opponent_specials_used.clear()
+	mimicked_move = null
 	health = data.max_health
 	hitstop = 0
 	stun = 0
@@ -391,6 +410,8 @@ func tick() -> void:
 	if hitstop > 0:
 		hitstop -= 1
 		return
+	if is_boss() and boss_phase >= 3:
+		add_meter(2)
 	state_frame += 1
 	match state:
 		State.IDLE, State.WALK_FWD, State.WALK_BACK, State.CROUCH:
@@ -411,11 +432,11 @@ func tick() -> void:
 			if state_frame <= DASH_SPECIAL_CANCEL and _try_special(false):
 				_apply_motion()
 				return
-			velocity = forward * data.dash_speed * _burst_curve(DASH_FRAMES)
+			velocity = forward * effective_dash_speed() * _burst_curve(DASH_FRAMES)
 			if state_frame >= DASH_FRAMES:
 				_return_to_neutral()
 		State.BACKDASH:
-			velocity = -forward * data.dash_speed * 0.9 * _burst_curve(BACKDASH_FRAMES)
+			velocity = -forward * effective_dash_speed() * 0.9 * _burst_curve(BACKDASH_FRAMES)
 			if state_frame >= BACKDASH_FRAMES:
 				_return_to_neutral()
 		State.SIDESTEP:
@@ -497,11 +518,11 @@ func _tick_neutral() -> void:
 
 	match state:
 		State.WALK_FWD:
-			velocity = forward * data.walk_speed
+			velocity = forward * effective_walk_speed()
 		State.WALK_BACK:
 			# Proximity guard: holding back against a threatening attack blocks in place
 			# instead of walking out of range.
-			velocity = Vector3.ZERO if opponent.is_threatening(self) else -forward * data.back_walk_speed
+			velocity = Vector3.ZERO if opponent.is_threatening(self) else -forward * effective_back_walk_speed()
 		_:
 			velocity = Vector3.ZERO
 
@@ -670,6 +691,8 @@ func _start_move(move: MoveData, airborne: bool, carried_focus := -1) -> void:
 		super_started.emit(self, move)
 	elif move.is_special():
 		add_meter(METER_PER_SPECIAL)
+		if opponent:
+			opponent.record_opponent_special(move)
 	attack_started.emit(move)
 
 
@@ -795,6 +818,8 @@ func _find_move(button: int, dir: int, airborne: bool) -> MoveData:
 
 ## Exact input lookup (also finds "~" follow-ups).
 func _move_for_input(input_name: String) -> MoveData:
+	if mimicked_move != null and mimicked_move.input == input_name:
+		return mimicked_move
 	for move in data.moves:
 		if move.input == input_name:
 			return move
@@ -994,8 +1019,12 @@ func _armor_absorbs(move: MoveData) -> bool:
 
 ## True while the current move still has super armour to spend: its startup frames only.
 func has_armor() -> bool:
-	return state == State.ATTACK and current_move != null and armor_used < current_move.armor_hits \
-			and state_frame <= current_move.startup
+	if state != State.ATTACK or current_move == null:
+		return false
+	var effective_armor_hits := current_move.armor_hits
+	if is_boss() and boss_phase >= 2 and current_move.is_special() and not current_move.super_move:
+		effective_armor_hits = maxi(effective_armor_hits, 1)
+	return armor_used < effective_armor_hits and state_frame <= current_move.startup
 
 
 func _take_damage(amount: int) -> void:
@@ -1007,6 +1036,113 @@ func _knock_out(push_dir: Vector3) -> void:
 	velocity += push_dir * 1.5 + Vector3.UP * 4.0
 	_set_state(State.KO)
 	knocked_out.emit(self)
+
+
+func is_boss() -> bool:
+	return data != null and (data.id == &"algorithm" or data.archetype == "Boss")
+
+
+func effective_walk_speed() -> float:
+	var spd := data.walk_speed
+	if is_boss() and boss_phase >= 2:
+		spd *= 1.25
+	return spd
+
+
+func effective_back_walk_speed() -> float:
+	var spd := data.back_walk_speed
+	if is_boss() and boss_phase >= 2:
+		spd *= 1.25
+	return spd
+
+
+func effective_dash_speed() -> float:
+	var spd := data.dash_speed
+	if is_boss() and boss_phase >= 2:
+		spd *= 1.25
+	return spd
+
+
+func update_boss_phase() -> void:
+	if not is_boss():
+		return
+	var max_hp := maxi(data.max_health, 1)
+	var ratio := health / float(max_hp)
+	var target_phase := 1
+	if ratio < 0.25:
+		target_phase = 3
+	elif ratio <= 0.60:
+		target_phase = 2
+	if target_phase != boss_phase:
+		var old_phase := boss_phase
+		boss_phase = target_phase
+		_apply_boss_phase(target_phase, old_phase)
+		phase_changed.emit(target_phase, old_phase)
+
+
+func _apply_boss_phase(new_phase: int, _old_phase: int) -> void:
+	if model:
+		if new_phase == 1:
+			model.set_look_variant(-1)
+		elif new_phase == 2:
+			model.set_look_variant(0)
+		elif new_phase == 3:
+			model.set_look_variant(1)
+	if new_phase >= 3:
+		_update_mimicked_move()
+
+
+func phase_line() -> String:
+	match boss_phase:
+		1:
+			return POLITE_LINES[randi() % POLITE_LINES.size()]
+		2:
+			return "AGENT PROTOCOL ENGAGED."
+		3:
+			return "SUPERINTELLIGENCE COMPLETE."
+		_:
+			return ""
+
+
+func record_opponent_special(move: MoveData) -> void:
+	if not move.is_special() or move.super_move:
+		return
+	opponent_specials_used[move] = opponent_specials_used.get(move, 0) + 1
+	if is_boss() and boss_phase >= 3:
+		_update_mimicked_move()
+
+
+func get_most_used_opponent_special() -> MoveData:
+	var best_move: MoveData = null
+	var best_count := 0
+	for m: MoveData in opponent_specials_used:
+		var count: int = opponent_specials_used[m]
+		if count > best_count:
+			best_count = count
+			best_move = m
+	return best_move
+
+
+func _update_mimicked_move() -> void:
+	var move := get_most_used_opponent_special()
+	if move == null and opponent and opponent.data:
+		for m in opponent.data.moves:
+			if m.is_special() and not m.super_move:
+				move = m
+				break
+	if move != null and move != mimicked_move:
+		mimicked_move = move
+		_register_mimicked_move(move)
+
+
+func _register_mimicked_move(move: MoveData) -> void:
+	var motion := move.motion()
+	if motion == "":
+		return
+	var window := SUPER_MOTION_WINDOW if move.super_move or motion.length() >= 5 else MOTION_WINDOW
+	var entry := [move, motion, _motion_sequence(motion), _special_buttons(move.input.substr(motion.length())), window]
+	_specials = _specials.filter(func(s: Array) -> bool: return s[0] != mimicked_move and s[0] != move)
+	_specials.push_front(entry)
 
 
 ## Called on the attacker after its hitbox connected (hit or block).

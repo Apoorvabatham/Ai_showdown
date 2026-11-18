@@ -5138,6 +5138,74 @@ func showdown_tests() -> void:
 		and agi.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Optimiser"
 		and FighterShowcase.ROUTINES.has(&"algorithm"))
 
+	# C10: AGI boss phases by health (Assistant -> Agent -> Superintelligence)
+	var fighter_scene: PackedScene = load("res://scenes/fighter/fighter.tscn")
+	var agi_f: Fighter = fighter_scene.instantiate() as Fighter
+	var agi_ctl := DummyController.new()
+	agi_f.setup(agi, agi_ctl)
+	var opp_char: CharacterData = gs.find_character(&"ram")
+	var opp_f: Fighter = fighter_scene.instantiate() as Fighter
+	var opp_ctl := DummyController.new()
+	opp_f.setup(opp_char, opp_ctl)
+	agi_f.opponent = opp_f
+	opp_f.opponent = agi_f
+	root.add_child(agi_f)
+	root.add_child(opp_f)
+	await process_frame
+
+	# Phase 1: Assistant at full health (100% - 60% max_health)
+	check("Showdown C10: AGI phase 1 is Assistant at full health", agi_f.boss_phase == 1
+		and agi_f.effective_walk_speed() == agi.walk_speed
+		and agi_f.model != null and agi_f.model.look_variant == -1)
+	var ds_move: MoveData = agi_f._move_for_input("236P")
+	agi_f.current_move = ds_move
+	agi_f.state = Fighter.State.ATTACK
+	agi_f.state_frame = 2
+	check("Showdown C10: specials have no innate armour in phase 1", not agi_f.has_armor())
+	agi_f.current_move = null
+	agi_f.state = Fighter.State.IDLE
+
+	# Phase 2: Agent (60% - 25% max_health)
+	agi_f.health = int(agi.max_health * 0.55)
+	agi_f.current_move = ds_move
+	agi_f.state = Fighter.State.ATTACK
+	agi_f.state_frame = 2
+	check("Showdown C10: AGI phase 2 (Agent) triggers at <= 60% health with speed boost and armour on specials",
+		agi_f.boss_phase == 2
+		and agi_f.effective_walk_speed() > agi.walk_speed
+		and agi_f.model != null and agi_f.model.look_variant == 0
+		and agi_f.has_armor())
+	agi_f.current_move = null
+	agi_f.state = Fighter.State.IDLE
+
+	# Opponent executes a special move (e.g. Ki Blast / special)
+	var opp_special: MoveData = null
+	for m: MoveData in opp_f.data.moves:
+		if m.is_special() and not m.super_move:
+			opp_special = m
+			break
+	if opp_special:
+		opp_f._start_move(opp_special, false)
+	check("Showdown C10: AGI tracks opponent specials", agi_f.get_most_used_opponent_special() == opp_special)
+
+	# Phase 3: Superintelligence (< 25% max_health)
+	agi_f.health = int(agi.max_health * 0.20)
+	check("Showdown C10: AGI phase 3 (Superintelligence) triggers at < 25% health with mimicry and look variant 1",
+		agi_f.boss_phase == 3
+		and agi_f.model != null and agi_f.model.look_variant == 1
+		and agi_f.mimicked_move == opp_special
+		and agi_f._move_for_input(opp_special.input) == opp_special)
+
+	# Meter regen in Phase 3
+	agi_f.meter = 0
+	for i in 10:
+		agi_f.tick()
+	check("Showdown C10: AGI phase 3 regenerates meter over time", agi_f.meter > 0)
+
+	agi_f.queue_free()
+	opp_f.queue_free()
+	await process_frame
+
 	# Voices: a fighter without its own shouts borrows its fallback's, except for the super
 	# (the drop-in <id>_super_1.ogg/.wav names the move).
 	var audio = root.get_node("Audio")

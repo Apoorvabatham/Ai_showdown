@@ -226,7 +226,28 @@ func personality_name() -> String:
 
 ## Personality weight for an option kind.
 func _w(kind: String) -> float:
-	return (personality.weights as Dictionary).get(kind, 1.0)
+	var w: float = (personality.weights as Dictionary).get(kind, 1.0)
+	if _fighter and _fighter.is_boss():
+		if _fighter.boss_phase == 1:
+			if kind == "fireball":
+				w *= 1.8
+			elif kind in ["wait", "retreat"]:
+				w *= 1.5
+			elif kind in ["rush", "grab"]:
+				w *= 0.6
+		elif _fighter.boss_phase == 2:
+			if kind in ["rush", "ground_special"]:
+				w *= 2.0
+			elif kind == "grab":
+				w *= 1.6
+			elif kind in ["wait", "retreat"]:
+				w *= 0.4
+		elif _fighter.boss_phase >= 3:
+			if kind in ["rush", "teleport", "grab"]:
+				w *= 1.8
+			elif kind in ["wait", "retreat"]:
+				w *= 0.3
+	return w
 
 
 func difficulty_name() -> String:
@@ -255,6 +276,7 @@ func read(fighter: Fighter) -> int:
 
 
 func _choose_input(fighter: Fighter) -> int:
+	_fighter = fighter
 	_tick += 1
 	_dashing = false
 	_remember(fighter.opponent)
@@ -458,8 +480,10 @@ func _punish(fighter: Fighter, dist: float, target_crouching: bool) -> void:
 	var super_move := _special_with(func(m: MoveData) -> bool: return m.super_move)
 	var launcher := _move("2HP")
 	var rush := _special_with(func(m: MoveData) -> bool: return (m.travel > 0.0 or m.lunge > 0.0) and m.rise == 0.0 and not m.super_move)
-	if super_move and fighter.meter >= Fighter.MAX_METER and dist <= reach(super_move) and _rng.randf() < 0.8:
+	if super_move and fighter.meter >= Fighter.MAX_METER and dist <= reach(super_move) and (_rng.randf() < 0.8 or fighter.boss_phase >= 3):
 		_queue_special(super_move)
+	elif fighter.boss_phase >= 3 and fighter.mimicked_move != null and dist <= reach(fighter.mimicked_move) and _rng.randf() < 0.7:
+		_queue_special(fighter.mimicked_move)
 	elif rush and dist > reach(_move("HK")) and dist <= reach(rush) and _rng.randf() < personality.far_punish:
 		_queue_special(rush) # whiff punish from long range
 	elif launcher and dist <= reach(launcher) and _rng.randf() < 0.6:
@@ -547,6 +571,23 @@ func _decide(fighter: Fighter, seen: Dictionary, dist: float) -> void:
 	var stance := _stance(fighter)
 	var reversal := _reversal_move()
 	var glide := _special_any(func(m: MoveData) -> bool: return m.projectile_immune and m.travel > 0.0 and not _is_attack(m))
+	var super_move := _special_with(func(m: MoveData) -> bool: return m.super_move)
+	var mimicked: MoveData = fighter.mimicked_move if fighter.is_boss() and fighter.boss_phase >= 3 else null
+	var cur_aggression := aggression
+	var preferred: float = personality.preferred_range
+	if fighter.is_boss():
+		if fighter.boss_phase == 1:
+			cur_aggression = clampf(aggression - 0.15, 0.05, 0.95)
+			preferred = 2.4
+		elif fighter.boss_phase == 2:
+			cur_aggression = clampf(aggression + 0.25, 0.05, 0.95)
+			preferred = 1.1
+		elif fighter.boss_phase >= 3:
+			cur_aggression = clampf(aggression + 0.35, 0.05, 0.95)
+			preferred = 1.3
+			if mimicked != null:
+				_moves[mimicked.input] = mimicked
+
 	if dist > FAR_RANGE:
 		options = [
 			[2.5 * _w("fireball") if can_fireball else 0.0, func() -> void: _queue_special(projectile_move)],
@@ -554,45 +595,48 @@ func _decide(fighter: Fighter, seen: Dictionary, dist: float) -> void:
 			[1.2 * _w("power") if can_power else 0.0, func() -> void: _queue_special(power)],
 			[0.4 * _w("teleport") if teleport else 0.0, func() -> void: _queue_special(teleport)],
 			[1.0 * _w("stance") if stance else 0.0, func() -> void: _queue_special(stance)],
-			[1.0 * aggression * _w("rush") if rush and dist <= reach(rush) else 0.0, func() -> void: _queue_special(rush)],
+			[1.0 * cur_aggression * _w("rush") if rush and dist <= reach(rush) else 0.0, func() -> void: _queue_special(rush)],
 			[4.0 * _w("approach"), func() -> void: _plan.append([6, 0, _rng.randi_range(12, 28)])],
 			[1.0 * _w("glide") if glide else 0.0, func() -> void: _queue_special(glide)],
-			[2.0 * aggression * _w("dash"), func() -> void: _queue_dash()],
-			[1.0 * aggression * _w("jump"), func() -> void: _queue_jump_in()],
-			[1.0 * (1.0 - aggression) * _w("wait"), func() -> void: _plan.append([5, 0, _rng.randi_range(8, 20)])],
+			[2.0 * cur_aggression * _w("dash"), func() -> void: _queue_dash()],
+			[1.0 * cur_aggression * _w("jump"), func() -> void: _queue_jump_in()],
+			[1.0 * (1.0 - cur_aggression) * _w("wait"), func() -> void: _plan.append([5, 0, _rng.randi_range(8, 20)])],
 		]
 	elif dist > CLOSE_RANGE:
 		options = [
 			[3.0 * _w("approach"), func() -> void: _plan.append([6, 0, _rng.randi_range(6, 14)])],
-			[2.0 * aggression * _w("poke"), func() -> void: _queue_poke(dist)],
-			[1.2 * aggression if _signature_in_range(dist) else 0.0, func() -> void: _queue_press(HP, 6)],
-			[1.0 * aggression * _w("rush") if rush and dist <= reach(rush) else 0.0, func() -> void: _queue_special(rush)],
+			[2.0 * cur_aggression * _w("poke"), func() -> void: _queue_poke(dist)],
+			[1.2 * cur_aggression if _signature_in_range(dist) else 0.0, func() -> void: _queue_press(HP, 6)],
+			[1.0 * cur_aggression * _w("rush") if rush and dist <= reach(rush) else 0.0, func() -> void: _queue_special(rush)],
 			[0.8 * _w("fireball") if can_fireball else 0.0, func() -> void: _queue_special(projectile_move)],
 			[0.6 * _w("power") if can_power else 0.0, func() -> void: _queue_special(power)],
 			[0.6 * _w("teleport") if teleport else 0.0, func() -> void: _queue_special(teleport)],
-			[1.5 * aggression * _w("jump"), func() -> void: _queue_jump_in()],
+			[1.5 * cur_aggression * _w("jump"), func() -> void: _queue_jump_in()],
 			[1.0 * _w("sidestep"), func() -> void: _queue_sidestep()],
 			[0.6 * _w("retreat"), func() -> void: _queue_backdash()],
-			[1.0 * (1.0 - aggression) * _w("wait"), func() -> void: _plan.append([4, 0, _rng.randi_range(6, 14)])],
+			[1.0 * (1.0 - cur_aggression) * _w("wait"), func() -> void: _plan.append([4, 0, _rng.randi_range(6, 14)])],
 		]
 	else:
 		# Against a fighter with a reversal stance: more lows and throws, fewer big swings.
 		var wary := 1.0 if _opponent_reverses(fighter) else 0.0
 		options = [
-			[3.0 * aggression * _w("string") * (1.0 - 0.4 * wary), func() -> void: _queue_string()],
+			[3.0 * cur_aggression * _w("string") * (1.0 - 0.4 * wary), func() -> void: _queue_string()],
 			[1.5 * (1.0 + wary), func() -> void: _queue_press(LK, 2)],
-			[1.0 * aggression * (1.0 + 0.5 * wary), func() -> void: _queue_press(HK, 2)],
+			[1.0 * cur_aggression * (1.0 + 0.5 * wary), func() -> void: _queue_press(HK, 2)],
 			[1.0 * (1.0 - 0.5 * wary), func() -> void: _queue_press(HP, 2)],
-			[0.8 * aggression * _w("ground_special") * (1.0 + wary) if ground_special and dist <= reach(ground_special) else 0.0, func() -> void: _queue_special(ground_special)],
-			[1.2 * aggression * _w("throw") * (1.0 + wary) if dist < THROW_RANGE else 0.0, func() -> void: _queue_throw()],
-			[1.0 * aggression * _w("grab") if grab and dist < grab.grab_range - 0.05 else 0.0, func() -> void: _queue_special(grab)],
-			[1.5 * (1.0 - aggression) * _w("wait"), func() -> void: _plan.append([4 if _rng.randf() < 0.5 else 1, 0, _rng.randi_range(8, 18)])],
+			[0.8 * cur_aggression * _w("ground_special") * (1.0 + wary) if ground_special and dist <= reach(ground_special) else 0.0, func() -> void: _queue_special(ground_special)],
+			[1.2 * cur_aggression * _w("throw") * (1.0 + wary) if dist < THROW_RANGE else 0.0, func() -> void: _queue_throw()],
+			[1.0 * cur_aggression * _w("grab") if grab and dist < grab.grab_range - 0.05 else 0.0, func() -> void: _queue_special(grab)],
+			[1.5 * (1.0 - cur_aggression) * _w("wait"), func() -> void: _plan.append([4 if _rng.randf() < 0.5 else 1, 0, _rng.randi_range(8, 18)])],
 			[0.6 * _w("retreat"), func() -> void: _queue_backdash()],
 			[0.5 * _w("sidestep"), func() -> void: _queue_sidestep()],
 			[1.0 * _w("reversal") * personality.get("reversal", 0.0) if reversal else 0.0, func() -> void: _queue_special(reversal)],
 		]
+	if mimicked != null and dist <= reach(mimicked):
+		options.append([2.5 * cur_aggression, func() -> void: _queue_special(mimicked)])
+	if super_move and fighter.meter >= Fighter.MAX_METER and dist <= reach(super_move):
+		options.append([3.0 * cur_aggression, func() -> void: _queue_special(super_move)])
 	# Steer toward the personality's preferred range (unless backed into the ropes).
-	var preferred: float = personality.preferred_range
 	if dist < preferred - SPACING_SLACK and not fighter.is_pinned_against_bounds(-fighter.forward):
 		options.append([2.5 * _w("retreat"), func() -> void: _plan.append([4, 0, _rng.randi_range(10, 20)])])
 		options.append([0.8 * _w("retreat"), func() -> void: _queue_backdash()])
@@ -626,6 +670,10 @@ func _queue_string() -> void:
 	_queue_press(LP)
 	_plan.append([5, 0, 2])
 	if _rng.randf() < combo_drop_chance:
+		return
+	var super_move := _special_with(func(m: MoveData) -> bool: return m.super_move)
+	if super_move and _fighter and _fighter.meter >= Fighter.MAX_METER and (_fighter.boss_phase >= 3 or _rng.randf() < 0.4):
+		_queue_special(super_move, false)
 		return
 	var finisher := _special_with(func(m: MoveData) -> bool: return not m.super_move and m.projectile_speed == 0.0 and m.rise == 0.0)
 	if finisher and _rng.randf() < 0.3:
@@ -830,8 +878,11 @@ func _move(input: String) -> MoveData:
 	return _moves.get(input)
 
 
+var _fighter: Fighter
+
 ## Called once the fighter is known, to index its moves.
 func attach(fighter: Fighter) -> void:
+	_fighter = fighter
 	_moves.clear()
 	for move in fighter.data.moves:
 		_moves[move.input] = move

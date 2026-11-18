@@ -275,6 +275,7 @@ func _spawn_fighter(character: CharacterData, controller: FighterController, alt
 	fighter.bounds_half_extent = stage.bounds_half_extent
 	fighter.bounds_depth = stage.depth_limit()
 	fighter.edge_style = stage.edge_style
+	fighter.phase_changed.connect(_on_fighter_phase_changed.bind(fighter))
 	add_child(fighter)
 	fighters.append(fighter)
 	return fighter
@@ -521,6 +522,7 @@ func _go_to(scene: String) -> void:
 func _reset_round() -> void:
 	ai.reset()
 	_set_freeze(0)
+	_set_stage_lights_red(false)
 	fighters[0].reset_to(stage.p1_spawn.global_position)
 	fighters[1].reset_to(stage.p2_spawn.global_position)
 	view_dir = Vector3.BACK
@@ -589,6 +591,49 @@ func _on_super_started(fighter: Fighter, move: MoveData) -> void:
 	super_flash.emit(fighter, move)
 	hud.super_flash(fighters.find(fighter), move.name)
 	camera.start_super(fighter)
+
+
+var _boss_glitch: CanvasLayer
+var _boss_lights_active := false
+
+func _on_fighter_phase_changed(new_phase: int, old_phase: int, fighter: Fighter) -> void:
+	if new_phase <= old_phase:
+		return
+	if resimulating:
+		return
+	_trigger_phase_glitch()
+	_set_stage_lights_red(true)
+	Audio.sfx(&"digital_glitch", -2.0)
+	if hud:
+		hud.announce("PHASE %d" % new_phase, fighter.phase_line(), true)
+
+
+func _trigger_phase_glitch() -> void:
+	if _boss_glitch == null:
+		var glitch_script = load("res://scripts/supers/zuckerbot_fx.gd")
+		if glitch_script and "Glitch" in glitch_script:
+			_boss_glitch = glitch_script.Glitch.new()
+			add_child(_boss_glitch)
+	if _boss_glitch and _boss_glitch.has_method("burst"):
+		_boss_glitch.burst(0.4)
+
+
+func _set_stage_lights_red(active: bool) -> void:
+	if stage == null:
+		return
+	_boss_lights_active = active
+	for node in stage.find_children("*", "Light3D", true, false):
+		var light := node as Light3D
+		if light:
+			if active:
+				if not light.has_meta(&"orig_color"):
+					light.set_meta(&"orig_color", light.light_color)
+					light.set_meta(&"orig_energy", light.light_energy)
+				light.light_color = Color(1.0, 0.15, 0.15)
+				light.light_energy = (light.get_meta(&"orig_energy") as float) * 1.3
+			elif light.has_meta(&"orig_color"):
+				light.light_color = light.get_meta(&"orig_color")
+				light.light_energy = light.get_meta(&"orig_energy")
 
 
 ## Keeps the camera side-on to the fight axis, turning toward whichever perpendicular is
