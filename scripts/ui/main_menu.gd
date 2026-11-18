@@ -9,6 +9,7 @@ const REPLAYS_SCENE := "res://scenes/replays.tscn"
 
 @onready var start_button: Button = %StartButton
 @onready var arcade_button: Button = %ArcadeButton
+@onready var story_button: Button = %StoryButton
 @onready var quit_button: Button = %QuitButton
 @onready var options_button: Button = %OptionsButton
 @onready var versus_button: Button = %VersusButton
@@ -53,6 +54,8 @@ func _ready() -> void:
 	start_button.add_sibling(quick_button)
 	quick_button.pressed.connect(_start.bind(GameState.Mode.QUICK))
 	arcade_button.pressed.connect(_start.bind(GameState.Mode.ARCADE))
+	if story_button:
+		story_button.pressed.connect(_start.bind(GameState.Mode.STORY))
 	versus_button.pressed.connect(_start.bind(GameState.Mode.VERSUS))
 	training_button.pressed.connect(_start.bind(GameState.Mode.TRAINING))
 	# Demo: two CPU fighters on a random stage until a button is pressed.

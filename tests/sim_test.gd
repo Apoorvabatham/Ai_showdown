@@ -5054,6 +5054,9 @@ func showdown_tests() -> void:
 		for mv in gs.find_character(id).moves:
 			if mv.input in ["214K", "214P", "63214P"] and mv.projectile_look != &"" and not mv.super_move:
 				power_moves[id] = mv
+	var test_rocket := ProjectileLooks.build(&"mini_rocket", Color.WHITE)
+	var rocket_flame := test_rocket.get_node_or_null("Flame") != null
+	test_rocket.free()
 	check("Showdown: power moves throw animated objects (Rocket Barrage, GPU Rain, Search Result)",
 		power_moves.size() == 3 and power_moves.tesla.name == "Rocket Barrage" and power_moves.tesla.projectile_look == &"mini_rocket"
 		and power_moves.tesla.projectile_count == 3 and power_moves.jensen.name == "GPU Rain"
@@ -5061,8 +5064,35 @@ func showdown_tests() -> void:
 		and power_moves.sundar.name == "Search Result" and power_moves.sundar.projectile_origin == &"around"
 		and power_moves.sundar.projectile_count == 5 and not power_moves.sundar.knockdown
 		and gs.find_character(&"jensen").moves.any(func(mv: MoveData) -> bool: return mv.input == "236P" and mv.name == "Tensor Blast")
-		and ProjectileLooks.build(&"mini_rocket", Color.WHITE).get_node_or_null("Flame") != null,
+		and rocket_flame,
 		str(power_moves.keys()))
+
+	# O7: Projectile looks load OpenCode props and animate
+	var sb := ProjectileLooks.build(&"search_bar", Color.WHITE)
+	var sb_query := sb.get_node_or_null("Query") as Label3D
+	var gpu_node := ProjectileLooks.build(&"gpu", Color.WHITE)
+	var gpu_fan1 := gpu_node.get_node_or_null("Fan1") as Node3D
+	var gpu_fan2 := gpu_node.get_node_or_null("Fan2") as Node3D
+	var initial_fan_rot: float = gpu_fan1.rotation.z if gpu_fan1 else 0.0
+	ProjectileLooks.animate(gpu_node, &"gpu", Vector3.FORWARD, 0.5, 0.1)
+	var fan_spun: bool = gpu_fan1 != null and gpu_fan1.rotation.z != initial_fan_rot
+	var cont := ProjectileLooks.build(&"container", Color.WHITE)
+	var rocket := ProjectileLooks.build(&"mini_rocket", Color.WHITE)
+	var dragon := ProjectileLooks.build(&"paper_dragon", Color.WHITE)
+	var dragon_segments: int = 0
+	for child in dragon.get_children():
+		if child is Node3D and child.has_meta(&"segment"):
+			dragon_segments += 1
+	check("Showdown O7: ProjectileLooks loads props with interactive hooks",
+		sb_query != null and ProjectileLooks.SEARCH_QUERIES.has(sb_query.text)
+		and gpu_fan1 != null and gpu_fan2 != null and gpu_node.has_meta(&"tumble_axis") and fan_spun
+		and cont != null and rocket.get_node_or_null("Flame") != null
+		and dragon_segments >= 7)
+	sb.free()
+	gpu_node.free()
+	cont.free()
+	rocket.free()
+	dragon.free()
 	var zuck: CharacterData = gs.find_character(&"zuckerbot")
 	var donald: CharacterData = gs.find_character(&"donald")
 	var donald_moves := {}
@@ -5091,6 +5121,90 @@ func showdown_tests() -> void:
 		and xi.moves.all(func(mv: MoveData) -> bool: return mv.armor_hits == 0)
 		and geoff.moves.any(func(mv: MoveData) -> bool: return mv.armor_hits > 0)
 		and xi.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Fortress" and FighterShowcase.ROUTINES.has(&"xi"))
+
+	var agi: CharacterData = gs.find_character(&"algorithm")
+	var agi_moves := {}
+	for mv: MoveData in agi.moves:
+		agi_moves[mv.input] = mv
+	var agi_super: MoveData = agi.moves.filter(func(mv: MoveData) -> bool: return mv.super_move)[0]
+	check("Showdown: AGI is trained on everyone (projectile, command grab, reversal, armour, teleport, super)",
+		agi_moves.has("236P") and (agi_moves["236P"] as MoveData).fires_projectile()
+		and agi_moves.has("63214P") and (agi_moves["63214P"] as MoveData).command_grab
+		and agi_moves.has("214P") and (agi_moves["214P"] as MoveData).reversal
+		and agi_moves.has("236K") and (agi_moves["236K"] as MoveData).armor_hits > 0
+		and agi_moves.has("214K") and (agi_moves["214K"] as MoveData).teleport > 0.0
+		and agi_super.name == "Engagement Loop" and not agi_moves.has("623K")
+		and agi.combo_trials.size() == 6
+		and agi.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Optimiser"
+		and FighterShowcase.ROUTINES.has(&"algorithm"))
+
+	# C10: AGI boss phases by health (Assistant -> Agent -> Superintelligence)
+	var fighter_scene: PackedScene = load("res://scenes/fighter/fighter.tscn")
+	var agi_f: Fighter = fighter_scene.instantiate() as Fighter
+	var agi_ctl := DummyController.new()
+	agi_f.setup(agi, agi_ctl)
+	var opp_char: CharacterData = gs.find_character(&"ram")
+	var opp_f: Fighter = fighter_scene.instantiate() as Fighter
+	var opp_ctl := DummyController.new()
+	opp_f.setup(opp_char, opp_ctl)
+	agi_f.opponent = opp_f
+	opp_f.opponent = agi_f
+	root.add_child(agi_f)
+	root.add_child(opp_f)
+	await process_frame
+
+	# Phase 1: Assistant at full health (100% - 60% max_health)
+	check("Showdown C10: AGI phase 1 is Assistant at full health", agi_f.boss_phase == 1
+		and agi_f.effective_walk_speed() == agi.walk_speed
+		and agi_f.model != null and agi_f.model.look_variant == -1)
+	var ds_move: MoveData = agi_f._move_for_input("236P")
+	agi_f.current_move = ds_move
+	agi_f.state = Fighter.State.ATTACK
+	agi_f.state_frame = 2
+	check("Showdown C10: specials have no innate armour in phase 1", not agi_f.has_armor())
+	agi_f.current_move = null
+	agi_f.state = Fighter.State.IDLE
+
+	# Phase 2: Agent (60% - 25% max_health)
+	agi_f.health = int(agi.max_health * 0.55)
+	agi_f.current_move = ds_move
+	agi_f.state = Fighter.State.ATTACK
+	agi_f.state_frame = 2
+	check("Showdown C10: AGI phase 2 (Agent) triggers at <= 60% health with speed boost and armour on specials",
+		agi_f.boss_phase == 2
+		and agi_f.effective_walk_speed() > agi.walk_speed
+		and agi_f.model != null and agi_f.model.look_variant == 0
+		and agi_f.has_armor())
+	agi_f.current_move = null
+	agi_f.state = Fighter.State.IDLE
+
+	# Opponent executes a special move (e.g. Ki Blast / special)
+	var opp_special: MoveData = null
+	for m: MoveData in opp_f.data.moves:
+		if m.is_special() and not m.super_move:
+			opp_special = m
+			break
+	if opp_special:
+		opp_f._start_move(opp_special, false)
+	check("Showdown C10: AGI tracks opponent specials", agi_f.get_most_used_opponent_special() == opp_special)
+
+	# Phase 3: Superintelligence (< 25% max_health)
+	agi_f.health = int(agi.max_health * 0.20)
+	check("Showdown C10: AGI phase 3 (Superintelligence) triggers at < 25% health with mimicry and look variant 1",
+		agi_f.boss_phase == 3
+		and agi_f.model != null and agi_f.model.look_variant == 1
+		and agi_f.mimicked_move == opp_special
+		and agi_f._move_for_input(opp_special.input) == opp_special)
+
+	# Meter regen in Phase 3
+	agi_f.meter = 0
+	for i in 10:
+		agi_f.tick()
+	check("Showdown C10: AGI phase 3 regenerates meter over time", agi_f.meter > 0)
+
+	agi_f.queue_free()
+	opp_f.queue_free()
+	await process_frame
 
 	# Voices: a fighter without its own shouts borrows its fallback's, except for the super
 	# (the drop-in <id>_super_1.ogg/.wav names the move).
@@ -5401,6 +5515,67 @@ func showdown_tests() -> void:
 	check("Showdown: as AGI, the boss is its shadow", run.stages[-1].character == algorithm
 		and run.opponent_title(run.stages[-1]) == "SHADOW AGI" and run.stages.size() == gs.roster.size())
 
+	# Story mode (C11): every fighter has a story JSON, StoryRun drives the flow, progress saves,
+	# and StoryScreen presents the dialogue over VS style.
+	var all_story_ok := true
+	for c in gs.roster:
+		var sdata := StoryRun.load_story_data(c.id)
+		if sdata.is_empty() or sdata.get("intro", []).size() < 1 or sdata.get("ending", []).size() < 1:
+			all_story_ok = false
+			break
+		if not sdata.has("rival") or gs.find_character(StringName(sdata["rival"])) == null:
+			all_story_ok = false
+			break
+		var fights: Array = sdata.get("fights", [])
+		if fights.size() != 6:
+			all_story_ok = false
+			break
+		for f: Dictionary in fights:
+			if not f.has("opponent") or gs.find_character(StringName(f.opponent)) == null:
+				all_story_ok = false
+				break
+			if not f.has("stage") or f.get("before", []).is_empty() or f.get("after_win", []).is_empty():
+				all_story_ok = false
+				break
+	check("Showdown C11: all 11 fighters have valid story JSON (intro, 6 fights, rival, ending)", all_story_ok)
+
+	var s_hero: CharacterData = gs.find_character(&"sundar")
+	var s_run := StoryRun.create(s_hero)
+	var stage1_ok: bool = str(s_run.current_fight().get("opponent", "")) == "dario" and s_run.current_stage_path() == gs.MENSA_STAGE
+	while s_run.advance_dialogue():
+		pass
+	s_run.state = StoryRun.State.PRE_FIGHT
+	s_run.dialogue_index = 0
+	while s_run.advance_dialogue():
+		pass
+	s_run.state = StoryRun.State.POST_WIN
+	s_run.dialogue_index = 0
+	while s_run.advance_dialogue():
+		pass
+	s_run.advance_fight()
+	var stage2_ok: bool = s_run.fight_index == 1 and s_run.state == StoryRun.State.PRE_FIGHT
+	check("Showdown C11: StoryRun flow, stages, and dialogue progression", stage1_ok and stage2_ok)
+
+	var prev_save := StoryRun.save_path
+	StoryRun.save_path = "user://test_story_progress.cfg"
+	StoryRun.reset_progress("sundar")
+	s_run.record_progress()
+	var saved_stage_1: bool = StoryRun.get_progress("sundar") == 1 and not StoryRun.is_story_cleared("sundar")
+	s_run.fight_index = 5
+	s_run.advance_fight()
+	var saved_cleared: bool = s_run.cleared and StoryRun.is_story_cleared("sundar") and s_run.state == StoryRun.State.ENDING
+	StoryRun.reset_progress("sundar")
+	StoryRun.save_path = prev_save
+	check("Showdown C11: Story progress saving and persistence", saved_stage_1 and saved_cleared)
+
+	change_scene_to_file("res://scenes/story_screen.tscn")
+	await process_frame; await process_frame
+	var story_sc = current_scene
+	check("Showdown C11: Story screen instantiates with dialogue and portrait presentation",
+		story_sc != null and story_sc.get_node_or_null("%LeftSide") != null and story_sc.get_node_or_null("%RightSide") != null
+		and story_sc.get_node_or_null("%DialoguePanel") != null and story_sc.get_node_or_null("%SpeakerLabel") != null
+		and story_sc.get_node_or_null("%TextLabel") != null)
+
 	# Title and menu: the disclaimer, no Online entry.
 	change_scene_to_file("res://scenes/title.tscn")
 	await process_frame; await process_frame
@@ -5416,6 +5591,8 @@ func showdown_tests() -> void:
 		current_scene.find_child("StartButton", true, false) != null and current_scene.find_child("QuickButton", true, false) != null and current_scene.find_child("VersusButton", true, false) != null
 		and current_scene.find_child("TrainingButton", true, false) != null and current_scene.find_child("OnlineButton", true, false) == null
 		and current_scene.find_child("Disclaimer", true, false) != null)
+	check("Showdown C11: main menu has Story button", current_scene.find_child("StoryButton", true, false) != null
+		and current_scene.find_child("StoryButton", true, false).text == "Story")
 	check("Showdown: best of 3 rounds", gs.ROUNDS_TO_WIN == 2)
 	check("Showdown: the game is called AI Showdown", ProjectSettings.get_setting("application/config/name") == "AI Showdown")
 	gs.use_engine_content()

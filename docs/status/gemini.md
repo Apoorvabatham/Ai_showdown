@@ -207,4 +207,132 @@ and any requests for other agents.
   - **Verification**:
     - Automated test suite `tests/sim_test.gd` passes cleanly with **`0 failure(s)`**.
 
+## O7: Projectile looks load OpenCode super props
+- **State**: review
+- **Summary**: Updated `scripts/supers/projectile_looks.gd` to load OpenCode props from `assets/props/supers/` while preserving code-built meshes as fallback if scene files are missing.
+- **Details**:
+  - `sundar/search_bar` (`assets/props/supers/sundar/search_bar.tscn`): Loads prop scene, selects random query text from `SEARCH_QUERIES` on the `Query` Label3D node.
+  - `jensen/gpu_card` (`assets/props/supers/jensen/gpu_card.tscn`): Loads prop scene, sets `&"tumble_axis"` metadata, and rotates `Fan1`/`Fan2` in `animate()`.
+  - `donald/shipping_container` (`assets/props/supers/donald/shipping_container.tscn`): Loads prop scene with container corrugation and "IMPORTS" labels; tumbles end-over-end.
+  - `tesla/mini_rocket` (`assets/props/supers/tesla/mini_rocket.tscn`): Loads prop scene with rocket hull, fins, and animated flickering `Flame`.
+  - `xi/paper_dragon` (`assets/props/supers/xi/paper_dragon.tscn`): Loads prop scene with head and 7 body segments carrying `segment` and `rest_y` metadata, weaving in `animate()`.
+  - Added automated test in `tests/sim_test.gd` verifying all 5 projectile looks load OpenCode props with interactive hooks.
+  - Test suite passes with `0 failure(s)`.
+
+## C6: AGI moveset kit ("trained on everyone")
+- **State**: review
+- **Summary**: Implemented the custom moveset for AGI (`algorithm`) trained across the roster per `docs/ROADMAP.md` §4, with AI personality, showcase routine, full set of 6 combo trials, and comprehensive test suite validation.
+- **Details**:
+  - Specials & Super:
+    - 236P: "Data Stream" (projectile adapted from Kenji's `ki_blast`)
+    - 63214P: "Model Collapse" (command grab adapted from Valka's `valkyrie_slam`, startup 8, range 0.95)
+    - 214P: "Safety Filter" (reversal counter adapted from Lian's `still_water`, startup 3)
+    - 236K: "Compute Rush" (armoured advancing strike adapted from Aelia's `shield_rush`, travel 5.5, startup 10)
+    - 214K: "Weights Update" (teleport behind opponent adapted from Sundar's `algorithm_update`, startup 14, recovery 22)
+    - 236236K: "Engagement Loop" (super move adapted from Rhea's `tempest_kicks` / `tempest_finish`)
+  - AI & UI Integration:
+    - Added "Optimiser" personality in `scripts/ai/ai_controller.gd` with balanced aggression, defensive discipline, and tactical teleport/grab utility.
+    - Added showcase demo routine in `scripts/ui/fighter_showcase.gd`.
+  - Combo Trials:
+    - Implemented 6 combo trials in `tools/showdown_movesets.gd`: Target Combo, Heavy Advancing Link, Fireball Cancel, Armoured Strike String, Wall Splat Extension, and Super Cancel.
+    - Verified 100% demo execution across all 11 roster opponents on both ring and dojo via `tools/check_trials.gd` (`combo trials: 0 failed`).
+  - Regenerated roster character and move resources: `data/characters/algorithm.tres` and `data/moves/algorithm/*.tres`.
+  - Added sim test assertions in `tests/sim_test.gd` verifying all moves, super, trials, personality, and showcase routine.
+  - Automated test suite `tests/sim_test.gd` passes with `0 failure(s)`.
+
+## C10: AGI boss phases by health
+- **State**: done
+- **Summary**: Implemented AGI (`algorithm`) multi-phase boss mechanics governed by health thresholds per `docs/ROADMAP.md` §4 and `docs/TASKS.md` §9, with cosmetic phase transitions, dynamic armour, speed boosts, meter regeneration, special move mimicry, and phase-aware AI behaviour.
+- **Details**:
+  - **Phase 1: Assistant** (100% - 60% max_health):
+    - Standard speed and base moveset.
+    - Look variant reset to -1 (`FighterModel.set_look_variant(-1)`).
+    - Polite assistance dialogue lines (`phase_line()`).
+    - AI focuses on zoning at long range (boosted fireball `data_stream` and spacing).
+  - **Phase 2: Agent** (60% - 25% max_health):
+    - Triggered at <= 60% max_health.
+    - Faster movement (25% boost to walk and dash speeds).
+    - Automatic super armour granted on startup for all special attacks (`has_armor()`).
+    - Look variant switched to 0 (`FighterModel.set_look_variant(0)` with acid-green glow palette).
+    - Cosmetic transition: full-screen digital glitch burst (`ZuckerbotFx.Glitch`), stage lights turn alarm red, and digital glitch audio cue.
+    - AI switches to aggressive close-range pressure, leveraging armoured specials (`compute_rush`) and command grabs (`model_collapse`).
+  - **Phase 3: Superintelligence** (< 25% max_health):
+    - Triggered at < 25% max_health.
+    - Special move mimicry: tracks player/opponent special usage during the match (`record_opponent_special()`), selects the most-used special, and registers it into AGI's executable moveset (`mimicked_move`).
+    - Passive meter regeneration (2 meter per tick) enabling relentless supers.
+    - Look variant switched to 1 (`FighterModel.set_look_variant(1)` with hot red glow palette).
+    - Cosmetic glitch transition and red stage atmosphere.
+    - AI aggressively prioritizes mimicked specials, teleport mixups, and canceling combo strings into `super_move` ("Engagement Loop").
+  - **Deterministic Simulation**:
+    - `&"boss_phase"` included in `Fighter.SIM_FIELDS` for rollback compatibility.
+    - Cosmetic effects (glitch, stage lights, audio) remain purely client/presentation-side without affecting rollback state.
+  - **Preserved Custom Outfits**:
+    - Updated `tools/build_showdown_roster.gd` to preserve `variant_outfit_colors` from previous character data across roster rebuilds.
+  - **Verification**:
+    - Automated test suite `tests/sim_test.gd` updated with comprehensive assertions for health threshold triggers, look variants, speed boosts, armour on specials, special tracking, mimicry, and meter regen.
+    - Test suite passes with `0 failure(s)`.
+
+## C11: Story mode
+- **State**: review
+- **Summary**: Implemented Story Mode framework reading `data/story/<fighter_id>.json` across all 11 fighters, featuring intro narration over portrait cut-in, 6-fight structured ladder (5 regular/rival matches + AGI finale on Senate), pre-fight banter and post-win dialogue over VS screen style, ending sequence panels/lines, persistent progress saving in `user://story_progress.cfg`, Main Menu `StoryButton`, and test suite integration.
+- **Details**:
+  - **Story Data & Run Engine (`scripts/story/story_run.gd`)**:
+    - `StoryRun` class handles JSON loading (`intro`, `fights`, `rival`, `ending`), stage resolution (`mensa`, `server_farm`, `senate`, `foundry`), line progression, fight indexing, and state management (`INTRO`, `PRE_FIGHT`, `POST_WIN`, `ENDING`).
+    - Progress saving & persistence via `ConfigFile` in `user://story_progress.cfg` (`record_progress()`, `get_progress()`, `is_story_cleared()`, `reset_progress()`).
+  - **Story Screen Presentation (`scripts/story/story_screen.gd`, `scenes/story_screen.tscn`)**:
+    - VS-screen aesthetic with side-by-side fighter portraits, active speaker lighting/scaling, dimmed inactive speaker, and color-coded speaker name badges.
+    - Dialogue panel with autowrapped text, prompt indicator, and click/key advance (`ui_accept`).
+    - Fast skipping via `ui_cancel` (Esc).
+    - State-specific layouts: single-portrait presentation for Intro/Ending, dual-portrait presentation for Pre-Fight and Post-Win.
+  - **Game Flow & Integration**:
+    - `GameState.Mode.STORY` added with `start_story()` and `apply_story_fight()` in `scripts/autoload/game_state.gd`.
+    - Character select screen routes `Mode.STORY` selections directly to `story_screen.tscn`.
+    - Main menu features `StoryButton` with `story_button.pressed.connect(_start.bind(GameState.Mode.STORY))`.
+    - `FightManager` handles match outcomes in Story mode: winning advances to post-win dialogue in `story_screen.tscn`, losing provides Retry or Give Up options.
+  - **Verification**:
+    - Test suite assertions in `tests/sim_test.gd` verify all 11 story JSON files, `StoryRun` state transitions, stage mapping, progress persistence, `story_screen.tscn` node tree, and main menu `StoryButton`.
+    - Full test suite `tests/sim_test.gd` passes with `0 failure(s)`.
+
+## C12b: Balance pass
+- **State**: review
+- **Summary**: Executed full roster balance pass targeting Geoff (~25% -> 40-60%) and Jensen (~60% -> 40-60%), landing all regular fighters within the 40–60% win rate range in automated 60 Hz simulation (`tools/balance_sim.gd -- 2 2 all`).
+- **Before vs After Simulation Results**:
+
+| Fighter | Baseline Win% | Baseline Round% | Post-Pass Win% | Post-Pass Round% | Status |
+|---|---|---|---|---|---|
+| Ram Altman | 55% | 53% | 55% | 52% | Balanced (40-60%) |
+| tesla man | 52% | 51% | 50% | 48% | Balanced (40-60%) |
+| Dario Amoday | 27% | 34% | 40% | 46% | Balanced (40-60%) |
+| Mark Zuckerbot | 50% | 49% | 52% | 53% | Balanced (40-60%) |
+| Jensen Wong | 59% | 57% | 45% | 46% | Balanced (40-60%) |
+| Yann LeCant | 41% | 44% | 45% | 46% | Balanced (40-60%) |
+| Geoff Hintoff | 27% | 36% | 50% | 50% | Balanced (40-60%) |
+| Sundar Pickai | 61% | 55% | 45% | 47% | Balanced (40-60%) |
+| Donald Tarrif | 52% | 51% | 52% | 49% | Balanced (40-60%) |
+| Xi Winping | 48% | 48% | 48% | 48% | Balanced (40-60%) |
+| AGI (Boss) | 77% | 72% | 68% | 62% | Formidable Boss |
+
+- **Details**:
+  - **Geoff Hintoff** (27% -> 50%):
+    - Boosted damage multiplier to `1.07` and max health to `1070` in `tools/build_showdown_roster.gd`.
+    - Tuned armoured specials in `tools/showdown_movesets.gd`: Backprop Rush (`damage = 94`, `recovery = 18`), Boltzmann Hammer (`damage = 122`, `recovery = 18`), Deep Uppercut (`damage = 102`, `recovery = 18`).
+  - **Jensen Wong** (59% -> 45%):
+    - Adjusted baseline damage to `1.01` and health to `1035` in `tools/build_showdown_roster.gd`.
+    - Tuned GPU Rain in `tools/showdown_movesets.gd`: preserved 4 falling GPUs (`projectile_count = 4`) per sim test contract, normalized damage per card to `34` with `chip_damage = 4` and `spread = 0.68`.
+  - **Sundar Pickai** (61% -> 45%):
+    - Balanced zoner stats in `tools/build_showdown_roster.gd`: `damage = 0.92`, `max_health = 1020`.
+    - Tuned special zoning in `tools/showdown_movesets.gd`: Search Result kept at `projectile_count = 5` per sim test contract with `damage = 22`, Sponsored Result `damage = 44`, Ki Blast fan `damage = 14`, Super 404 Not Found `damage = 265`.
+  - **Donald Tarrif** & **Dario Amoday**:
+    - Balanced heavy grappler and counter kits so no match-up acts as an auto-win or auto-loss. Donald health tuned to `1100`, throw damage `165`, trade war `damage = 48`. Dario health tuned to `1000`, palm strikes refined (`inch_palm = 80`, `double_palm = 88`).
+  - **O6 Style Clips Status**:
+    - Checked for `assets/animations/style_anims.res`; not yet present (pending OpenCode delivery per `docs/TASKS.md` §9).
+  - **Verification**:
+    - Roster regenerated via `godot --headless --path . -s res://tools/build_showdown_roster.gd`.
+    - Full test suite `godot --headless --path . -s res://tests/sim_test.gd` executed and passed cleanly with **`0 failure(s)`**.
+
+
+
+
+
+
 

@@ -34,6 +34,7 @@ const CHARACTER_SELECT_SCENE := "res://scenes/character_select.tscn"
 const MAIN_MENU_SCENE := "res://scenes/main_menu.tscn"
 const VS_SCENE := "res://scenes/vs_screen.tscn"
 const ARCADE_END_SCENE := "res://scenes/arcade_end.tscn"
+const STORY_SCENE := "res://scenes/story_screen.tscn"
 const REPLAYS_SCENE := "res://scenes/replays.tscn"
 const FIGHTER_SCENE := preload("res://scenes/fighter/fighter.tscn")
 const TICKS_PER_SECOND := 60
@@ -243,6 +244,10 @@ func is_arcade() -> bool:
 	return GameState.is_arcade()
 
 
+func is_story() -> bool:
+	return GameState.is_story()
+
+
 ## Two CPU fighters with no end (main menu "Demo").
 func is_demo() -> bool:
 	return GameState.mode == GameState.Mode.DEMO
@@ -275,6 +280,7 @@ func _spawn_fighter(character: CharacterData, controller: FighterController, alt
 	fighter.bounds_half_extent = stage.bounds_half_extent
 	fighter.bounds_depth = stage.depth_limit()
 	fighter.edge_style = stage.edge_style
+	fighter.phase_changed.connect(_on_fighter_phase_changed.bind(fighter))
 	add_child(fighter)
 	fighters.append(fighter)
 	return fighter
@@ -437,6 +443,8 @@ func _after_round() -> void:
 		phase_ticks = 0
 		if is_arcade():
 			_arcade_match_over(round_wins[0] > round_wins[1])
+		elif is_story():
+			_story_match_over(round_wins[0] > round_wins[1])
 		if round_wins[0] != round_wins[1]:
 			_start_victory(fighters[0] if round_wins[0] > round_wins[1] else fighters[1])
 		elif not resimulating:
@@ -469,7 +477,17 @@ func _start_victory(winner: Fighter) -> void:
 		Audio.voice("you_win" if winner == fighters[0] else "you_lose")
 
 
-# --- Arcade -----------------------------------------------------------------------
+# --- Arcade & Story ----------------------------------------------------------------
+
+var _story_won := false
+
+func _story_match_over(p1_won: bool) -> void:
+	_story_won = p1_won
+	if p1_won:
+		hud.configure_result("Continue", "", "Quit")
+	else:
+		hud.configure_result("Retry", "", "Give Up")
+
 
 ## Stage won: clear points and on to the next stage; lost (or drawn): offer a continue.
 func _arcade_match_over(p1_won: bool) -> void:
@@ -489,6 +507,13 @@ func _on_rematch_pressed() -> void:
 		netplay.request_rematch()
 	elif replay_match:
 		replay_match.restart()
+	elif is_story():
+		if _story_won:
+			GameState.story.state = StoryRun.State.POST_WIN
+			GameState.story.dialogue_index = 0
+			_go_to(STORY_SCENE)
+		else:
+			start_match()
 	elif not is_arcade():
 		start_match()
 	elif GameState.arcade.cleared:
@@ -508,6 +533,8 @@ func _on_main_menu_pressed() -> void:
 		netplay.leave()
 	elif is_arcade() and phase == Phase.MATCH_OVER:
 		_go_to(ARCADE_END_SCENE)
+	elif is_story() and phase == Phase.MATCH_OVER and _story_won and GameState.story.cleared:
+		_go_to(STORY_SCENE)
 	else:
 		_go_to(MAIN_MENU_SCENE)
 
@@ -521,6 +548,7 @@ func _go_to(scene: String) -> void:
 func _reset_round() -> void:
 	ai.reset()
 	_set_freeze(0)
+	_set_stage_lights_red(false)
 	fighters[0].reset_to(stage.p1_spawn.global_position)
 	fighters[1].reset_to(stage.p2_spawn.global_position)
 	view_dir = Vector3.BACK
@@ -589,6 +617,49 @@ func _on_super_started(fighter: Fighter, move: MoveData) -> void:
 	super_flash.emit(fighter, move)
 	hud.super_flash(fighters.find(fighter), move.name)
 	camera.start_super(fighter)
+
+
+var _boss_glitch: CanvasLayer
+var _boss_lights_active := false
+
+func _on_fighter_phase_changed(new_phase: int, old_phase: int, fighter: Fighter) -> void:
+	if new_phase <= old_phase:
+		return
+	if resimulating:
+		return
+	_trigger_phase_glitch()
+	_set_stage_lights_red(true)
+	Audio.sfx(&"digital_glitch", -2.0)
+	if hud:
+		hud.announce("PHASE %d" % new_phase, fighter.phase_line(), true)
+
+
+func _trigger_phase_glitch() -> void:
+	if _boss_glitch == null:
+		var glitch_script = load("res://scripts/supers/zuckerbot_fx.gd")
+		if glitch_script and "Glitch" in glitch_script:
+			_boss_glitch = glitch_script.Glitch.new()
+			add_child(_boss_glitch)
+	if _boss_glitch and _boss_glitch.has_method("burst"):
+		_boss_glitch.burst(0.4)
+
+
+func _set_stage_lights_red(active: bool) -> void:
+	if stage == null:
+		return
+	_boss_lights_active = active
+	for node in stage.find_children("*", "Light3D", true, false):
+		var light := node as Light3D
+		if light:
+			if active:
+				if not light.has_meta(&"orig_color"):
+					light.set_meta(&"orig_color", light.light_color)
+					light.set_meta(&"orig_energy", light.light_energy)
+				light.light_color = Color(1.0, 0.15, 0.15)
+				light.light_energy = (light.get_meta(&"orig_energy") as float) * 1.3
+			elif light.has_meta(&"orig_color"):
+				light.light_color = light.get_meta(&"orig_color")
+				light.light_energy = light.get_meta(&"orig_energy")
 
 
 ## Keeps the camera side-on to the fight axis, turning toward whichever perpendicular is

@@ -597,7 +597,10 @@ func _dress(data: CharacterData, alt: bool) -> void:
 ## Repaints the generated outfit from a stored palette without rebuilding the model:
 ## -1 = the normal look (or the mirror-match look on an alt build), 0.. picks
 ## CharacterData.variant_outfit_colors. Cosmetic only (AGI's phase looks).
+var look_variant: int = -1
+
 func set_look_variant(index: int) -> void:
+	look_variant = index
 	if _look_data == null or _look_data.outfit_mesh == null:
 		return
 	var outfit := skeleton.find_child("Outfit", false, false) as MeshInstance3D

@@ -62,13 +62,14 @@ const FINAL_BOSS := &"algorithm"
 const ROUNDS_TO_WIN := 2
 const ROUND_TIME_SECONDS := 99
 
-enum Mode { VS_CPU, VERSUS, TRAINING, ARCADE, ONLINE, DEMO, REPLAY, QUICK }
+enum Mode { VS_CPU, VERSUS, TRAINING, ARCADE, ONLINE, DEMO, REPLAY, QUICK, STORY }
 
 var roster: Array[CharacterData] = []
 ## VS_CPU: P2 is the AI. VERSUS: P2 is a second local player. TRAINING: P2 is the
 ## training dummy (see scripts/training/training_mode.gd). ARCADE: a ladder of CPU
 ## opponents (see `arcade`). DEMO: two CPU fighters with no end (start_demo).
 ## QUICK: 1v1 quick match: the player against a random CPU on a random stage, one round.
+## STORY: a structured story run reading data/story/<id>.json (see `story`).
 var mode: Mode = Mode.VS_CPU
 var player_character: CharacterData
 ## P2's character (the CPU in VS_CPU mode, the second player in VERSUS).
@@ -78,6 +79,8 @@ var stage_path: String = SERVER_FARM_STAGE
 var match_seed := 1
 ## The Arcade run in progress (ARCADE mode), or null.
 var arcade: ArcadeRun
+## The Story run in progress (STORY mode), or null.
+var story: StoryRun
 ## REPLAY: the saved match being watched.
 var replay: Replay
 ## Stage preloaded by the loading screen, kept referenced so it stays in the resource
@@ -275,6 +278,25 @@ func rounds_to_win() -> int:
 
 func is_arcade() -> bool:
 	return mode == Mode.ARCADE and arcade != null
+
+
+func is_story() -> bool:
+	return mode == Mode.STORY and story != null
+
+
+## Starts a Story run with `character` and sets up its first fight.
+func start_story(character: CharacterData) -> void:
+	mode = Mode.STORY
+	player_character = character
+	story = StoryRun.create(character)
+	apply_story_fight()
+
+
+func apply_story_fight() -> void:
+	if story == null:
+		return
+	p2_character = find_character(story.current_opponent_id())
+	stage_path = story.current_stage_path()
 
 
 func is_online() -> bool:
