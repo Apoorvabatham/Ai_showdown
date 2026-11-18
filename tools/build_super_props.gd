@@ -435,6 +435,7 @@ func _tariff_mark() -> void:
 func _build_jensen_props() -> void:
 	_dir_for("jensen")
 	_leather_jacket()
+	_gpu_card()
 
 ## Open black leather jacket, spread out with the sleeves out (for the tornado super):
 ## back and side panels, two flared front panels with open zip edges, collar and lapels,
@@ -505,6 +506,62 @@ func _leather_jacket() -> void:
 	root.add_child(_box(Vector3(0.07, 0.05, 0.012), Vector3(0.3, -0.3, -0.16), tag, "Tag"))
 
 	_save(root, PROP_DIR + "jensen/leather_jacket.tscn")
+
+## A ~0.95 x 0.36 m graphics card (Jensen's power move). Two fans on the +Z side, the
+## `Fan1` / `Fan2` nodes the code look spins; green accent strip, silver backplate, gold
+## PCIe fingers and a two-slot bracket. Origin at the card's centre like the code look;
+## the fans face +Z (the code look's side) and the consumer tumbles it anyway.
+func _gpu_card() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "GPUCard"
+	var shroud := _metal(Color(0.12, 0.12, 0.13), 0.6, 0.3)
+	var shroud_light := _metal(Color(0.2, 0.2, 0.22), 0.5, 0.35)
+	var plate := _metal(Color(0.68, 0.7, 0.73), 0.9, 0.28)
+	var dark := _metal(Color(0.05, 0.05, 0.06), 0.3, 0.45)
+	var gold := _metal(Color(0.95, 0.75, 0.25), 1.0, 0.25)
+	var green := _glow(Color(0.45, 0.82, 0.2), 2.2)
+
+	root.add_child(_box(Vector3(0.95, 0.36, 0.12), Vector3.ZERO, shroud, "Shroud"))
+	root.add_child(_box(Vector3(0.95, 0.36, 0.02), Vector3(0, 0, -0.08), plate, "Backplate"))
+	root.add_child(_box(Vector3(0.9, 0.025, 0.02), Vector3(0, 0.168, 0.062), green, "Accent"))
+	for side in [-1.0, 1.0]:
+		root.add_child(_box(Vector3(0.03, 0.32, 0.02), Vector3(0.44 * side, 0, 0.062), shroud_light))
+	# Gold PCIe fingers at the bottom (back side), with the key notch.
+	root.add_child(_box(Vector3(0.42, 0.05, 0.02), Vector3(-0.12, -0.2, -0.04), gold, "PcieFingers"))
+	root.add_child(_box(Vector3(0.03, 0.052, 0.025), Vector3(-0.2, -0.2, -0.04), dark, "PcieKey"))
+	# A two-slot bracket at the -X end, with two dark port cutouts.
+	root.add_child(_box(Vector3(0.02, 0.36, 0.14), Vector3(-0.475, 0, 0), plate, "Bracket"))
+	for y in [-0.06, 0.08]:
+		root.add_child(_box(Vector3(0.006, 0.08, 0.05), Vector3(-0.487, y, -0.02), dark, "Port"))
+	# 8-pin power socket on the top edge.
+	root.add_child(_box(Vector3(0.16, 0.06, 0.1), Vector3(0.28, 0.19, 0), dark, "PowerSocket"))
+	for i in 2:
+		var fan: Node3D = Node3D.new()
+		fan.name = "Fan%d" % (i + 1)
+		fan.position = Vector3(-0.22 + 0.44 * i, 0, 0.08)
+		fan.add_child(_cylinder(0.15, 0.15, 0.02, Vector3(0, 0, -0.01), dark, "Recess",
+			Vector3(PI * 0.5, 0, 0)))
+		fan.add_child(_torus(0.13, 0.155, Vector3.ZERO, shroud_light, "Ring", Vector3(PI * 0.5, 0, 0)))
+		for b in 7:
+			var angle := TAU * b / 7.0
+			var blade := _box(Vector3(0.022, 0.115, 0.01), Vector3.ZERO, shroud_light, "Blade")
+			blade.rotation.z = angle
+			blade.position = Vector3(0.075, 0, 0.008).rotated(Vector3.FORWARD, -angle)
+			fan.add_child(blade)
+		fan.add_child(_cylinder(0.038, 0.038, 0.025, Vector3(0, 0, 0.018), green, "Hub",
+			Vector3(PI * 0.5, 0, 0)))
+		fan.add_child(_cylinder(0.016, 0.016, 0.03, Vector3(0, 0, 0.022), dark, "HubCap",
+			Vector3(PI * 0.5, 0, 0)))
+		root.add_child(fan)
+	# A soft green light so the glow reads on a dark stage.
+	var light := OmniLight3D.new()
+	light.light_color = Color(0.55, 0.9, 0.3)
+	light.light_energy = 1.2
+	light.omni_range = 2.0
+	light.position = Vector3(0, 0, 0.35)
+	root.add_child(light)
+
+	_save(root, PROP_DIR + "jensen/gpu_card.tscn")
 
 # =============================================================================
 # O2d - zuckerbot props
@@ -674,6 +731,7 @@ func _cluster(at: Vector3, height: float, crystal: Material, rock: Material) -> 
 func _build_sundar_props() -> void:
 	_dir_for("sundar")
 	_browser_window()
+	_search_bar()
 
 const BROWSER_URL := "https://www.skill-issue.com/you/are/here"
 const PAGE_COLOR := Color(0.62, 0.72, 0.9)
@@ -803,6 +861,41 @@ func _browser_window() -> void:
 	root.add_child(inside)
 
 	_save(root, PROP_DIR + "sundar/browser_window.tscn")
+
+const SEARCH_QUERY := "how to win a fight"
+
+## A ~1.8 m search bar projectile (Sundar's power move): a white pill inside a glowing
+## blue outline, a magnifier and a query. Face +Z like the code look (the projectile turns
+## this side to the camera); origin at the pill's centre like the code look.
+func _search_bar() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "SearchBar"
+	var blue := _glow(Color(0.32, 0.62, 1.0), 2.0)
+	var white := _metal(Color(0.98, 0.98, 1.0), 0.0, 0.35)
+	var face := _metal(Color(0.9, 0.92, 0.97), 0.0, 0.5)
+	var grey := _metal(Color(0.35, 0.36, 0.4), 0.2, 0.4)
+	# Glowing outline behind the pill; both are centred on the root.
+	root.add_child(_box(Vector3(1.78, 0.44, 0.04), Vector3(0, 0, -0.02), blue, "Outline"))
+	root.add_child(_box(Vector3(1.7, 0.36, 0.06), Vector3.ZERO, white, "Pill"))
+	root.add_child(_box(Vector3(1.64, 0.3, 0.01), Vector3(0, 0, 0.031), face, "PillFace"))
+	# Magnifier on the left.
+	root.add_child(_torus(0.055, 0.085, Vector3(-0.7, 0.02, 0.045), grey, "Lens",
+		Vector3(PI * 0.5, 0, 0)))
+	var handle := _box(Vector3(0.025, 0.09, 0.02), Vector3(-0.64, -0.06, 0.045), grey, "Handle")
+	handle.rotation.z = PI * 0.25
+	root.add_child(handle)
+	# A default query; the code look picks a random one, Claude can set `Query.text`.
+	var text := _label(SEARCH_QUERY, 0.15, Color(0.22, 0.23, 0.26), Vector3(-0.58, 0, 0.045), "Query")
+	text.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	root.add_child(text)
+	var light := OmniLight3D.new()
+	light.light_color = Color(0.35, 0.65, 1.0)
+	light.light_energy = 2.0
+	light.omni_range = 2.5
+	light.position = Vector3(0, 0, 0.3)
+	root.add_child(light)
+
+	_save(root, PROP_DIR + "sundar/search_bar.tscn")
 
 ## Label3D sized like the scene's stand-ins: `size` is roughly the world height.
 func _label(text: String, size: float, color: Color, position: Vector3, name := "") -> Label3D:

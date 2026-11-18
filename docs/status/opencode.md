@@ -124,4 +124,21 @@ missing, so the scene picks this up; the `segment` / `rest_y` meta match what it
   `props_jensen.jpg`, `props_zuckerbot.jpg`.
 - `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.
 
+## O7: Sundar search bar, Jensen GPU card
 
+State: **review** — `projectile_looks.gd` keeps its code looks for now; Claude swaps these
+in when a prop exists. The child names match what the animation looks for (`Fan1`, `Fan2`;
+`Query` is there if the swap wants to set the text).
+
+- `assets/props/supers/sundar/search_bar.tscn`: ~1.8 x 0.44 m search bar: a glowing blue
+  outline behind a white pill, magnifier, `Query` Label3D ("how to win a fight") and a
+  blue light. Origin at the pill's centre and face +Z, like the code look (the projectile
+  turns that side to the camera).
+- `assets/props/supers/jensen/gpu_card.tscn`: ~0.95 x 0.36 m card: dark shroud, silver
+  backplate, green accent strip and fan hubs, two `Fan1` / `Fan2` fans (7 blades, rings,
+  hubs), gold PCIe fingers, a two-slot bracket and a power socket, green light. Origin at
+  the card's centre; the fans face +Z like the code look (the consumer tumbles it anyway).
+- `tools/build_super_props.gd`: `-- sundar` / `-- jensen` build them;
+  `tools/render_super_props.gd` views both from +Z on the refreshed
+  `props_sundar.jpg` and `props_jensen.jpg`.
+- `godot --headless --path . -s res://tests/sim_test.gd`: `0 failure(s)`.

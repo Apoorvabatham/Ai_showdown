@@ -1,0 +1,84 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ejjt"]
+albedo_color = Color(0.32, 0.62, 1, 1)
+emission_enabled = true
+emission = Color(0.32, 0.62, 1, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_q0vri"]
+size = Vector3(1.78, 0.44, 0.04)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x00fw"]
+albedo_color = Color(0.98, 0.98, 1, 1)
+roughness = 0.35
+
+[sub_resource type="BoxMesh" id="BoxMesh_u1h3f"]
+size = Vector3(1.7, 0.36, 0.06)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3lbr2"]
+albedo_color = Color(0.9, 0.92, 0.97, 1)
+roughness = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_8r2nf"]
+size = Vector3(1.64, 0.3, 0.01)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fp0cc"]
+albedo_color = Color(0.35, 0.36, 0.4, 1)
+metallic = 0.2
+roughness = 0.4
+
+[sub_resource type="TorusMesh" id="TorusMesh_qkkxq"]
+inner_radius = 0.055
+outer_radius = 0.085
+rings = 20
+ring_segments = 8
+
+[sub_resource type="BoxMesh" id="BoxMesh_6g771"]
+size = Vector3(0.025, 0.09, 0.02)
+
+[node name="SearchBar" type="Node3D" unique_id=1935736692]
+
+[node name="Outline" type="MeshInstance3D" parent="." unique_id=197171240]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.02)
+material_override = SubResource("StandardMaterial3D_7ejjt")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_q0vri")
+
+[node name="Pill" type="MeshInstance3D" parent="." unique_id=1120488283]
+material_override = SubResource("StandardMaterial3D_x00fw")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_u1h3f")
+
+[node name="PillFace" type="MeshInstance3D" parent="." unique_id=1217850257]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.031)
+material_override = SubResource("StandardMaterial3D_3lbr2")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_8r2nf")
+
+[node name="Lens" type="MeshInstance3D" parent="." unique_id=2119440746]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.7, 0.02, 0.045)
+material_override = SubResource("StandardMaterial3D_fp0cc")
+cast_shadow = 0
+mesh = SubResource("TorusMesh_qkkxq")
+
+[node name="Handle" type="MeshInstance3D" parent="." unique_id=1167095141]
+transform = Transform3D(0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, 0, 0, 0, 1, -0.64, -0.06, 0.045)
+material_override = SubResource("StandardMaterial3D_fp0cc")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_6g771")
+
+[node name="Query" type="Label3D" parent="." unique_id=605440024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0, 0.045)
+pixel_size = 0.002325
+modulate = Color(0.22, 0.23, 0.26, 1)
+text = "how to win a fight"
+font_size = 64
+outline_size = 0
+horizontal_alignment = 0
+
+[node name="@OmniLight3D@66" type="OmniLight3D" parent="." unique_id=1012164271]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.3)
+light_color = Color(0.35, 0.65, 1, 1)
+light_energy = 2.0
+omni_range = 2.5
