@@ -388,3 +388,30 @@ Retired branches (all content is on main; delete them, don't work on them): `cli
 Power moves and super scenes for Dario, Yann, Geoff, Ram and AGI (designs proposed in ROADMAP
 §2) — approve each before anyone builds them. Look at the 17 scene sheets in
 `docs/review/gemini/scenes/` and the NPC sheets in `docs/review/opencode/`.
+
+## 10. Nov 18: OpenCode hands over to Cline (same branch `opencode/work`)
+
+OpenCode delivered O6 for **tesla** and **Donald** (`style_anims.res`, merged into `main`;
+review strips `docs/review/opencode/style_tesla.jpg`, `style_donald.jpg`). OpenCode is out of
+quota; **Cline (Nemotron 3.5 Super VL)** continues on `opencode/work` with OpenCode's file
+ownership and keeps reporting in `docs/status/opencode.md` (sign entries "Cline").
+
+### Review of the first clips (owner/Claude)
+- `donald_walk`: **redo**. He leans far back and stares at the sky; the head and chest must
+  stay upright over the hips, slight forward lean, heavy side-to-side sway, arms low in front.
+- `donald_overhead`: at impact (0.60 s) the fists end at the knees and read like a crouch;
+  keep both fists clearly locked together and the arms straight down in front at hip height.
+- `tesla_flying_knee`: at impact (0.18 s) the rear knee is not visible at chest height (leg
+  hangs down); lift the knee to chest height, toes pointed down, and pull the hands toward it.
+- Everything else reads well: keep it.
+
+### Cline, in order
+1. **[O6-fix]** The three fixes above; re-render `style_tesla.jpg` and `style_donald.jpg`, look
+   at them, and update the tables (lengths / impact times) if they change.
+2. **[O6]** Style clips for **Sundar** (calm, precise: idle, palm strike, low sweep, side step,
+   "search" point-and-zap pose), **Jensen** (showman: idle with jacket shrug, hook, uppercut,
+   spinning backfist, presenter walk), **Zuckerbot** (stiff, robotic: idle, straight punch,
+   front kick, mechanical dash, glitchy hurt), **Xi** (composed, rooted: idle, palm push, low
+   stance sweep, two-hand fan strike, slow walk). One fighter per commit, strip + table each.
+3. **[O2-fix]** Gemini's scene sheets in `docs/review/gemini/scenes/`: fix props that read
+   badly (scale, origin, facing) in `tools/build_super_props.gd`.

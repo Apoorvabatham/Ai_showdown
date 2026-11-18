@@ -6,7 +6,7 @@ and any requests for other agents.
 
 ## O6: Fighting-style animations (contract §3.6)
 
-State: **in progress** — tesla man delivered; Donald, Sundar, Jensen, Zuckerbot and Xi follow
+State: **in progress** — tesla man and Donald delivered; Sundar, Jensen, Zuckerbot and Xi follow
 one commit each. Clips are **not** wired into the moves (Gemini does that).
 
 - `tools/build_style_animations.gd` (new): builds `assets/animations/style_anims.res`, an

@@ -13,7 +13,7 @@ parallel, each with its own area:
 |---|---|
 | Claude | `main` (the main branch; Claude merges into it) |
 | Gemini (code tasks, see docs/TASKS.md §9) | `gemini/work` |
-| OpenCode | `opencode/work` |
+| Cline (Nemotron 3.5 Super VL), taking over OpenCode's tasks | `opencode/work` |
 
 Work and push only on your own branch; merge the main branch into yours at the start of each
 task. Report progress in `docs/status/<agent>.md`; Claude merges your branch. Details:
