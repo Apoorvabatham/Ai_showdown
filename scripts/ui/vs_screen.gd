@@ -18,8 +18,10 @@ const SHADOW_TINT := Color(0.55, 0.35, 0.75)
 var _leaving := false
 
 
+
 func _ready() -> void:
 	GameState.ensure_selections()
+	_decorate()
 	left_portrait.texture = GameState.player_character.portrait
 	right_portrait.texture = GameState.p2_character.portrait
 	var versus := GameState.mode == GameState.Mode.VERSUS or GameState.is_online()
@@ -45,6 +47,11 @@ func _ready() -> void:
 	tween.tween_property(vs_label, "scale", Vector2.ONE, 0.3).set_delay(0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(vs_label, "modulate:a", 1.0, 0.15).set_delay(0.35)
 	get_tree().create_timer(HOLD_SECONDS).timeout.connect(_go)
+
+
+func _decorate() -> void:
+	UiStyle.versus_look(self, left_portrait, right_portrait)
+	UiStyle.use_display_font([left_name, right_name, vs_label])
 
 
 func _show_stage_name() -> void:

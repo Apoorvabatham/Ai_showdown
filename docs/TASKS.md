@@ -462,3 +462,14 @@ and AGI** as written in ROADMAP §2.
    trials (`tools/check_trials.gd -- <id>`), a contact sheet in `docs/review/gemini/scenes/`
    that you look at before committing.
 4. **[C12c]** Re-run `tools/balance_sim.gd` after step 3 and keep everyone in 40–60 %.
+
+### Nov 18 late: Cline's first fixes reviewed (merged into `main`)
+- Fixed: `donald_walk` (upright, sways), `tesla_flying_knee` (knee at chest height), Sundar table.
+- `sundar_sweep` **still not fixed**: at 0.26 s both feet are still under him in a crouch.
+  The lead foot must be clearly out to the side/front, about a leg's length from the rear
+  foot, almost touching the floor (a wide low arc). Check the 0.26 s frame of the strip.
+- `donald_overhead`: no longer a crouch, but at 0.60 s it doesn't read as a hammer blow.
+  Keep the fists locked together, arms straight, and finish lower and further forward
+  (about knee height, 0.6 m in front), with the shoulders following through.
+- Don't commit test logs (`sim_stdout*.log`, `sim_stderr*.log`); they are git-ignored now.
+  Delete the two on `opencode/work` when you next merge `main`.

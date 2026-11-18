@@ -62,6 +62,10 @@ func _build_server_farm() -> void:
 	var stage := get_parent()
 	_relabel(stage, "NeonFight", "GPU FARM")
 	_relabel(stage, "NeonNight", "ZONE 7")
+	# Indoors: no rain falling between the racks (the rooftop's drizzle and rain loop).
+	_remove(stage, "Rain")
+	_remove(stage, "Sound")
+	_ambience("res://assets/audio/ambience/city_traffic.ogg", -26.0)
 
 	# Environment atmosphere pass: cool datacenter night rooftop lighting & volumetric haze
 	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
@@ -147,7 +151,8 @@ func _build_server_farm() -> void:
 			n += 1
 		var is_row_a: bool = (row_z > -6.0)
 		_label("GPU POD %s — H100 SXM5" % ("A" if is_row_a else "B"), Vector3(-8.6, 2.65, row_z + 0.55), 0.18, Color(0.4, 0.9, 1.0), true)
-		_label("ACTIVE COMPUTE // 800Gb/s RoCE", Vector3(5.2, 2.65, row_z + 0.55), 0.14, Color(0.2, 1.0, 0.5), true)
+		if is_row_a: # the back row's copy lined up behind the front one on screen
+			_label("ACTIVE COMPUTE // 800Gb/s RoCE", Vector3(5.2, 2.65, row_z + 0.55), 0.14, Color(0.2, 1.0, 0.5), true)
 
 	# 3. Overhead ladder cable trays, conduit looms & inter-rack bridges
 	var tray_mat := _mat(Color(0.28, 0.30, 0.33), 0.35, 0.8)
@@ -203,7 +208,7 @@ func _build_server_farm() -> void:
 		_label("GPU CLUSTER ONLINE\nPUE: 1.09 | CHILLER: 14°C\n40960 CORES SYNCED", Vector3(cx, 1.18, -3.45), 0.065, Color(0.9, 1.0, 1.0))
 		# Keyboard & terminal desk accessories
 		_box(Vector3(0.4, 0.02, 0.15), Vector3(cx, 0.91, -3.35), _mat(Color(0.08, 0.09, 0.1), 0.4))
-	_label("CRITICAL INFRASTRUCTURE\nDO NOT INTERRUPT TRAINING RUN", Vector3(5.5, 2.65, -4.65), 0.13, Color(1.0, 0.85, 0.2), true)
+	_label("CRITICAL INFRASTRUCTURE\nDO NOT INTERRUPT TRAINING RUN", Vector3(-1.2, 2.05, -4.6), 0.13, Color(1.0, 0.85, 0.2), true)
 
 	# 6. CC0 Infrastructure models: server cabinets, power modules, display wall & barriers
 	_prop("res://assets/stage_props/server_farm/container-tall.glb", Vector3(-8.8, 0.0, -6.5), Vector3(0, 90, 0), Vector3(1.4, 1.4, 1.4))
@@ -310,7 +315,6 @@ func _build_mensa() -> void:
 
 	# Long tables with trays at the back and the sides, people having lunch.
 	var table_mat := _mat(Color(0.85, 0.83, 0.78), 0.5)
-	var shirt_colors := [Color(0.2, 0.3, 0.6), Color(0.6, 0.2, 0.2), Color(0.25, 0.5, 0.3), Color(0.5, 0.5, 0.52), Color(0.7, 0.6, 0.3)]
 	var lamp_mat := _mat(Color(0.15, 0.16, 0.18), 0.3, 0.7)
 	var bulb_mat := _glow(Color(1.0, 0.9, 0.72), 3.5)
 	var rng := RandomNumberGenerator.new()
@@ -345,8 +349,10 @@ func _build_mensa() -> void:
 					_prop("res://assets/stage_props/mensa/cup-coffee.glb", spot + Vector3(-1.08 + k * 0.8, 0.86, side * 0.32), Vector3.ZERO, Vector3(0.075, 0.075, 0.075))
 				if rng.randf() < 0.4:
 					_prop("res://assets/stage_props/mensa/bowl.glb", spot + Vector3(-1.38 + k * 0.8, 0.87, side * 0.28), Vector3.ZERO, Vector3(0.08, 0.08, 0.08))
+				# (Capsule stand-in diners used to sit here; the stage-life students are the
+				# crowd now. The rolls stay so the table settings keep their layout.)
 				if rng.randf() < 0.55:
-					_person(seat + Vector3(0, 0.47, side * 0.05), shirt_colors[rng.randi() % shirt_colors.size()], rng)
+					rng.randi()
 
 	# Tray return trolley and water station at the flank
 	_box(Vector3(1.1, 1.4, 0.65), Vector3(-8.8, 0.7, -4.5), steel)
@@ -380,6 +386,15 @@ func _build_senate() -> void:
 			var banner := ring.get_node_or_null("ApronBanner%d" % i) as Label3D
 			if banner:
 				banner.text = banners[i]
+
+	# The public gallery in hearing-room clothes (dark suits, a few white shirts) instead of
+	# the arena's bright jerseys.
+	var crowd := stage.get_node_or_null("Crowd") as Crowd
+	if crowd:
+		crowd.palette = PackedColorArray([Color(0.06, 0.07, 0.1), Color(0.1, 0.1, 0.12), Color(0.14, 0.12, 0.1),
+			Color(0.05, 0.08, 0.16), Color(0.55, 0.55, 0.58), Color(0.2, 0.06, 0.07)])
+		if crowd.multimesh:
+			crowd._ready() # already built with the arena colors: rebuild
 
 	# Environment atmosphere pass: stately hearing room fog
 	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
@@ -510,13 +525,13 @@ func _build_senate() -> void:
 			_prop("res://assets/stage_props/senate/bench.glb", Vector3(gx, 0.0, gz), Vector3(0, 90 if gx < 0 else -90, 0), Vector3(1.5, 1.5, 1.5))
 			_person(Vector3(gx - 0.35, 0.26, gz), Color(0.15, 0.16, 0.22), rng_senate)
 			_person(Vector3(gx + 0.35, 0.26, gz), Color(0.25, 0.25, 0.28), rng_senate)
-	_box(Vector3(16.0, 5.0, 0.2), Vector3(0, 1.5, -9.0), _mat(Color(0.7, 0.64, 0.54), 0.8))
+	_box(Vector3(16.0, 5.0, 0.2), Vector3(0, 1.5, -9.0), _mat(Color(0.3, 0.2, 0.14), 0.7)) # dark wood panelling: the gold title reads on it
 	for x in [-7.0, -5.6, 5.6, 7.0]:
 		_box(Vector3(0.9, 3.0, 0.04), Vector3(x, 2.2, -8.85), _mat(Color(0.12, 0.18, 0.45) if absf(x) > 6.0 else Color(0.6, 0.1, 0.12), 0.8))
 	_label("SUBCOMMITTEE ON ARTIFICIAL INTELLIGENCE", Vector3(0, 3.4, -8.85), 0.36, Color(0.95, 0.78, 0.35), true)
 	_light(Vector3(0, 3.0, -5.0), Color(1.0, 0.9, 0.75), 3.0, 10.0)
-	_light(Vector3(-5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 2.0, 8.0)
-	_light(Vector3(5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 2.0, 8.0)
+	_light(Vector3(-5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 1.3, 8.0)
+	_light(Vector3(5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 1.3, 8.0)
 	_label("IN SESSION", Vector3(0, 2.75, -8.85), 0.22, Color(0.95, 0.25, 0.2), true)
 	_ambience("res://assets/audio/ambience/arena_crowd.ogg", -24.0)
 

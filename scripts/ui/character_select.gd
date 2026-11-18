@@ -50,6 +50,8 @@ var _picking_dummy := false
 func _ready() -> void:
 	Audio.music(&"menu")
 	Audio.voice("choose_your_character")
+	UiStyle.add_backdrop(self, get_node_or_null("Background"))
+	UiStyle.use_display_font([get_node_or_null("Margin/VBox/Title"), get_node_or_null("Margin/VBox/Main/Info/VBox/NameLabel")])
 	_build_preview_stage()
 	var cols := _columns()
 	roster_box.columns = cols
@@ -268,6 +270,10 @@ func _make_portrait_button(character: CharacterData) -> Button:
 	label.text = character.display_name
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var font_sz := clampi(int(side * 0.17), 16, 26)
+	# Long names ("Mark Zuckerbot") shrink until they fit the tile instead of being cut.
+	var font := label.get_theme_default_font()
+	while font_sz > 12 and font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_sz).x > side - PORTRAIT_INSET * 2 - 6:
+		font_sz -= 1
 	label.add_theme_font_size_override("font_size", font_sz)
 	label.add_theme_constant_override("outline_size", 8)
 	label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))

@@ -79,6 +79,7 @@ var _trail_tweens := {}
 var _note_tweens := {} # note label -> its tween
 var _announce_tween: Tween
 var _letterbox: Array[ColorRect] = []
+var _top_shade: TextureRect
 var _cinematic_tween: Tween
 var _meter_root: Control
 var _meters: Array[ProgressBar] = []
@@ -112,6 +113,7 @@ func _ready() -> void:
 		move_child(bar, 0)
 		_letterbox.append(bar)
 	_set_letterbox(0.0)
+	_style_top()
 	_build_super_flash()
 	_build_meters()
 	_build_score()
@@ -126,6 +128,48 @@ func _ready() -> void:
 	%MoveListButton.toggled.connect(func(on: bool) -> void: move_list_panel.visible = on)
 	%PauseSelectButton.pressed.connect(func() -> void: character_select_pressed.emit())
 	%PauseMenuButton.pressed.connect(func() -> void: main_menu_pressed.emit())
+
+
+## Arcade look for the top bar: a dark band behind it (names stay readable over bright
+## stages), glossy health fills and the display font on the names and the timer.
+func _style_top() -> void:
+	_top_shade = TextureRect.new()
+	_top_shade.name = "TopShade"
+	var shade := Gradient.new()
+	shade.offsets = PackedFloat32Array([0.0, 0.55, 1.0])
+	shade.colors = PackedColorArray([Color(0.01, 0.0, 0.04, 0.78), Color(0.01, 0.0, 0.04, 0.45), Color(0.01, 0.0, 0.04, 0.0)])
+	var shade_tex := GradientTexture2D.new()
+	shade_tex.gradient = shade
+	shade_tex.fill_from = Vector2(0, 0)
+	shade_tex.fill_to = Vector2(0, 1)
+	shade_tex.width = 4
+	shade_tex.height = 64
+	_top_shade.texture = shade_tex
+	_top_shade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_top_shade.stretch_mode = TextureRect.STRETCH_SCALE
+	_top_shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_top_shade.anchor_right = 1.0
+	_top_shade.offset_bottom = 230.0
+	add_child(_top_shade)
+	move_child(_top_shade, 0)
+	var gloss := Gradient.new()
+	gloss.offsets = PackedFloat32Array([0.0, 0.3, 0.62, 1.0])
+	gloss.colors = PackedColorArray([Color(1.0, 0.97, 0.7), Color(1.0, 0.84, 0.2), Color(1.0, 0.66, 0.08), Color(0.86, 0.4, 0.04)])
+	var gloss_tex := GradientTexture2D.new()
+	gloss_tex.gradient = gloss
+	gloss_tex.fill_from = Vector2(0, 0)
+	gloss_tex.fill_to = Vector2(0, 1)
+	gloss_tex.width = 4
+	gloss_tex.height = 32
+	for bar: ProgressBar in [p1_health, p2_health]:
+		var fill := StyleBoxTexture.new()
+		fill.texture = gloss_tex
+		bar.add_theme_stylebox_override("fill", fill)
+	const DISPLAY_FONT := "res://assets/fonts/InterDisplay-BlackItalic.otf"
+	if ResourceLoader.exists(DISPLAY_FONT):
+		var font: Font = load(DISPLAY_FONT)
+		for label: Label in [p1_name, p2_name, timer_label, p1_combo, p2_combo]:
+			label.add_theme_font_override("font", font)
 
 
 ## `p2_tag` labels P2: "CPU", "P2" (versus, which also tags P1) or "Dummy".
@@ -482,6 +526,7 @@ func end_cinematic() -> void:
 	show_quote("")
 	_set_letterbox(0.0)
 	%Top.modulate.a = 1.0
+	_top_shade.modulate.a = 1.0
 	debug_label.modulate.a = 1.0
 	_meter_root.modulate.a = 1.0
 	_score_label.modulate.a = 1.0
@@ -500,6 +545,7 @@ func _animate_cinematic(amount: float) -> void:
 	_cinematic_tween = create_tween().set_parallel()
 	_cinematic_tween.tween_method(_set_letterbox, 0.0, amount, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	_cinematic_tween.tween_property(%Top, "modulate:a", 0.0, 0.35)
+	_cinematic_tween.tween_property(_top_shade, "modulate:a", 0.0, 0.35)
 	_cinematic_tween.tween_property(debug_label, "modulate:a", 0.0, 0.35)
 	_cinematic_tween.tween_property(_meter_root, "modulate:a", 0.0, 0.35)
 	_cinematic_tween.tween_property(_score_label, "modulate:a", 0.0, 0.35)

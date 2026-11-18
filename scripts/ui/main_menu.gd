@@ -89,6 +89,7 @@ func _ready() -> void:
 	best_scores_button.add_sibling(replays_button)
 	replays_button.pressed.connect(func() -> void: get_tree().change_scene_to_file(REPLAYS_SCENE))
 	credits_button.pressed.connect(func() -> void: get_tree().change_scene_to_file(CREDITS_SCENE))
+	_fit_buttons()
 	start_button.grab_focus()
 	Audio.music(&"menu")
 	# `AIShowdown.exe -- --smoke-test` jumps straight into a fight (packaging checks).
@@ -172,6 +173,17 @@ func _add_wallpaper() -> void:
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(shade)
 	move_child(shade, 2)
+
+
+## Twelve buttons in one column: keep them compact so Quit clears the disclaimer.
+func _fit_buttons() -> void:
+	var box := $Center/VBox as VBoxContainer
+	box.add_theme_constant_override("separation", 7)
+	for child in box.get_children():
+		if child is Button:
+			var button := child as Button
+			button.custom_minimum_size = Vector2(380, 54)
+			button.add_theme_font_size_override("font_size", 27)
 
 
 ## The parody disclaimer along the bottom of the screen.
