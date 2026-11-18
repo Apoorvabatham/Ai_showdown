@@ -46,7 +46,7 @@ func _ready() -> void:
 	for entry: Dictionary in entries:
 		row.add_child(_make_card(entry))
 
-	_name_label = _label("", 56, GOLD)
+	_name_label = _label("", 56, Color.WHITE)
 	UiStyle.use_display_font([_name_label])
 	column.add_child(_name_label)
 	_blurb_label = _label("", 28, Color(0.75, 0.78, 0.85))
@@ -82,9 +82,7 @@ func _make_card(entry: Dictionary) -> Button:
 	normal.set_border_width_all(3)
 	normal.border_color = Color(0.25, 0.25, 0.3)
 	normal.set_corner_radius_all(8)
-	var focused := normal.duplicate() as StyleBoxFlat
-	focused.set_border_width_all(6)
-	focused.border_color = GOLD
+	var focused := UiStyle.tile_focus(normal)
 	for state in ["normal", "disabled"]:
 		card.add_theme_stylebox_override(state, normal)
 	for state in ["hover", "pressed", "focus"]:

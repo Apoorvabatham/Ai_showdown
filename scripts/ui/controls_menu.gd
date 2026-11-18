@@ -46,8 +46,8 @@ func _ready() -> void:
 	for player in ["p1", "p2"]:
 		var tab := _button("PLAYER %s" % player.substr(1), 28, Vector2(260, 52))
 		tab.toggle_mode = true
-		tab.add_theme_color_override("font_pressed_color", GOLD)
-		tab.add_theme_color_override("font_hover_pressed_color", GOLD)
+		tab.add_theme_color_override("font_pressed_color", Color(0.02, 0.03, 0.05))
+		tab.add_theme_color_override("font_hover_pressed_color", Color(0.02, 0.03, 0.05))
 		tab.pressed.connect(_select_player.bind(player))
 		tabs.add_child(tab)
 		_tabs.append(tab)

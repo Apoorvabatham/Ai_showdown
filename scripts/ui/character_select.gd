@@ -51,6 +51,12 @@ func _ready() -> void:
 	Audio.music(&"menu")
 	Audio.voice("choose_your_character")
 	UiStyle.add_backdrop(self, get_node_or_null("Background"))
+	UiStyle.use_glass(get_node_or_null("Margin/VBox/Main/Info"), 30.0)
+	var info := "Margin/VBox/Main/Info/VBox/"
+	(get_node(info + "NameLabel") as Label).add_theme_color_override("font_color", Color.WHITE)
+	(get_node(info + "SignatureTitle") as Label).add_theme_color_override("font_color", UiStyle.ACCENT)
+	for bar_name in ["PowerBar", "SpeedBar", "HealthBar"]:
+		UiStyle.accent_bar(get_node_or_null(info + "Stats/" + bar_name) as ProgressBar)
 	UiStyle.use_display_font([get_node_or_null("Margin/VBox/Title"), get_node_or_null("Margin/VBox/Main/Info/VBox/NameLabel")])
 	_build_preview_stage()
 	var cols := _columns()
@@ -287,10 +293,8 @@ func _make_portrait_button(character: CharacterData) -> Button:
 	normal.set_corner_radius_all(10)
 	normal.set_border_width_all(3)
 	normal.border_color = character.placeholder_color.darkened(0.3)
-	var focused := normal.duplicate() as StyleBoxFlat
+	var focused := UiStyle.tile_focus(normal)
 	focused.bg_color = character.placeholder_color.darkened(0.4)
-	focused.set_border_width_all(5)
-	focused.border_color = Color(1, 0.85, 0.3)
 	button.add_theme_stylebox_override("normal", normal)
 	button.add_theme_stylebox_override("hover", focused)
 	button.add_theme_stylebox_override("pressed", focused)

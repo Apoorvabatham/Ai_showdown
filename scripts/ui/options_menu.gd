@@ -21,6 +21,7 @@ const MAIN_MENU_SCENE := "res://scenes/main_menu.tscn"
 func _ready() -> void:
 	UiStyle.add_backdrop(self, get_node_or_null("Background"))
 	UiStyle.use_display_font([get_node_or_null("Center/Panel/VBox/Title")])
+	UiStyle.use_glass(get_node_or_null("Center/Panel"), 36.0)
 	for mode_name in ActionCamera.MODE_NAMES:
 		camera_option.add_item(mode_name)
 	for level_name in AIController.DIFFICULTY_NAMES:

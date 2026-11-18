@@ -6,8 +6,9 @@ and any requests for other agents.
 
 ## O6: Fighting-style animations (contract §3.6)
 
-State: **in progress** — tesla man, Donald and Sundar delivered; Jensen, Zuckerbot and Xi follow
-one commit each. Clips are **not** wired into the moves (Gemini does that).
+State: **review** — all six fighters delivered (tesla, Donald, Sundar, Jensen, Zuckerbot,
+Xi; the last three by Claude after Cline stopped). Clips are **not** wired into the moves
+(Gemini does that).
 
 - `tools/build_style_animations.gd` (new): builds `assets/animations/style_anims.res`, an
   `AnimationLibrary` meant to be added under the name `style` (move clips then read
@@ -59,6 +60,42 @@ end.
 | `sundar_sweep` | 0.72 | 0.26 | drops onto the rear leg, lead leg shoots out straight and low toward the opponent, foot skimming the floor (Claude, Nov 18) |
 | `sundar_walk` | 1.57 | — (loop) | alert walk in guard, hands tucked at the chin |
 
+
+### jensen (showman) — Claude, Nov 18
+
+`docs/review/opencode/style_jensen.jpg`.
+
+| clip | length (s) | animation_impact (s) | notes |
+|---|---|---|---|
+| `jensen_idle` | 2.40 | — (loop) | loose guard, a jacket-collar shoulder shrug every other beat |
+| `jensen_hook` | 0.50 | 0.20 | lead hook, elbow up, hips turning through |
+| `jensen_uppercut` | 0.56 | 0.22 | dips on bent knees, rear fist drives straight up |
+| `jensen_backfist` | 0.62 | 0.28 | spins on the lead foot, rear backfist at head height |
+| `jensen_walk` | Walk length | — (loop) | presenter walk, lead hand out to the crowd |
+
+### zuckerbot (stiff, robotic) — Claude, Nov 18
+
+`docs/review/opencode/style_zuckerbot.jpg`. Keys snap (no easing) between poses.
+
+| clip | length (s) | animation_impact (s) | notes |
+|---|---|---|---|
+| `zuckerbot_idle` | 2.00 | — (loop) | square guard, head turns in mechanical steps |
+| `zuckerbot_punch` | 0.40 | 0.12 | rigid straight punch, no hip turn, snaps back |
+| `zuckerbot_front_kick` | 0.52 | 0.20 | stiff push kick at waist height, sole first |
+| `zuckerbot_dash` | 0.40 | — (movement) | upright glide, arms locked at the sides |
+| `zuckerbot_hurt` | 0.50 | — | glitchy three-step recoil, then reboots to guard |
+
+### xi (composed, rooted) — Claude, Nov 18
+
+`docs/review/opencode/style_xi.jpg`.
+
+| clip | length (s) | animation_impact (s) | notes |
+|---|---|---|---|
+| `xi_idle` | 3.00 | — (loop) | low wide stance, slow breathing |
+| `xi_palm_push` | 0.56 | 0.20 | sinks, lead palm pushes straight out |
+| `xi_sweep` | 0.72 | 0.28 | drops on the rear leg, lead leg shoots out low |
+| `xi_fan_strike` | 0.62 | 0.24 | both hands sweep out together like a fan |
+| `xi_walk` | Walk length / 0.75 | — (loop) | slow composed walk, hands behind the back |
 
 ## O5: Xi's OpenCode helpers (helper_qwen, helper_alibaba, helper_kimi)
 

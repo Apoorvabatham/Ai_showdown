@@ -45,6 +45,9 @@ func _use_logo(title: Label) -> void:
 
 func _ready() -> void:
 	_add_wallpaper()
+	var backdrop := UiStyle.backdrop()
+	add_child(backdrop)
+	move_child(backdrop, 1) # above the plain background, under the fighter showcase
 	_use_logo($Center/VBox/Title as Label)
 	start_button.pressed.connect(_start.bind(GameState.Mode.VS_CPU))
 	var quick_button := start_button.duplicate(0) as Button # 0: without Vs CPU's signal connections
@@ -152,16 +155,17 @@ func _add_wallpaper() -> void:
 	else:
 		back = MenuShowcase.new()
 		back.name = "Showcase"
+		(back as MenuShowcase).fixed_side = -1.0 # fighters stand right of the menu
 	back.set_anchors_preset(Control.PRESET_FULL_RECT)
 	back.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(back)
 	move_child(back, 1) # just above the background color
 	var shade := TextureRect.new()
 	var gradient := Gradient.new()
-	gradient.offsets = PackedFloat32Array([0.0, 0.3, 0.5, 0.7, 1.0])
-	var clear := Color(0.02, 0.02, 0.04, 0.0)
-	var dark := Color(0.02, 0.02, 0.04, 0.8)
-	gradient.colors = PackedColorArray([clear, clear, dark, clear, clear])
+	gradient.offsets = PackedFloat32Array([0.0, 0.32, 0.55, 1.0])
+	var clear := Color(0.012, 0.014, 0.02, 0.0)
+	var dark := Color(0.012, 0.014, 0.02, 0.88)
+	gradient.colors = PackedColorArray([dark, dark.lerp(clear, 0.35), clear, clear])
 	var tex := GradientTexture2D.new()
 	tex.gradient = gradient
 	tex.width = 256
@@ -175,15 +179,29 @@ func _add_wallpaper() -> void:
 	move_child(shade, 2)
 
 
-## Twelve buttons in one column: keep them compact so Quit clears the disclaimer.
+## Modern layout: the logo and a left-aligned menu column on the left third, the
+## fighter showcase on the right.
 func _fit_buttons() -> void:
+	var center := $Center as Control
+	center.anchor_left = 0.0
+	center.anchor_right = 0.0
+	center.offset_left = 110.0
+	center.offset_right = 110.0 + 560.0
 	var box := $Center/VBox as VBoxContainer
-	box.add_theme_constant_override("separation", 7)
+	box.add_theme_constant_override("separation", 6)
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	var logo := box.get_node_or_null("Logo") as TextureRect
+	if logo:
+		logo.custom_minimum_size = Vector2(540, 73)
+		logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		logo.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	for child in box.get_children():
 		if child is Button:
 			var button := child as Button
-			button.custom_minimum_size = Vector2(380, 54)
-			button.add_theme_font_size_override("font_size", 27)
+			button.custom_minimum_size = Vector2(440, 50)
+			button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+			button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			button.add_theme_font_size_override("font_size", 24)
 
 
 ## The parody disclaimer along the bottom of the screen.

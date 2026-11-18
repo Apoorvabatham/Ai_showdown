@@ -30,6 +30,9 @@ var _shade: ColorRect
 var _bag: Array[CharacterData] = []
 var _rng := RandomNumberGenerator.new()
 var _side := 1.0
+## 0: fighters alternate sides. ±1: always that side (the main menu keeps them on the
+## right of its left-hand menu: -1).
+var fixed_side := 0.0
 var _aim_height := 1.2
 var _zoom := 1.0
 var _time := 0.0
@@ -92,7 +95,7 @@ func _show_next() -> void:
 	model = FighterModel.new()
 	_turntable.add_child(model)
 	model.build(character)
-	_side = -_side
+	_side = fixed_side if fixed_side != 0.0 else -_side
 	_turntable.rotation.y = FighterShowcase.REST_ANGLE * _side
 	showcase = FighterShowcase.new(model, character, _turntable, _effects)
 	showcase.side = _side

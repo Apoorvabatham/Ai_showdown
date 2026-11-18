@@ -36,6 +36,7 @@ func _ready() -> void:
 	if GameState.story == null:
 		GameState.start_story(GameState.player_character)
 	_story = GameState.story
+	UiStyle.use_glass(get_node_or_null("DialoguePanel"), 8.0)
 	UiStyle.versus_look(self, get_node_or_null("LeftSide/LeftPortrait"), get_node_or_null("RightSide/RightPortrait"))
 	UiStyle.use_display_font([get_node_or_null("Header/HeaderTitle"), get_node_or_null("LeftSide/LeftName"), get_node_or_null("RightSide/RightName")])
 	

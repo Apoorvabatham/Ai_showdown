@@ -68,6 +68,42 @@ const CLIPS := {
 		{name = "sundar_walk", impact = 0.0, loop = true,
 			about = "alert walk in guard"},
 	],
+	"jensen": [
+		{name = "jensen_idle", impact = 0.0, loop = true,
+			about = "showman guard with a jacket-collar shrug"},
+		{name = "jensen_hook", impact = 0.2, loop = false,
+			about = "wide lead hook, elbow up, hips turning through"},
+		{name = "jensen_uppercut", impact = 0.22, loop = false,
+			about = "dips low, rear fist drives straight up"},
+		{name = "jensen_backfist", impact = 0.28, loop = false,
+			about = "spins on the lead foot, rear backfist whips out at head height"},
+		{name = "jensen_walk", impact = 0.0, loop = true,
+			about = "keynote presenter walk, one hand out to the crowd"},
+	],
+	"zuckerbot": [
+		{name = "zuckerbot_idle", impact = 0.0, loop = true,
+			about = "stiff upright guard, tiny mechanical twitches"},
+		{name = "zuckerbot_punch", impact = 0.12, loop = false,
+			about = "rigid straight punch, no hip turn, snaps back"},
+		{name = "zuckerbot_front_kick", impact = 0.2, loop = false,
+			about = "stiff lead-leg front push kick at waist height"},
+		{name = "zuckerbot_dash", impact = 0.0, loop = false,
+			about = "upright glide forward, arms locked"},
+		{name = "zuckerbot_hurt", impact = 0.0, loop = false,
+			about = "glitchy jerky recoil, head snaps in steps"},
+	],
+	"xi": [
+		{name = "xi_idle", impact = 0.0, loop = true,
+			about = "low rooted horse stance, slow calm breathing"},
+		{name = "xi_palm_push", impact = 0.2, loop = false,
+			about = "sinks and pushes one open palm straight out"},
+		{name = "xi_sweep", impact = 0.28, loop = false,
+			about = "drops low, lead leg sweeps out toward the opponent"},
+		{name = "xi_fan_strike", impact = 0.24, loop = false,
+			about = "both hands sweep out together like opening a fan"},
+		{name = "xi_walk", impact = 0.0, loop = true,
+			about = "slow, composed walk, hands behind the back"},
+	],
 }
 
 var skeleton: Skeleton3D
@@ -117,6 +153,9 @@ func build_library() -> AnimationLibrary:
 	add_tesla(lib)
 	add_donald(lib)
 	add_sundar(lib)
+	add_jensen(lib)
+	add_zuckerbot(lib)
+	add_xi(lib)
 	return lib
 
 
@@ -669,6 +708,382 @@ func build_sundar_walk() -> Animation:
 	while t <= end + 0.001:
 		var pose := sample(source, minf(t * 0.85, source.length))
 		_tuck_hands(pose)
+		keys.append([t, pose])
+		t += 1.0 / SAMPLE_FPS
+	return make_animation(keys, true)
+
+
+# --- Jensen: the showman ------------------------------------------------------------
+
+func add_jensen(lib: AnimationLibrary) -> void:
+	lib.add_animation("jensen_idle", build_jensen_idle())
+	lib.add_animation("jensen_hook", build_jensen_hook())
+	lib.add_animation("jensen_uppercut", build_jensen_uppercut())
+	lib.add_animation("jensen_backfist", build_jensen_backfist())
+	lib.add_animation("jensen_walk", build_jensen_walk())
+
+
+## Loose guard; every second beat both shoulders roll up and back (a jacket-collar shrug)
+## with a little chin lift. 2.40 s loop.
+func build_jensen_idle() -> Animation:
+	var base := duplicate_pose(guard)
+	_tuck_hands(base)
+	move_bone(base, "pelvis", Vector3(0, -0.01, 0))
+	var breathe := duplicate_pose(base)
+	move_bone(breathe, "pelvis", Vector3(0, 0.008, 0))
+	var shrug := duplicate_pose(base)
+	shoulder_roll(shrug, "l", 14.0)
+	shoulder_roll(shrug, "r", 14.0)
+	rotate_bone(shrug, "neck_01", Vector3.RIGHT, -8.0)
+	hip_turn(shrug, 5.0)
+	_tuck_hands(shrug)
+	return make_animation([[0.0, base], [0.6, breathe], [1.2, base], [1.45, shrug],
+		[1.75, shrug], [2.05, base], [2.4, base]], true)
+
+
+## Wide lead hook: the hips turn through, the lead elbow comes up level with the fist and
+## the fist swings across at head height. 0.50 s; lands at 0.20 s.
+func build_jensen_hook() -> Animation:
+	var s := rear_sign()
+	var lf := global_origin(guard, "foot_" + lead)
+	var rf := global_origin(guard, "foot_" + rear)
+	var load := duplicate_pose(guard)
+	move_bone(load, "pelvis", Vector3(0, -0.03, 0))
+	hip_turn(load, 14.0)
+	plant_both(load, lf, rf)
+	_tuck_hands(load)
+
+	var strike := duplicate_pose(guard)
+	move_bone(strike, "pelvis", Vector3(0, -0.02, 0.05))
+	hip_turn(strike, -34.0)
+	lean(strike, -4.0, 0.0)
+	plant_both(strike, lf, rf)
+	pivot_support_foot(strike, 20.0, true)
+	var chest := global_origin(strike, "spine_03")
+	solve_ik(strike, "upperarm_" + lead, "lowerarm_" + lead, "hand_" + lead,
+		Vector3(s * 0.12, chest.y + 0.12, chest.z + 0.46), Vector3(-s * 1.0, 0.6, 0.0))
+	tuck_hand(strike, rear)
+
+	var follow := duplicate_pose(strike)
+	hip_turn(follow, -10.0)
+	solve_ik(follow, "upperarm_" + lead, "lowerarm_" + lead, "hand_" + lead,
+		Vector3(s * 0.3, chest.y + 0.08, chest.z + 0.3), Vector3(-s * 1.0, 0.6, 0.0))
+	return make_animation([[0.0, guard], [0.1, load], [0.2, strike], [0.26, strike],
+		[0.36, follow], [0.5, guard]], false)
+
+
+## Uppercut: dips low on bent knees, then the rear fist drives straight up past the chin
+## as the legs extend. 0.56 s; lands at 0.22 s.
+func build_jensen_uppercut() -> Animation:
+	var lf := global_origin(guard, "foot_" + lead)
+	var rf := global_origin(guard, "foot_" + rear)
+	var dip := duplicate_pose(guard)
+	move_bone(dip, "pelvis", Vector3(0, -0.12, 0.0))
+	hip_turn(dip, -14.0)
+	lean(dip, -10.0, 0.0)
+	plant_both(dip, lf, rf)
+	var chest := global_origin(dip, "spine_03")
+	reach_arm(dip, rear, Vector3(-rear_sign() * 0.1, chest.y - 0.3, chest.z + 0.22))
+	tuck_hand(dip, lead)
+
+	var rise := duplicate_pose(guard)
+	move_bone(rise, "pelvis", Vector3(0, 0.04, 0.06))
+	hip_turn(rise, 30.0)
+	lean(rise, 6.0, 0.0)
+	plant_foot(rise, lead, lf)
+	plant_foot(rise, rear, rf + Vector3(0, 0.05, 0.02))
+	var top := global_origin(rise, "spine_03")
+	solve_ik(rise, "upperarm_" + rear, "lowerarm_" + rear, "hand_" + rear,
+		Vector3(0.0, top.y + 0.42, top.z + 0.32), Vector3(rear_sign() * 0.5, -0.2, 1.0))
+	tuck_hand(rise, lead)
+
+	var hold := duplicate_pose(rise)
+	move_bone(hold, "pelvis", Vector3(0, 0.01, 0))
+	return make_animation([[0.0, guard], [0.12, dip], [0.22, rise], [0.3, hold],
+		[0.42, guard], [0.56, guard]], false)
+
+
+## Spinning backfist: turns his back on the lead foot, then the rear arm whips out
+## straight at head height, knuckles first, and he finishes the turn. 0.62 s; lands at 0.28 s.
+func build_jensen_backfist() -> Animation:
+	var s := rear_sign()
+	var lf := global_origin(guard, "foot_" + lead)
+	var turn := duplicate_pose(guard)
+	move_bone(turn, "pelvis", Vector3(0, -0.02, 0.03))
+	rotate_bone(turn, "pelvis", Vector3.UP, s * 130.0)
+	rotate_bone(turn, "neck_01", Vector3.UP, -s * 70.0)
+	plant_foot(turn, lead, lf)
+
+	var strike := duplicate_pose(guard)
+	move_bone(strike, "pelvis", Vector3(0, -0.01, 0.06))
+	rotate_bone(strike, "pelvis", Vector3.UP, s * 250.0)
+	rotate_bone(strike, "neck_01", Vector3.UP, -s * 40.0)
+	plant_foot(strike, lead, lf)
+	var head := global_origin(strike, "neck_01")
+	solve_ik(strike, "upperarm_" + rear, "lowerarm_" + rear, "hand_" + rear,
+		Vector3(head.x, head.y, head.z + 0.7), Vector3(0, 1, 0))
+
+	var finish := duplicate_pose(guard)
+	rotate_bone(finish, "pelvis", Vector3.UP, s * 330.0)
+	plant_foot(finish, lead, lf)
+	return make_animation([[0.0, guard], [0.14, turn], [0.28, strike], [0.34, strike],
+		[0.48, finish], [0.62, guard]], false)
+
+
+## Keynote walk: the Walk cycle, chest up, the lead hand open and out toward the crowd,
+## the rear hand relaxed. 1.07 s-ish loop (follows the source).
+func build_jensen_walk() -> Animation:
+	var source := ual1.get_animation("Walk")
+	var keys := []
+	var t := 0.0
+	while t <= source.length + 0.001:
+		var pose := sample(source, t)
+		lean(pose, 5.0, 0.0)
+		var shoulder := global_origin(pose, "upperarm_" + lead)
+		reach_arm(pose, lead, shoulder + Vector3(-rear_sign() * 0.25, -0.12, 0.38))
+		rotate_bone(pose, "hand_" + lead, Vector3.RIGHT, -40.0)
+		keys.append([t, pose])
+		t += 1.0 / SAMPLE_FPS
+	return make_animation(keys, true)
+
+
+# --- Zuckerbot: stiff and robotic ---------------------------------------------------
+
+func add_zuckerbot(lib: AnimationLibrary) -> void:
+	lib.add_animation("zuckerbot_idle", build_zuckerbot_idle())
+	lib.add_animation("zuckerbot_punch", build_zuckerbot_punch())
+	lib.add_animation("zuckerbot_front_kick", build_zuckerbot_front_kick())
+	lib.add_animation("zuckerbot_dash", build_zuckerbot_dash())
+	lib.add_animation("zuckerbot_hurt", build_zuckerbot_hurt())
+
+
+## Robot keys snap between poses: the same pose is held, then jumps (two keys a frame
+## apart) instead of easing.
+func _snap(keys: Array, t: float, from: Dictionary, to: Dictionary) -> void:
+	keys.append([t, from])
+	keys.append([t + 1.0 / 30.0, to])
+
+
+## Upright, square guard; the head turns in two small mechanical steps and back. 2.0 s loop.
+func build_zuckerbot_idle() -> Animation:
+	var base := duplicate_pose(guard)
+	move_bone(base, "pelvis", Vector3(0, 0.02, 0))
+	hip_turn(base, -6.0)
+	_tuck_hands(base)
+	var look_a := duplicate_pose(base)
+	rotate_bone(look_a, "neck_01", Vector3.UP, 12.0)
+	var look_b := duplicate_pose(base)
+	rotate_bone(look_b, "neck_01", Vector3.UP, -10.0)
+	var keys := [[0.0, base]]
+	_snap(keys, 0.5, base, look_a)
+	_snap(keys, 1.0, look_a, look_b)
+	_snap(keys, 1.5, look_b, base)
+	keys.append([2.0, base])
+	return make_animation(keys, true)
+
+
+## Rigid straight punch: no hip turn, the arm extends dead straight in one snap, holds,
+## and snaps back. 0.40 s; lands at 0.12 s.
+func build_zuckerbot_punch() -> Animation:
+	var base := duplicate_pose(guard)
+	move_bone(base, "pelvis", Vector3(0, 0.02, 0))
+	_tuck_hands(base)
+	var strike := duplicate_pose(base)
+	var shoulder := global_origin(strike, "upperarm_" + lead)
+	punch_arm(strike, lead, Vector3(shoulder.x, shoulder.y, shoulder.z + 0.7))
+	var keys := [[0.0, guard], [0.06, base]]
+	_snap(keys, 0.09, base, strike)
+	keys.append([0.24, strike])
+	_snap(keys, 0.27, strike, base)
+	keys.append([0.4, guard])
+	return make_animation(keys, false)
+
+
+## Stiff push kick: the lead leg rises straight, knee barely bent, sole flat into the
+## target at waist height; the upper body stays upright. 0.52 s; lands at 0.20 s.
+func build_zuckerbot_front_kick() -> Animation:
+	var rf := global_origin(guard, "foot_" + rear)
+	var chamber := duplicate_pose(guard)
+	move_bone(chamber, "pelvis", Vector3(0, 0.01, 0))
+	plant_foot(chamber, rear, rf)
+	var hip := global_origin(chamber, "thigh_" + lead)
+	solve_ik(chamber, "thigh_" + lead, "calf_" + lead, "foot_" + lead,
+		hip + Vector3(0, -0.35, 0.3), Vector3(0, 1, 1))
+	_tuck_hands(chamber)
+
+	var kick := duplicate_pose(guard)
+	move_bone(kick, "pelvis", Vector3(0, 0.0, -0.04))
+	lean(kick, 6.0, 0.0)
+	plant_foot(kick, rear, rf)
+	hip = global_origin(kick, "thigh_" + lead)
+	solve_ik(kick, "thigh_" + lead, "calf_" + lead, "foot_" + lead,
+		hip + Vector3(0, -0.05, 0.85), Vector3(0, 1, 0))
+	point_foot(kick, lead, Vector3(0, 1.0, 0.25)) # sole flat into the target
+	_tuck_hands(kick)
+	var keys := [[0.0, guard], [0.1, chamber]]
+	_snap(keys, 0.17, chamber, kick)
+	keys.append([0.32, kick])
+	keys.append([0.4, chamber])
+	keys.append([0.52, guard])
+	return make_animation(keys, false)
+
+
+## Glide: upright and level, arms locked at the sides, feet barely move: a robot sliding
+## forward. Movement clip. 0.40 s.
+func build_zuckerbot_dash() -> Animation:
+	var lf := global_origin(guard, "foot_" + lead)
+	var rf := global_origin(guard, "foot_" + rear)
+	var glide := duplicate_pose(guard)
+	move_bone(glide, "pelvis", Vector3(0, 0.03, 0.0))
+	lean(glide, -4.0, 0.0)
+	plant_both(glide, lf, rf)
+	for side in ["l", "r"]:
+		var shoulder := global_origin(glide, "upperarm_" + side)
+		reach_arm(glide, side, shoulder + Vector3((0.08 if side == "l" else -0.08), -0.55, -0.05))
+	var keys := [[0.0, guard]]
+	_snap(keys, 0.04, guard, glide)
+	keys.append([0.32, glide])
+	_snap(keys, 0.35, glide, guard)
+	keys.append([0.4, guard])
+	return make_animation(keys, false)
+
+
+## Glitch hurt: the head and chest jerk back in three stuttering steps (snaps, no easing),
+## then reboot into the guard. 0.50 s.
+func build_zuckerbot_hurt() -> Animation:
+	var a := duplicate_pose(guard)
+	lean(a, 12.0, 4.0)
+	rotate_bone(a, "neck_01", Vector3.RIGHT, 14.0)
+	var b := duplicate_pose(guard)
+	lean(b, 6.0, -6.0)
+	rotate_bone(b, "neck_01", Vector3.UP, 18.0)
+	var c := duplicate_pose(guard)
+	lean(c, 16.0, 2.0)
+	rotate_bone(c, "neck_01", Vector3.RIGHT, 20.0)
+	for pose in [a, b, c]:
+		plant_both(pose, global_origin(guard, "foot_" + lead), global_origin(guard, "foot_" + rear))
+	var keys := [[0.0, guard]]
+	_snap(keys, 0.02, guard, a)
+	_snap(keys, 0.1, a, b)
+	_snap(keys, 0.18, b, c)
+	keys.append([0.3, c])
+	keys.append([0.5, guard])
+	return make_animation(keys, false)
+
+
+# --- Xi: composed and rooted --------------------------------------------------------
+
+func add_xi(lib: AnimationLibrary) -> void:
+	lib.add_animation("xi_idle", build_xi_idle())
+	lib.add_animation("xi_palm_push", build_xi_palm_push())
+	lib.add_animation("xi_sweep", build_xi_sweep())
+	lib.add_animation("xi_fan_strike", build_xi_fan_strike())
+	lib.add_animation("xi_walk", build_xi_walk())
+
+
+## A low, wide stance with open hands held in front of the chest.
+func _rooted(extra: float) -> Dictionary:
+	var pose := _wide_stance(extra)
+	var chest := global_origin(pose, "spine_03")
+	var side := 1.0 if lead == "l" else -1.0
+	reach_arm(pose, lead, Vector3(side * 0.08, chest.y - 0.05, chest.z + 0.34))
+	reach_arm(pose, rear, Vector3(-side * 0.1, chest.y - 0.14, chest.z + 0.22))
+	return pose
+
+
+## Rooted stance with slow, calm breathing: the hips sink and rise a little. 3.0 s loop.
+func build_xi_idle() -> Animation:
+	var base := _rooted(0.06)
+	var lf := global_origin(base, "foot_" + lead)
+	var rf := global_origin(base, "foot_" + rear)
+	var sink := duplicate_pose(base)
+	move_bone(sink, "pelvis", Vector3(0, -0.02, 0))
+	plant_both(sink, lf, rf)
+	return make_animation([[0.0, base], [1.5, sink], [3.0, base]], true)
+
+
+## Palm push: sinks, then the lead palm pushes straight out at chest height, fingers up,
+## driven from the legs. 0.56 s; lands at 0.20 s.
+func build_xi_palm_push() -> Animation:
+	var base := _rooted(0.06)
+	var lf := global_origin(base, "foot_" + lead)
+	var rf := global_origin(base, "foot_" + rear)
+	var sink := duplicate_pose(base)
+	move_bone(sink, "pelvis", Vector3(0, -0.05, -0.02))
+	plant_both(sink, lf, rf)
+	var push := duplicate_pose(base)
+	move_bone(push, "pelvis", Vector3(0, -0.02, 0.08))
+	hip_turn(push, -14.0)
+	plant_both(push, lf, rf)
+	var shoulder := global_origin(push, "upperarm_" + lead)
+	punch_arm(push, lead, Vector3(shoulder.x * 0.4, shoulder.y - 0.06, shoulder.z + 0.66))
+	rotate_bone(push, "hand_" + lead, Vector3.RIGHT, -70.0) # palm forward, fingers up
+	var hold := duplicate_pose(push)
+	move_bone(hold, "pelvis", Vector3(0, 0.005, 0))
+	return make_animation([[0.0, guard], [0.08, base], [0.14, sink], [0.2, push],
+		[0.32, hold], [0.44, base], [0.56, guard]], false)
+
+
+## Low sweep: drops onto the rear leg and the lead leg shoots out straight and low toward
+## the opponent, hands guarding the face. 0.72 s; lands at 0.28 s.
+func build_xi_sweep() -> Animation:
+	var rf := global_origin(guard, "foot_" + rear)
+	var drop := _rooted(0.06)
+	move_bone(drop, "pelvis", Vector3(0, -0.22, -0.04))
+	lean(drop, -10.0, 0.0)
+	plant_foot(drop, rear, rf)
+	var sweep := duplicate_pose(drop)
+	hip_turn(sweep, 20.0)
+	plant_foot(sweep, rear, rf)
+	var hip := global_origin(sweep, "thigh_" + lead)
+	var floor_y := global_origin(guard, "foot_" + lead).y
+	solve_ik(sweep, "thigh_" + lead, "calf_" + lead, "foot_" + lead,
+		Vector3(hip.x, floor_y + 0.03, hip.z + 0.8), Vector3(0, 1.0, 0.2))
+	point_foot(sweep, lead, Vector3(0, -0.15, 1.0))
+	_tuck_hands(sweep)
+	return make_animation([[0.0, guard], [0.14, drop], [0.28, sweep], [0.4, sweep],
+		[0.58, drop], [0.72, guard]], false)
+
+
+## Fan strike: both hands rise together to the chest, then sweep outward and forward like
+## a fan opening, palms out. 0.62 s; lands at 0.24 s.
+func build_xi_fan_strike() -> Animation:
+	var base := _rooted(0.06)
+	var lf := global_origin(base, "foot_" + lead)
+	var rf := global_origin(base, "foot_" + rear)
+	var gather := duplicate_pose(base)
+	move_bone(gather, "pelvis", Vector3(0, -0.03, -0.02))
+	plant_both(gather, lf, rf)
+	var chest := global_origin(gather, "spine_03")
+	reach_arm(gather, "l", Vector3(0.05, chest.y + 0.05, chest.z + 0.2))
+	reach_arm(gather, "r", Vector3(-0.05, chest.y + 0.05, chest.z + 0.2))
+
+	var open := duplicate_pose(base)
+	move_bone(open, "pelvis", Vector3(0, -0.02, 0.07))
+	plant_both(open, lf, rf)
+	chest = global_origin(open, "spine_03")
+	reach_arm(open, "l", Vector3(0.48, chest.y + 0.08, chest.z + 0.42))
+	reach_arm(open, "r", Vector3(-0.48, chest.y + 0.08, chest.z + 0.42))
+	for side in ["l", "r"]:
+		rotate_bone(open, "hand_" + side, Vector3.RIGHT, -60.0)
+	var hold := duplicate_pose(open)
+	move_bone(hold, "pelvis", Vector3(0, 0.005, 0))
+	return make_animation([[0.0, guard], [0.12, gather], [0.24, open], [0.38, hold],
+		[0.5, base], [0.62, guard]], false)
+
+
+## Composed walk: the Walk cycle slowed to 0.75 speed, upright, both hands clasped behind
+## the back. Loops.
+func build_xi_walk() -> Animation:
+	var source := ual1.get_animation("Walk")
+	var keys := []
+	var t := 0.0
+	var end := source.length / 0.75
+	while t <= end + 0.001:
+		var pose := sample(source, minf(t * 0.75, source.length))
+		var pelvis := global_origin(pose, "pelvis")
+		reach_arm(pose, "l", Vector3(0.06, pelvis.y + 0.05, pelvis.z - 0.2))
+		reach_arm(pose, "r", Vector3(-0.06, pelvis.y + 0.05, pelvis.z - 0.2))
 		keys.append([t, pose])
 		t += 1.0 / SAMPLE_FPS
 	return make_animation(keys, true)

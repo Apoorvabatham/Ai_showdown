@@ -131,7 +131,7 @@ func _ready() -> void:
 
 
 ## Arcade look for the top bar: a dark band behind it (names stay readable over bright
-## stages), glossy health fills and the display font on the names and the timer.
+## stages), flat slanted health bars, a glass timer and the display font on the names.
 func _style_top() -> void:
 	_top_shade = TextureRect.new()
 	_top_shade.name = "TopShade"
@@ -152,24 +152,36 @@ func _style_top() -> void:
 	_top_shade.offset_bottom = 230.0
 	add_child(_top_shade)
 	move_child(_top_shade, 0)
-	var gloss := Gradient.new()
-	gloss.offsets = PackedFloat32Array([0.0, 0.3, 0.62, 1.0])
-	gloss.colors = PackedColorArray([Color(1.0, 0.97, 0.7), Color(1.0, 0.84, 0.2), Color(1.0, 0.66, 0.08), Color(0.86, 0.4, 0.04)])
-	var gloss_tex := GradientTexture2D.new()
-	gloss_tex.gradient = gloss
-	gloss_tex.fill_from = Vector2(0, 0)
-	gloss_tex.fill_to = Vector2(0, 1)
-	gloss_tex.width = 4
-	gloss_tex.height = 32
-	for bar: ProgressBar in [p1_health, p2_health]:
-		var fill := StyleBoxTexture.new()
-		fill.texture = gloss_tex
-		bar.add_theme_stylebox_override("fill", fill)
-	const DISPLAY_FONT := "res://assets/fonts/InterDisplay-BlackItalic.otf"
-	if ResourceLoader.exists(DISPLAY_FONT):
-		var font: Font = load(DISPLAY_FONT)
-		for label: Label in [p1_name, p2_name, timer_label, p1_combo, p2_combo]:
-			label.add_theme_font_override("font", font)
+	# Slanted, flat bars (P1's lean right, P2's left) with a thin light frame.
+	for pair in [[p1_health, p1_trail, 1.0], [p2_health, p2_trail, -1.0]]:
+		var health: ProgressBar = pair[0]
+		var trail: ProgressBar = pair[1]
+		var lean: float = pair[2] * 0.35
+		var fill := StyleBoxFlat.new()
+		fill.bg_color = Color(1.0, 0.82, 0.2)
+		fill.skew = Vector2(lean, 0)
+		health.add_theme_stylebox_override("fill", fill)
+		var trail_fill := StyleBoxFlat.new()
+		trail_fill.bg_color = Color(0.95, 0.2, 0.22)
+		trail_fill.skew = Vector2(lean, 0)
+		trail.add_theme_stylebox_override("fill", trail_fill)
+		var back := StyleBoxFlat.new()
+		back.bg_color = Color(0.03, 0.035, 0.05, 0.85)
+		back.set_border_width_all(2)
+		back.border_color = Color(1, 1, 1, 0.55)
+		back.skew = Vector2(lean, 0)
+		trail.add_theme_stylebox_override("background", back)
+	var timer_box := StyleBoxFlat.new()
+	timer_box.bg_color = Color(0.03, 0.035, 0.05, 0.85)
+	timer_box.set_border_width_all(2)
+	timer_box.border_color = Color(1, 1, 1, 0.55)
+	timer_box.set_corner_radius_all(3)
+	timer_box.content_margin_left = 10
+	timer_box.content_margin_right = 10
+	var timer_panel := timer_label.get_parent() as PanelContainer
+	if timer_panel:
+		timer_panel.add_theme_stylebox_override("panel", timer_box)
+	UiStyle.use_display_font([p1_name, p2_name, timer_label, p1_combo, p2_combo])
 
 
 ## `p2_tag` labels P2: "CPU", "P2" (versus, which also tags P1) or "Dummy".
