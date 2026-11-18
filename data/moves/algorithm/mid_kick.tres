@@ -9,7 +9,6 @@ input = "LK"
 animation = &"fight/front_kick"
 startup = 6
 recovery = 14
-damage = 53
 hitstun = 17
 blockstun = 12
 hitstop = 5

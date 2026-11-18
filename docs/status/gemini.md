@@ -293,6 +293,44 @@ and any requests for other agents.
     - Test suite assertions in `tests/sim_test.gd` verify all 11 story JSON files, `StoryRun` state transitions, stage mapping, progress persistence, `story_screen.tscn` node tree, and main menu `StoryButton`.
     - Full test suite `tests/sim_test.gd` passes with `0 failure(s)`.
 
+## C12b: Balance pass
+- **State**: review
+- **Summary**: Executed full roster balance pass targeting Geoff (~25% -> 40-60%) and Jensen (~60% -> 40-60%), landing all regular fighters within the 40–60% win rate range in automated 60 Hz simulation (`tools/balance_sim.gd -- 2 2 all`).
+- **Before vs After Simulation Results**:
+
+| Fighter | Baseline Win% | Baseline Round% | Post-Pass Win% | Post-Pass Round% | Status |
+|---|---|---|---|---|---|
+| Ram Altman | 55% | 53% | 55% | 52% | Balanced (40-60%) |
+| tesla man | 52% | 51% | 50% | 48% | Balanced (40-60%) |
+| Dario Amoday | 27% | 34% | 40% | 46% | Balanced (40-60%) |
+| Mark Zuckerbot | 50% | 49% | 52% | 53% | Balanced (40-60%) |
+| Jensen Wong | 59% | 57% | 45% | 46% | Balanced (40-60%) |
+| Yann LeCant | 41% | 44% | 45% | 46% | Balanced (40-60%) |
+| Geoff Hintoff | 27% | 36% | 50% | 50% | Balanced (40-60%) |
+| Sundar Pickai | 61% | 55% | 45% | 47% | Balanced (40-60%) |
+| Donald Tarrif | 52% | 51% | 52% | 49% | Balanced (40-60%) |
+| Xi Winping | 48% | 48% | 48% | 48% | Balanced (40-60%) |
+| AGI (Boss) | 77% | 72% | 68% | 62% | Formidable Boss |
+
+- **Details**:
+  - **Geoff Hintoff** (27% -> 50%):
+    - Boosted damage multiplier to `1.07` and max health to `1070` in `tools/build_showdown_roster.gd`.
+    - Tuned armoured specials in `tools/showdown_movesets.gd`: Backprop Rush (`damage = 94`, `recovery = 18`), Boltzmann Hammer (`damage = 122`, `recovery = 18`), Deep Uppercut (`damage = 102`, `recovery = 18`).
+  - **Jensen Wong** (59% -> 45%):
+    - Adjusted baseline damage to `1.01` and health to `1035` in `tools/build_showdown_roster.gd`.
+    - Tuned GPU Rain in `tools/showdown_movesets.gd`: preserved 4 falling GPUs (`projectile_count = 4`) per sim test contract, normalized damage per card to `34` with `chip_damage = 4` and `spread = 0.68`.
+  - **Sundar Pickai** (61% -> 45%):
+    - Balanced zoner stats in `tools/build_showdown_roster.gd`: `damage = 0.92`, `max_health = 1020`.
+    - Tuned special zoning in `tools/showdown_movesets.gd`: Search Result kept at `projectile_count = 5` per sim test contract with `damage = 22`, Sponsored Result `damage = 44`, Ki Blast fan `damage = 14`, Super 404 Not Found `damage = 265`.
+  - **Donald Tarrif** & **Dario Amoday**:
+    - Balanced heavy grappler and counter kits so no match-up acts as an auto-win or auto-loss. Donald health tuned to `1100`, throw damage `165`, trade war `damage = 48`. Dario health tuned to `1000`, palm strikes refined (`inch_palm = 80`, `double_palm = 88`).
+  - **O6 Style Clips Status**:
+    - Checked for `assets/animations/style_anims.res`; not yet present (pending OpenCode delivery per `docs/TASKS.md` §9).
+  - **Verification**:
+    - Roster regenerated via `godot --headless --path . -s res://tools/build_showdown_roster.gd`.
+    - Full test suite `godot --headless --path . -s res://tests/sim_test.gd` executed and passed cleanly with **`0 failure(s)`**.
+
+
 
 
 
