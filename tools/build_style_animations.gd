@@ -54,6 +54,20 @@ const CLIPS := {
 		{name = "donald_walk", impact = 0.0, loop = true,
 			about = "slow, heavy carry walk"},
 	],
+	"sundar": [
+		{name = "sundar_idle", impact = 0.0, loop = true,
+			about = "upright technical guard, small weight shifts, head level"},
+		{name = "sundar_jab", impact = 0.10, loop = false,
+			about = "precise lead jab, chin stays behind the shoulder"},
+		{name = "sundar_cross", impact = 0.14, loop = false,
+			about = "rear straight with a clean hip drive"},
+		{name = "sundar_cast", impact = 0.26, loop = false,
+			about = "lead hand traces a curve, then a palm flick forward"},
+		{name = "sundar_sweep", impact = 0.26, loop = false,
+			about = "low crouched lead-leg sweep across the front"},
+		{name = "sundar_walk", impact = 0.0, loop = true,
+			about = "alert walk in guard"},
+	],
 }
 
 var skeleton: Skeleton3D
@@ -102,6 +116,7 @@ func build_library() -> AnimationLibrary:
 	var lib := AnimationLibrary.new()
 	add_tesla(lib)
 	add_donald(lib)
+	add_sundar(lib)
 	return lib
 
 
@@ -120,6 +135,15 @@ func add_donald(lib: AnimationLibrary) -> void:
 	lib.add_animation("donald_overhead", build_donald_overhead())
 	lib.add_animation("donald_shove", build_donald_shove())
 	lib.add_animation("donald_walk", build_donald_walk())
+
+
+func add_sundar(lib: AnimationLibrary) -> void:
+	lib.add_animation("sundar_idle", build_sundar_idle())
+	lib.add_animation("sundar_jab", build_sundar_jab())
+	lib.add_animation("sundar_cross", build_sundar_cross())
+	lib.add_animation("sundar_cast", build_sundar_cast())
+	lib.add_animation("sundar_sweep", build_sundar_sweep())
+	lib.add_animation("sundar_walk", build_sundar_walk())
 
 
 # --- tesla man: fast and jumpy ------------------------------------------------------
@@ -451,6 +475,181 @@ func build_donald_walk() -> Animation:
 	while t <= source.length + 0.001:
 		var pose := sample(source, t)
 		_heavy_arms(pose)
+		keys.append([t, pose])
+		t += 1.0 / SAMPLE_FPS
+	return make_animation(keys, true)
+
+
+# --- Sundar: upright and precise ----------------------------------------------------
+
+## Upright technical guard with the head level and the hands loose at the chin; the weight
+## rocks slowly side to side without the feet leaving the floor. 2.00 s loop.
+func build_sundar_idle() -> Animation:
+	var base := duplicate_pose(guard)
+	_tuck_hands(base)
+	var left := duplicate_pose(base)
+	move_bone(left, "pelvis", Vector3(0.016, -0.008, 0))
+	hip_turn(left, 4.0)
+	rotate_bone(left, "neck_01", Vector3.RIGHT, -3.0)
+	var right := duplicate_pose(base)
+	move_bone(right, "pelvis", Vector3(-0.014, -0.006, 0))
+	hip_turn(right, -3.0)
+	rotate_bone(right, "neck_01", Vector3.RIGHT, 2.0)
+	var settle := duplicate_pose(base)
+	move_bone(settle, "pelvis", Vector3(0, 0.004, 0))
+	return make_animation([[0.0, base], [0.6, left], [1.1, settle], [1.5, right], [2.0, base]], true)
+
+
+## Precise lead jab: the lead shoulder rolls in, the fist goes straight out and comes back
+## along the same line while the chin tucks behind the shoulder. 0.36 s; lands at 0.10 s.
+func build_sundar_jab() -> Animation:
+	var lf := global_origin(guard, "foot_" + lead)
+	var rf := global_origin(guard, "foot_" + rear)
+	var load := duplicate_pose(guard)
+	move_bone(load, "pelvis", Vector3(0, -0.02, 0.0))
+	hip_turn(load, 5.0)
+	plant_both(load, lf, rf)
+	_tuck_hands(load)
+
+	var strike := duplicate_pose(guard)
+	move_bone(strike, "pelvis", Vector3(0, -0.005, 0.05))
+	hip_turn(strike, -12.0)
+	lean(strike, -3.0, 0.0)
+	plant_foot(strike, lead, lf)
+	pivot_support_foot(strike, 5.0, false)
+	var shoulder := global_origin(strike, "upperarm_" + lead)
+	punch_arm(strike, lead, Vector3(shoulder.x * 0.2, shoulder.y + 0.015, shoulder.z + 0.6))
+	shoulder_roll(strike, lead, 8.0)
+	rotate_bone(strike, "neck_01", Vector3.RIGHT, 5.0)
+	tuck_hand(strike, rear)
+
+	var hold := duplicate_pose(strike)
+	move_bone(hold, "pelvis", Vector3(0, 0.004, 0.01))
+	var recoil := duplicate_pose(strike)
+	punch_arm(recoil, lead, Vector3(shoulder.x * 0.3, shoulder.y, shoulder.z + 0.24))
+	return make_animation([[0.0, guard], [0.06, load], [0.10, strike], [0.14, hold],
+		[0.22, recoil], [0.36, guard]], false)
+
+
+## Rear cross: the hips coil away and drive through as the rear heel pivots; the lead hand
+## returns to the chin and the follow-through settles forward. 0.44 s; lands at 0.14 s.
+func build_sundar_cross() -> Animation:
+	var s := rear_sign()
+	var lf := global_origin(guard, "foot_" + lead)
+	var rf := global_origin(guard, "foot_" + rear)
+	var load := duplicate_pose(guard)
+	move_bone(load, "pelvis", Vector3(0, -0.03, -0.01))
+	hip_turn(load, -12.0)
+	plant_both(load, lf, rf)
+	_tuck_hands(load)
+
+	var strike := duplicate_pose(guard)
+	move_bone(strike, "pelvis", Vector3(0, 0.0, 0.07))
+	hip_turn(strike, 42.0)
+	lean(strike, -4.0, 0.0)
+	plant_foot(strike, lead, lf)
+	plant_foot(strike, rear, rf + Vector3(0, 0.03, 0.02))
+	point_foot(strike, rear, foot_direction(guard, rear).rotated(Vector3.UP, deg_to_rad(-s * 45.0)) + Vector3(0, -0.45, 0))
+	var shoulder := global_origin(strike, "upperarm_" + rear)
+	punch_arm(strike, rear, Vector3(shoulder.x * 0.25, shoulder.y + 0.01, shoulder.z + 0.64))
+	shoulder_roll(strike, rear, 7.0)
+	var lead_shoulder := global_origin(strike, "upperarm_" + lead)
+	reach_arm(strike, lead, Vector3(lead_shoulder.x * 0.7, lead_shoulder.y - 0.08, lead_shoulder.z + 0.2))
+
+	var hold := duplicate_pose(strike)
+	move_bone(hold, "pelvis", Vector3(0, 0.008, 0.01))
+	var follow := duplicate_pose(strike)
+	hip_turn(follow, 8.0)
+	lean(follow, -7.0, 0.0)
+	return make_animation([[0.0, guard], [0.07, load], [0.14, strike], [0.19, hold],
+		[0.28, follow], [0.44, guard]], false)
+
+
+## Cast: the lead hand rises and traces a curve across the face, then the hips turn over
+## and the palm flicks straight ahead, held out while the body settles. 0.72 s; the
+## release is at 0.26 s.
+func build_sundar_cast() -> Animation:
+	var lf := global_origin(guard, "foot_" + lead)
+	var rf := global_origin(guard, "foot_" + rear)
+	var trace := duplicate_pose(guard)
+	move_bone(trace, "pelvis", Vector3(0, -0.01, 0.03))
+	hip_turn(trace, -16.0)
+	plant_both(trace, lf, rf)
+	var shoulder := global_origin(trace, "upperarm_" + lead)
+	reach_arm(trace, lead, Vector3(shoulder.x + 0.04, shoulder.y + 0.34, shoulder.z + 0.32))
+	rotate_bone(trace, "hand_" + lead, Vector3.RIGHT, -45.0)
+	tuck_hand(trace, rear)
+
+	var draw := duplicate_pose(trace)
+	hip_turn(draw, -6.0)
+	var high := global_origin(draw, "upperarm_" + lead)
+	reach_arm(draw, lead, Vector3(high.x - 0.08, high.y + 0.16, high.z + 0.3))
+
+	var flick := duplicate_pose(trace)
+	move_bone(flick, "pelvis", Vector3(0, -0.004, 0.08))
+	hip_turn(flick, 20.0)
+	lean(flick, -6.0, 0.0)
+	plant_foot(flick, lead, lf)
+	plant_foot(flick, rear, rf + Vector3(0, 0.02, 0.01))
+	var chest := global_origin(flick, "spine_03")
+	punch_arm(flick, lead, Vector3(0.05, chest.y + 0.14, chest.z + 0.64))
+	rotate_bone(flick, "hand_" + lead, Vector3.RIGHT, -50.0)
+	tuck_hand(flick, rear)
+
+	var hold := duplicate_pose(flick)
+	hip_turn(hold, 6.0)
+	move_bone(hold, "pelvis", Vector3(0, 0.006, 0))
+	return make_animation([[0.0, guard], [0.12, trace], [0.22, draw], [0.26, flick],
+		[0.44, hold], [0.58, guard], [0.72, guard]], false)
+
+
+## Sweep: drop into a deep crouch on the rear leg, turn the hips over and swing the lead
+## leg low and wide across the front, then rise back into the guard. 0.72 s; the sweep
+## arrives at 0.26 s.
+func build_sundar_sweep() -> Animation:
+	var s := rear_sign()
+	var out := -s
+	var rf := global_origin(guard, "foot_" + rear)
+	var crouch := duplicate_pose(guard)
+	move_bone(crouch, "pelvis", Vector3(out * 0.015, -0.2, 0.02))
+	lean(crouch, -12.0, 0.0)
+	plant_foot(crouch, rear, rf)
+	var hip := global_origin(crouch, "thigh_" + lead)
+	solve_ik(crouch, "thigh_" + lead, "calf_" + lead, "foot_" + lead,
+		hip + Vector3(out * 0.18, -0.42, 0.1), Vector3(0, 0.4, 1))
+	_tuck_hands(crouch)
+
+	var sweep := duplicate_pose(crouch)
+	move_bone(sweep, "pelvis", Vector3(-out * 0.03, -0.06, 0.02))
+	hip_turn(sweep, 32.0)
+	lean(sweep, -18.0, 0.0)
+	plant_foot(sweep, rear, rf)
+	hip = global_origin(sweep, "thigh_" + lead)
+	solve_ik(sweep, "thigh_" + lead, "calf_" + lead, "foot_" + lead,
+		hip + Vector3(out * 0.46, -0.62, 0.18), Vector3(out * 0.2, 0.6, 0.5))
+	point_foot(sweep, lead, Vector3(out, -0.25, 0.4))
+	var chest := global_origin(sweep, "spine_03")
+	reach_arm(sweep, rear, Vector3(-out * 0.34, chest.y - 0.22, chest.z + 0.3))
+	tuck_hand(sweep, lead)
+
+	var hold := duplicate_pose(sweep)
+	move_bone(hold, "pelvis", Vector3(0, 0.02, 0))
+	var rise := duplicate_pose(crouch)
+	move_bone(rise, "pelvis", Vector3(0, 0.12, 0.03))
+	_tuck_hands(rise)
+	return make_animation([[0.0, guard], [0.10, crouch], [0.20, crouch], [0.26, sweep],
+		[0.36, hold], [0.50, rise], [0.62, rise], [0.72, guard]], false)
+
+
+## Alert walk in guard: the Walk cycle at 0.85 speed, hands tucked at the chin. 1.57 s loop.
+func build_sundar_walk() -> Animation:
+	var source := ual1.get_animation("Walk")
+	var keys := []
+	var t := 0.0
+	var end := source.length / 0.85
+	while t <= end + 0.001:
+		var pose := sample(source, minf(t * 0.85, source.length))
+		_tuck_hands(pose)
 		keys.append([t, pose])
 		t += 1.0 / SAMPLE_FPS
 	return make_animation(keys, true)
