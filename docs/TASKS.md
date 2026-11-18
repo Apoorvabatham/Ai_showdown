@@ -345,12 +345,15 @@ the AGI boss (C6, C10), story mode screens (C11), fighting-style animations (O6)
 
 ## 9. Status Nov 18 (evening) and the next round (Gemini + OpenCode)
 
-**Merged into `claude/serene-maxwell-3djncb`** (the new main for this round): `gemini/work`
+**Merged into main (`claude/brave-rubin-b43he7`)**: `gemini/work`
 (visual review of all 17 scenes, G8 all sets dressed, G9 victory scenes for Xi, Dario, Yann,
 Geoff, Ram, AGI, G13/G14 typography and sets overhaul) and `opencode/work` (O5 Xi's helpers,
 O2b–O2f props, O7 search bar and GPU card, O3 stage NPCs, O4 AGI phase looks). Both merged
 without conflicts. Start each branch with
-`git fetch origin && git merge origin/claude/serene-maxwell-3djncb`.
+`git fetch origin && git merge origin/claude/brave-rubin-b43he7`.
+Branches cleaned up: `cline/work` and the three `wip/*` branches are deleted (all merged;
+Cline's last commit is kept as tag `archive/cline-work`). Only main, `gemini/work` and
+`opencode/work` remain.
 
 ### Gemini (`gemini/work`), in order (code; owns everything Claude owned)
 1. **O7 swap**: `scripts/supers/projectile_looks.gd` loads `sundar/search_bar` and

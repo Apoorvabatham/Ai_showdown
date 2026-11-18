@@ -11,10 +11,9 @@ parallel, each with its own area:
 
 | Agent | Branch |
 |---|---|
-| Claude | `claude/brave-rubin-b43he7` (the main branch; Claude has stepped back, see docs/TASKS.md §7) |
+| Claude | `claude/brave-rubin-b43he7` (the main branch; Claude merges into it) |
+| Gemini (code tasks, see docs/TASKS.md §9) | `gemini/work` |
 | OpenCode | `opencode/work` |
-| Kilo Code (code tasks) | `gemini/work` |
-| Cline (visual tasks) | `cline/work` |
 
 Work and push only on your own branch; merge the main branch into yours at the start of each
 task. Report progress in `docs/status/<agent>.md`; Claude merges your branch. Details:
