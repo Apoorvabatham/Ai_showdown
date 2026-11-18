@@ -633,9 +633,15 @@ func _build_foundry() -> void:
 	_box(Vector3(5.4, 3.4, 1.8), Vector3(0, 1.7, -5.2), scanner_mat)
 	_box(Vector3(5.0, 0.12, 1.6), Vector3(0, 3.45, -5.2), _mat(Color(0.35, 0.38, 0.42), 0.2, 0.85))
 	# Chamber observation window with UV amber filter & internal glow
-	var glass := _mat(Color(1.0, 0.65, 0.05, 0.55), 0.04)
+	# (Lightly tinted: at 55% the pane hid the violet core and read as a flat yellow block.)
+	var glass := _mat(Color(1.0, 0.6, 0.15, 0.18), 0.04)
 	glass.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_box(Vector3(2.4, 1.4, 0.04), Vector3(0, 1.7, -4.28), glass)
+	var frame := _mat(Color(0.1, 0.11, 0.13), 0.35, 0.7)
+	for fy in [0.98, 2.42]:
+		_box(Vector3(2.56, 0.08, 0.08), Vector3(0, fy, -4.27), frame)
+	for fx in [-1.24, 1.24]:
+		_box(Vector3(0.08, 1.52, 0.08), Vector3(fx, 1.7, -4.27), frame)
 	# EUV Laser Core (13.5nm pulsing violet/ultraviolet aperture)
 	var euv_core := _glow(Color(0.80, 0.15, 1.0), 6.5, true)
 	_blinkers.append([euv_core, 6.5, 3.2, 0.0])
@@ -720,9 +726,9 @@ func _build_foundry() -> void:
 	# 8. Satirical cleanroom signage and metrics boards
 	_label("GPU FOUNDRY — FAB 4090", Vector3(0, 3.8, -5.9), 0.48, Color(0.25, 0.95, 0.4), true)
 	_board("CLEANROOM PROTOCOL (CLASS 1)\n• Full bunny suit mandatory\n• No leather jackets in air shower\n• 3-frame jabs only (vibration < 0.1nm)\n• Scrapped wafers deducted from bonus\n• If laser pulses: continue fighting",
-		Vector3(-5.0, 2.3, -5.85))
+		Vector3(-5.0, 1.75, -5.85)) # low enough to stay clear of the HUD
 	_board("FAB 4090 METRICS\n• Process: 1.8nm Hype-FinFET\n• Die Yield: 88.4% (dropping)\n• EUV Uptime: 99.98%\n• Wafer Cost: $42,000 / piece\n• Today's Scrap: 12 wafers (blame P2)",
-		Vector3(5.0, 2.3, -5.85))
+		Vector3(5.0, 1.75, -5.85))
 	_label("DANGER: 13.5nm EUV BEAM\nAUTHORIZED CHIP ARCHITECTS ONLY", Vector3(0, 2.7, -4.28), 0.12, Color(1.0, 0.3, 0.2), true)
 
 	# 9. Cleanroom Lighting (high-contrast focus, rim lighting, and vibrant accents)

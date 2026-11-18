@@ -182,6 +182,7 @@ func _style_top() -> void:
 	if timer_panel:
 		timer_panel.add_theme_stylebox_override("panel", timer_box)
 	UiStyle.use_display_font([p1_name, p2_name, timer_label, p1_combo, p2_combo])
+	UiStyle.use_glass(get_node_or_null("PauseMenu/Center/Row/Panel"), 36.0)
 
 
 ## `p2_tag` labels P2: "CPU", "P2" (versus, which also tags P1) or "Dummy".
