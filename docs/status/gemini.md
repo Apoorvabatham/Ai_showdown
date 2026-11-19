@@ -433,6 +433,27 @@ and any requests for other agents.
     - `godot --headless --path . -s res://tools/check_trials.gd -- geoff`: combo trials 0 failed.
     - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
 
+## C8: Ram power move and super scene
+- **State**: review
+- **Summary**: Implemented Ram Altman's power move (Funding Round) and owner-approved super scene (Scaling Law).
+- **Details**:
+  - **Power Move (Funding Round)**:
+    - Move input: `214K` (quarter-circle back Kick).
+    - Fires 4 money bags falling from the sky on and around the opponent (`projectile_origin = &"sky"`, `projectile_count = 4`, `projectile_interval = 6`, `projectile_spread = 0.72`, speed 12.5, damage 32, chip damage 4).
+    - Projectile visual: `&"money_bag"` in `scripts/supers/projectile_looks.gd`, procedural 3D burlap sack with tied drawstring cinch ring, gathered cloth collar, stamped bold green "$" emblem, and falling tumble animation. Supports hook to `assets/props/supers/ram/money_bag.tscn`.
+  - **Super Scene & Set (Scaling Law)**:
+    - Set: `scenes/supers/sets/scaling_chart.tscn` (built via `tools/super_sets/ram.gd` and `tools/build_super_sets.gd`), a sleek tech keynote amphitheatre with dark silicon stage, glowing cyan edge rim, wall-sized OLED chart displaying compute axes and a neon exponential Scaling Law curve shooting up to infinity, and a minimalist presentation stand with tablet.
+    - Script: `scripts/supers/scenes/scaling_law.gd`. Ram presents the scaling hypothesis at the keynote stand; the opponent is swept up the glowing exponential curve, accelerating off the top of the chart into the stratosphere; Ram delivers the pitch ("AGI NEXT YEAR!"); the opponent plummets from the ceiling and crashes flat onto the stage floor; Ram concludes: "7 TRILLION DOLLARS PLEASE."
+    - Finisher: `hagupit_finish` and `hagupit_max` in `tools/showdown_movesets.gd` wired with `cinematic = &"scaling_law"`, `cinematic_ticks = 270`, `super_fx = &"scaling_law"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_scaling_law.jpg` generated via `tools/render_scene_sheets.gd -- ram` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/ram/money_bag.tscn`: 3D canvas money bag with tied rope and dollar sign stamp.
+    - `assets/props/supers/ram/keynote_podium.tscn`: Sleek brushed aluminum keynote presentation lectern with tablet.
+    - `assets/props/supers/ram/scaling_chart.tscn`: Giant wall display model with glowing neon exponential curve.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- ram`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
 
 
 

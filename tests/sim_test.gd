@@ -5601,6 +5601,40 @@ func showdown_tests() -> void:
 	check("Showdown C8: Geoff has Neural Zap power move", g_zap != null and g_zap.projectile_count == 2
 		and g_zap.projectile_look == &"net_node")
 
+	# Ram super scene test
+	gs.player_character = gs.find_character(&"ram")
+	gs.p2_character = gs.find_character(&"dario")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var ram_f = current_scene
+	ram_f.set_physics_process(false)
+	ram_f.start_match(); ram_f.start_fight_immediately()
+	var ram_p1: Fighter = ram_f.fighters[0]
+	ram_f.fighters[1].controller = ram_f.dummy
+	ram_f.dummy.mode = DummyController.Mode.STAND
+	ram_p1.position.x = -0.45; ram_f.fighters[1].position.x = 0.45
+	ram_p1.add_meter(Fighter.MAX_METER)
+	var ram_started := [false]
+	ram_f.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: ram_started[0] = true)
+	ram_p1._start_move(ram_p1._move_for_input("236236P"), false)
+	var ram_g := 0
+	while not ram_started[0] and ram_g < 400:
+		ram_f._physics_process(1.0 / 60.0); ram_g += 1
+	await process_frame; await process_frame
+	var ram_scene = ram_f.get_node("SuperScenePlayer").scene
+	check("Super scene: Ram's Scaling Law rides curve off the chart", ram_started[0] and ram_scene != null
+		and ram_scene.find_child("scaling_chart", true, false) != null and ram_f.freeze_ticks > 100)
+	for i in 290:
+		ram_f._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: Ram's scene ends and fight resumes", ram_f.get_node("SuperScenePlayer").scene == null and ram_f.stage.visible)
+
+	# Ram power move check
+	var ram_bags: MoveData = ram_p1._move_for_input("214K")
+	check("Showdown C8: Ram has Funding Round power move", ram_bags != null and ram_bags.projectile_count == 4
+		and ram_bags.projectile_origin == &"sky" and ram_bags.projectile_look == &"money_bag")
+
 	# Victory scenes: Xi, Dario, Yann, Geoff, Ram, and AGI (algorithm)
 	var victory_cases: Array = [
 		[&"xi", "RedLantern", "Xi Winping's red lanterns and fireworks", false],

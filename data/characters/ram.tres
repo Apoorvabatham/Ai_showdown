@@ -26,6 +26,7 @@
 [ext_resource type="Resource" path="res://data/moves/ram/huling_hagupit.tres" id="24_lpls8"]
 [ext_resource type="Resource" path="res://data/moves/ram/hagupit_finish.tres" id="25_envlf"]
 [ext_resource type="Resource" path="res://data/moves/ram/hagupit_max.tres" id="26_wmciy"]
+[ext_resource type="Resource" path="res://data/moves/ram/funding_round.tres" id="27_64vk5"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="27_lrmgp"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/ram_body.res" id="27_mxu0h"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/ram_outfit.res" id="28_2dtko"]
@@ -138,4 +139,4 @@ weight = 0.92
 throw_damage = 115
 power_rating = 0.55
 speed_rating = 0.75
-moves = Array[ExtResource("5_hvfva")]([ExtResource("6_64vk5"), ExtResource("7_wjjtj"), ExtResource("8_3ci6o"), ExtResource("9_gwhmh"), ExtResource("10_bayxq"), ExtResource("11_cspcn"), ExtResource("12_lcpgq"), ExtResource("13_isahl"), ExtResource("14_pj28b"), ExtResource("15_25xd2"), ExtResource("16_6uene"), ExtResource("17_3v5gb"), ExtResource("18_4jvkm"), ExtResource("19_vkvm7"), ExtResource("20_svm4c"), ExtResource("21_v0w4n"), ExtResource("22_3bsan"), ExtResource("23_7p1un"), ExtResource("24_lpls8"), ExtResource("25_envlf"), ExtResource("26_wmciy")])
+moves = Array[ExtResource("5_hvfva")]([ExtResource("6_64vk5"), ExtResource("7_wjjtj"), ExtResource("8_3ci6o"), ExtResource("9_gwhmh"), ExtResource("10_bayxq"), ExtResource("11_cspcn"), ExtResource("12_lcpgq"), ExtResource("13_isahl"), ExtResource("14_pj28b"), ExtResource("15_25xd2"), ExtResource("16_6uene"), ExtResource("17_3v5gb"), ExtResource("18_4jvkm"), ExtResource("19_vkvm7"), ExtResource("20_svm4c"), ExtResource("21_v0w4n"), ExtResource("22_3bsan"), ExtResource("23_7p1un"), ExtResource("24_lpls8"), ExtResource("25_envlf"), ExtResource("26_wmciy"), ExtResource("27_64vk5")])

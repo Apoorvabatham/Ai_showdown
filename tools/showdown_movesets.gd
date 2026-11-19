@@ -239,6 +239,24 @@ const MOVESETS := {
 				tip = "The armoured tackle splats them on the edge: jab, then cancel into the Executive Order."},
 		],
 	},
+	# Ram Altman: Hype Brawler, funding round money rain and exponential scaling law.
+	&"ram": {
+		tweak = {
+			# Super finisher: exponential Scaling Law curve off the chart.
+			hagupit_finish = {cinematic = &"scaling_law", cinematic_ticks = 270, super_fx = &"scaling_law"},
+			hagupit_max = {cinematic = &"scaling_law", cinematic_ticks = 270, super_fx = &"scaling_law"},
+		},
+		add = {
+			# Power move: money bags rain from the sky ("Funding Round").
+			funding_round = {from = "kenji/ki_blast", set = {name = "Funding Round", input = "214K",
+				projectile_origin = &"sky", projectile_count = 4, projectile_interval = 6, projectile_spread = 0.72,
+				projectile_speed = 12.5, projectile_lifetime = 60, projectile_look = &"money_bag",
+				hitbox_radius = 0.38, damage = 32, chip_damage = 4,
+				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.65,
+				startup = 15, recovery = 35, hitstun = 20, blockstun = 15,
+				projectile_color = Color(0.2, 0.85, 0.4), camera_intensity = 0.2}},
+		},
+	},
 	# AGI (algorithm): the final boss, trained on everyone (ROADMAP §4).
 	# Projectile (Kenji), command grab (Valka), reversal (Lian), armour (Aelia),
 	# teleport (Sundar), super Engagement Loop (Rhea).

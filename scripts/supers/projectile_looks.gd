@@ -40,6 +40,8 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _word_token(color)
 		&"net_node":
 			return _net_node(color)
+		&"money_bag":
+			return _money_bag(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
@@ -53,7 +55,7 @@ static func orient(look: StringName, direction: Vector3, seed_value: int) -> Bas
 	if look == &"mini_rocket" or look == &"rulebook" or look == &"word_token" or look == &"net_node":
 		# Nose (-Z) along the flight direction.
 		return Basis.looking_at(direction.normalized() if direction.length_squared() > 0.001 else Vector3.FORWARD)
-	if look == &"gpu" or look == &"container":
+	if look == &"gpu" or look == &"container" or look == &"money_bag":
 		var rng := RandomNumberGenerator.new()
 		rng.seed = seed_value
 		if look == &"container":
@@ -116,6 +118,9 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 			if dendrites:
 				dendrites.rotate_y(8.0 * delta)
 				dendrites.rotate_z(5.0 * delta)
+		&"money_bag":
+			var axis: Vector3 = node.get_meta(&"tumble_axis", Vector3.RIGHT)
+			node.rotate(axis, 3.5 * delta)
 
 
 # --- Mini rocket -----------------------------------------------------------------
@@ -508,6 +513,70 @@ static func _net_node(color: Color) -> Node3D:
 	light.light_color = color
 	light.light_energy = 1.6
 	light.omni_range = 2.4
+	root.add_child(light)
+
+	return root
+
+
+# --- Money bag (Ram's power move) -----------------------------------------------
+
+## A burlap funding money bag stamped with a green "$" sign.
+static func _money_bag(color: Color) -> Node3D:
+	var prop := _load_prop("ram/money_bag")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "MoneyBag"
+	root.set_meta(&"tumble_axis", Vector3(randf_range(-1.0, 1.0), randf_range(-0.5, 0.5), randf_range(-1.0, 1.0)).normalized())
+
+	var burlap := _metal(Color(0.82, 0.74, 0.58), 0.0)
+	var rope_mat := _metal(Color(0.75, 0.62, 0.32), 0.1)
+	var green_glow := _glow(Color(0.2, 0.95, 0.4), 2.5)
+
+	# Main bag body (squat rounded pouch)
+	var body := MeshInstance3D.new()
+	var body_mesh := SphereMesh.new()
+	body_mesh.radius = 0.22
+	body_mesh.height = 0.36
+	body.mesh = body_mesh
+	body.material_override = burlap
+	body.position = Vector3(0, -0.05, 0)
+	root.add_child(body)
+
+	# Cinch rope / neck ring
+	var cinch := MeshInstance3D.new()
+	var cinch_mesh := TorusMesh.new()
+	cinch_mesh.inner_radius = 0.07
+	cinch_mesh.outer_radius = 0.10
+	cinch.mesh = cinch_mesh
+	cinch.material_override = rope_mat
+	cinch.position = Vector3(0, 0.12, 0)
+	cinch.rotation.x = PI * 0.5
+	root.add_child(cinch)
+
+	# Flared gathered cloth collar at top
+	var collar := _cylinder(0.12, 0.06, 0.10, Vector3(0, 0.18, 0), burlap, 0.0)
+	root.add_child(collar)
+
+	# Stamped green "$" sign on front and back
+	for side in [1.0, -1.0]:
+		var dollar := Label3D.new()
+		dollar.text = "$"
+		dollar.font_size = 56
+		dollar.pixel_size = 0.005
+		dollar.modulate = Color(0.15, 0.9, 0.35)
+		dollar.outline_modulate = Color(0.02, 0.2, 0.06)
+		dollar.position = Vector3(0, -0.05, 0.22 * side)
+		dollar.rotation.y = 0.0 if side > 0 else PI
+		root.add_child(dollar)
+
+	# Small golden coin peek / emerald spark
+	root.add_child(_sphere(0.045, Vector3(0, 0.15, 0.03), green_glow))
+
+	var light := OmniLight3D.new()
+	light.light_color = Color(0.3, 1.0, 0.5)
+	light.light_energy = 1.2
+	light.omni_range = 1.8
 	root.add_child(light)
 
 	return root
