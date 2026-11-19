@@ -38,6 +38,8 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _rulebook(color)
 		&"word_token":
 			return _word_token(color)
+		&"net_node":
+			return _net_node(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
@@ -48,7 +50,7 @@ static func orient(look: StringName, direction: Vector3, seed_value: int) -> Bas
 	if look == &"paper_dragon":
 		var flat := Vector3(direction.x, 0.0, direction.z)
 		return Basis.looking_at(flat.normalized()) if flat.length_squared() > 0.001 else Basis.IDENTITY
-	if look == &"mini_rocket" or look == &"rulebook" or look == &"word_token":
+	if look == &"mini_rocket" or look == &"rulebook" or look == &"word_token" or look == &"net_node":
 		# Nose (-Z) along the flight direction.
 		return Basis.looking_at(direction.normalized() if direction.length_squared() > 0.001 else Vector3.FORWARD)
 	if look == &"gpu" or look == &"container":
@@ -103,6 +105,17 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 				if away.length_squared() > 0.001:
 					node.global_basis = Basis.looking_at(away.normalized()) * Basis(Vector3.FORWARD, 0.06 * sin(age * 10.0))
 			node.position.y += sin(age * 8.0) * 0.002
+		&"net_node":
+			var pulse := 1.0 + 0.15 * sin(age * 20.0)
+			node.scale = Vector3.ONE * pulse
+			var ring := node.get_node_or_null("Ring") as Node3D
+			if ring:
+				ring.rotate_z(12.0 * delta)
+				ring.rotate_x(6.0 * delta)
+			var dendrites := node.get_node_or_null("Dendrites") as Node3D
+			if dendrites:
+				dendrites.rotate_y(8.0 * delta)
+				dendrites.rotate_z(5.0 * delta)
 
 
 # --- Mini rocket -----------------------------------------------------------------
@@ -437,6 +450,79 @@ static func _word_token(color: Color) -> Node3D:
 	root.add_child(light)
 
 	return root
+
+
+# --- Neural-net node (Geoff's power move) ----------------------------------------
+
+## A glowing synaptic node with radial axons and an electric orbital ring.
+static func _net_node(color: Color) -> Node3D:
+	var prop := _load_prop("geoff/net_node")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "NetNode"
+
+	var core_mat := _glow(color.lerp(Color.WHITE, 0.4), 2.2)
+	root.add_child(_sphere(0.15, Vector3.ZERO, core_mat))
+	root.add_child(_sphere(0.08, Vector3.ZERO, _glow(Color.WHITE, 3.5)))
+
+	var dendrites := Node3D.new()
+	dendrites.name = "Dendrites"
+	root.add_child(dendrites)
+
+	var spoke_mat := _glow(color, 1.8)
+	var tip_mat := _glow(Color(1.0, 0.95, 0.6), 2.8)
+
+	var dirs := [
+		Vector3(1, 0.4, 0).normalized(),
+		Vector3(-1, 0.3, 0.2).normalized(),
+		Vector3(0.2, 1, -0.3).normalized(),
+		Vector3(-0.3, -1, 0.2).normalized(),
+		Vector3(0.4, -0.2, 1).normalized(),
+		Vector3(-0.4, 0.2, -1).normalized()
+	]
+	for dir: Vector3 in dirs:
+		var spoke_node := Node3D.new()
+		spoke_node.position = dir * 0.16
+		var spoke := _cylinder(0.015, 0.025, 0.22, Vector3(0, 0, 0.11), spoke_mat, 0.0)
+		spoke_node.add_child(spoke)
+		spoke_node.add_child(_sphere(0.04, Vector3(0, 0, 0.22), tip_mat))
+		var up := Vector3.UP
+		if absf(dir.dot(up)) > 0.95:
+			up = Vector3.RIGHT
+		spoke_node.basis = Basis.looking_at(dir, up)
+		dendrites.add_child(spoke_node)
+
+	var ring_node := Node3D.new()
+	ring_node.name = "Ring"
+	var ring_mesh := TorusMesh.new()
+	ring_mesh.inner_radius = 0.22
+	ring_mesh.outer_radius = 0.26
+	var ring_inst := MeshInstance3D.new()
+	ring_inst.mesh = ring_mesh
+	ring_inst.material_override = _glow(color.lerp(Color.CYAN, 0.3), 2.4)
+	ring_node.add_child(ring_inst)
+	root.add_child(ring_node)
+
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 1.6
+	light.omni_range = 2.4
+	root.add_child(light)
+
+	return root
+
+
+static func _sphere(radius: float, position: Vector3, material: Material) -> MeshInstance3D:
+	var mesh := MeshInstance3D.new()
+	var s := SphereMesh.new()
+	s.radius = radius
+	s.height = radius * 2.0
+	mesh.mesh = s
+	mesh.position = position
+	mesh.material_override = material
+	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mesh
 
 
 

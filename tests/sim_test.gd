@@ -5567,6 +5567,40 @@ func showdown_tests() -> void:
 	check("Showdown C8: Yann has Word Tokens power move", y_words != null and y_words.projectile_count == 3
 		and y_words.projectile_look == &"word_token")
 
+	# Geoff super scene test
+	gs.player_character = gs.find_character(&"geoff")
+	gs.p2_character = gs.find_character(&"yann")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var gf = current_scene
+	gf.set_physics_process(false)
+	gf.start_match(); gf.start_fight_immediately()
+	var gp1: Fighter = gf.fighters[0]
+	gf.fighters[1].controller = gf.dummy
+	gf.dummy.mode = DummyController.Mode.STAND
+	gp1.position.x = -0.45; gf.fighters[1].position.x = 0.45
+	gp1.add_meter(Fighter.MAX_METER)
+	var gstarted := [false]
+	gf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: gstarted[0] = true)
+	gp1._start_move(gp1._move_for_input("236236P"), false)
+	var gg := 0
+	while not gstarted[0] and gg < 400:
+		gf._physics_process(1.0 / 60.0); gg += 1
+	await process_frame; await process_frame
+	var gscene = gf.get_node("SuperScenePlayer").scene
+	check("Super scene: Geoff's Lecture Hall zaps opponent", gstarted[0] and gscene != null
+		and gscene.find_child("lecture_hall", true, false) != null and gf.freeze_ticks > 100)
+	for i in 290:
+		gf._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: Geoff's scene ends and fight resumes", gf.get_node("SuperScenePlayer").scene == null and gf.stage.visible)
+
+	# Geoff power move check
+	var g_zap: MoveData = gp1._move_for_input("214K")
+	check("Showdown C8: Geoff has Neural Zap power move", g_zap != null and g_zap.projectile_count == 2
+		and g_zap.projectile_look == &"net_node")
+
 	# Victory scenes: Xi, Dario, Yann, Geoff, Ram, and AGI (algorithm)
 	var victory_cases: Array = [
 		[&"xi", "RedLantern", "Xi Winping's red lanterns and fireworks", false],

@@ -128,6 +128,18 @@ const MOVESETS := {
 			shield_rush = {damage = 94, recovery = 18},
 			hammerfall = {damage = 122, recovery = 18},
 			rising_gauntlet = {damage = 102, recovery = 18},
+			# Super finisher: 1986 Lecture Hall, chalkboard neural net zaps opponent, Geoff looks regretful.
+			oath_finish = {cinematic = &"lecture_hall", cinematic_ticks = 270, super_fx = &"lecture_hall"},
+		},
+		add = {
+			# Power move: two neural-net nodes zap forward with synaptic arcs.
+			neural_zap = {from = "kenji/ki_blast", set = {name = "Neural Zap", input = "214K",
+				projectile_count = 2, projectile_interval = 8, projectile_speed = 6.2, projectile_lifetime = 75,
+				projectile_look = &"net_node", projectile_color = Color(0.95, 0.82, 0.35),
+				hitbox_radius = 0.34, damage = 35, chip_damage = 4,
+				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.65,
+				startup = 14, active = 18, recovery = 24,
+				camera_intensity = 0.2}},
 		},
 	},
 	# Sundar Pickai: zoner / trapper (was a copy of Jensen's kit).

@@ -412,6 +412,27 @@ and any requests for other agents.
     - `godot --headless --path . -s res://tools/check_trials.gd -- yann`: combo trials 0 failed.
     - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
 
+## C8: Geoff power move and super scene
+- **State**: review
+- **Summary**: Implemented Geoff Hintoff's power move (Neural Zap) and owner-approved super scene (1986 Lecture Hall / Regulate Me).
+- **Details**:
+  - **Power Move (Neural Zap)**:
+    - Move input: `214K` (quarter-circle back Kick).
+    - Fires 2 high-velocity neural network nodes in sequence (`projectile_count = 2`, `projectile_interval = 8`, speed 6.2, lifetime 75, damage 35, chip damage 4).
+    - Projectile visual: `&"net_node"` in `scripts/supers/projectile_looks.gd`, procedural 3D synaptic neuron with pulsating spherical soma, 6 branching dendrite spokes with terminal synaptic boutons, and spinning electric orbital rings. Supports hook to `assets/props/supers/geoff/net_node.tscn`.
+  - **Super Scene & Set (1986 Lecture Hall / Regulate Me)**:
+    - Set: `scenes/supers/sets/lecture_hall.tscn` (built via `tools/super_sets/geoff.gd` and `tools/build_super_sets.gd`), a 1980s academic amphitheatre with tiered student benches, mahogany lecturer's stage, vintage green chalkboard with handwritten backpropagation formulas and multi-layer neural network diagrams, oak lectern with brass gooseneck microphone and green banker's reading lamp.
+    - Script: `scripts/supers/scenes/lecture_hall.gd`. VHS rewind effect jumps back to a 1986 lecture hall; Geoff lectures passionately at the podium; the chalk neural network on the board ignites into electric life with high-voltage synaptic arcs shocking the opponent; Geoff looks at his hands in horror at what he created ("WHAT HAVE I DONE?!"); final catastrophic overfit discharge blasts the opponent flat on the floor; Geoff sighs at the lectern pleading "PLEASE REGULATE US."
+    - Finisher: `oath_finish` in `tools/showdown_movesets.gd` wired with `cinematic = &"lecture_hall"`, `cinematic_ticks = 270`, `super_fx = &"lecture_hall"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_lecture_hall.jpg` generated via `tools/render_scene_sheets.gd -- geoff` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/geoff/net_node.tscn`: 3D neuron model with branching axons and synaptic vesicles.
+    - `assets/props/supers/geoff/lecture_podium.tscn`: Vintage wooden university lectern with gooseneck mic.
+    - `assets/props/supers/geoff/chalkboard.tscn`: Wooden framed chalkboard with etched math formulas.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- geoff`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
 
 
 
