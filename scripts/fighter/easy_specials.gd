@@ -73,3 +73,26 @@ static func listing(data: CharacterData, power := "Power", super_name := "Super"
 	if s.has("super"):
 		out.append([s["super"], super_name])
 	return out
+
+
+## The whole control scheme as plain rows [what, keys, does] for menus: no motions, no
+## notation. `keys` maps actions ("lp", "power", "right", ...) to key names.
+static func simple_rows(data: CharacterData, keys: Dictionary) -> Array:
+	var k := func(action: String) -> String: return str(keys.get(action, "?"))
+	var rows := [
+		["Punch", "%s  ·  %s heavy" % [k.call("lp"), k.call("hp")], ""],
+		["Kick", "%s  ·  %s heavy" % [k.call("lk"), k.call("hk")], ""],
+	]
+	var s := slots(data)
+	var dir_keys := {5: "", 6: k.call("right") + " + ", 4: k.call("left") + " + ", 2: k.call("down") + " + "}
+	var dir_words := {5: "Power", 6: "Forward + Power", 4: "Back + Power", 2: "Down + Power"}
+	for dir in SLOTS:
+		if s.has(dir):
+			rows.append([dir_words[dir], dir_keys[dir] + k.call("power"), (s[dir] as MoveData).name])
+	if s.has("super"):
+		rows.append(["Super", k.call("super"), "%s  (full meter)" % (s["super"] as MoveData).name])
+	rows.append(["Throw", "%s + %s  up close" % [k.call("lp"), k.call("lk")], ""])
+	rows.append(["Block", "hold %s" % k.call("left"), ""])
+	rows.append(["Jump · Crouch", "%s  ·  %s" % [k.call("up"), k.call("down")], ""])
+	rows.append(["Sidestep", k.call("sidestep"), ""])
+	return rows

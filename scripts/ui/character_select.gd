@@ -55,6 +55,7 @@ func _ready() -> void:
 	var info := "Margin/VBox/Main/Info/VBox/"
 	(get_node(info + "NameLabel") as Label).add_theme_color_override("font_color", Color.WHITE)
 	(get_node(info + "SignatureTitle") as Label).add_theme_color_override("font_color", UiStyle.ACCENT)
+	(get_node(info + "SignatureTitle") as Label).text = "CONTROLS"
 	for bar_name in ["PowerBar", "SpeedBar", "HealthBar"]:
 		UiStyle.accent_bar(get_node_or_null(info + "Stats/" + bar_name) as ProgressBar)
 	UiStyle.use_display_font([get_node_or_null("Margin/VBox/Title"), get_node_or_null("Margin/VBox/Main/Info/VBox/NameLabel")])
@@ -348,17 +349,10 @@ As CPU: %s, %s." % [character.description, style.name, style.blurb]
 	speed_bar.value = character.speed_rating
 	health_bar.value = character.max_health / HEALTH_SCALE
 	var lines := PackedStringArray()
-	# One-button specials first (the easy way in); the keys are P1's bindings.
-	# (Looked up at run time: this script also compiles where autoload names aren't known.)
-	var setup: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InputSetup")
-	var power_key: String = setup.key_name(setup.bindings.p1.power.key) if setup else "O"
-	var super_key: String = setup.key_name(setup.bindings.p1.super.key) if setup else "P"
-	for entry: Array in EasySpecials.listing(character, power_key, super_key):
-		var move: MoveData = entry[0]
-		lines.append("%s   %s%s" % [entry[1], move.name, "  (super, full meter)" if move.super_move else ""])
-	for move in character.moves:
-		if move.input.length() == 3 and (move.input.begins_with("6") or move.input.begins_with("4")):
-			lines.append("%s   %s" % [move.input, move.name])
+	# Plain buttons only: what to press and what it does (P1's keys).
+	for row: Array in EasySpecials.simple_rows(character, FightHud._p1_key_names()):
+		if row[2] != "" or row[0] in ["Punch", "Kick"]:
+			lines.append(("%s   %s   %s" % row).strip_edges(false, true))
 	signature_label.text = "\n".join(lines)
 
 

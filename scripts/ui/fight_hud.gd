@@ -183,6 +183,8 @@ func _style_top() -> void:
 		timer_panel.add_theme_stylebox_override("panel", timer_box)
 	UiStyle.use_display_font([p1_name, p2_name, timer_label, p1_combo, p2_combo, center_label, sub_label, p1_note, p2_note])
 	UiStyle.use_glass(get_node_or_null("PauseMenu/Center/Row/Panel"), 36.0)
+	UiStyle.use_glass(move_list_panel, 32.0)
+	%MoveListButton.text = "Controls"
 
 
 ## Newcomer help: the controls in a glass pill near the bottom for a few seconds, the first
@@ -727,25 +729,24 @@ func _make_pip() -> Panel:
 
 
 func _move_list_text(character: CharacterData) -> String:
-	var lines := PackedStringArray(["%s - MOVE LIST" % character.display_name.to_upper(), ""])
-	for move in character.moves:
-		if not move.is_special() and not move.input.begins_with("~"):
-			lines.append("%-9s %-20s %s" % [move.input, move.name, LEVEL_NAMES[move.hit_level]])
-	lines.append("%-9s %-20s %s" % ["LP+LK", "Throw", "Unblockable"])
+	# Plain buttons only (the parody needs no fighting-game notation).
+	var lines := PackedStringArray(["%s - CONTROLS" % character.display_name.to_upper(), ""])
+	for row: Array in EasySpecials.simple_rows(character, _p1_key_names()):
+		lines.append(("%-16s %-14s %s" % row).strip_edges(false, true))
 	lines.append("")
-	# (Looked up at run time: this script also compiles where autoload names aren't known.)
-	var setup: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InputSetup")
-	var power_key: String = setup.key_name(setup.bindings.p1.power.key) if setup else "O"
-	var super_key: String = setup.key_name(setup.bindings.p1.super.key) if setup else "P"
-	lines.append("SPECIALS  (one button: %s = Power, %s = Super with a full meter)" % [power_key, super_key])
-	for entry: Array in EasySpecials.listing(character, power_key, super_key):
-		var move: MoveData = entry[0]
-		lines.append("%-9s %-20s %s   (or %s)" % [entry[1], move.name, LEVEL_NAMES[move.hit_level], notation(move.input)])
-	lines.append("")
-	lines.append("Dash: tap forward twice  ·  Backdash: tap back twice")
-	lines.append("Sidestep: L / RB (hold down for toward camera)")
-	lines.append("Block: hold back (stand) or down-back (crouch)")
+	lines.append("Fill the SUPER bar by fighting, then press Super.")
 	return "\n".join(lines)
+
+
+## P1's bound key names by action ("lp" -> "U"). Looked up at run time: this script also
+## compiles where autoload names aren't known.
+static func _p1_key_names() -> Dictionary:
+	var setup: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InputSetup")
+	var out := {}
+	if setup:
+		for action: String in setup.bindings.p1:
+			out[action] = setup.key_name(setup.bindings.p1[action].key)
+	return out
 
 
 ## "236P" -> "↓↘→ P" (numpad motion as arrows, facing right).
