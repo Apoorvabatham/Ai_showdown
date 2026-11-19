@@ -13,7 +13,8 @@ const MIN_SECONDS := 0.6
 const TIPS := [
 	"Hold back to block. Hold down-back to block lows; overheads must be blocked standing.",
 	"Normals that connect can be cancelled into a special move.",
-	"Fill the SUPER meter, then input the motion twice + punch or kick for your super.",
+	"Power button (O): your signature move. Add forward, back or down for the others.",
+	"Fill the SUPER meter, then press Super (P) for a screen-changing super move.",
 	"Light Punch + Light Kick up close throws. Press it again as you're grabbed to break free.",
 	"Sidestep (L / RB) to dodge fireballs and step around attacks.",
 	"Dragon-punch motions (forward, down, down-forward + punch) are invincible as they start: perfect against jump-ins.",

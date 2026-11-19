@@ -10,12 +10,13 @@ extends Node
 ## buttons X Y A B RB by default, and the triggers can be bound too. Pad 1 → P1, pad 2 →
 ## P2, or the other way round when `swap_pads` is set.
 
-const ACTIONS := ["left", "right", "up", "down", "lp", "hp", "lk", "hk", "sidestep"]
+const ACTIONS := ["left", "right", "up", "down", "lp", "hp", "lk", "hk", "sidestep", "power", "super"]
 ## Actions whose gamepad button can be remapped (movement is always D-pad + left stick).
-const PAD_ACTIONS := ["lp", "hp", "lk", "hk", "sidestep"]
+const PAD_ACTIONS := ["lp", "hp", "lk", "hk", "sidestep", "power", "super"]
 const ACTION_NAMES := {
 	"left": "Left", "right": "Right", "up": "Up / Jump", "down": "Down / Crouch",
 	"lp": "Light Punch", "hp": "Heavy Punch", "lk": "Light Kick", "hk": "Heavy Kick", "sidestep": "Sidestep",
+	"power": "Power Move", "super": "Super Move",
 }
 ## Pseudo button codes for the analog triggers (bound as "pressed past half way").
 const PAD_TRIGGER_LEFT := 100 + JOY_AXIS_TRIGGER_LEFT
@@ -35,15 +36,17 @@ const PAD_NAMES := {
 
 const DEFAULT_KEYS := {
 	"p1": {"left": KEY_A, "right": KEY_D, "up": KEY_W, "down": KEY_S,
-		"lp": KEY_U, "hp": KEY_I, "lk": KEY_J, "hk": KEY_K, "sidestep": KEY_L},
+		"lp": KEY_U, "hp": KEY_I, "lk": KEY_J, "hk": KEY_K, "sidestep": KEY_L,
+		"power": KEY_O, "super": KEY_P},
 	"p2": {"left": KEY_LEFT, "right": KEY_RIGHT, "up": KEY_UP, "down": KEY_DOWN,
-		"lp": KEY_KP_4, "hp": KEY_KP_5, "lk": KEY_KP_1, "hk": KEY_KP_2, "sidestep": KEY_KP_6},
+		"lp": KEY_KP_4, "hp": KEY_KP_5, "lk": KEY_KP_1, "hk": KEY_KP_2, "sidestep": KEY_KP_6,
+		"power": KEY_KP_7, "super": KEY_KP_8},
 }
 ## P2's second keys for keyboards without a numpad (only while the binding is default).
 const P2_FALLBACK_KEYS := {"lp": KEY_BRACKETLEFT, "hp": KEY_BRACKETRIGHT, "lk": KEY_SEMICOLON,
-	"hk": KEY_APOSTROPHE, "sidestep": KEY_SLASH}
+	"hk": KEY_APOSTROPHE, "sidestep": KEY_SLASH, "power": KEY_BACKSLASH, "super": KEY_EQUAL}
 const DEFAULT_PAD := {"lp": JOY_BUTTON_X, "hp": JOY_BUTTON_Y, "lk": JOY_BUTTON_A, "hk": JOY_BUTTON_B,
-	"sidestep": JOY_BUTTON_RIGHT_SHOULDER}
+	"sidestep": JOY_BUTTON_RIGHT_SHOULDER, "power": JOY_BUTTON_LEFT_SHOULDER, "super": PAD_TRIGGER_RIGHT}
 const PAD_DIRECTIONS := {
 	"left": [JOY_BUTTON_DPAD_LEFT, JOY_AXIS_LEFT_X, -1.0], "right": [JOY_BUTTON_DPAD_RIGHT, JOY_AXIS_LEFT_X, 1.0],
 	"up": [JOY_BUTTON_DPAD_UP, JOY_AXIS_LEFT_Y, -1.0], "down": [JOY_BUTTON_DPAD_DOWN, JOY_AXIS_LEFT_Y, 1.0],
@@ -177,6 +180,7 @@ func _add_pad_button(action: String, device: int, code: int) -> void:
 ## Human-readable controls for menus and the move list.
 func describe(player: String) -> String:
 	var b: Dictionary = bindings[player]
-	return "%s%s%s%s move · %s/%s punch · %s/%s kick · %s sidestep" % [
+	return "%s%s%s%s move · %s/%s punch · %s/%s kick · %s power · %s super · %s sidestep" % [
 		key_name(b.up.key), key_name(b.left.key), key_name(b.down.key), key_name(b.right.key),
-		key_name(b.lp.key), key_name(b.hp.key), key_name(b.lk.key), key_name(b.hk.key), key_name(b.sidestep.key)]
+		key_name(b.lp.key), key_name(b.hp.key), key_name(b.lk.key), key_name(b.hk.key),
+		key_name(b.power.key), key_name(b.super.key), key_name(b.sidestep.key)]

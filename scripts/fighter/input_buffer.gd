@@ -9,6 +9,9 @@ const HP := 2
 const LK := 4
 const HK := 8
 const SIDESTEP := 16
+## One-button specials (EasySpecials): fits the 16-bit input words of replays and netplay.
+const POWER := 32
+const SUPER := 64
 
 const BUTTON_NAMES := { LP: "LP", HP: "HP", LK: "LK", HK: "HK" }
 const BUTTON_SHIFT := 4

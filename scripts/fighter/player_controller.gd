@@ -30,6 +30,10 @@ func read_raw() -> int:
 		buttons |= InputBuffer.HK
 	if Input.is_action_pressed(prefix + "sidestep"):
 		buttons |= InputBuffer.SIDESTEP
+	if Input.is_action_pressed(prefix + "power"):
+		buttons |= InputBuffer.POWER
+	if Input.is_action_pressed(prefix + "super"):
+		buttons |= InputBuffer.SUPER
 	return InputBuffer.pack(to_numpad(x, y), buttons)
 
 

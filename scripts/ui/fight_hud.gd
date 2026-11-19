@@ -733,15 +733,14 @@ func _move_list_text(character: CharacterData) -> String:
 			lines.append("%-9s %-20s %s" % [move.input, move.name, LEVEL_NAMES[move.hit_level]])
 	lines.append("%-9s %-20s %s" % ["LP+LK", "Throw", "Unblockable"])
 	lines.append("")
-	lines.append("SPECIALS  (P = either punch, K = either kick)")
-	for move in character.moves:
-		if move.is_special() and not move.super_move:
-			lines.append("%-9s %-20s %s" % [notation(move.input), move.name, LEVEL_NAMES[move.hit_level]])
-	for move in character.moves:
-		if move.super_move:
-			lines.append("")
-			lines.append("SUPER  (full meter)")
-			lines.append("%-9s %-20s %s" % [notation(move.input), move.name, LEVEL_NAMES[move.hit_level]])
+	# (Looked up at run time: this script also compiles where autoload names aren't known.)
+	var setup: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InputSetup")
+	var power_key: String = setup.key_name(setup.bindings.p1.power.key) if setup else "O"
+	var super_key: String = setup.key_name(setup.bindings.p1.super.key) if setup else "P"
+	lines.append("SPECIALS  (one button: %s = Power, %s = Super with a full meter)" % [power_key, super_key])
+	for entry: Array in EasySpecials.listing(character, power_key, super_key):
+		var move: MoveData = entry[0]
+		lines.append("%-9s %-20s %s   (or %s)" % [entry[1], move.name, LEVEL_NAMES[move.hit_level], notation(move.input)])
 	lines.append("")
 	lines.append("Dash: tap forward twice  ·  Backdash: tap back twice")
 	lines.append("Sidestep: L / RB (hold down for toward camera)")

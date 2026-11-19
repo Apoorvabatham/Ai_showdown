@@ -348,9 +348,14 @@ As CPU: %s, %s." % [character.description, style.name, style.blurb]
 	speed_bar.value = character.speed_rating
 	health_bar.value = character.max_health / HEALTH_SCALE
 	var lines := PackedStringArray()
-	for move in character.moves:
-		if move.is_special():
-			lines.append("%s   %s%s" % [FightHud.notation(move.input), move.name, "  (super)" if move.super_move else ""])
+	# One-button specials first (the easy way in); the keys are P1's bindings.
+	# (Looked up at run time: this script also compiles where autoload names aren't known.)
+	var setup: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InputSetup")
+	var power_key: String = setup.key_name(setup.bindings.p1.power.key) if setup else "O"
+	var super_key: String = setup.key_name(setup.bindings.p1.super.key) if setup else "P"
+	for entry: Array in EasySpecials.listing(character, power_key, super_key):
+		var move: MoveData = entry[0]
+		lines.append("%s   %s%s" % [entry[1], move.name, "  (super, full meter)" if move.super_move else ""])
 	for move in character.moves:
 		if move.input.length() == 3 and (move.input.begins_with("6") or move.input.begins_with("4")):
 			lines.append("%s   %s" % [move.input, move.name])

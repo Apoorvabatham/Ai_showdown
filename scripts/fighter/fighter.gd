@@ -256,6 +256,8 @@ var immortal := false
 var _flash_color := Color.WHITE
 ## This character's specials in MOTION_PRIORITY order: [move, motion, sequence, buttons, window].
 var _specials: Array[Array] = []
+## One-button specials (EasySpecials): numpad dir -> MoveData for Power, "super" -> super.
+var _easy := {}
 var _material: StandardMaterial3D
 
 @onready var visual: Node3D = $Visual
@@ -276,6 +278,7 @@ func setup(character: CharacterData, fighter_controller: FighterController, alt_
 			if move.motion() == motion:
 				var window := SUPER_MOTION_WINDOW if move.super_move or motion.length() >= 5 else MOTION_WINDOW
 				_specials.append([move, motion, _motion_sequence(motion), _special_buttons(move.input.substr(motion.length())), window])
+	_easy = EasySpecials.slots(data)
 
 
 func _ready() -> void:
@@ -625,6 +628,10 @@ func _tick_attack() -> void:
 ## Starts a buffered attack. With `cancel_only` (the current move connected), only its
 ## cancel_into moves, specials (from a normal) or a super (from a special) are allowed.
 func _try_attack(cancel_only: bool) -> bool:
+	# The one-button specials have their own buttons (Power / Super).
+	if state != State.JUMP and (input.pressed_within(InputBuffer.POWER, BUFFER_WINDOW)
+			or input.pressed_within(InputBuffer.SUPER, BUFFER_WINDOW)) and _try_special(cancel_only):
+		return true
 	# Every normal and special needs a fresh attack press: skip the lookups without one.
 	var any_press := false
 	for button: int in ATTACK_BUTTONS:
@@ -655,6 +662,8 @@ func _try_special(cancel_only: bool) -> bool:
 		var since_active := state_frame - current_move.startup - current_move.active
 		if current_move.super_move or since_active > SPECIAL_CANCEL_WINDOW or position.y > 0.0:
 			return false
+	if _try_easy_special(cancel_only):
+		return true
 	for special: Array in _specials:
 		var move: MoveData = special[0]
 		if cancel_only and current_move.is_special() and not move.super_move:
@@ -676,6 +685,34 @@ func _try_special(cancel_only: bool) -> bool:
 		_start_move(move, false)
 		return true
 	return false
+
+
+## Power / Super buttons: the special in the slot of the held direction, or the super.
+## Same rules as a motion special (cancel window, meter, one projectile at a time).
+func _try_easy_special(cancel_only: bool) -> bool:
+	if _easy.is_empty():
+		return false
+	var move: MoveData = null
+	var button := 0
+	if input.pressed_within(InputBuffer.SUPER, BUFFER_WINDOW) and _easy.has("super"):
+		move = _easy["super"]
+		button = InputBuffer.SUPER
+	elif input.pressed_within(InputBuffer.POWER, BUFFER_WINDOW):
+		var d := input.dir(0)
+		var slot := 6 if d in [6, 9] else 4 if d in [4, 7] else 2 if d in [1, 2, 3] else 5
+		move = _easy.get(slot, _easy.get(5))
+		button = InputBuffer.POWER
+	if move == null:
+		return false
+	if cancel_only and current_move.is_special() and not move.super_move:
+		return false
+	if move.super_move and meter < MAX_METER:
+		return false
+	if move.fires_projectile() and _blocks_new_projectile(move):
+		return false
+	input.consume(button)
+	_start_move(move, false)
+	return true
 
 
 func _motion_sequence(motion: String) -> Array:

@@ -888,6 +888,30 @@ func specials_tests() -> void:
 	check("Rising Dragon has landing recovery", p1._landing_frames == Fighter.LANDING_FRAMES + p1._move_for_input("623P").landing_recovery, str(p1._landing_frames))
 	step(120)
 
+	# One-button specials (EasySpecials): Power fires the signature special, a direction +
+	# Power the others, Super the super (full meter only).
+	var easy := EasySpecials.slots(p1.data)
+	reset(D.STAND); approach(2.5)
+	press(InputBuffer.POWER)
+	check("Power button starts the signature special", p1.current_move != null and p1.current_move == easy.get(5),
+		p1.current_move.name if p1.current_move else "none")
+	step(150)
+	if easy.has(4):
+		reset(D.STAND); approach(2.5)
+		press(InputBuffer.POWER, 4)
+		check("Back + Power starts the back-slot special", p1.current_move != null and p1.current_move == easy.get(4),
+			p1.current_move.name if p1.current_move else "none")
+		step(150)
+	reset(D.STAND); approach(1.0)
+	press(InputBuffer.SUPER)
+	check("Super button does nothing without a full meter", p1.current_move == null or not p1.current_move.super_move)
+	step(60)
+	reset(D.STAND); approach(1.0)
+	p1.add_meter(Fighter.MAX_METER)
+	press(InputBuffer.SUPER)
+	check("Super button with a full meter starts the super", p1.current_move != null and p1.current_move.super_move and p1.meter == 0)
+	step(300)
+
 	# Super: needs a full meter; freezes the fight, multi-hits, chains into the finisher.
 	reset(D.STAND); approach(1.0)
 	motion("236236", InputBuffer.HP)
