@@ -42,6 +42,8 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _net_node(color)
 		&"money_bag":
 			return _money_bag(color)
+		&"feed_card":
+			return _feed_card(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
@@ -52,7 +54,7 @@ static func orient(look: StringName, direction: Vector3, seed_value: int) -> Bas
 	if look == &"paper_dragon":
 		var flat := Vector3(direction.x, 0.0, direction.z)
 		return Basis.looking_at(flat.normalized()) if flat.length_squared() > 0.001 else Basis.IDENTITY
-	if look == &"mini_rocket" or look == &"rulebook" or look == &"word_token" or look == &"net_node":
+	if look == &"mini_rocket" or look == &"rulebook" or look == &"word_token" or look == &"net_node" or look == &"feed_card":
 		# Nose (-Z) along the flight direction.
 		return Basis.looking_at(direction.normalized() if direction.length_squared() > 0.001 else Vector3.FORWARD)
 	if look == &"gpu" or look == &"container" or look == &"money_bag":
@@ -121,6 +123,13 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 		&"money_bag":
 			var axis: Vector3 = node.get_meta(&"tumble_axis", Vector3.RIGHT)
 			node.rotate(axis, 3.5 * delta)
+		&"feed_card":
+			var camera := node.get_viewport().get_camera_3d() if node.is_inside_tree() else null
+			if camera:
+				var away := node.global_position - camera.global_position
+				if away.length_squared() > 0.001:
+					node.global_basis = Basis.looking_at(away.normalized()) * Basis(Vector3.FORWARD, 0.12 * sin(age * 12.0))
+			node.scale = Vector3.ONE * (1.0 + 0.08 * sin(age * 16.0))
 
 
 # --- Mini rocket -----------------------------------------------------------------
@@ -577,6 +586,61 @@ static func _money_bag(color: Color) -> Node3D:
 	light.light_color = Color(0.3, 1.0, 0.5)
 	light.light_energy = 1.2
 	light.omni_range = 1.8
+	root.add_child(light)
+
+	return root
+
+
+# --- Feed card (AGI's power move) -----------------------------------------------
+
+## A glowing social media feed card with avatar, video thumbnail, and engagement metrics.
+static func _feed_card(color: Color) -> Node3D:
+	var prop := _load_prop("algorithm/feed_card")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "FeedCard"
+
+	var dark_card := _metal(Color(0.08, 0.10, 0.15), 0.2)
+	var glow_cyan := _glow(color, 2.2)
+	var glow_pink := _glow(Color(1.0, 0.25, 0.65), 2.2)
+
+	# Card base
+	root.add_child(_box(Vector3(0.52, 0.72, 0.03), Vector3.ZERO, dark_card))
+	# Glowing edge frame
+	root.add_child(_box(Vector3(0.54, 0.02, 0.04), Vector3(0, 0.36, 0), glow_cyan))
+	root.add_child(_box(Vector3(0.54, 0.02, 0.04), Vector3(0, -0.36, 0), glow_cyan))
+	root.add_child(_box(Vector3(0.02, 0.74, 0.04), Vector3(0.26, 0, 0), glow_cyan))
+	root.add_child(_box(Vector3(0.02, 0.74, 0.04), Vector3(-0.26, 0, 0), glow_cyan))
+
+	# Video thumbnail area
+	root.add_child(_box(Vector3(0.44, 0.36, 0.015), Vector3(0, 0.04, 0.02), _glow(Color(0.2, 0.5, 0.8), 1.2)))
+
+	# Avatar circle at top-left
+	root.add_child(_cylinder(0.035, 0.035, 0.02, Vector3(-0.16, 0.26, 0.025), glow_pink, 0.0))
+
+	# User handle label
+	var handle := Label3D.new()
+	handle.text = "@agi"
+	handle.font_size = 22
+	handle.pixel_size = 0.004
+	handle.modulate = Color(0.9, 0.95, 1.0)
+	handle.position = Vector3(0.02, 0.26, 0.025)
+	root.add_child(handle)
+
+	# Engagement stats footer
+	var stats := Label3D.new()
+	stats.text = "♥ 1.2M  🔁 450K"
+	stats.font_size = 20
+	stats.pixel_size = 0.0035
+	stats.modulate = Color(1.0, 0.4, 0.7)
+	stats.position = Vector3(0, -0.24, 0.025)
+	root.add_child(stats)
+
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 1.0
+	light.omni_range = 1.6
 	root.add_child(light)
 
 	return root

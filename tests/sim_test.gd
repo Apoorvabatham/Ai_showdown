@@ -5635,6 +5635,40 @@ func showdown_tests() -> void:
 	check("Showdown C8: Ram has Funding Round power move", ram_bags != null and ram_bags.projectile_count == 4
 		and ram_bags.projectile_origin == &"sky" and ram_bags.projectile_look == &"money_bag")
 
+	# AGI super scene test
+	gs.player_character = gs.find_character(&"algorithm")
+	gs.p2_character = gs.find_character(&"zuckerbot")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var agi_fight = current_scene
+	agi_fight.set_physics_process(false)
+	agi_fight.start_match(); agi_fight.start_fight_immediately()
+	var agi_p1: Fighter = agi_fight.fighters[0]
+	agi_fight.fighters[1].controller = agi_fight.dummy
+	agi_fight.dummy.mode = DummyController.Mode.STAND
+	agi_p1.position.x = -0.45; agi_fight.fighters[1].position.x = 0.45
+	agi_p1.add_meter(Fighter.MAX_METER)
+	var agi_started := [false]
+	agi_fight.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: agi_started[0] = true)
+	agi_p1._start_move(agi_p1._move_for_input("236236K"), false)
+	var agi_g := 0
+	while not agi_started[0] and agi_g < 400:
+		agi_fight._physics_process(1.0 / 60.0); agi_g += 1
+	await process_frame; await process_frame
+	var agi_scene = agi_fight.get_node("SuperScenePlayer").scene
+	check("Super scene: AGI's Infinite Scroll traps opponent in giant phone", agi_started[0] and agi_scene != null
+		and agi_scene.find_child("giant_phone", true, false) != null and agi_fight.freeze_ticks > 100)
+	for i in 290:
+		agi_fight._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: AGI's scene ends and fight resumes", agi_fight.get_node("SuperScenePlayer").scene == null and agi_fight.stage.visible)
+
+	# AGI power move check
+	var agi_feed: MoveData = agi_p1._move_for_input("63214K")
+	check("Showdown C8: AGI has For You Feed power move", agi_feed != null and agi_feed.projectile_count == 5
+		and agi_feed.projectile_origin == &"around" and agi_feed.projectile_look == &"feed_card")
+
 	# Victory scenes: Xi, Dario, Yann, Geoff, Ram, and AGI (algorithm)
 	var victory_cases: Array = [
 		[&"xi", "RedLantern", "Xi Winping's red lanterns and fireworks", false],

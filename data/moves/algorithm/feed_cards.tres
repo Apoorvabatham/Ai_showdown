@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="1_utsfi"]
+
+[resource]
+script = ExtResource("1_utsfi")
+name = "For You Feed"
+input = "63214K"
+animation = &"fight/focus_stance"
+animation_end = 0.65
+startup = 16
+active = 1
+recovery = 36
+damage = 22
+hitstun = 18
+blockstun = 14
+hitstop = 7
+knockback = Vector2(1.8, 0)
+chip_damage = 3
+projectile_speed = 8.5
+projectile_lifetime = 70
+projectile_color = Color(0.2, 0.95, 0.95, 1)
+projectile_count = 5
+projectile_interval = 4
+projectile_origin = &"around"
+projectile_look = &"feed_card"
+hitbox_radius = 0.38
+hitbox_offset = Vector3(0, 1.2, -0.6)
+camera_intensity = 0.2

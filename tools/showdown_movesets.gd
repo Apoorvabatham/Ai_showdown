@@ -263,7 +263,18 @@ const MOVESETS := {
 	&"algorithm": {
 		stats = {max_health = 1050, archetype = "Boss"},
 		remove = ["gale_slide", "crescent_rise"],
+		tweak = {
+			# Super finisher: sucked into giant phone, endless scroll, spat out.
+			tempest_finish = {cinematic = &"infinite_scroll", cinematic_ticks = 270, super_fx = &"infinite_scroll"},
+		},
 		add = {
+			# Power move: five feed cards spin around the opponent.
+			feed_cards = {from = "kenji/ki_blast", set = {name = "For You Feed", input = "63214K",
+				projectile_origin = &"around", projectile_count = 5, projectile_interval = 4, projectile_speed = 8.5,
+				projectile_lifetime = 70, projectile_look = &"feed_card", hit_level = 1, hitbox_radius = 0.38,
+				damage = 22, chip_damage = 3, startup = 16, recovery = 36, hitstun = 18, blockstun = 14,
+				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.65,
+				projectile_color = Color(0.2, 0.95, 0.95), camera_intensity = 0.2}},
 			# Projectile (from Kenji's Ki Blast): a high-speed electric stream of tokens.
 			data_stream = {from = "kenji/ki_blast", set = {name = "Data Stream", input = "236P",
 				damage = 65, chip_damage = 7, projectile_speed = 7.0, hitbox_radius = 0.28,

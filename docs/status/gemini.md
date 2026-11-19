@@ -454,6 +454,26 @@ and any requests for other agents.
     - `godot --headless --path . -s res://tools/check_trials.gd -- ram`: combo trials 0 failed.
     - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
 
+## C8: AGI power move and super scene
+- **State**: review
+- **Summary**: Implemented AGI (algorithm)'s power move (For You Feed) and owner-approved super scene (Infinite Scroll).
+- **Details**:
+  - **Power Move (For You Feed)**:
+    - Move input: `63214K` (half-circle back Kick).
+    - Fires 5 feed cards orbiting in a ring around the opponent (`projectile_origin = &"around"`, `projectile_count = 5`, `projectile_interval = 4`, `projectile_speed = 8.5`, `projectile_lifetime = 70`, damage 22 each, chip damage 3).
+    - Projectile visual: `&"feed_card"` in `scripts/supers/projectile_looks.gd`, procedural 3D vertical smartphone card with glowing cyan frame, circular pink avatar icon, video thumbnail area, and engagement metrics ("♥ 1.2M 🔁 450K") with orbiting spin animation. Supports hook to `assets/props/supers/algorithm/feed_card.tscn`.
+  - **Super Scene & Set (Infinite Scroll)**:
+    - Set: `scenes/supers/sets/giant_phone.tscn` (built via `tools/super_sets/algorithm.gd` and `tools/build_super_sets.gd`), a surreal cyber void with dark reflective floor, glowing cyber dais, and a towering monolithic smartphone with dynamic island, glossy screen, and vertical social media timeline with glowing feed cards (#DANCE #VIRAL, #ALGORITHM #AI, #LIFEHACKS, #DOOMSCROLL) and floating UI reaction glyphs.
+    - Script: `scripts/supers/scenes/infinite_scroll.gd`. AGI summons the giant phone in cyberspace ("RECOMMENDED FOR YOU"); algorithm gravity pulls opponent toward the screen portal ("ENDLESS SCROLL!"); trapped inside, the opponent tumbles helplessly through a dizzying vertical endless scroll ("OPTIMISING ATTENTION..."); the screen flashes and spats them out, crashing flat onto the stage floor with shockwaves ("SCREEN TIME LIMIT EXCEEDED.").
+    - Finisher: `tempest_finish` in `tools/showdown_movesets.gd` wired with `cinematic = &"infinite_scroll"`, `cinematic_ticks = 270`, `super_fx = &"infinite_scroll"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_infinite_scroll.jpg` generated via `tools/render_scene_sheets.gd -- algorithm` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/algorithm/feed_card.tscn`: 3D social media feed card / notification widget.
+    - `assets/props/supers/algorithm/giant_phone.tscn`: Towering monolithic smartphone prop with glass screen and camera array.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- algorithm`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
 
 
 

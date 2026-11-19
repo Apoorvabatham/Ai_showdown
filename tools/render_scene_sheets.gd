@@ -18,6 +18,7 @@ const SUPERS := [
 	{"id": &"yann", "opp": &"geoff", "out": "super_autocomplete"},
 	{"id": &"geoff", "opp": &"yann", "out": "super_lecture_hall"},
 	{"id": &"ram", "opp": &"dario", "out": "super_scaling_law"},
+	{"id": &"algorithm", "opp": &"zuckerbot", "out": "super_infinite_scroll"},
 ]
 
 const VICTORIES := [
