@@ -22,6 +22,8 @@ func _ready() -> void:
 	art.set_anchors_preset(Control.PRESET_FULL_RECT)
 	art.modulate = Color(0.16, 0.16, 0.2) # darkened so the text reads
 	add_child(art)
+	art.hide() # the shared backdrop replaces the old key art
+	UiStyle.add_backdrop(self, background)
 	_roll = CreditsRoll.new()
 	add_child(_roll)
 	_roll.start()

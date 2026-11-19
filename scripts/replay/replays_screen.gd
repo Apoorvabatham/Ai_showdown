@@ -7,7 +7,7 @@ extends Control
 
 const MAIN_MENU_SCENE := "res://scenes/main_menu.tscn"
 const WALLPAPER := "res://assets/ui/wallpaper.png"
-const GOLD := Color(1.0, 0.82, 0.3)
+const GOLD := UiStyle.ACCENT # (was gold: the accent of the modern theme)
 const DIM := Color(0.55, 0.56, 0.62)
 const MODE_NAMES := {vs_cpu = "Vs CPU", versus = "Versus", arcade = "Arcade", online = "Online", spectated = "Watched"}
 const DELETE_CONFIRM_MS := 2500
@@ -34,6 +34,8 @@ func _ready() -> void:
 	art.set_anchors_preset(Control.PRESET_FULL_RECT)
 	art.modulate = Color(0.22, 0.22, 0.28)
 	add_child(art)
+	art.hide() # the shared backdrop replaces the old key art
+	UiStyle.add_backdrop(self, background)
 
 	var column := VBoxContainer.new()
 	column.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -41,7 +43,9 @@ func _ready() -> void:
 	column.offset_bottom = -40
 	column.add_theme_constant_override("separation", 16)
 	add_child(column)
-	column.add_child(_label("REPLAYS", 64, GOLD, HORIZONTAL_ALIGNMENT_CENTER))
+	var heading := _label("REPLAYS", 56, Color.WHITE, HORIZONTAL_ALIGNMENT_CENTER)
+	UiStyle.use_display_font([heading])
+	column.add_child(heading)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED

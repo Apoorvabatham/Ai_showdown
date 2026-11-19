@@ -159,7 +159,8 @@ func _versus_input(event: InputEvent) -> void:
 
 ## Portraits per row: one column up to five fighters, then two.
 func _columns() -> int:
-	return 1 if GameState.roster.size() <= 5 else 2
+	# Three across past eight fighters: two columns made 11 tiles tiny (names unreadable).
+	return 1 if GameState.roster.size() <= 5 else 2 if GameState.roster.size() <= 8 else 3
 
 
 func _move_cursor(step: int, count: int) -> void:
@@ -259,7 +260,7 @@ func _make_portrait_button(character: CharacterData) -> Button:
 	var cols := _columns()
 	var rows := ceili(float(count) / cols)
 	var gap := 12.0 if rows >= 6 else 18.0
-	var side := clampf((780.0 - gap * (rows - 1)) / rows, 110.0, 240.0)
+	var side := clampf((780.0 - gap * (rows - 1)) / rows, 110.0, 170.0 if cols >= 3 else 240.0)
 	button.custom_minimum_size = Vector2(side, side)
 	button.clip_contents = true
 	# The portrait fills the tile inside the border, with the name over its lower edge. (As

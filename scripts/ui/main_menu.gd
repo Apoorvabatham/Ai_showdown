@@ -93,6 +93,7 @@ func _ready() -> void:
 	replays_button.pressed.connect(func() -> void: get_tree().change_scene_to_file(REPLAYS_SCENE))
 	credits_button.pressed.connect(func() -> void: get_tree().change_scene_to_file(CREDITS_SCENE))
 	_fit_buttons()
+	_add_key_hint()
 	start_button.grab_focus()
 	Audio.music(&"menu")
 	# `AIShowdown.exe -- --smoke-test` jumps straight into a fight (packaging checks).
@@ -195,13 +196,46 @@ func _fit_buttons() -> void:
 		logo.custom_minimum_size = Vector2(540, 73)
 		logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
 		logo.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	# Three tiers: the ways to play (largest), other modes, then the extras (compact,
+	# after a gap) so "where do I start" is obvious at a glance.
+	const PRIMARY := ["StartButton", "QuickButton", "ArcadeButton", "StoryButton"]
+	const EXTRAS := ["OptionsButton", "BestScoresButton", "ReplaysButton", "CreditsButton", "QuitButton"]
+	var gap_added := false
 	for child in box.get_children():
 		if child is Button:
 			var button := child as Button
-			button.custom_minimum_size = Vector2(440, 50)
 			button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 			button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			button.add_theme_font_size_override("font_size", 24)
+			if child.name in PRIMARY:
+				button.custom_minimum_size = Vector2(460, 58)
+				button.add_theme_font_size_override("font_size", 27)
+			elif child.name in EXTRAS:
+				if not gap_added:
+					gap_added = true
+					var gap := Control.new()
+					gap.custom_minimum_size = Vector2(0, 14)
+					box.add_child(gap)
+					box.move_child(gap, child.get_index())
+				button.custom_minimum_size = Vector2(340, 40)
+				button.add_theme_font_size_override("font_size", 19)
+			else:
+				button.custom_minimum_size = Vector2(460, 48)
+				button.add_theme_font_size_override("font_size", 22)
+
+
+## Key hints, bottom left under the menu.
+func _add_key_hint() -> void:
+	var hint := Label.new()
+	hint.name = "KeyHint"
+	hint.text = "↑ ↓  choose     Enter / A  select     Esc / B  back"
+	hint.add_theme_font_size_override("font_size", 18)
+	hint.add_theme_color_override("font_color", Color(0.72, 0.76, 0.82, 0.8))
+	hint.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	hint.offset_left = 110
+	hint.offset_top = -74
+	hint.offset_bottom = -50
+	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(hint)
 
 
 ## The parody disclaimer along the bottom of the screen.

@@ -6,7 +6,7 @@ extends VBoxContainer
 
 signal finished
 
-const GOLD := Color(1.0, 0.82, 0.3)
+const GOLD := Color(1, 1, 1) # headings: white in the modern theme
 const SPEED := 90.0 # pixels per second
 ## [heading, body]: a heading without a body is a big gold title; ["", ""] is a gap.
 const CREDITS := [
@@ -56,7 +56,10 @@ func _init() -> void:
 			add_child(gap)
 			continue
 		var big: bool = entry[1] == ""
-		add_child(_label(entry[0], 72 if big else 30, GOLD if big else Color(0.65, 0.7, 0.8)))
+		var line := _label(entry[0], 72 if big else 30, GOLD if big else UiStyle.ACCENT.lerp(Color(0.75, 0.8, 0.88), 0.4))
+		if big:
+			UiStyle.use_display_font([line])
+		add_child(line)
 		if not big:
 			add_child(_label(entry[1], 34, Color.WHITE))
 

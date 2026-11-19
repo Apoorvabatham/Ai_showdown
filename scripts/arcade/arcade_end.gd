@@ -4,7 +4,7 @@ extends Control
 ## the main menu. The score is saved as the character's best if it beats it.
 
 const MAIN_MENU_SCENE := "res://scenes/main_menu.tscn"
-const GOLD := Color(1.0, 0.82, 0.3)
+const GOLD := UiStyle.ACCENT # (was gold: the accent of the modern theme)
 const AUTO_CREDITS_SECONDS := 8.0
 
 var _run: ArcadeRun
@@ -28,6 +28,7 @@ func _ready() -> void:
 	background.color = Color(0.03, 0.03, 0.06)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
+	UiStyle.add_backdrop(self, background)
 
 	_results = HBoxContainer.new()
 	_results.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -49,7 +50,9 @@ func _ready() -> void:
 	column.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	column.add_theme_constant_override("separation", 14)
 	_results.add_child(column)
-	column.add_child(_label("ARCADE CLEAR" if _run.cleared else "GAME OVER", 96, GOLD if _run.cleared else Color(1, 0.35, 0.3)))
+	var heading := _label("ARCADE CLEAR" if _run.cleared else "GAME OVER", 96, Color.WHITE if _run.cleared else Color(1, 0.35, 0.3))
+	UiStyle.use_display_font([heading])
+	column.add_child(heading)
 	column.add_child(_label(_run.player.display_name.to_upper(), 40, Color(0.75, 0.8, 0.9)))
 	var grid := GridContainer.new()
 	grid.columns = 2

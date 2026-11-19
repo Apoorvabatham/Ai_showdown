@@ -1,7 +1,9 @@
-[gd_resource type="Theme" load_steps=11 format=3]
+[gd_resource type="Theme" load_steps=14 format=3]
 
 [ext_resource type="FontFile" path="res://assets/fonts/Inter-Medium.otf" id="1_body"]
 [ext_resource type="FontFile" path="res://assets/fonts/Inter-SemiBold.otf" id="2_btn"]
+[ext_resource type="Texture2D" path="res://assets/ui/switch_on.png" id="3_on"]
+[ext_resource type="Texture2D" path="res://assets/ui/switch_off.png" id="4_off"]
 
 [sub_resource type="StyleBoxFlat" id="btn_normal"]
 content_margin_left = 22.0
@@ -102,6 +104,10 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
+[sub_resource type="StyleBoxEmpty" id="toggle_plain"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+
 [resource]
 default_font = ExtResource("1_body")
 Button/colors/font_color = Color(0.9, 0.92, 0.95, 1)
@@ -124,3 +130,16 @@ OptionButton/styles/focus = SubResource("sel_focus")
 CheckButton/styles/focus = SubResource("sel_focus")
 CheckBox/styles/focus = SubResource("sel_focus")
 HSlider/styles/focus = SubResource("sel_focus")
+CheckButton/colors/font_color = Color(0.9, 0.92, 0.95, 1)
+CheckButton/colors/font_hover_color = Color(1, 1, 1, 1)
+CheckButton/colors/font_focus_color = Color(1, 1, 1, 1)
+CheckButton/colors/font_pressed_color = Color(1, 1, 1, 1)
+CheckButton/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+CheckButton/icons/checked = ExtResource("3_on")
+CheckButton/icons/unchecked = ExtResource("4_off")
+CheckButton/icons/checked_mirrored = ExtResource("3_on")
+CheckButton/icons/unchecked_mirrored = ExtResource("4_off")
+CheckButton/styles/normal = SubResource("toggle_plain")
+CheckButton/styles/hover = SubResource("toggle_plain")
+CheckButton/styles/pressed = SubResource("toggle_plain")
+CheckButton/styles/hover_pressed = SubResource("toggle_plain")
