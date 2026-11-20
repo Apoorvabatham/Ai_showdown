@@ -24,6 +24,7 @@
 [ext_resource type="Resource" path="res://data/moves/dario/inch_palm.tres" id="23_t56pb"]
 [ext_resource type="Resource" path="res://data/moves/dario/thousand_hands.tres" id="24_4if8b"]
 [ext_resource type="Resource" path="res://data/moves/dario/thousand_finish.tres" id="25_diixf"]
+[ext_resource type="Resource" path="res://data/moves/dario/rulebook_shield.tres" id="25_yl8gs"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="26_ab1ma"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/dario_body.res" id="26_gj4kt"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/dario_outfit.res" id="27_30gwc"]
@@ -147,4 +148,4 @@ dash_speed = 6.2
 weight = 0.95
 throw_damage = 115
 speed_rating = 0.6
-moves = Array[ExtResource("6_rfgtt")]([ExtResource("7_a5uma"), ExtResource("8_7gt1l"), ExtResource("9_sca7k"), ExtResource("10_nbm1q"), ExtResource("11_pxkfx"), ExtResource("12_ilvm4"), ExtResource("13_r7jx4"), ExtResource("14_m0ke4"), ExtResource("15_8fneg"), ExtResource("16_2pnip"), ExtResource("17_7a7ts"), ExtResource("18_1xvrd"), ExtResource("19_inuvj"), ExtResource("20_6sdyn"), ExtResource("21_0h1wp"), ExtResource("22_t8ta0"), ExtResource("23_t56pb"), ExtResource("24_4if8b"), ExtResource("25_diixf")])
+moves = Array[ExtResource("6_rfgtt")]([ExtResource("7_a5uma"), ExtResource("8_7gt1l"), ExtResource("9_sca7k"), ExtResource("10_nbm1q"), ExtResource("11_pxkfx"), ExtResource("12_ilvm4"), ExtResource("13_r7jx4"), ExtResource("14_m0ke4"), ExtResource("15_8fneg"), ExtResource("16_2pnip"), ExtResource("17_7a7ts"), ExtResource("18_1xvrd"), ExtResource("19_inuvj"), ExtResource("20_6sdyn"), ExtResource("21_0h1wp"), ExtResource("22_t8ta0"), ExtResource("23_t56pb"), ExtResource("24_4if8b"), ExtResource("25_diixf"), ExtResource("25_yl8gs")])

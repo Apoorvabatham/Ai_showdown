@@ -20,6 +20,7 @@
 [ext_resource type="Resource" path="res://data/moves/algorithm/step_kick.tres" id="18_khjtc"]
 [ext_resource type="Resource" path="res://data/moves/algorithm/data_stream.tres" id="21_5n7v7"]
 [ext_resource type="Resource" path="res://data/moves/algorithm/tempest_kicks.tres" id="21_d28ur"]
+[ext_resource type="Resource" path="res://data/moves/algorithm/feed_cards.tres" id="21_lx3f2"]
 [ext_resource type="Resource" path="res://data/moves/algorithm/model_collapse.tres" id="22_lx3f2"]
 [ext_resource type="Resource" path="res://data/moves/algorithm/tempest_finish.tres" id="22_n8c8e"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="23_4wtgs"]
@@ -108,4 +109,4 @@ weight = 0.85
 throw_damage = 100
 power_rating = 0.6
 speed_rating = 0.9
-moves = Array[ExtResource("4_soqyl")]([ExtResource("5_x2hp0"), ExtResource("6_kkud4"), ExtResource("7_5n7v7"), ExtResource("8_lx3f2"), ExtResource("9_pm0tc"), ExtResource("10_bhor0"), ExtResource("11_uitx4"), ExtResource("12_gjol2"), ExtResource("13_n64h4"), ExtResource("14_8a0mi"), ExtResource("15_uylfq"), ExtResource("16_s370v"), ExtResource("17_p3w2l"), ExtResource("18_khjtc"), ExtResource("21_d28ur"), ExtResource("22_n8c8e"), ExtResource("21_5n7v7"), ExtResource("22_lx3f2"), ExtResource("23_pm0tc"), ExtResource("24_bhor0"), ExtResource("25_uitx4")])
+moves = Array[ExtResource("4_soqyl")]([ExtResource("5_x2hp0"), ExtResource("6_kkud4"), ExtResource("7_5n7v7"), ExtResource("8_lx3f2"), ExtResource("9_pm0tc"), ExtResource("10_bhor0"), ExtResource("11_uitx4"), ExtResource("12_gjol2"), ExtResource("13_n64h4"), ExtResource("14_8a0mi"), ExtResource("15_uylfq"), ExtResource("16_s370v"), ExtResource("17_p3w2l"), ExtResource("18_khjtc"), ExtResource("21_d28ur"), ExtResource("22_n8c8e"), ExtResource("21_lx3f2"), ExtResource("21_5n7v7"), ExtResource("22_lx3f2"), ExtResource("23_pm0tc"), ExtResource("24_bhor0"), ExtResource("25_uitx4")])

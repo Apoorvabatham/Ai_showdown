@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="MoveData" format=3]
+
+[ext_resource type="Script" path="res://scripts/fighter/move_data.gd" id="1_n81rt"]
+
+[resource]
+script = ExtResource("1_n81rt")
+name = "Word Tokens"
+input = "214K"
+animation = &"fight/overhead_smash"
+animation_impact = 0.25
+animation_end = 0.7
+startup = 14
+active = 18
+recovery = 22
+damage = 25
+hitstun = 18
+blockstun = 14
+hitstop = 7
+knockback = Vector2(1.8, 0)
+chip_damage = 3
+projectile_speed = 5.2
+projectile_lifetime = 80
+projectile_color = Color(0.35, 0.65, 0.95, 1)
+projectile_count = 3
+projectile_interval = 8
+projectile_look = &"word_token"
+hitbox_radius = 0.32
+hitbox_offset = Vector3(0, 1.2, -0.6)
+camera_intensity = 0.2

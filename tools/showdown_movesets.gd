@@ -29,11 +29,11 @@ const MOVESETS := {
 	&"xi": {
 		stats = {archetype = "Fortress"},
 		tweak = {
-			shield_rush = {armor_hits = 0, travel = 7.5, knockback = Vector2(4.0, 0.0), damage = 85},
+			shield_rush = {armor_hits = 0, travel = 6.5, knockback = Vector2(4.0, 0.0), damage = 80, startup = 14, recovery = 20, blockstun = 18},
 			hammerfall = {armor_hits = 0, hit_level = 2, animation = &"fight/ground_pound", animation_impact = 0.33,
 				animation_end = 0.85, impact_fx = &"shockwave", hitbox_offset = Vector3(0, 0.2, -1.1), hitbox_radius = 0.6,
-				knockdown = true, damage = 100},
-			rising_gauntlet = {armor_hits = 0, invuln_frames = 5},
+				knockdown = true, damage = 90, recovery = 28},
+			rising_gauntlet = {armor_hits = 0, invuln_frames = 3, damage = 80},
 			gauntlet_drive = {armor_hits = 0},
 			# Super finisher: the squad scene (scripts/supers/scenes/open_source_squad.gd, 5 s).
 			oath_finish = {cinematic = &"open_source_squad", cinematic_ticks = 310, super_fx = &"open_source_squad"},
@@ -41,11 +41,11 @@ const MOVESETS := {
 		add = {
 			# Censorship: a short stance that sends the opponent's shots back.
 			censorship = {from = "lian/still_water", set = {name = "Censorship", input = "214K", reversal = false,
-				reflect_projectiles = true, damage = 0, startup = 3, active = 18, recovery = 18, camera_intensity = 0.0}},
+				reflect_projectiles = true, damage = 0, startup = 3, active = 18, recovery = 16, camera_intensity = 0.0}},
 			# Power move: a paper festival dragon weaving along the floor (jump it or block low).
 			paper_dragon = {from = "kenji/ki_blast", set = {name = "Paper Dragon Dance", input = "63214P",
-				projectile_look = &"paper_dragon", projectile_height = 0.55, projectile_speed = 4.5, projectile_lifetime = 120,
-				hitbox_radius = 0.5, damage = 75, chip_damage = 9, hit_level = 2, knockdown = true, hitstun = 0,
+				projectile_look = &"paper_dragon", projectile_height = 0.55, projectile_speed = 4.6, projectile_lifetime = 120,
+				hitbox_radius = 0.5, damage = 70, chip_damage = 7, hit_level = 2, knockdown = true, hitstun = 0,
 				startup = 16, recovery = 30, projectile_color = Color(0.92, 0.15, 0.1)}},
 		},
 	},
@@ -73,6 +73,34 @@ const MOVESETS := {
 		tweak = {
 			inch_palm = {damage = 80, recovery = 20},
 			double_palm = {damage = 88, recovery = 20},
+			# Super finisher: Constitutional Scroll wraps opponent in legal text, sealed with SAFE stamp.
+			thousand_finish = {cinematic = &"constitution_scroll", cinematic_ticks = 230, super_fx = &"constitution_scroll"},
+		},
+		add = {
+			# Power move: a glowing rulebook shield that reflects projectile attacks and flies forward.
+			rulebook_shield = {from = "kenji/ki_blast", set = {name = "Rulebook Shield", input = "236K",
+				reflect_projectiles = true, projectile_look = &"rulebook", projectile_speed = 4.2, projectile_lifetime = 75,
+				hitbox_radius = 0.38, damage = 65, chip_damage = 8,
+				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.65,
+				startup = 14, active = 18, recovery = 22, projectile_color = Color(0.95, 0.85, 0.55),
+				camera_intensity = 0.2}},
+		},
+	},
+	# Yann LeCant: heavyweight sceptic, word token bursts and autocomplete finisher.
+	&"yann": {
+		tweak = {
+			# Super finisher: Opponent trapped in giant text box, autocomplete types "you lose", heavy letters fall.
+			titan_finish = {cinematic = &"autocomplete", cinematic_ticks = 270, super_fx = &"autocomplete"},
+		},
+		add = {
+			# Power move: word tokens "the" / "next" / "token" fly toward the opponent.
+			word_tokens = {from = "kenji/ki_blast", set = {name = "Word Tokens", input = "214K",
+				projectile_look = &"word_token", projectile_count = 3, projectile_interval = 8,
+				projectile_speed = 5.2, projectile_lifetime = 80,
+				hitbox_radius = 0.32, damage = 25, chip_damage = 3,
+				animation = &"fight/overhead_smash", animation_impact = 0.25, animation_end = 0.7,
+				startup = 14, active = 18, recovery = 22, projectile_color = Color(0.35, 0.65, 0.95),
+				camera_intensity = 0.2}},
 		},
 	},
 	# Mark Zuckerbot: the Metaverse Trap (command grab) plays its scene when it connects.
@@ -95,31 +123,39 @@ const MOVESETS := {
 	},
 	# Geoff Hintoff: Armoured Elder, hard-hitting, resilient specials.
 	&"geoff": {
-		stats = {max_health = 1070},
 		tweak = {
-			shield_rush = {damage = 94, recovery = 18},
-			hammerfall = {damage = 122, recovery = 18},
-			rising_gauntlet = {damage = 102, recovery = 18},
+			# Super finisher: 1986 Lecture Hall, chalkboard neural net zaps opponent, Geoff looks regretful.
+			oath_finish = {cinematic = &"lecture_hall", cinematic_ticks = 270, super_fx = &"lecture_hall"},
+		},
+		add = {
+			# Power move: two neural-net nodes zap forward with synaptic arcs.
+			neural_zap = {from = "kenji/ki_blast", set = {name = "Neural Zap", input = "214K",
+				projectile_count = 2, projectile_interval = 8, projectile_speed = 6.2, projectile_lifetime = 75,
+				projectile_look = &"net_node", projectile_color = Color(0.95, 0.82, 0.35),
+				hitbox_radius = 0.34, damage = 32, chip_damage = 4,
+				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.65,
+				startup = 14, active = 18, recovery = 24,
+				camera_intensity = 0.2}},
 		},
 	},
 	# Sundar Pickai: zoner / trapper (was a copy of Jensen's kit).
 	&"sundar": {
-		stats = {max_health = 1020, archetype = "Zoner"},
+		stats = {max_health = 1030, archetype = "Zoner"},
 		remove = ["dragon_barrage", "dragon_finish"],
 		tweak = {
 			jab = {animation = &"style/sundar_jab", animation_impact = 0.10, startup = 5, active = 2, recovery = 8},
 			straight = {animation = &"style/sundar_cross", animation_impact = 0.14, startup = 8, active = 3, recovery = 14},
 			# A fan of three small links: the low one catches crouchers.
-			ki_blast = {animation = &"style/sundar_cast", animation_impact = 0.26, startup = 14, active = 1,
-				projectile_count = 3, projectile_spread = 0.35, damage = 14, chip_damage = 2,
-				projectile_speed = 6.0, hitbox_radius = 0.18, recovery = 28},
+			ki_blast = {animation = &"style/sundar_cast", animation_impact = 0.26, startup = 13, active = 1,
+				projectile_count = 3, projectile_spread = 0.35, damage = 16, chip_damage = 3,
+				projectile_speed = 6.6, hitbox_radius = 0.20, recovery = 27},
 			sweep = {animation = &"style/sundar_sweep", animation_impact = 0.26, startup = 14, active = 4, recovery = 24},
 		},
 		add = {
 			# A slow ad that hangs in the air and controls space.
 			sponsored_result = {from = "kenji/ki_blast", set = {name = "Sponsored Result", input = "214P",
-				projectile_speed = 1.6, projectile_lifetime = 150, damage = 44, chip_damage = 4, hitbox_radius = 0.34,
-				startup = 16, recovery = 27, hitstun = 24, projectile_color = Color(0.98, 0.78, 0.15)}},
+				projectile_speed = 1.8, projectile_lifetime = 150, damage = 45, chip_damage = 5, hitbox_radius = 0.35,
+				startup = 15, recovery = 26, hitstun = 24, projectile_color = Color(0.98, 0.78, 0.15)}},
 			# Vanishes and reappears behind the opponent; punishable if they guess it.
 			algorithm_update = {from = "kenji/ki_blast", set = {name = "Algorithm Update", input = "214K",
 				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.0,
@@ -199,13 +235,42 @@ const MOVESETS := {
 				tip = "The armoured tackle splats them on the edge: jab, then cancel into the Executive Order."},
 		],
 	},
+	# Ram Altman: Hype Brawler, funding round money rain and exponential scaling law.
+	&"ram": {
+		tweak = {
+			# Super finisher: exponential Scaling Law curve off the chart.
+			hagupit_finish = {cinematic = &"scaling_law", cinematic_ticks = 270, super_fx = &"scaling_law"},
+			hagupit_max = {cinematic = &"scaling_law", cinematic_ticks = 270, super_fx = &"scaling_law"},
+		},
+		add = {
+			# Power move: money bags rain from the sky ("Funding Round").
+			funding_round = {from = "kenji/ki_blast", set = {name = "Funding Round", input = "214K",
+				projectile_origin = &"sky", projectile_count = 4, projectile_interval = 6, projectile_spread = 0.72,
+				projectile_speed = 12.5, projectile_lifetime = 60, projectile_look = &"money_bag",
+				hitbox_radius = 0.38, damage = 32, chip_damage = 4,
+				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.65,
+				startup = 15, recovery = 35, hitstun = 20, blockstun = 15,
+				projectile_color = Color(0.2, 0.85, 0.4), camera_intensity = 0.2}},
+		},
+	},
 	# AGI (algorithm): the final boss, trained on everyone (ROADMAP §4).
 	# Projectile (Kenji), command grab (Valka), reversal (Lian), armour (Aelia),
 	# teleport (Sundar), super Engagement Loop (Rhea).
 	&"algorithm": {
 		stats = {max_health = 1050, archetype = "Boss"},
 		remove = ["gale_slide", "crescent_rise"],
+		tweak = {
+			# Super finisher: sucked into giant phone, endless scroll, spat out.
+			tempest_finish = {cinematic = &"infinite_scroll", cinematic_ticks = 270, super_fx = &"infinite_scroll"},
+		},
 		add = {
+			# Power move: five feed cards spin around the opponent.
+			feed_cards = {from = "kenji/ki_blast", set = {name = "For You Feed", input = "63214K",
+				projectile_origin = &"around", projectile_count = 5, projectile_interval = 4, projectile_speed = 8.5,
+				projectile_lifetime = 70, projectile_look = &"feed_card", hit_level = 1, hitbox_radius = 0.38,
+				damage = 22, chip_damage = 3, startup = 16, recovery = 36, hitstun = 18, blockstun = 14,
+				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.65,
+				projectile_color = Color(0.2, 0.95, 0.95), camera_intensity = 0.2}},
 			# Projectile (from Kenji's Ki Blast): a high-speed electric stream of tokens.
 			data_stream = {from = "kenji/ki_blast", set = {name = "Data Stream", input = "236P",
 				damage = 65, chip_damage = 7, projectile_speed = 7.0, hitbox_radius = 0.28,

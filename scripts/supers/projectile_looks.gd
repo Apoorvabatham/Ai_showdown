@@ -34,6 +34,16 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _mini_rocket(color)
 		&"paper_dragon":
 			return _paper_dragon(color)
+		&"rulebook":
+			return _rulebook(color)
+		&"word_token":
+			return _word_token(color)
+		&"net_node":
+			return _net_node(color)
+		&"money_bag":
+			return _money_bag(color)
+		&"feed_card":
+			return _feed_card(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
@@ -44,10 +54,10 @@ static func orient(look: StringName, direction: Vector3, seed_value: int) -> Bas
 	if look == &"paper_dragon":
 		var flat := Vector3(direction.x, 0.0, direction.z)
 		return Basis.looking_at(flat.normalized()) if flat.length_squared() > 0.001 else Basis.IDENTITY
-	if look == &"mini_rocket":
+	if look == &"mini_rocket" or look == &"rulebook" or look == &"word_token" or look == &"net_node" or look == &"feed_card":
 		# Nose (-Z) along the flight direction.
 		return Basis.looking_at(direction.normalized() if direction.length_squared() > 0.001 else Vector3.FORWARD)
-	if look == &"gpu" or look == &"container":
+	if look == &"gpu" or look == &"container" or look == &"money_bag":
 		var rng := RandomNumberGenerator.new()
 		rng.seed = seed_value
 		if look == &"container":
@@ -90,6 +100,36 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 				var fan := node.get_node_or_null(NodePath(fan_name)) as Node3D
 				if fan:
 					fan.rotate_object_local(Vector3.FORWARD, 30.0 * delta)
+		&"rulebook":
+			node.rotation.z = 0.08 * sin(age * 7.0)
+		&"word_token":
+			var camera := node.get_viewport().get_camera_3d() if node.is_inside_tree() else null
+			if camera:
+				var away := node.global_position - camera.global_position
+				if away.length_squared() > 0.001:
+					node.global_basis = Basis.looking_at(away.normalized()) * Basis(Vector3.FORWARD, 0.06 * sin(age * 10.0))
+			node.position.y += sin(age * 8.0) * 0.002
+		&"net_node":
+			var pulse := 1.0 + 0.15 * sin(age * 20.0)
+			node.scale = Vector3.ONE * pulse
+			var ring := node.get_node_or_null("Ring") as Node3D
+			if ring:
+				ring.rotate_z(12.0 * delta)
+				ring.rotate_x(6.0 * delta)
+			var dendrites := node.get_node_or_null("Dendrites") as Node3D
+			if dendrites:
+				dendrites.rotate_y(8.0 * delta)
+				dendrites.rotate_z(5.0 * delta)
+		&"money_bag":
+			var axis: Vector3 = node.get_meta(&"tumble_axis", Vector3.RIGHT)
+			node.rotate(axis, 3.5 * delta)
+		&"feed_card":
+			var camera := node.get_viewport().get_camera_3d() if node.is_inside_tree() else null
+			if camera:
+				var away := node.global_position - camera.global_position
+				if away.length_squared() > 0.001:
+					node.global_basis = Basis.looking_at(away.normalized()) * Basis(Vector3.FORWARD, 0.12 * sin(age * 12.0))
+			node.scale = Vector3.ONE * (1.0 + 0.08 * sin(age * 16.0))
 
 
 # --- Mini rocket -----------------------------------------------------------------
@@ -324,6 +364,299 @@ static func _cylinder(top: float, bottom: float, height: float, position: Vector
 	mesh.material_override = material
 	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mesh
+
+
+# --- Rulebook shield (Dario's power move) ----------------------------------------
+
+## An open glowing hardcover rulebook shield facing forward.
+static func _rulebook(color: Color) -> Node3D:
+	var prop := _load_prop("dario/rulebook")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "Rulebook"
+	var leather := _flat(Color(0.28, 0.14, 0.08))
+	var gold := _glow(Color(1.0, 0.84, 0.35), 2.0)
+	var paper := _flat(Color(0.94, 0.92, 0.82))
+	# Open book: two angled covers and page blocks forming a V/shield facing forward
+	var left_wing := Node3D.new()
+	left_wing.position = Vector3(-0.24, 0, 0)
+	left_wing.rotation.y = deg_to_rad(22.0)
+	left_wing.add_child(_box(Vector3(0.48, 0.65, 0.04), Vector3.ZERO, leather))
+	left_wing.add_child(_box(Vector3(0.44, 0.60, 0.06), Vector3(0.02, 0, -0.02), paper))
+	root.add_child(left_wing)
+
+	var right_wing := Node3D.new()
+	right_wing.position = Vector3(0.24, 0, 0)
+	right_wing.rotation.y = deg_to_rad(-22.0)
+	right_wing.add_child(_box(Vector3(0.48, 0.65, 0.04), Vector3.ZERO, leather))
+	right_wing.add_child(_box(Vector3(0.44, 0.60, 0.06), Vector3(-0.02, 0, -0.02), paper))
+	root.add_child(right_wing)
+
+	# Spine in the middle
+	root.add_child(_box(Vector3(0.08, 0.66, 0.08), Vector3(0, 0, 0.08), gold))
+
+	# Glowing golden "RULES" shield seal in front of book
+	var label := Label3D.new()
+	label.text = "RULES\n★ SAFE ★"
+	label.font_size = 48
+	label.pixel_size = 0.003
+	label.modulate = Color(1.0, 0.88, 0.3)
+	label.outline_size = 4
+	label.outline_modulate = Color(0.15, 0.08, 0.02)
+	label.position = Vector3(0, 0, -0.08)
+	label.shaded = false
+	root.add_child(label)
+
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 2.0
+	light.omni_range = 2.4
+	root.add_child(light)
+	return root
+
+
+# --- Word Token (Yann's power move) ----------------------------------------------
+
+static var _token_cycle := 0
+const TOKEN_WORDS := ["the", "next", "token"]
+const TOKEN_IDS := ["#464", "#1309", "#4037"]
+
+static func _word_token(color: Color) -> Node3D:
+	var prop := _load_prop("yann/word_token")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "WordToken"
+	var word: String = TOKEN_WORDS[_token_cycle % TOKEN_WORDS.size()]
+	var tid: String = TOKEN_IDS[_token_cycle % TOKEN_IDS.size()]
+	_token_cycle += 1
+
+	var card_mat := _metal(Color(0.12, 0.16, 0.24), 0.2)
+	var border_mat := _glow(color, 2.0)
+
+	root.add_child(_box(Vector3(0.72, 0.36, 0.06), Vector3.ZERO, card_mat))
+	root.add_child(_box(Vector3(0.74, 0.03, 0.07), Vector3(0, 0.18, 0), border_mat))
+	root.add_child(_box(Vector3(0.74, 0.03, 0.07), Vector3(0, -0.18, 0), border_mat))
+	root.add_child(_box(Vector3(0.03, 0.38, 0.07), Vector3(0.36, 0, 0), border_mat))
+	root.add_child(_box(Vector3(0.03, 0.38, 0.07), Vector3(-0.36, 0, 0), border_mat))
+
+	var lbl := Label3D.new()
+	lbl.text = "\"%s\"" % word
+	lbl.font_size = 40
+	lbl.pixel_size = 0.0045
+	lbl.modulate = Color(1.0, 0.98, 0.9)
+	lbl.position = Vector3(0, 0.02, 0.04)
+	root.add_child(lbl)
+
+	var sub_lbl := Label3D.new()
+	sub_lbl.text = tid
+	sub_lbl.font_size = 20
+	sub_lbl.pixel_size = 0.0035
+	sub_lbl.modulate = color
+	sub_lbl.position = Vector3(0, -0.11, 0.04)
+	root.add_child(sub_lbl)
+
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 0.9
+	light.omni_range = 1.8
+	root.add_child(light)
+
+	return root
+
+
+# --- Neural-net node (Geoff's power move) ----------------------------------------
+
+## A glowing synaptic node with radial axons and an electric orbital ring.
+static func _net_node(color: Color) -> Node3D:
+	var prop := _load_prop("geoff/net_node")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "NetNode"
+
+	var core_mat := _glow(color.lerp(Color.WHITE, 0.4), 2.2)
+	root.add_child(_sphere(0.15, Vector3.ZERO, core_mat))
+	root.add_child(_sphere(0.08, Vector3.ZERO, _glow(Color.WHITE, 3.5)))
+
+	var dendrites := Node3D.new()
+	dendrites.name = "Dendrites"
+	root.add_child(dendrites)
+
+	var spoke_mat := _glow(color, 1.8)
+	var tip_mat := _glow(Color(1.0, 0.95, 0.6), 2.8)
+
+	var dirs := [
+		Vector3(1, 0.4, 0).normalized(),
+		Vector3(-1, 0.3, 0.2).normalized(),
+		Vector3(0.2, 1, -0.3).normalized(),
+		Vector3(-0.3, -1, 0.2).normalized(),
+		Vector3(0.4, -0.2, 1).normalized(),
+		Vector3(-0.4, 0.2, -1).normalized()
+	]
+	for dir: Vector3 in dirs:
+		var spoke_node := Node3D.new()
+		spoke_node.position = dir * 0.16
+		var spoke := _cylinder(0.015, 0.025, 0.22, Vector3(0, 0, 0.11), spoke_mat, 0.0)
+		spoke_node.add_child(spoke)
+		spoke_node.add_child(_sphere(0.04, Vector3(0, 0, 0.22), tip_mat))
+		var up := Vector3.UP
+		if absf(dir.dot(up)) > 0.95:
+			up = Vector3.RIGHT
+		spoke_node.basis = Basis.looking_at(dir, up)
+		dendrites.add_child(spoke_node)
+
+	var ring_node := Node3D.new()
+	ring_node.name = "Ring"
+	var ring_mesh := TorusMesh.new()
+	ring_mesh.inner_radius = 0.22
+	ring_mesh.outer_radius = 0.26
+	var ring_inst := MeshInstance3D.new()
+	ring_inst.mesh = ring_mesh
+	ring_inst.material_override = _glow(color.lerp(Color.CYAN, 0.3), 2.4)
+	ring_node.add_child(ring_inst)
+	root.add_child(ring_node)
+
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 1.6
+	light.omni_range = 2.4
+	root.add_child(light)
+
+	return root
+
+
+# --- Money bag (Ram's power move) -----------------------------------------------
+
+## A burlap funding money bag stamped with a green "$" sign.
+static func _money_bag(color: Color) -> Node3D:
+	var prop := _load_prop("ram/money_bag")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "MoneyBag"
+	root.set_meta(&"tumble_axis", Vector3(randf_range(-1.0, 1.0), randf_range(-0.5, 0.5), randf_range(-1.0, 1.0)).normalized())
+
+	var burlap := _metal(Color(0.82, 0.74, 0.58), 0.0)
+	var rope_mat := _metal(Color(0.75, 0.62, 0.32), 0.1)
+	var green_glow := _glow(Color(0.2, 0.95, 0.4), 2.5)
+
+	# Main bag body (squat rounded pouch)
+	var body := MeshInstance3D.new()
+	var body_mesh := SphereMesh.new()
+	body_mesh.radius = 0.22
+	body_mesh.height = 0.36
+	body.mesh = body_mesh
+	body.material_override = burlap
+	body.position = Vector3(0, -0.05, 0)
+	root.add_child(body)
+
+	# Cinch rope / neck ring
+	var cinch := MeshInstance3D.new()
+	var cinch_mesh := TorusMesh.new()
+	cinch_mesh.inner_radius = 0.07
+	cinch_mesh.outer_radius = 0.10
+	cinch.mesh = cinch_mesh
+	cinch.material_override = rope_mat
+	cinch.position = Vector3(0, 0.12, 0)
+	cinch.rotation.x = PI * 0.5
+	root.add_child(cinch)
+
+	# Flared gathered cloth collar at top
+	var collar := _cylinder(0.12, 0.06, 0.10, Vector3(0, 0.18, 0), burlap, 0.0)
+	root.add_child(collar)
+
+	# Stamped green "$" sign on front and back
+	for side in [1.0, -1.0]:
+		var dollar := Label3D.new()
+		dollar.text = "$"
+		dollar.font_size = 56
+		dollar.pixel_size = 0.005
+		dollar.modulate = Color(0.15, 0.9, 0.35)
+		dollar.outline_modulate = Color(0.02, 0.2, 0.06)
+		dollar.position = Vector3(0, -0.05, 0.22 * side)
+		dollar.rotation.y = 0.0 if side > 0 else PI
+		root.add_child(dollar)
+
+	# Small golden coin peek / emerald spark
+	root.add_child(_sphere(0.045, Vector3(0, 0.15, 0.03), green_glow))
+
+	var light := OmniLight3D.new()
+	light.light_color = Color(0.3, 1.0, 0.5)
+	light.light_energy = 1.2
+	light.omni_range = 1.8
+	root.add_child(light)
+
+	return root
+
+
+# --- Feed card (AGI's power move) -----------------------------------------------
+
+## A glowing social media feed card with avatar, video thumbnail, and engagement metrics.
+static func _feed_card(color: Color) -> Node3D:
+	var prop := _load_prop("algorithm/feed_card")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "FeedCard"
+
+	var dark_card := _metal(Color(0.08, 0.10, 0.15), 0.2)
+	var glow_cyan := _glow(color, 2.2)
+	var glow_pink := _glow(Color(1.0, 0.25, 0.65), 2.2)
+
+	# Card base
+	root.add_child(_box(Vector3(0.52, 0.72, 0.03), Vector3.ZERO, dark_card))
+	# Glowing edge frame
+	root.add_child(_box(Vector3(0.54, 0.02, 0.04), Vector3(0, 0.36, 0), glow_cyan))
+	root.add_child(_box(Vector3(0.54, 0.02, 0.04), Vector3(0, -0.36, 0), glow_cyan))
+	root.add_child(_box(Vector3(0.02, 0.74, 0.04), Vector3(0.26, 0, 0), glow_cyan))
+	root.add_child(_box(Vector3(0.02, 0.74, 0.04), Vector3(-0.26, 0, 0), glow_cyan))
+
+	# Video thumbnail area
+	root.add_child(_box(Vector3(0.44, 0.36, 0.015), Vector3(0, 0.04, 0.02), _glow(Color(0.2, 0.5, 0.8), 1.2)))
+
+	# Avatar circle at top-left
+	root.add_child(_cylinder(0.035, 0.035, 0.02, Vector3(-0.16, 0.26, 0.025), glow_pink, 0.0))
+
+	# User handle label
+	var handle := Label3D.new()
+	handle.text = "@agi"
+	handle.font_size = 22
+	handle.pixel_size = 0.004
+	handle.modulate = Color(0.9, 0.95, 1.0)
+	handle.position = Vector3(0.02, 0.26, 0.025)
+	root.add_child(handle)
+
+	# Engagement stats footer
+	var stats := Label3D.new()
+	stats.text = "♥ 1.2M  🔁 450K"
+	stats.font_size = 20
+	stats.pixel_size = 0.0035
+	stats.modulate = Color(1.0, 0.4, 0.7)
+	stats.position = Vector3(0, -0.24, 0.025)
+	root.add_child(stats)
+
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 1.0
+	light.omni_range = 1.6
+	root.add_child(light)
+
+	return root
+
+
+static func _sphere(radius: float, position: Vector3, material: Material) -> MeshInstance3D:
+	var mesh := MeshInstance3D.new()
+	var s := SphereMesh.new()
+	s.radius = radius
+	s.height = radius * 2.0
+	mesh.mesh = s
+	mesh.position = position
+	mesh.material_override = material
+	mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mesh
+
 
 
 static func _flat(color: Color) -> StandardMaterial3D:

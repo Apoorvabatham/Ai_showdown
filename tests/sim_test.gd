@@ -5523,6 +5523,176 @@ func showdown_tests() -> void:
 		await process_frame
 		check("Victory scene: %s ends when a new match starts" % case[0], cvictories.scene == null and cf.stage.visible)
 
+	# Super scene: Dario's Constitutional Scroll
+	gs.player_character = gs.find_character(&"dario")
+	gs.p2_character = gs.find_character(&"ram")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var darf = current_scene
+	darf.set_physics_process(false)
+	darf.start_match(); darf.start_fight_immediately()
+	var dar_p1: Fighter = darf.fighters[0]
+	darf.fighters[1].controller = darf.dummy
+	darf.dummy.mode = DummyController.Mode.STAND
+	dar_p1.position.x = -0.45; darf.fighters[1].position.x = 0.45
+	dar_p1.add_meter(Fighter.MAX_METER)
+	var dar_started := [false]
+	darf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: dar_started[0] = true)
+	dar_p1._start_move(dar_p1._move_for_input("236236P"), false)
+	var darg := 0
+	while not dar_started[0] and darg < 400:
+		darf._physics_process(1.0 / 60.0); darg += 1
+	await process_frame; await process_frame
+	var dar_scene = darf.get_node("SuperScenePlayer").scene
+	check("Super scene: Dario's Constitutional Scroll wraps opponent", dar_started[0] and dar_scene != null
+		and dar_scene.find_child("ConstitutionScroll", true, false) != null and darf.freeze_ticks > 100)
+	for i in 250:
+		darf._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: Dario's scene ends and fight resumes", darf.get_node("SuperScenePlayer").scene == null and darf.stage.visible)
+
+	# Dario power move check
+	var dar_shield: MoveData = dar_p1._move_for_input("236K")
+	check("Showdown C8: Dario has Rulebook Shield reflecting projectiles", dar_shield != null and dar_shield.reflect_projectiles
+		and dar_shield.projectile_look == &"rulebook")
+
+	# Yann super scene test
+	gs.player_character = gs.find_character(&"yann")
+	gs.p2_character = gs.find_character(&"geoff")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var yf = current_scene
+	yf.set_physics_process(false)
+	yf.start_match(); yf.start_fight_immediately()
+	var yp1: Fighter = yf.fighters[0]
+	yf.fighters[1].controller = yf.dummy
+	yf.dummy.mode = DummyController.Mode.STAND
+	yp1.position.x = -0.45; yf.fighters[1].position.x = 0.45
+	yp1.add_meter(Fighter.MAX_METER)
+	var ystarted := [false]
+	yf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: ystarted[0] = true)
+	yp1._start_move(yp1._move_for_input("236236P"), false)
+	var yg := 0
+	while not ystarted[0] and yg < 400:
+		yf._physics_process(1.0 / 60.0); yg += 1
+	await process_frame; await process_frame
+	var yscene = yf.get_node("SuperScenePlayer").scene
+	check("Super scene: Yann's Autocomplete traps opponent in text box", ystarted[0] and yscene != null
+		and yscene.find_child("HeavyLetters", true, false) != null and yf.freeze_ticks > 100)
+	for i in 290:
+		yf._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: Yann's scene ends and fight resumes", yf.get_node("SuperScenePlayer").scene == null and yf.stage.visible)
+
+	# Yann power move check
+	var y_words: MoveData = yp1._move_for_input("214K")
+	check("Showdown C8: Yann has Word Tokens power move", y_words != null and y_words.projectile_count == 3
+		and y_words.projectile_look == &"word_token")
+
+	# Geoff super scene test
+	gs.player_character = gs.find_character(&"geoff")
+	gs.p2_character = gs.find_character(&"yann")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var gf = current_scene
+	gf.set_physics_process(false)
+	gf.start_match(); gf.start_fight_immediately()
+	var gp1: Fighter = gf.fighters[0]
+	gf.fighters[1].controller = gf.dummy
+	gf.dummy.mode = DummyController.Mode.STAND
+	gp1.position.x = -0.45; gf.fighters[1].position.x = 0.45
+	gp1.add_meter(Fighter.MAX_METER)
+	var gstarted := [false]
+	gf.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: gstarted[0] = true)
+	gp1._start_move(gp1._move_for_input("236236P"), false)
+	var gg := 0
+	while not gstarted[0] and gg < 400:
+		gf._physics_process(1.0 / 60.0); gg += 1
+	await process_frame; await process_frame
+	var gscene = gf.get_node("SuperScenePlayer").scene
+	check("Super scene: Geoff's Lecture Hall zaps opponent", gstarted[0] and gscene != null
+		and gscene.find_child("lecture_hall", true, false) != null and gf.freeze_ticks > 100)
+	for i in 290:
+		gf._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: Geoff's scene ends and fight resumes", gf.get_node("SuperScenePlayer").scene == null and gf.stage.visible)
+
+	# Geoff power move check
+	var g_zap: MoveData = gp1._move_for_input("214K")
+	check("Showdown C8: Geoff has Neural Zap power move", g_zap != null and g_zap.projectile_count == 2
+		and g_zap.projectile_look == &"net_node")
+
+	# Ram super scene test
+	gs.player_character = gs.find_character(&"ram")
+	gs.p2_character = gs.find_character(&"dario")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var ram_f = current_scene
+	ram_f.set_physics_process(false)
+	ram_f.start_match(); ram_f.start_fight_immediately()
+	var ram_p1: Fighter = ram_f.fighters[0]
+	ram_f.fighters[1].controller = ram_f.dummy
+	ram_f.dummy.mode = DummyController.Mode.STAND
+	ram_p1.position.x = -0.45; ram_f.fighters[1].position.x = 0.45
+	ram_p1.add_meter(Fighter.MAX_METER)
+	var ram_started := [false]
+	ram_f.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: ram_started[0] = true)
+	ram_p1._start_move(ram_p1._move_for_input("236236P"), false)
+	var ram_g := 0
+	while not ram_started[0] and ram_g < 400:
+		ram_f._physics_process(1.0 / 60.0); ram_g += 1
+	await process_frame; await process_frame
+	var ram_scene = ram_f.get_node("SuperScenePlayer").scene
+	check("Super scene: Ram's Scaling Law rides curve off the chart", ram_started[0] and ram_scene != null
+		and ram_scene.find_child("scaling_chart", true, false) != null and ram_f.freeze_ticks > 100)
+	for i in 290:
+		ram_f._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: Ram's scene ends and fight resumes", ram_f.get_node("SuperScenePlayer").scene == null and ram_f.stage.visible)
+
+	# Ram power move check
+	var ram_bags: MoveData = ram_p1._move_for_input("214K")
+	check("Showdown C8: Ram has Funding Round power move", ram_bags != null and ram_bags.projectile_count == 4
+		and ram_bags.projectile_origin == &"sky" and ram_bags.projectile_look == &"money_bag")
+
+	# AGI super scene test
+	gs.player_character = gs.find_character(&"algorithm")
+	gs.p2_character = gs.find_character(&"zuckerbot")
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var agi_fight = current_scene
+	agi_fight.set_physics_process(false)
+	agi_fight.start_match(); agi_fight.start_fight_immediately()
+	var agi_p1: Fighter = agi_fight.fighters[0]
+	agi_fight.fighters[1].controller = agi_fight.dummy
+	agi_fight.dummy.mode = DummyController.Mode.STAND
+	agi_p1.position.x = -0.45; agi_fight.fighters[1].position.x = 0.45
+	agi_p1.add_meter(Fighter.MAX_METER)
+	var agi_started := [false]
+	agi_fight.cinematic_started.connect(func(_a: Fighter, _d: Fighter, _m: MoveData) -> void: agi_started[0] = true)
+	agi_p1._start_move(agi_p1._move_for_input("236236K"), false)
+	var agi_g := 0
+	while not agi_started[0] and agi_g < 400:
+		agi_fight._physics_process(1.0 / 60.0); agi_g += 1
+	await process_frame; await process_frame
+	var agi_scene = agi_fight.get_node("SuperScenePlayer").scene
+	check("Super scene: AGI's Infinite Scroll traps opponent in giant phone", agi_started[0] and agi_scene != null
+		and agi_scene.find_child("giant_phone", true, false) != null and agi_fight.freeze_ticks > 100)
+	for i in 290:
+		agi_fight._physics_process(1.0 / 60.0)
+		if i % 30 == 0: await process_frame
+	await process_frame
+	check("Super scene: AGI's scene ends and fight resumes", agi_fight.get_node("SuperScenePlayer").scene == null and agi_fight.stage.visible)
+
+	# AGI power move check
+	var agi_feed: MoveData = agi_p1._move_for_input("63214K")
+	check("Showdown C8: AGI has For You Feed power move", agi_feed != null and agi_feed.projectile_count == 5
+		and agi_feed.projectile_origin == &"around" and agi_feed.projectile_look == &"feed_card")
+
 	# Victory scenes: Xi, Dario, Yann, Geoff, Ram, and AGI (algorithm)
 	var victory_cases: Array = [
 		[&"xi", "RedLantern", "Xi Winping's red lanterns and fireworks", false],

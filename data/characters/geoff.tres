@@ -24,6 +24,7 @@
 [ext_resource type="Resource" path="res://data/moves/geoff/hammerfall.tres" id="22_e554i"]
 [ext_resource type="Resource" path="res://data/moves/geoff/emerald_oath.tres" id="23_8kvt1"]
 [ext_resource type="Resource" path="res://data/moves/geoff/oath_finish.tres" id="24_qi66b"]
+[ext_resource type="Resource" path="res://data/moves/geoff/neural_zap.tres" id="25_5ox4u"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="25_lbtr8"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/geoff_body.res" id="25_o4s5d"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/geoff_outfit.res" id="26_30nuw"]
@@ -139,4 +140,4 @@ weight = 1.2
 throw_damage = 140
 power_rating = 0.8
 speed_rating = 0.35
-moves = Array[ExtResource("5_5ox4u")]([ExtResource("6_cioay"), ExtResource("7_antva"), ExtResource("8_qkkf5"), ExtResource("9_vqddd"), ExtResource("10_pcg2d"), ExtResource("11_erhes"), ExtResource("12_l0bu7"), ExtResource("13_hdmr0"), ExtResource("14_uk2b7"), ExtResource("15_ibph5"), ExtResource("16_apiso"), ExtResource("17_n45w7"), ExtResource("18_1h4f8"), ExtResource("19_moyhc"), ExtResource("20_wvhpc"), ExtResource("21_481oy"), ExtResource("22_e554i"), ExtResource("23_8kvt1"), ExtResource("24_qi66b")])
+moves = Array[ExtResource("5_5ox4u")]([ExtResource("6_cioay"), ExtResource("7_antva"), ExtResource("8_qkkf5"), ExtResource("9_vqddd"), ExtResource("10_pcg2d"), ExtResource("11_erhes"), ExtResource("12_l0bu7"), ExtResource("13_hdmr0"), ExtResource("14_uk2b7"), ExtResource("15_ibph5"), ExtResource("16_apiso"), ExtResource("17_n45w7"), ExtResource("18_1h4f8"), ExtResource("19_moyhc"), ExtResource("20_wvhpc"), ExtResource("21_481oy"), ExtResource("22_e554i"), ExtResource("23_8kvt1"), ExtResource("24_qi66b"), ExtResource("25_5ox4u")])

@@ -371,6 +371,143 @@ and any requests for other agents.
     - Checked combo trials for all three fighters: `godot --headless --path . -s res://tools/check_trials.gd -- tesla donald sundar` passed with `0 failed`.
     - Automated test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
 
+## C8: Dario power move and super scene
+- **State**: review
+- **Summary**: Implemented Dario Amoday's power move (Rulebook Shield) and owner-approved super scene (Constitutional Scroll & SAFE Stamp).
+- **Details**:
+  - **Power Move (Rulebook Shield)**:
+    - Move input: `236K` (quarter-circle forward Kick).
+    - Reflects incoming projectiles (`reflect_projectiles = true`), hits for 65 damage, 8 chip damage, travels forward at speed 4.2.
+    - Projectile visual: `&"rulebook"` in `scripts/supers/projectile_looks.gd`, procedural 3D leather-bound rulebook with gilded edges and glowing gold "★ SAFE ★" emblem. Supports hook to `assets/props/supers/dario/rulebook.tscn`.
+  - **Super Scene & Set (Constitutional Scroll)**:
+    - Set: `scenes/supers/sets/constitution_hall.tscn` (built via `tools/super_sets/dario.gd` and `tools/build_super_sets.gd`), a neoclassical rotunda with marble pillars, gold-trimmed architrave, red carpet dais, and framed safety banners.
+    - Script: `scripts/supers/scenes/constitution_scroll.gd`. Dario invokes Article 1 Safety; a giant parchment scroll unrolls and spirals tightly around the opponent pinning their limbs; a giant brass seal stamper descends from the heavens and slams down with a crimson wax seal ("★ SAFE ★ RLHF VERIFIED"); Dario bows in respectful compliance as the wrapped opponent topples comically.
+    - Wired `thousand_finish` finisher in `tools/showdown_movesets.gd`: `cinematic = &"constitution_scroll"`, `cinematic_ticks = 230`, `super_fx = &"constitution_scroll"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_constitution_scroll.jpg` generated via `tools/render_scene_sheets.gd -- dario` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/dario/rulebook.tscn`: Leather-bound constitution book with gold foil corner protectors and safety emblem.
+    - `assets/props/supers/dario/constitution_scroll.tscn`: Giant unrolled parchment scroll model with calligraphy / legal clauses.
+    - `assets/props/supers/dario/safe_stamp.tscn`: Giant brass wax seal stamper with carved red wax face.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- dario`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
+## C8: Yann power move and super scene
+- **State**: review
+- **Summary**: Implemented Yann LeCant's power move (Word Tokens) and owner-approved super scene (It's Just Autocomplete).
+- **Details**:
+  - **Power Move (Word Tokens)**:
+    - Move input: `214K` (quarter-circle back Kick).
+    - Fires 3 sequential word tokens ("the", "next", "token") with `projectile_interval = 8`, speed 5.2, lifetime 80, 25 damage per token (75 total), chip damage 3.
+    - Projectile visual: `&"word_token"` in `scripts/supers/projectile_looks.gd`, procedural 3D tokenizer token cards with glowing cyan/blue rim borders, embossed word labels, token IDs (#464, #1309, #4037), and camera-facing billboard animation. Supports hook to `assets/props/supers/yann/word_token.tscn`.
+  - **Super Scene & Set (It's Just Autocomplete)**:
+    - Set: `scenes/supers/sets/prompt_terminal.tscn` (built via `tools/super_sets/yann.gd` and `tools/build_super_sets.gd`), a cyber terminal void with glowing neon grid floor, giant 3D prompt text box with header tag, blinking cursor, autocomplete dropdown popup, and Yann's speaker podium.
+    - Script: `scripts/supers/scenes/autocomplete.gd`. Yann observes from podium; opponent trapped inside the text box; prompt types "> you lose_"; autocomplete dropdown confirms "★ 1. you lose 99.9%"; giant heavy 3D concrete letters "Y O U L O S E" cascade from above and crush the opponent; Yann bows sceptically at the podium with "IT'S JUST AUTOCOMPLETE!" callout.
+    - Finisher: `titan_finish` in `tools/showdown_movesets.gd` wired with `cinematic = &"autocomplete"`, `cinematic_ticks = 270`, `super_fx = &"autocomplete"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_autocomplete.jpg` generated via `tools/render_scene_sheets.gd -- yann` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/yann/word_token.tscn`: 3D tokenizer badge card / embedding pill.
+    - `assets/props/supers/yann/heavy_letters.tscn`: Massive 3D concrete letter blocks Y, O, U, L, O, S, E.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- yann`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
+## C8: Geoff power move and super scene
+- **State**: review
+- **Summary**: Implemented Geoff Hintoff's power move (Neural Zap) and owner-approved super scene (1986 Lecture Hall / Regulate Me).
+- **Details**:
+  - **Power Move (Neural Zap)**:
+    - Move input: `214K` (quarter-circle back Kick).
+    - Fires 2 high-velocity neural network nodes in sequence (`projectile_count = 2`, `projectile_interval = 8`, speed 6.2, lifetime 75, damage 35, chip damage 4).
+    - Projectile visual: `&"net_node"` in `scripts/supers/projectile_looks.gd`, procedural 3D synaptic neuron with pulsating spherical soma, 6 branching dendrite spokes with terminal synaptic boutons, and spinning electric orbital rings. Supports hook to `assets/props/supers/geoff/net_node.tscn`.
+  - **Super Scene & Set (1986 Lecture Hall / Regulate Me)**:
+    - Set: `scenes/supers/sets/lecture_hall.tscn` (built via `tools/super_sets/geoff.gd` and `tools/build_super_sets.gd`), a 1980s academic amphitheatre with tiered student benches, mahogany lecturer's stage, vintage green chalkboard with handwritten backpropagation formulas and multi-layer neural network diagrams, oak lectern with brass gooseneck microphone and green banker's reading lamp.
+    - Script: `scripts/supers/scenes/lecture_hall.gd`. VHS rewind effect jumps back to a 1986 lecture hall; Geoff lectures passionately at the podium; the chalk neural network on the board ignites into electric life with high-voltage synaptic arcs shocking the opponent; Geoff looks at his hands in horror at what he created ("WHAT HAVE I DONE?!"); final catastrophic overfit discharge blasts the opponent flat on the floor; Geoff sighs at the lectern pleading "PLEASE REGULATE US."
+    - Finisher: `oath_finish` in `tools/showdown_movesets.gd` wired with `cinematic = &"lecture_hall"`, `cinematic_ticks = 270`, `super_fx = &"lecture_hall"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_lecture_hall.jpg` generated via `tools/render_scene_sheets.gd -- geoff` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/geoff/net_node.tscn`: 3D neuron model with branching axons and synaptic vesicles.
+    - `assets/props/supers/geoff/lecture_podium.tscn`: Vintage wooden university lectern with gooseneck mic.
+    - `assets/props/supers/geoff/chalkboard.tscn`: Wooden framed chalkboard with etched math formulas.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- geoff`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
+## C8: Ram power move and super scene
+- **State**: review
+- **Summary**: Implemented Ram Altman's power move (Funding Round) and owner-approved super scene (Scaling Law).
+- **Details**:
+  - **Power Move (Funding Round)**:
+    - Move input: `214K` (quarter-circle back Kick).
+    - Fires 4 money bags falling from the sky on and around the opponent (`projectile_origin = &"sky"`, `projectile_count = 4`, `projectile_interval = 6`, `projectile_spread = 0.72`, speed 12.5, damage 32, chip damage 4).
+    - Projectile visual: `&"money_bag"` in `scripts/supers/projectile_looks.gd`, procedural 3D burlap sack with tied drawstring cinch ring, gathered cloth collar, stamped bold green "$" emblem, and falling tumble animation. Supports hook to `assets/props/supers/ram/money_bag.tscn`.
+  - **Super Scene & Set (Scaling Law)**:
+    - Set: `scenes/supers/sets/scaling_chart.tscn` (built via `tools/super_sets/ram.gd` and `tools/build_super_sets.gd`), a sleek tech keynote amphitheatre with dark silicon stage, glowing cyan edge rim, wall-sized OLED chart displaying compute axes and a neon exponential Scaling Law curve shooting up to infinity, and a minimalist presentation stand with tablet.
+    - Script: `scripts/supers/scenes/scaling_law.gd`. Ram presents the scaling hypothesis at the keynote stand; the opponent is swept up the glowing exponential curve, accelerating off the top of the chart into the stratosphere; Ram delivers the pitch ("AGI NEXT YEAR!"); the opponent plummets from the ceiling and crashes flat onto the stage floor; Ram concludes: "7 TRILLION DOLLARS PLEASE."
+    - Finisher: `hagupit_finish` and `hagupit_max` in `tools/showdown_movesets.gd` wired with `cinematic = &"scaling_law"`, `cinematic_ticks = 270`, `super_fx = &"scaling_law"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_scaling_law.jpg` generated via `tools/render_scene_sheets.gd -- ram` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/ram/money_bag.tscn`: 3D canvas money bag with tied rope and dollar sign stamp.
+    - `assets/props/supers/ram/keynote_podium.tscn`: Sleek brushed aluminum keynote presentation lectern with tablet.
+    - `assets/props/supers/ram/scaling_chart.tscn`: Giant wall display model with glowing neon exponential curve.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- ram`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
+## C8: AGI power move and super scene
+- **State**: review
+- **Summary**: Implemented AGI (algorithm)'s power move (For You Feed) and owner-approved super scene (Infinite Scroll).
+- **Details**:
+  - **Power Move (For You Feed)**:
+    - Move input: `63214K` (half-circle back Kick).
+    - Fires 5 feed cards orbiting in a ring around the opponent (`projectile_origin = &"around"`, `projectile_count = 5`, `projectile_interval = 4`, `projectile_speed = 8.5`, `projectile_lifetime = 70`, damage 22 each, chip damage 3).
+    - Projectile visual: `&"feed_card"` in `scripts/supers/projectile_looks.gd`, procedural 3D vertical smartphone card with glowing cyan frame, circular pink avatar icon, video thumbnail area, and engagement metrics ("♥ 1.2M 🔁 450K") with orbiting spin animation. Supports hook to `assets/props/supers/algorithm/feed_card.tscn`.
+  - **Super Scene & Set (Infinite Scroll)**:
+    - Set: `scenes/supers/sets/giant_phone.tscn` (built via `tools/super_sets/algorithm.gd` and `tools/build_super_sets.gd`), a surreal cyber void with dark reflective floor, glowing cyber dais, and a towering monolithic smartphone with dynamic island, glossy screen, and vertical social media timeline with glowing feed cards (#DANCE #VIRAL, #ALGORITHM #AI, #LIFEHACKS, #DOOMSCROLL) and floating UI reaction glyphs.
+    - Script: `scripts/supers/scenes/infinite_scroll.gd`. AGI summons the giant phone in cyberspace ("RECOMMENDED FOR YOU"); algorithm gravity pulls opponent toward the screen portal ("ENDLESS SCROLL!"); trapped inside, the opponent tumbles helplessly through a dizzying vertical endless scroll ("OPTIMISING ATTENTION..."); the screen flashes and spats them out, crashing flat onto the stage floor with shockwaves ("SCREEN TIME LIMIT EXCEEDED.").
+    - Finisher: `tempest_finish` in `tools/showdown_movesets.gd` wired with `cinematic = &"infinite_scroll"`, `cinematic_ticks = 270`, `super_fx = &"infinite_scroll"`.
+    - Contact sheet: `docs/review/gemini/scenes/super_infinite_scroll.jpg` generated via `tools/render_scene_sheets.gd -- algorithm` and visually inspected.
+  - **Props Requested for Cline (OpenCode)**:
+    - `assets/props/supers/algorithm/feed_card.tscn`: 3D social media feed card / notification widget.
+    - `assets/props/supers/algorithm/giant_phone.tscn`: Towering monolithic smartphone prop with glass screen and camera array.
+  - **Verification**:
+    - `godot --headless --path . -s res://tools/check_trials.gd -- algorithm`: combo trials 0 failed.
+    - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
+
+## C12c: Post-super balance pass
+- **State**: review
+- **Summary**: Re-ran full balance simulation (`tools/balance_sim.gd -- 2 2 all`) and brought every regular fighter into the 40–60% win-rate window.
+- **Details**:
+  - **Identified Outliers in Initial Run**:
+    - Sundar Pickai was at 36% win% (underperforming zoner).
+    - Xi Winping was at 34% win% (underperforming fortress without armour).
+    - All other regular fighters were between 45% and 59%.
+  - **Tuning Adjustments**:
+    - **Sundar**: Increased projectile utility and zoning control. Adjusted `ki_blast` (3 links, spread 0.35, damage 16, chip 3, startup 13, speed 6.6, recovery 27), `sponsored_result` trap (damage 45, chip 5, recovery 26), and health to 1030 with damage scaling 0.98. Sundar rose from 36% to 57%.
+    - **Xi**: Restored fortress archetype without relying on armour (retaining `armor_hits == 0` constraint verified by tests). Tuned `shield_rush` (damage 80, recovery 20, travel 6.5, blockstun 18), `rising_gauntlet` (invuln_frames 3, damage 80), `hammerfall` (damage 90, recovery 28), `paper_dragon` (damage 70, chip 7, speed 4.6, startup 16, recovery 30), and `censorship` (recovery 16) with health at 1050. Xi rose from 34% to 48%.
+    - **Roster Normalization**: Normalized damage multipliers and health pools across the cast (`tools/build_showdown_roster.gd` and `tools/showdown_movesets.gd`) ensuring tight parity across all 121 pairings.
+  - **Before / After Comparison**:
+
+| Fighter | Archetype | Before Win% | Before Rnd% | After Win% | After Rnd% | Target (40–60%) |
+|---|---|---|---|---|---|---|
+| Ram Altman | Hype Brawler | 52% | 51% | **50%** | 50% | PASS |
+| tesla man | Rushdown | 48% | 49% | **48%** | 49% | PASS |
+| Dario Amoday | Counter / Footsies | 57% | 54% | **48%** | 50% | PASS |
+| Mark Zuckerbot | Grappler | 55% | 53% | **52%** | 50% | PASS |
+| Jensen Wong | Zoner | 45% | 51% | **45%** | 52% | PASS |
+| Yann LeCant | Heavyweight Power | 59% | 57% | **50%** | 50% | PASS |
+| Geoff Hintoff | Armoured Elder | 57% | 56% | **41%** | 41% | PASS |
+| Sundar Pickai | Calm Zoner | 36% | 37% | **57%** | 54% | PASS |
+| Donald Tarrif | Armoured Powerhouse | 45% | 46% | **50%** | 49% | PASS |
+| Xi Winping | Fortress | 34% | 36% | **48%** | 46% | PASS |
+| AGI (Boss) | Boss | 61% | 58% | **61%** | 57% | Boss |
+
+- **Verification**:
+  - Full balance sim (`godot --headless --path . -s res://tools/balance_sim.gd -- 2 2 all`): 242 matches across 121 pairings, all 10 regular fighters are within 41%–57% win rate.
+  - Full regression test suite (`godot --headless --path . -s res://tests/sim_test.gd`) passes with **`0 failure(s)`**.
+
+
+
 
 
 
