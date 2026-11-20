@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bf3kgqo4sa7jo"
-path="res://.godot/imported/floor_tiles_06_diff_1k.jpg-3ca23d26665d497eb4afb6f3ba5d2f57.ctex"
+uid="uid://d2u6vsfjeyklb"
+path="res://.godot/imported/floor_tiles_06_rough_1k.jpg-163eaf626c0e5913223592004a41405f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/stage_props/mensa/textures/floor_tiles_06_diff_1k.jpg"
-dest_files=["res://.godot/imported/floor_tiles_06_diff_1k.jpg-3ca23d26665d497eb4afb6f3ba5d2f57.ctex"]
+source_file="res://assets/stage_props/mensa/floor/floor_tiles_06_rough_1k.jpg"
+dest_files=["res://.godot/imported/floor_tiles_06_rough_1k.jpg-163eaf626c0e5913223592004a41405f.ctex"]
 
 [params]
 

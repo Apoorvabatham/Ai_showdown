@@ -269,9 +269,9 @@ func _build_mensa() -> void:
 
 	# Linoleum / ceramic tiles over the tatami (PBR with normal and roughness maps).
 	var tiles: StandardMaterial3D = _pbr_texture_mat(
-		"res://assets/stage_props/mensa/textures/floor_tiles_06_diff_1k.jpg",
-		"res://assets/stage_props/mensa/textures/floor_tiles_06_nor_1k.jpg",
-		"res://assets/stage_props/mensa/textures/floor_tiles_06_rough_1k.jpg",
+		"res://assets/stage_props/mensa/floor/floor_tiles_06_diff_1k.jpg",
+		"res://assets/stage_props/mensa/floor/floor_tiles_06_nor_1k.jpg",
+		"res://assets/stage_props/mensa/floor/floor_tiles_06_rough_1k.jpg",
 		Vector3(14, 12, 1), 0.35)
 	tiles.albedo_color = Color(0.78, 0.76, 0.74) # a touch darker: the white tiles glared
 	if tiles.albedo_texture == null:

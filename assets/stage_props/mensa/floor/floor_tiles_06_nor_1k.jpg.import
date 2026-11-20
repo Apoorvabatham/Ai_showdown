@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://blmlq5stgbl0s"
-path="res://.godot/imported/floor_tiles_06_nor_1k.jpg-01c7da1af636c01ee620aaadbe26523e.ctex"
+path="res://.godot/imported/floor_tiles_06_nor_1k.jpg-626f31b2642c7e75075d97a58ca3046d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/stage_props/mensa/textures/floor_tiles_06_nor_1k.jpg"
-dest_files=["res://.godot/imported/floor_tiles_06_nor_1k.jpg-01c7da1af636c01ee620aaadbe26523e.ctex"]
+source_file="res://assets/stage_props/mensa/floor/floor_tiles_06_nor_1k.jpg"
+dest_files=["res://.godot/imported/floor_tiles_06_nor_1k.jpg-626f31b2642c7e75075d97a58ca3046d.ctex"]
 
 [params]
 
