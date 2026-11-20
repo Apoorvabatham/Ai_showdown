@@ -137,7 +137,7 @@ combo_trials = Array[Dictionary]([{
 &"steps": PackedStringArray("LP", "LP", "236236K"),
 &"tip": "With a full meter, cancel the jabs into the super."
 }])
-max_health = 960
+max_health = 1030
 walk_speed = 2.7
 back_walk_speed = 2.0
 dash_speed = 7.8

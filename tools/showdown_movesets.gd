@@ -29,11 +29,11 @@ const MOVESETS := {
 	&"xi": {
 		stats = {archetype = "Fortress"},
 		tweak = {
-			shield_rush = {armor_hits = 0, travel = 7.5, knockback = Vector2(4.0, 0.0), damage = 85},
+			shield_rush = {armor_hits = 0, travel = 6.5, knockback = Vector2(4.0, 0.0), damage = 80, startup = 14, recovery = 20, blockstun = 18},
 			hammerfall = {armor_hits = 0, hit_level = 2, animation = &"fight/ground_pound", animation_impact = 0.33,
 				animation_end = 0.85, impact_fx = &"shockwave", hitbox_offset = Vector3(0, 0.2, -1.1), hitbox_radius = 0.6,
-				knockdown = true, damage = 100},
-			rising_gauntlet = {armor_hits = 0, invuln_frames = 5},
+				knockdown = true, damage = 90, recovery = 28},
+			rising_gauntlet = {armor_hits = 0, invuln_frames = 3, damage = 80},
 			gauntlet_drive = {armor_hits = 0},
 			# Super finisher: the squad scene (scripts/supers/scenes/open_source_squad.gd, 5 s).
 			oath_finish = {cinematic = &"open_source_squad", cinematic_ticks = 310, super_fx = &"open_source_squad"},
@@ -41,11 +41,11 @@ const MOVESETS := {
 		add = {
 			# Censorship: a short stance that sends the opponent's shots back.
 			censorship = {from = "lian/still_water", set = {name = "Censorship", input = "214K", reversal = false,
-				reflect_projectiles = true, damage = 0, startup = 3, active = 18, recovery = 18, camera_intensity = 0.0}},
+				reflect_projectiles = true, damage = 0, startup = 3, active = 18, recovery = 16, camera_intensity = 0.0}},
 			# Power move: a paper festival dragon weaving along the floor (jump it or block low).
 			paper_dragon = {from = "kenji/ki_blast", set = {name = "Paper Dragon Dance", input = "63214P",
-				projectile_look = &"paper_dragon", projectile_height = 0.55, projectile_speed = 4.5, projectile_lifetime = 120,
-				hitbox_radius = 0.5, damage = 75, chip_damage = 9, hit_level = 2, knockdown = true, hitstun = 0,
+				projectile_look = &"paper_dragon", projectile_height = 0.55, projectile_speed = 4.6, projectile_lifetime = 120,
+				hitbox_radius = 0.5, damage = 70, chip_damage = 7, hit_level = 2, knockdown = true, hitstun = 0,
 				startup = 16, recovery = 30, projectile_color = Color(0.92, 0.15, 0.1)}},
 		},
 	},
@@ -123,11 +123,7 @@ const MOVESETS := {
 	},
 	# Geoff Hintoff: Armoured Elder, hard-hitting, resilient specials.
 	&"geoff": {
-		stats = {max_health = 1070},
 		tweak = {
-			shield_rush = {damage = 94, recovery = 18},
-			hammerfall = {damage = 122, recovery = 18},
-			rising_gauntlet = {damage = 102, recovery = 18},
 			# Super finisher: 1986 Lecture Hall, chalkboard neural net zaps opponent, Geoff looks regretful.
 			oath_finish = {cinematic = &"lecture_hall", cinematic_ticks = 270, super_fx = &"lecture_hall"},
 		},
@@ -136,7 +132,7 @@ const MOVESETS := {
 			neural_zap = {from = "kenji/ki_blast", set = {name = "Neural Zap", input = "214K",
 				projectile_count = 2, projectile_interval = 8, projectile_speed = 6.2, projectile_lifetime = 75,
 				projectile_look = &"net_node", projectile_color = Color(0.95, 0.82, 0.35),
-				hitbox_radius = 0.34, damage = 35, chip_damage = 4,
+				hitbox_radius = 0.34, damage = 32, chip_damage = 4,
 				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.65,
 				startup = 14, active = 18, recovery = 24,
 				camera_intensity = 0.2}},
@@ -144,22 +140,22 @@ const MOVESETS := {
 	},
 	# Sundar Pickai: zoner / trapper (was a copy of Jensen's kit).
 	&"sundar": {
-		stats = {max_health = 1020, archetype = "Zoner"},
+		stats = {max_health = 1030, archetype = "Zoner"},
 		remove = ["dragon_barrage", "dragon_finish"],
 		tweak = {
 			jab = {animation = &"style/sundar_jab", animation_impact = 0.10, startup = 5, active = 2, recovery = 8},
 			straight = {animation = &"style/sundar_cross", animation_impact = 0.14, startup = 8, active = 3, recovery = 14},
 			# A fan of three small links: the low one catches crouchers.
-			ki_blast = {animation = &"style/sundar_cast", animation_impact = 0.26, startup = 14, active = 1,
-				projectile_count = 3, projectile_spread = 0.35, damage = 14, chip_damage = 2,
-				projectile_speed = 6.0, hitbox_radius = 0.18, recovery = 28},
+			ki_blast = {animation = &"style/sundar_cast", animation_impact = 0.26, startup = 13, active = 1,
+				projectile_count = 3, projectile_spread = 0.35, damage = 16, chip_damage = 3,
+				projectile_speed = 6.6, hitbox_radius = 0.20, recovery = 27},
 			sweep = {animation = &"style/sundar_sweep", animation_impact = 0.26, startup = 14, active = 4, recovery = 24},
 		},
 		add = {
 			# A slow ad that hangs in the air and controls space.
 			sponsored_result = {from = "kenji/ki_blast", set = {name = "Sponsored Result", input = "214P",
-				projectile_speed = 1.6, projectile_lifetime = 150, damage = 44, chip_damage = 4, hitbox_radius = 0.34,
-				startup = 16, recovery = 27, hitstun = 24, projectile_color = Color(0.98, 0.78, 0.15)}},
+				projectile_speed = 1.8, projectile_lifetime = 150, damage = 45, chip_damage = 5, hitbox_radius = 0.35,
+				startup = 15, recovery = 26, hitstun = 24, projectile_color = Color(0.98, 0.78, 0.15)}},
 			# Vanishes and reappears behind the opponent; punishable if they guess it.
 			algorithm_update = {from = "kenji/ki_blast", set = {name = "Algorithm Update", input = "214K",
 				animation = &"fight/focus_stance", animation_impact = 0.2, animation_end = 0.0,

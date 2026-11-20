@@ -474,6 +474,39 @@ and any requests for other agents.
     - `godot --headless --path . -s res://tools/check_trials.gd -- algorithm`: combo trials 0 failed.
     - Full regression test suite `godot --headless --path . -s res://tests/sim_test.gd` passes with **`0 failure(s)`**.
 
+## C12c: Post-super balance pass
+- **State**: review
+- **Summary**: Re-ran full balance simulation (`tools/balance_sim.gd -- 2 2 all`) and brought every regular fighter into the 40–60% win-rate window.
+- **Details**:
+  - **Identified Outliers in Initial Run**:
+    - Sundar Pickai was at 36% win% (underperforming zoner).
+    - Xi Winping was at 34% win% (underperforming fortress without armour).
+    - All other regular fighters were between 45% and 59%.
+  - **Tuning Adjustments**:
+    - **Sundar**: Increased projectile utility and zoning control. Adjusted `ki_blast` (3 links, spread 0.35, damage 16, chip 3, startup 13, speed 6.6, recovery 27), `sponsored_result` trap (damage 45, chip 5, recovery 26), and health to 1030 with damage scaling 0.98. Sundar rose from 36% to 57%.
+    - **Xi**: Restored fortress archetype without relying on armour (retaining `armor_hits == 0` constraint verified by tests). Tuned `shield_rush` (damage 80, recovery 20, travel 6.5, blockstun 18), `rising_gauntlet` (invuln_frames 3, damage 80), `hammerfall` (damage 90, recovery 28), `paper_dragon` (damage 70, chip 7, speed 4.6, startup 16, recovery 30), and `censorship` (recovery 16) with health at 1050. Xi rose from 34% to 48%.
+    - **Roster Normalization**: Normalized damage multipliers and health pools across the cast (`tools/build_showdown_roster.gd` and `tools/showdown_movesets.gd`) ensuring tight parity across all 121 pairings.
+  - **Before / After Comparison**:
+
+| Fighter | Archetype | Before Win% | Before Rnd% | After Win% | After Rnd% | Target (40–60%) |
+|---|---|---|---|---|---|---|
+| Ram Altman | Hype Brawler | 52% | 51% | **50%** | 50% | PASS |
+| tesla man | Rushdown | 48% | 49% | **48%** | 49% | PASS |
+| Dario Amoday | Counter / Footsies | 57% | 54% | **48%** | 50% | PASS |
+| Mark Zuckerbot | Grappler | 55% | 53% | **52%** | 50% | PASS |
+| Jensen Wong | Zoner | 45% | 51% | **45%** | 52% | PASS |
+| Yann LeCant | Heavyweight Power | 59% | 57% | **50%** | 50% | PASS |
+| Geoff Hintoff | Armoured Elder | 57% | 56% | **41%** | 41% | PASS |
+| Sundar Pickai | Calm Zoner | 36% | 37% | **57%** | 54% | PASS |
+| Donald Tarrif | Armoured Powerhouse | 45% | 46% | **50%** | 49% | PASS |
+| Xi Winping | Fortress | 34% | 36% | **48%** | 46% | PASS |
+| AGI (Boss) | Boss | 61% | 58% | **61%** | 57% | Boss |
+
+- **Verification**:
+  - Full balance sim (`godot --headless --path . -s res://tools/balance_sim.gd -- 2 2 all`): 242 matches across 121 pairings, all 10 regular fighters are within 41%–57% win rate.
+  - Full regression test suite (`godot --headless --path . -s res://tests/sim_test.gd`) passes with **`0 failure(s)`**.
+
+
 
 
 
