@@ -19,6 +19,14 @@ Work and push only on your own branch; merge the main branch into yours at the s
 task. Report progress in `docs/status/<agent>.md`; Claude merges your branch. Details:
 docs/TASKS.md §1.
 
+## Relay: external agents run through Claude (since Nov 20, 2026)
+
+Claude (on `main`) now dispatches OpenCode, Kilo and Cline itself through **Relay**
+(`C:\Users\batha\agent-orchestrator`, see its README). Each run gets a role with enforced
+permissions (e.g. reviewers cannot edit), its own worktree branch `relay/<task>` under
+`%USERPROFILE%\agent-worktrees\ai_showdown\`, a cross-model review and the test suite before
+Claude merges it. If you are such an agent: stay in your worktree, commit there, never push.
+
 ## Read first, in this order
 
 1. [docs/TASKS.md](docs/TASKS.md): the task board, **file ownership**, the contracts between
