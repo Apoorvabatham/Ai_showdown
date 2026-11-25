@@ -653,7 +653,7 @@ func _build_senate() -> void:
 
 func _build_foundry() -> void:
 	var stage := get_parent()
-	# Strip market props, stalls, street food, vehicles, and audio.
+	# Strip market props, stalls, street food, vehicles, audio, and inherited market geometry.
 	# Note: Jeepney0 and Jeepney1 use jeepney.res whose 11 surfaces rely on mesh instance
 	# material overrides. Calling queue_free() clears those overrides during frame capture,
 	# so we hide and sink them to avoid null material errors during ReflectionProbe updates.
@@ -676,180 +676,260 @@ func _build_foundry() -> void:
 	for i in 6:
 		_remove(stage, "StallSign%d" % i)
 		_remove(stage, "StallLight%d" % i)
+	var market_geom := stage.get_node_or_null("Geometry") as Node3D
+	if market_geom:
+		market_geom.visible = false
 
-	# Environment atmosphere pass: high-contrast dark cleanroom with rich cyan-violet depth
+	# Respect graphics presets for expensive screen-space effects (foundry.tscn holds HIGH defaults)
+	var settings := get_node_or_null("/root/Settings")
 	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
-	if we and we.environment:
+	if we and we.environment and settings and settings.graphics < 2:
 		we.environment = we.environment.duplicate()
-		we.environment.tonemap_mode = Environment.TONE_MAPPER_ACES
-		we.environment.tonemap_exposure = 0.82
-		we.environment.glow_enabled = true
-		we.environment.glow_bloom = 0.22
-		we.environment.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
-		we.environment.adjustment_enabled = true
-		we.environment.adjustment_contrast = 1.28
-		we.environment.adjustment_saturation = 1.15
-		we.environment.volumetric_fog_enabled = true
-		we.environment.volumetric_fog_albedo = Color(0.20, 0.45, 0.75)
-		we.environment.volumetric_fog_density = 0.005
+		we.environment.ssr_enabled = false
+		if settings.graphics == 0:
+			we.environment.ssao_enabled = false
 
-	# 1. Dark high-gloss ESD epoxy floor with deep specular reflections and PBR metal plate
+	# 1. Enclosed cleanroom reflection probe + dark glossy ESD epoxy floor
 	var probe := ReflectionProbe.new()
 	probe.name = "FoundryReflectionProbe"
-	probe.size = Vector3(24.0, 8.0, 20.0)
-	probe.origin_offset = Vector3(0.0, 2.5, -3.5)
+	probe.size = Vector3(26.0, 7.0, 20.0)
+	probe.origin_offset = Vector3(0.0, 2.4, -2.5)
 	probe.update_mode = ReflectionProbe.UPDATE_ONCE
-	probe.intensity = 1.0
-	probe.max_distance = 32.0
+	probe.intensity = 0.72
+	probe.max_distance = 30.0
 	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
-	probe.ambient_color = Color(0.08, 0.10, 0.14)
+	probe.ambient_color = Color(0.05, 0.08, 0.12)
 	add_child(probe)
 
-	# Glossy dark conductive epoxy floor with PBR metal plate (eliminates white washout)
 	var floor_mat := _pbr_texture_mat(
 		"res://assets/stage_props/foundry/Textures/metal_plate_02_diff_1k.jpg",
 		"res://assets/stage_props/foundry/Textures/metal_plate_02_nor_1k.jpg",
 		"res://assets/stage_props/foundry/Textures/metal_plate_02_rough_1k.jpg",
-		Vector3(12, 8, 1), 0.15, 0.65)
-	_box(Vector3(18.0, 0.02, 10.0), Vector3(0, 0.01, 0.0), floor_mat)
-	# Perforated tile boundary grid seams (cleanroom raised airflow floor)
-	for x in range(-8, 9, 2):
-		_box(Vector3(0.03, 0.025, 10.0), Vector3(x, 0.012, 0.0), _mat(Color(0.08, 0.09, 0.11), 0.4, 0.6))
-	for z in range(-4, 5, 2):
-		_box(Vector3(18.0, 0.025, 0.03), Vector3(0, 0.012, z), _mat(Color(0.08, 0.09, 0.11), 0.4, 0.6))
-	# High-contrast yellow & amber ESD caution perimeter border
+		Vector3(16, 12, 1), 0.26, 0.22)
+	floor_mat.albedo_color = Color(0.24, 0.29, 0.37)
+	_box(Vector3(26.0, 0.04, 18.0), Vector3(0, -0.01, -1.0), floor_mat)
+	# Perforated cleanroom airflow tile seams
+	var seam_mat := _mat(Color(0.05, 0.06, 0.08), 0.45, 0.6)
+	for x in range(-10, 11, 2):
+		_box(Vector3(0.03, 0.025, 16.0), Vector3(x, 0.012, -1.0), seam_mat)
+	for z in range(-6, 7, 2):
+		_box(Vector3(24.0, 0.025, 0.03), Vector3(0, 0.012, z), seam_mat)
+	# Subtle recessed teal floor airflow grates along front & rear cleanroom bays
+	var grate_glow := _glow(Color(0.06, 0.65, 0.72), 0.9)
+	for gx in [-6.0, -3.0, 3.0, 6.0]:
+		_box(Vector3(1.6, 0.024, 0.35), Vector3(gx, 0.012, -3.1), _mat(Color(0.07, 0.09, 0.12), 0.3, 0.7))
+		_box(Vector3(1.4, 0.025, 0.05), Vector3(gx, 0.013, -3.1), grate_glow)
+	# Crisp amber-gold ESD caution perimeter border (controlled bloom, no blowout)
+	var esd_border := _glow(Color(0.95, 0.58, 0.06), 1.45)
 	for z in [-3.6, 3.6]:
-		_box(Vector3(17.2, 0.026, 0.08), Vector3(0, 0.013, z), _glow(Color(0.95, 0.70, 0.05), 2.8))
+		_box(Vector3(17.2, 0.026, 0.07), Vector3(0, 0.013, z), esd_border)
 	for x in [-3.6, 3.6]:
-		_box(Vector3(0.08, 0.026, 7.2), Vector3(x, 0.013, 0), _glow(Color(0.95, 0.70, 0.05), 2.8))
-	# Corner hazard beacons on ESD perimeter
-	var esd_corner_glow := _glow(Color(1.0, 0.2, 0.1), 3.5, true)
-	_blinkers.append([esd_corner_glow, 3.5, 4.0, 0.0])
+		_box(Vector3(0.07, 0.026, 7.2), Vector3(x, 0.013, 0), esd_border)
+	# Corner amber hazard beacons on ESD perimeter
+	var esd_corner_amber := _glow(Color(1.0, 0.48, 0.05), 3.0, true)
+	_blinkers.append([esd_corner_amber, 3.0, 4.0, 0.0])
 	for cx in [-3.6, 3.6]:
 		for cz in [-3.6, 3.6]:
-			_cylinder(0.06, 0.12, Vector3(cx, 0.06, cz), esd_corner_glow)
+			_cylinder(0.06, 0.14, Vector3(cx, 0.07, cz), esd_corner_amber)
 
-	# 2. Dark modular technical wall partition with brushed aluminum mullions
-	var wall_mat := _mat(Color(0.14, 0.16, 0.20), 0.35, 0.25)
-	_box(Vector3(18.0, 4.4, 0.2), Vector3(0, 2.2, -6.0), wall_mat)
-	var strut_mat := _mat(Color(0.42, 0.45, 0.50), 0.25, 0.85)
-	for wx in range(-8, 9, 2):
-		_box(Vector3(0.08, 4.4, 0.24), Vector3(wx, 2.2, -6.0), strut_mat)
-	# Upper cleanroom return air louvers
-	_box(Vector3(18.0, 0.45, 0.05), Vector3(0, 4.1, -5.88), _mat(Color(0.08, 0.09, 0.11), 0.5, 0.5))
+	# 2. Enclosed dark cleanroom shell: back wall, side walls, structural mullions, HEPA ceiling
+	var wall_mat := _mat(Color(0.17, 0.21, 0.28), 0.38, 0.25)
+	var strut_mat := _mat(Color(0.36, 0.40, 0.48), 0.26, 0.80)
+	var dark_metal := _mat(Color(0.10, 0.12, 0.16), 0.32, 0.75)
+	# Back wall & side walls (prevents market/outdoor sky leaks)
+	_box(Vector3(26.0, 6.0, 0.25), Vector3(0, 3.0, -6.2), wall_mat)
+	for sx in [-12.0, 12.0]:
+		_box(Vector3(0.3, 6.0, 18.0), Vector3(sx, 3.0, -1.0), wall_mat)
+	for wx in range(-10, 11, 2):
+		_box(Vector3(0.10, 5.8, 0.28), Vector3(wx, 2.9, -6.15), strut_mat)
+	# Upper cleanroom return air louvers & teal bulkhead accent line
+	_box(Vector3(25.0, 0.55, 0.08), Vector3(0, 4.85, -6.04), dark_metal)
+	_box(Vector3(24.0, 0.04, 0.04), Vector3(0, 4.5, -6.04), _glow(Color(0.06, 0.78, 0.85), 1.5))
+	# Cleanroom ceiling with dark structural trusses and recessed HEPA LED light bays
+	_box(Vector3(26.0, 0.2, 18.0), Vector3(0, 5.45, -1.0), _mat(Color(0.08, 0.10, 0.14), 0.5, 0.4))
+	var hepa_cool := _glow(Color(0.40, 0.82, 0.92), 1.1)
+	var hepa_amber := _glow(Color(0.95, 0.55, 0.10), 1.1)
+	for tz in [-4.8, -2.8]:
+		_box(Vector3(24.0, 0.18, 0.22), Vector3(0, 5.28, tz), dark_metal)
+		for hx in [-6.0, -3.0, 0.0, 3.0, 6.0]:
+			_box(Vector3(1.6, 0.04, 0.40), Vector3(hx, 5.34, tz + 0.5), hepa_cool if absf(hx) != 3.0 else hepa_amber)
 
-	# 3. Centerpiece: Twin EUV Photolithography Scanner in dark obsidian casing
-	var scanner_mat := _mat(Color(0.06, 0.07, 0.09), 0.25, 0.85)
-	_box(Vector3(5.4, 3.4, 1.8), Vector3(0, 1.7, -5.2), scanner_mat)
-	_box(Vector3(5.0, 0.12, 1.6), Vector3(0, 3.45, -5.2), _mat(Color(0.35, 0.38, 0.42), 0.2, 0.85))
-	# Chamber observation window with UV amber filter & internal glow
-	# (Lightly tinted: at 55% the pane hid the violet core and read as a flat yellow block.)
-	var glass := _mat(Color(1.0, 0.6, 0.15, 0.18), 0.04)
+	# 3. Centerpiece: Twin EUV Photolithography Scanner in dark gunmetal/obsidian housing
+	var scanner_mat := _mat(Color(0.13, 0.15, 0.20), 0.28, 0.75)
+	var trim_mat := _mat(Color(0.34, 0.38, 0.46), 0.24, 0.85)
+	# Left & right structural towers flanking a true recessed chamber alcove
+	_box(Vector3(1.3, 3.6, 1.7), Vector3(-1.95, 1.8, -5.05), scanner_mat)
+	_box(Vector3(1.3, 3.6, 1.7), Vector3(1.95, 1.8, -5.05), scanner_mat)
+	_box(Vector3(2.8, 1.0, 1.7), Vector3(0.0, 0.5, -5.05), scanner_mat)
+	_box(Vector3(2.8, 1.1, 1.7), Vector3(0.0, 3.05, -5.05), scanner_mat)
+	_box(Vector3(2.8, 1.55, 0.4), Vector3(0.0, 1.75, -5.65), dark_metal) # recessed chamber back wall
+	_box(Vector3(5.4, 0.14, 1.8), Vector3(0.0, 3.65, -5.05), trim_mat)
+	# Vertical cooling ribs inside recessed chamber back wall
+	for rx in [-0.9, -0.45, 0.45, 0.9]:
+		_box(Vector3(0.12, 1.35, 0.12), Vector3(rx, 1.75, -5.4), trim_mat)
+	# Vertical amber/teal warning light columns on scanner flanks
+	var col_teal := _glow(Color(0.05, 0.88, 0.92), 2.2)
+	var col_amber := _glow(Color(1.0, 0.52, 0.06), 2.4, true)
+	_blinkers.append([col_amber, 2.4, 3.4, 1.0])
+	for sx in [-2.62, 2.62]:
+		_box(Vector3(0.06, 2.9, 0.08), Vector3(sx, 1.85, -4.18), col_teal)
+	for sx in [-1.32, 1.32]:
+		_box(Vector3(0.05, 1.4, 0.06), Vector3(sx, 1.75, -4.18), col_amber)
+
+	# Visible recessed 13.5nm EUV Laser Chamber (core + plasma sheath + optics behind UV glass)
+	var euv_core := _glow(Color(0.85, 0.25, 1.0), 5.2, true)
+	_blinkers.append([euv_core, 5.2, 3.0, 0.0])
+	_cylinder(0.10, 1.25, Vector3(0.0, 1.75, -4.75), euv_core)
+	var plasma_sheath := _mat(Color(0.65, 0.15, 0.95, 0.22), 0.1)
+	plasma_sheath.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	plasma_sheath.emission_enabled = true
+	plasma_sheath.emission = Color(0.65, 0.15, 0.95)
+	plasma_sheath.emission_energy_multiplier = 1.8
+	_cylinder(0.24, 1.22, Vector3(0.0, 1.75, -4.75), plasma_sheath)
+	_cylinder(0.45, 0.22, Vector3(0.0, 2.38, -4.75), trim_mat)
+	_cylinder(0.50, 0.16, Vector3(0.0, 1.10, -4.75), trim_mat)
+	# Lightly tinted UV amber observation window & steel frame in front of the chamber
+	var glass := _mat(Color(1.0, 0.58, 0.14, 0.12), 0.05)
 	glass.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	_box(Vector3(2.4, 1.4, 0.04), Vector3(0, 1.7, -4.28), glass)
-	var frame := _mat(Color(0.1, 0.11, 0.13), 0.35, 0.7)
-	for fy in [0.98, 2.42]:
-		_box(Vector3(2.56, 0.08, 0.08), Vector3(0, fy, -4.27), frame)
-	for fx in [-1.24, 1.24]:
-		_box(Vector3(0.08, 1.52, 0.08), Vector3(fx, 1.7, -4.27), frame)
-	# EUV Laser Core (13.5nm pulsing violet/ultraviolet aperture)
-	var euv_core := _glow(Color(0.80, 0.15, 1.0), 6.5, true)
-	_blinkers.append([euv_core, 6.5, 3.2, 0.0])
-	_box(Vector3(1.2, 0.8, 0.02), Vector3(0, 1.7, -4.4), euv_core)
-	# Wafer load port & 300mm silicon wafer disc
-	var wafer_mat := _mat(Color(0.12, 0.35, 0.40), 0.05, 0.95)
-	_box(Vector3(1.4, 0.8, 0.9), Vector3(0, 0.4, -4.3), _mat(Color(0.12, 0.13, 0.16), 0.3, 0.6))
-	_cylinder(0.42, 0.02, Vector3(0, 0.82, -4.3), wafer_mat)
-	# Wafer load port flashing amber warning beacons
-	var beacon_amber := _glow(Color(1.0, 0.55, 0.0), 4.5, true)
-	_blinkers.append([beacon_amber, 4.5, 4.0, 0.5])
-	_cylinder(0.06, 0.14, Vector3(-0.65, 0.88, -4.3), beacon_amber)
-	_cylinder(0.06, 0.14, Vector3(0.65, 0.88, -4.3), beacon_amber)
-	# Robotic wafer transfer arms flanking load port
-	_prop("res://assets/stage_props/foundry/robot-arm-a.glb", Vector3(-1.6, 0.9, -4.3), Vector3(0, 50, 0), Vector3(0.65, 0.65, 0.65))
-	_prop("res://assets/stage_props/foundry/robot-arm-b.glb", Vector3(1.6, 0.9, -4.3), Vector3(0, -50, 0), Vector3(0.65, 0.65, 0.65))
-	# Automated wafer transport conveyors
-	_prop("res://assets/stage_props/foundry/conveyor.glb", Vector3(-3.2, 0.35, -4.3), Vector3(0, 90, 0), Vector3(0.9, 0.7, 0.9))
-	_prop("res://assets/stage_props/foundry/conveyor.glb", Vector3(3.2, 0.35, -4.3), Vector3(0, 90, 0), Vector3(0.9, 0.7, 0.9))
-	# Glossy wafers riding on conveyors
-	_cylinder(0.28, 0.015, Vector3(-3.2, 0.72, -4.3), wafer_mat)
-	_cylinder(0.28, 0.015, Vector3(3.2, 0.72, -4.3), wafer_mat)
-	# Lithography track machines on flanks
-	_prop("res://assets/stage_props/foundry/machine.glb", Vector3(-6.2, 0.95, -5.1), Vector3(0, 0, 0), Vector3(0.9, 0.9, 0.9))
-	_prop("res://assets/stage_props/foundry/machine.glb", Vector3(6.2, 0.95, -5.1), Vector3(0, 180, 0), Vector3(0.9, 0.9, 0.9))
-	# High-precision wafer inspection scanners flanking track
-	_prop("res://assets/stage_props/foundry/scanner-high.glb", Vector3(-4.8, 0.0, -4.6), Vector3.ZERO, Vector3(1.2, 1.2, 1.2))
-	_prop("res://assets/stage_props/foundry/scanner-low.glb", Vector3(4.8, 0.0, -4.6), Vector3(0, 180, 0), Vector3(1.2, 1.2, 1.2))
-	# Laser radiation caution hazard markers
-	_prop("res://assets/stage_props/foundry/warning-orange.glb", Vector3(-2.6, 0.0, -3.8), Vector3.ZERO, Vector3(1.0, 1.0, 1.0))
-	_prop("res://assets/stage_props/foundry/warning-orange.glb", Vector3(2.6, 0.0, -3.8), Vector3.ZERO, Vector3(1.0, 1.0, 1.0))
+	_box(Vector3(2.5, 1.45, 0.04), Vector3(0.0, 1.75, -4.22), glass)
+	for fy in [1.0, 2.5]:
+		_box(Vector3(2.68, 0.08, 0.08), Vector3(0.0, fy, -4.20), trim_mat)
+	for fx in [-1.3, 1.3]:
+		_box(Vector3(0.08, 1.58, 0.08), Vector3(fx, 1.75, -4.20), trim_mat)
 
-	# 4. AMHS (Automated Material Handling System) Overhead Monorail Track & FOUP pods
-	var rail_mat := _mat(Color(0.22, 0.24, 0.28), 0.35, 0.8)
-	_box(Vector3(17.8, 0.12, 0.35), Vector3(0, 3.5, -4.2), rail_mat)
-	# Cleanroom overhead maintenance catwalk and stairs
-	_prop("res://assets/stage_props/foundry/catwalk-straight.glb", Vector3(-5.5, 3.2, -5.5), Vector3.ZERO, Vector3(1.2, 1.2, 1.2))
-	_prop("res://assets/stage_props/foundry/catwalk-straight.glb", Vector3(5.5, 3.2, -5.5), Vector3.ZERO, Vector3(1.2, 1.2, 1.2))
-	_prop("res://assets/stage_props/foundry/catwalk-stairs.glb", Vector3(-8.2, 0.0, -5.5), Vector3(0, 90, 0), Vector3(1.2, 1.2, 1.2))
-	_prop("res://assets/stage_props/foundry/catwalk-stairs.glb", Vector3(8.2, 0.0, -5.5), Vector3(0, -90, 0), Vector3(1.2, 1.2, 1.2))
-	# Overhead telemetry display screens
-	_prop("res://assets/stage_props/foundry/screen-hanging-wide.glb", Vector3(0.0, 3.2, -4.0), Vector3.ZERO, Vector3(1.5, 1.5, 1.5))
-	_prop("res://assets/stage_props/foundry/screen-panel-wide.glb", Vector3(-7.2, 1.8, -5.8), Vector3.ZERO, Vector3(1.3, 1.3, 1.3))
-	_prop("res://assets/stage_props/foundry/screen-panel-wide.glb", Vector3(7.2, 1.8, -5.8), Vector3.ZERO, Vector3(1.3, 1.3, 1.3))
-	# Sub-fab equipment and filtration enclosures
-	_prop("res://assets/stage_props/foundry/box-large.glb", Vector3(-8.5, 0.0, -4.0), Vector3.ZERO, Vector3(1.5, 1.5, 1.5))
-	_prop("res://assets/stage_props/foundry/box-large.glb", Vector3(8.5, 0.0, -4.0), Vector3.ZERO, Vector3(1.5, 1.5, 1.5))
-	# Glowing monorail power track
-	_box(Vector3(17.8, 0.03, 0.02), Vector3(0, 3.44, -4.01), _glow(Color(0.1, 0.8, 1.0), 3.0))
-	var foup_mat := _mat(Color(0.08, 0.09, 0.11), 0.2, 0.5)
-	var foup_led := _glow(Color(0.1, 1.0, 0.4), 3.2)
-	for fx in [-6.0, -2.5, 2.5, 6.0]:
-		_box(Vector3(0.08, 0.4, 0.1), Vector3(fx, 3.25, -4.2), rail_mat)
-		_box(Vector3(0.55, 0.45, 0.5), Vector3(fx, 2.9, -4.2), foup_mat)
-		_box(Vector3(0.45, 0.04, 0.02), Vector3(fx, 2.9, -3.94), foup_led)
-	# Overhead cryogenic fluid and gas delivery pipelines
-	_prop("res://assets/stage_props/foundry/pipe-large.glb", Vector3(-4.5, 3.8, -4.2), Vector3(0, 90, 0), Vector3(1.2, 1.2, 1.2))
-	_prop("res://assets/stage_props/foundry/pipe-glass-large.glb", Vector3(4.5, 3.8, -4.2), Vector3(0, 90, 0), Vector3(1.2, 1.2, 1.2))
+	# Wafer load port & 300mm silicon wafer disc in front of scanner
+	var wafer_mat := _mat(Color(0.12, 0.42, 0.52), 0.06, 0.92)
+	_box(Vector3(1.4, 0.78, 0.85), Vector3(0.0, 0.39, -3.95), _mat(Color(0.14, 0.17, 0.22), 0.3, 0.65))
+	_cylinder(0.46, 0.02, Vector3(0.0, 0.79, -3.95), col_teal)
+	_cylinder(0.42, 0.025, Vector3(0.0, 0.81, -3.95), wafer_mat)
+	# Flashing amber load-port warning beacons
+	var beacon_amber := _glow(Color(1.0, 0.52, 0.04), 3.4, true)
+	_blinkers.append([beacon_amber, 3.4, 4.2, 0.5])
+	_cylinder(0.055, 0.14, Vector3(-0.62, 0.86, -3.95), beacon_amber)
+	_cylinder(0.055, 0.14, Vector3(0.62, 0.86, -3.95), beacon_amber)
 
-	# 5. Diagnostic consoles & wafer cassette racks on the flanks
-	for cx in [-7.2, 7.2]:
-		_box(Vector3(1.0, 0.9, 0.7), Vector3(cx, 0.45, -3.6), _mat(Color(0.18, 0.2, 0.22), 0.4, 0.5))
-		_box(Vector3(0.7, 0.4, 0.04), Vector3(cx, 1.2, -3.5), _mat(Color(0.08, 0.08, 0.1), 0.2))
-		_box(Vector3(0.65, 0.35, 0.01), Vector3(cx, 1.2, -3.47), _glow(Color(0.1, 0.85, 0.95), 2.2))
-		_cylinder(0.25, 0.35, Vector3(cx + (0.9 if cx < 0 else -0.9), 0.45, -3.6), _mat(Color(0.3, 0.32, 0.35), 0.4, 0.7))
-	_label("NODE: 1.8nm GAAS\nDEFECTS: 0.002/cm²\nYIELD: NOMINAL", Vector3(-7.2, 1.2, -3.45), 0.065, Color(0.9, 1.0, 1.0))
-	_label("EUV LASER: 13.5nm\nCHAMBER: ARGON\nPURGE: 100%", Vector3(7.2, 1.2, -3.45), 0.065, Color(0.9, 1.0, 1.0))
+	# Darkened robotic wafer transfer arms & grounded conveyors flanking load port
+	var gunmetal := Color(0.48, 0.52, 0.58)
+	var dark_machinery := Color(0.38, 0.42, 0.48)
+	for ax in [-1.65, 1.65]:
+		_box(Vector3(0.45, 0.55, 0.45), Vector3(ax, 0.275, -4.05), dark_metal)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/robot-arm-a.glb", Vector3(-1.65, 0.55, -4.05), Vector3(0, 50, 0), Vector3(0.62, 0.62, 0.62)), gunmetal, 0.32, 0.6)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/robot-arm-b.glb", Vector3(1.65, 0.55, -4.05), Vector3(0, -50, 0), Vector3(0.62, 0.62, 0.62)), gunmetal, 0.32, 0.6)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/conveyor.glb", Vector3(-2.95, 0.32, -4.25), Vector3(0, 90, 0), Vector3(0.75, 0.65, 0.75)), dark_machinery, 0.38, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/conveyor.glb", Vector3(2.95, 0.32, -4.25), Vector3(0, 90, 0), Vector3(0.75, 0.65, 0.75)), dark_machinery, 0.38, 0.5)
+	_cylinder(0.24, 0.015, Vector3(-2.95, 0.66, -4.25), wafer_mat)
+	_cylinder(0.24, 0.015, Vector3(2.95, 0.66, -4.25), wafer_mat)
+	# Grounded lithography track machines & inspection scanners on outer flanks (clear of boards & NPCs)
+	for mx in [-7.2, 7.2]:
+		_box(Vector3(1.6, 0.75, 1.3), Vector3(mx, 0.375, -5.2), dark_metal)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/machine.glb", Vector3(-7.2, 0.75, -5.2), Vector3(0, 0, 0), Vector3(0.95, 0.95, 0.95)), dark_machinery, 0.36, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/machine.glb", Vector3(7.2, 0.75, -5.2), Vector3(0, 180, 0), Vector3(0.95, 0.95, 0.95)), dark_machinery, 0.36, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/scanner-high.glb", Vector3(-6.4, 0.0, -4.2), Vector3(0, 20, 0), Vector3(1.05, 1.05, 1.05)), gunmetal, 0.35, 0.45)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/scanner-low.glb", Vector3(6.4, 0.0, -4.2), Vector3(0, -160, 0), Vector3(1.05, 1.05, 1.05)), gunmetal, 0.35, 0.45)
+	# Amber hazard markers kept vivid for color contrast
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/warning-orange.glb", Vector3(-2.35, 0.0, -3.75), Vector3.ZERO, Vector3(0.9, 0.9, 0.9)), Color(0.95, 0.62, 0.28), 0.35, 0.3)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/warning-orange.glb", Vector3(2.35, 0.0, -3.75), Vector3.ZERO, Vector3(0.9, 0.9, 0.9)), Color(0.95, 0.62, 0.28), 0.35, 0.3)
 
-	# 6. Cryogenic pipes, liquid argon exhaust steam
-	for px in [-8.8, 8.8]:
-		_cylinder(0.3, 3.6, Vector3(px, 1.8, -4.8), _mat(Color(0.6, 0.63, 0.67), 0.3, 0.8))
-		_steam(Vector3(px, 3.65, -4.8))
+	# 4. AMHS Overhead Monorail Track, Catwalks & FOUP wafer pods
+	var rail_mat := _mat(Color(0.22, 0.25, 0.30), 0.32, 0.8)
+	_box(Vector3(20.0, 0.14, 0.36), Vector3(0, 4.05, -4.2), rail_mat)
+	_box(Vector3(20.0, 0.03, 0.025), Vector3(0, 3.98, -4.01), _glow(Color(0.06, 0.85, 0.92), 2.0))
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/catwalk-straight.glb", Vector3(-5.8, 3.2, -5.5), Vector3.ZERO, Vector3(1.2, 1.2, 1.2)), dark_machinery, 0.4, 0.55)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/catwalk-straight.glb", Vector3(5.8, 3.2, -5.5), Vector3.ZERO, Vector3(1.2, 1.2, 1.2)), dark_machinery, 0.4, 0.55)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/catwalk-stairs.glb", Vector3(-8.8, 0.0, -5.5), Vector3(0, 90, 0), Vector3(1.2, 1.2, 1.2)), dark_machinery, 0.4, 0.55)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/catwalk-stairs.glb", Vector3(8.8, 0.0, -5.5), Vector3(0, -90, 0), Vector3(1.2, 1.2, 1.2)), dark_machinery, 0.4, 0.55)
+	# Flanking overhead monitors (never blocking center EUV title)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-hanging-wide.glb", Vector3(-3.5, 3.7, -4.25), Vector3.ZERO, Vector3(1.0, 1.0, 1.0)), Color(0.35, 0.42, 0.50), 0.3, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-hanging-wide.glb", Vector3(3.5, 3.7, -4.25), Vector3.ZERO, Vector3(1.0, 1.0, 1.0)), Color(0.35, 0.42, 0.50), 0.3, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-panel-wide.glb", Vector3(-7.6, 2.1, -5.9), Vector3.ZERO, Vector3(1.2, 1.2, 1.2)), gunmetal, 0.35, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-panel-wide.glb", Vector3(7.6, 2.1, -5.9), Vector3.ZERO, Vector3(1.2, 1.2, 1.2)), gunmetal, 0.35, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/box-large.glb", Vector3(-9.0, 0.0, -4.0), Vector3.ZERO, Vector3(1.5, 1.5, 1.5)), dark_machinery, 0.4, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/box-large.glb", Vector3(9.0, 0.0, -4.0), Vector3.ZERO, Vector3(1.5, 1.5, 1.5)), dark_machinery, 0.4, 0.5)
 
-	# 7. Bunny-suit technicians (cleanroom spectators)
+	var foup_mat := _mat(Color(0.12, 0.14, 0.18), 0.22, 0.55)
+	var foup_teal := _glow(Color(0.08, 0.90, 0.88), 2.2)
+	var foup_amber := _glow(Color(1.0, 0.55, 0.06), 2.2)
+	var pod_xs := [-6.2, -2.5, 2.5, 6.2]
+	for i in pod_xs.size():
+		var fx: float = pod_xs[i]
+		_box(Vector3(0.08, 0.38, 0.1), Vector3(fx, 3.8, -4.2), rail_mat)
+		_box(Vector3(0.56, 0.46, 0.5), Vector3(fx, 3.45, -4.2), foup_mat)
+		_box(Vector3(0.46, 0.05, 0.02), Vector3(fx, 3.45, -3.94), foup_teal if i % 2 == 0 else foup_amber)
+	# Overhead cryogenic & process gas pipelines
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/pipe-large.glb", Vector3(-5.0, 4.3, -4.5), Vector3(0, 90, 0), Vector3(1.2, 1.2, 1.2)), gunmetal, 0.35, 0.6)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/pipe-glass-large.glb", Vector3(5.0, 4.3, -4.5), Vector3(0, 90, 0), Vector3(1.2, 1.2, 1.2)), gunmetal, 0.25, 0.5)
+
+	# 5. Diagnostic consoles & wafer cassette racks on outer flanks
+	for cx in [-7.8, 7.8]:
+		_box(Vector3(1.0, 0.9, 0.7), Vector3(cx, 0.45, -3.5), _mat(Color(0.16, 0.18, 0.22), 0.38, 0.55))
+		_box(Vector3(0.7, 0.4, 0.04), Vector3(cx, 1.2, -3.4), _mat(Color(0.08, 0.09, 0.12), 0.2))
+		_box(Vector3(0.65, 0.35, 0.01), Vector3(cx, 1.2, -3.37), _glow(Color(0.06, 0.75, 0.85), 1.5))
+		_cylinder(0.25, 0.35, Vector3(cx + (0.9 if cx < 0 else -0.9), 0.45, -3.5), _mat(Color(0.28, 0.31, 0.36), 0.35, 0.7))
+	_label("NODE: 1.8nm GAAS\nDEFECTS: 0.002/cm²\nYIELD: NOMINAL", Vector3(-7.8, 1.2, -3.35), 0.065, Color(0.88, 1.0, 1.0))
+	_label("EUV LASER: 13.5nm\nCHAMBER: ARGON\nPURGE: 100%", Vector3(7.8, 1.2, -3.35), 0.065, Color(0.88, 1.0, 1.0))
+
+	# 6. Cryogenic pipes & liquid argon exhaust steam
+	for px in [-9.4, 9.4]:
+		_cylinder(0.3, 3.8, Vector3(px, 1.9, -4.8), _mat(Color(0.38, 0.42, 0.48), 0.3, 0.8))
+		_steam(Vector3(px, 3.85, -4.8))
+
+	# 7. Bunny-suit technicians on catwalks & clear rear alcoves (clear of StageCrowd positions)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 2026
-	for sx in [-7.2, 7.2]:
-		_bunny_person(Vector3(sx, 0.0, -4.2), rng)
-	for bx in [-3.8, -1.8, 1.8, 3.8]:
-		_bunny_person(Vector3(bx, 0.0, -5.6), rng)
+	for sx in [-5.8, 5.8]:
+		_bunny_person(Vector3(sx, 3.25, -5.5), rng)
+	for bx in [-3.4, 3.4]:
+		_bunny_person(Vector3(bx, 0.0, -5.5), rng)
 
-	# 8. Satirical cleanroom signage and metrics boards
-	_label("GPU FOUNDRY — FAB 4090", Vector3(0, 3.8, -5.9), 0.48, Color(0.25, 0.95, 0.4), true)
+	# 8. Satirical cleanroom signage and metrics boards (clear, legible, unobscured)
+	_box(Vector3(4.6, 0.5, 0.14), Vector3(0.0, 3.38, -4.18), dark_metal)
+	_label("GPU FOUNDRY — FAB 4090", Vector3(0.0, 3.38, -4.09), 0.30, Color(0.18, 0.92, 0.78), true)
 	_board("CLEANROOM PROTOCOL (CLASS 1)\n• Full bunny suit mandatory\n• No leather jackets in air shower\n• 3-frame jabs only (vibration < 0.1nm)\n• Scrapped wafers deducted from bonus\n• If laser pulses: continue fighting",
-		Vector3(-5.0, 1.75, -5.85)) # low enough to stay clear of the HUD
+		Vector3(-5.25, 2.05, -5.95))
 	_board("FAB 4090 METRICS\n• Process: 1.8nm Hype-FinFET\n• Die Yield: 88.4% (dropping)\n• EUV Uptime: 99.98%\n• Wafer Cost: $42,000 / piece\n• Today's Scrap: 12 wafers (blame P2)",
-		Vector3(5.0, 1.75, -5.85))
-	_label("DANGER: 13.5nm EUV BEAM\nAUTHORIZED CHIP ARCHITECTS ONLY", Vector3(0, 2.7, -4.28), 0.12, Color(1.0, 0.3, 0.2), true)
+		Vector3(5.25, 2.05, -5.95))
+	_label("DANGER: 13.5nm EUV BEAM\nAUTHORIZED CHIP ARCHITECTS ONLY", Vector3(0.0, 2.75, -4.17), 0.115, Color(1.0, 0.45, 0.12), true)
 
-	# 9. Cleanroom Lighting (high-contrast focus, rim lighting, and vibrant accents)
-	_light(Vector3(0, 3.6, -2.8), Color(0.95, 0.98, 1.0), 3.2, 12.0)
-	_light(Vector3(-5.5, 3.0, -2.2), Color(0.15, 0.80, 1.0), 2.0, 8.0)
-	_light(Vector3(5.5, 3.0, -2.2), Color(0.15, 0.80, 1.0), 2.0, 8.0)
-	_light(Vector3(0, 1.8, -4.5), Color(0.75, 0.15, 1.0), 3.0, 6.0)
-	_light(Vector3(0, 0.8, -1.0), Color(0.2, 0.5, 0.9), 1.2, 5.0)
+	# 9. Coloured warning spotlights (teal/amber) with volumetric fog shafts & EUV chamber glow
+	_foundry_spot(Vector3(-5.0, 4.9, -2.6), Vector3(-4.2, 0.0, -4.6), Color(0.08, 0.88, 0.92), 4.6, 11.5, 36.0, 7.5)
+	_foundry_spot(Vector3(5.0, 4.9, -2.6), Vector3(4.2, 0.0, -4.6), Color(0.08, 0.88, 0.92), 4.6, 11.5, 36.0, 7.5)
+	_foundry_spot(Vector3(-2.3, 4.4, -2.6), Vector3(-2.0, 0.0, -4.2), Color(1.0, 0.56, 0.08), 3.8, 10.0, 34.0, 7.0)
+	_foundry_spot(Vector3(2.3, 4.4, -2.6), Vector3(2.0, 0.0, -4.2), Color(1.0, 0.56, 0.08), 3.8, 10.0, 34.0, 7.0)
+	_light(Vector3(0.0, 1.75, -4.35), Color(0.76, 0.20, 1.0), 2.8, 6.0)
+	_light(Vector3(0.0, 2.8, 1.5), Color(0.78, 0.86, 0.98), 1.4, 9.0)
 
 	# 10. Ambient ventilation audio
 	_ambience("res://assets/audio/ambience/wind.ogg", -24.0)
+
+
+func _foundry_tint_prop(node: Node3D, tint: Color, roughness := 0.36, metallic := 0.55) -> void:
+	if node == null:
+		return
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mi := child as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		for surf in mi.mesh.get_surface_count():
+			var base_mat := mi.get_active_material(surf)
+			if base_mat is StandardMaterial3D:
+				var m := (base_mat as StandardMaterial3D).duplicate() as StandardMaterial3D
+				m.albedo_color = m.albedo_color * tint
+				m.roughness = roughness
+				m.metallic = metallic
+				mi.set_surface_override_material(surf, m)
+
+
+func _foundry_spot(pos: Vector3, target: Vector3, color: Color, energy: float, reach: float, angle: float, fog_energy: float) -> void:
+	var spot := SpotLight3D.new()
+	spot.light_color = color
+	spot.light_energy = energy
+	spot.spot_range = reach
+	spot.spot_angle = angle
+	spot.spot_attenuation = 0.85
+	spot.light_volumetric_fog_energy = fog_energy
+	spot.shadow_enabled = false
+	add_child(spot)
+	spot.look_at_from_position(pos, target, Vector3.UP)
 
 
 # --- Helpers ---------------------------------------------------------------------------
