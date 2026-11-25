@@ -113,32 +113,6 @@ win_quotes = PackedStringArray("This match did not happen.", "Your defeat is tre
 rival_lines = {
 "donald": ["Your tariffs do not frighten me.", "Trade war: concluded."]
 }
-combo_trials = Array[Dictionary]([{
-&"corner": false,
-&"name": "Jab String",
-&"steps": PackedStringArray("LP", "LP", "HP"),
-&"tip": "Jabs chain into each other and into the straight."
-}, {
-&"corner": false,
-&"name": "Spur and Shield",
-&"steps": PackedStringArray("6LK", "236P"),
-&"tip": "Hold forward: cancel the spur rake into Belt and Road Rush."
-}, {
-&"corner": false,
-&"name": "Five-Year Plan",
-&"steps": PackedStringArray("2LP", "2LP", "623P"),
-&"tip": "Low jabs, then cancel into Five-Year Plan."
-}, {
-&"corner": true,
-&"name": "Gauntlet to the Wall",
-&"steps": PackedStringArray("6HP", "WALL", "LP", "HP"),
-&"tip": "State Media Drive near the edge splats them: walk in and follow up."
-}, {
-&"corner": false,
-&"name": "Open-Source Squad",
-&"steps": PackedStringArray("LP", "HP", "236236P"),
-&"tip": "With a full meter, cancel the straight into the super."
-}])
 max_health = 1050
 walk_speed = 1.85
 back_walk_speed = 1.4

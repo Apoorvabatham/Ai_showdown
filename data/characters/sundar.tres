@@ -104,37 +104,6 @@ win_quotes = PackedStringArray("Did you mean: \"I lose\"?", "About one million r
 rival_lines = {
 "ram": ["We invented the transformer, you know.", "Code red: resolved."]
 }
-combo_trials = Array[Dictionary]([{
-&"corner": false,
-&"name": "Jab String",
-&"steps": PackedStringArray("LP", "LP", "HP"),
-&"tip": "Jabs chain into each other and into the straight."
-}, {
-&"corner": false,
-&"name": "Quarterly Push",
-&"steps": PackedStringArray("6LK", "6HP"),
-&"tip": "Hold forward: the Quarterly Kick chains into the Pixel Push."
-}, {
-&"corner": false,
-&"name": "Ten Blue Links",
-&"steps": PackedStringArray("LP", "HP", "236P"),
-&"tip": "Cancel the straight into Ten Blue Links as it hits."
-}, {
-&"corner": false,
-&"name": "I'm Feeling Lucky",
-&"steps": PackedStringArray("2LP", "2LP", "623P"),
-&"tip": "Low jabs, then cancel into the rising uppercut."
-}, {
-&"corner": true,
-&"name": "Corner Splat",
-&"steps": PackedStringArray("HK", "WALL", "6LK", "6HP"),
-&"tip": "A roundhouse near the edge splats them: walk in and follow up."
-}, {
-&"corner": false,
-&"name": "404 Not Found",
-&"steps": PackedStringArray("LP", "HP", "236236P"),
-&"tip": "With a full meter, cancel the straight into the super: block it standing!"
-}])
 max_health = 1030
 walk_speed = 1.9
 back_walk_speed = 1.5

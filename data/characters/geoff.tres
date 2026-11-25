@@ -105,32 +105,6 @@ win_quotes = PackedStringArray("I console myself with the usual excuse: someone 
 rival_lines = {
 "yann": ["Yann, you really should be more worried.", "Told you so. Politely."]
 }
-combo_trials = Array[Dictionary]([{
-&"corner": false,
-&"name": "Jab String",
-&"steps": PackedStringArray("LP", "LP", "HP"),
-&"tip": "Jabs chain into each other and into the straight."
-}, {
-&"corner": false,
-&"name": "Spur and Shield",
-&"steps": PackedStringArray("6LK", "236P"),
-&"tip": "Hold forward: cancel the spur rake into Backprop Rush."
-}, {
-&"corner": false,
-&"name": "Deep Uppercut",
-&"steps": PackedStringArray("2LP", "2LP", "623P"),
-&"tip": "Low jabs, then cancel into Deep Uppercut."
-}, {
-&"corner": true,
-&"name": "Gauntlet to the Wall",
-&"steps": PackedStringArray("6HP", "WALL", "LP", "HP"),
-&"tip": "Gradient Drive near the edge splats them: walk in and follow up."
-}, {
-&"corner": false,
-&"name": "I Regret Nothing… Wait",
-&"steps": PackedStringArray("LP", "HP", "236236P"),
-&"tip": "With a full meter, cancel the straight into the super."
-}])
 max_health = 1070
 walk_speed = 1.85
 back_walk_speed = 1.4

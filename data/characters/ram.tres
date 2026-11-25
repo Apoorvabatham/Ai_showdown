@@ -105,32 +105,6 @@ rival_lines = {
 "dario": ["You used to work for me, you know.", "Safety is great. Shipping is better."],
 "tesla": ["Still upset you left the board?", "See you in court. Again."]
 }
-combo_trials = Array[Dictionary]([{
-&"corner": false,
-&"name": "Teaser Tweet String",
-&"steps": PackedStringArray("6LP", "6LP", "HP"),
-&"tip": "Hold forward: backfists chain into each other and into the straight."
-}, {
-&"corner": false,
-&"name": "Sipa Launcher",
-&"steps": PackedStringArray("6LP", "6HK"),
-&"tip": "The backfist chains into Pivot Flip."
-}, {
-&"corner": false,
-&"name": "Bagyo Confirm",
-&"steps": PackedStringArray("LP", "HP", "236P"),
-&"tip": "Cancel the straight into Funding Round Rush."
-}, {
-&"corner": true,
-&"name": "Corner Splat",
-&"steps": PackedStringArray("HK", "WALL", "LK", "HP"),
-&"tip": "A roundhouse near the edge splats them: walk in and follow up."
-}, {
-&"corner": false,
-&"name": "Scaling Law",
-&"steps": PackedStringArray("LP", "HP", "236236P"),
-&"tip": "With a full meter, cancel the straight into the super."
-}])
 max_health = 1040
 walk_speed = 2.3
 back_walk_speed = 1.8
