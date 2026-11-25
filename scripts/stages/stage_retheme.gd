@@ -235,36 +235,27 @@ func _build_server_farm() -> void:
 func _build_mensa() -> void:
 	var stage := get_parent()
 	for name in ["ScrollKanji", "ScrollSeal", "TaikoDrum", "TaikoSkin1", "TaikoSkin2", "Students0", "Students1", "Students3",
-			"IncenseSmoke", "Lantern00", "Lantern01", "Lantern10", "Lantern11"]:
+			"IncenseSmoke", "Lantern00", "Lantern01", "Lantern10", "Lantern11",
+			"AndonL", "AndonR", "LanternLight00", "LanternLight01", "LanternLight10", "LanternLight11", "CandleFlicker"]:
 		_remove(stage, name)
 
-	# Environment atmosphere pass: bright cafeteria lighting and warm indoor fog
+	# Respect Settings graphics presets without a compile-time autoload dependency (sim_test).
 	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
-	if we and we.environment:
+	var settings := get_node_or_null("/root/Settings")
+	if we and we.environment and settings and int(settings.get("graphics")) != 2:
 		we.environment = we.environment.duplicate()
-		we.environment.tonemap_mode = Environment.TONE_MAPPER_ACES
-		we.environment.tonemap_exposure = 0.86 # 1.05 blew the windows and the marble out
-		we.environment.glow_enabled = true
-		we.environment.glow_bloom = 0.1
-		we.environment.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
-		we.environment.adjustment_enabled = true
-		we.environment.adjustment_contrast = 1.15
-		we.environment.adjustment_saturation = 1.10
-		we.environment.volumetric_fog_enabled = true
-		we.environment.volumetric_fog_albedo = Color(0.95, 0.90, 0.82)
-		we.environment.volumetric_fog_density = 0.003
-		we.environment.ambient_light_color = Color(0.62, 0.58, 0.52)
+		we.environment.ssao_enabled = false
 
-	# Reflection probe for realistic linoleum specular floor and cafeteria surfaces
+	# Reflection probe for linoleum/ceramic floor and brushed steel counter reflections
 	var probe := ReflectionProbe.new()
 	probe.name = "MensaReflectionProbe"
 	probe.size = Vector3(26.0, 8.0, 22.0)
 	probe.origin_offset = Vector3(0.0, 2.5, -4.0)
 	probe.update_mode = ReflectionProbe.UPDATE_ONCE
-	probe.intensity = 0.85
+	probe.intensity = 0.75
 	probe.max_distance = 30.0
 	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
-	probe.ambient_color = Color(0.18, 0.17, 0.16)
+	probe.ambient_color = Color(0.18, 0.19, 0.21)
 	add_child(probe)
 
 	# Linoleum / ceramic tiles over the tatami (PBR with normal and roughness maps).
@@ -272,100 +263,219 @@ func _build_mensa() -> void:
 		"res://assets/stage_props/mensa/floor/floor_tiles_06_diff_1k.jpg",
 		"res://assets/stage_props/mensa/floor/floor_tiles_06_nor_1k.jpg",
 		"res://assets/stage_props/mensa/floor/floor_tiles_06_rough_1k.jpg",
-		Vector3(14, 12, 1), 0.35)
-	tiles.albedo_color = Color(0.78, 0.76, 0.74) # a touch darker: the white tiles glared
+		Vector3(14, 12, 1), 0.38)
+	tiles.albedo_color = Color(0.76, 0.74, 0.70)
 	if tiles.albedo_texture == null:
 		tiles.albedo_texture = _checker(Color(0.62, 0.6, 0.55), Color(0.55, 0.56, 0.54))
 		tiles.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
 		tiles.uv1_scale = Vector3(44, 36, 1)
 	_box(Vector3(22.0, 0.02, 18.0), Vector3(0, 0.01, -1.0), tiles)
+	# Subtle floor zone trim separating the fight arena from the dining rows
+	_box(Vector3(18.0, 0.004, 0.10), Vector3(0, 0.022, -4.15), _mat(Color(0.28, 0.24, 0.21), 0.75))
 
-	# The counter along the back wall: steel, kitchen counter bars, glass sneeze guard, food trays.
-	var steel := _mat(Color(0.7, 0.72, 0.74), 0.3, 0.8)
-	_box(Vector3(9.0, 0.95, 0.8), Vector3(0, 0.475, -8.6), steel)
-	_prop("res://assets/stage_props/mensa/kitchenBar.glb", Vector3(-2.2, 0.0, -8.6), Vector3.ZERO, Vector3(1.6, 1.6, 1.6))
-	_prop("res://assets/stage_props/mensa/kitchenBar.glb", Vector3(0.0, 0.0, -8.6), Vector3.ZERO, Vector3(1.6, 1.6, 1.6))
-	_prop("res://assets/stage_props/mensa/kitchenBarEnd.glb", Vector3(2.2, 0.0, -8.6), Vector3.ZERO, Vector3(1.6, 1.6, 1.6))
-	var glass := _mat(Color(0.8, 0.9, 1.0, 0.25), 0.05)
+	_mensa_backdrop()
+	_mensa_counter()
+	_mensa_tables()
+	_mensa_lighting()
+	_ambience("res://assets/audio/ambience/market_chatter.ogg", -20.0)
+
+
+func _mensa_backdrop() -> void:
+	# Architectural back wall: warm oak paneling + dark slate cafeteria header fascia (covers dojo scroll & shrine)
+	var oak := _mat(Color(0.42, 0.26, 0.15), 0.6)
+	var slate := _mat(Color(0.13, 0.14, 0.16), 0.75)
+	var trim := _mat(Color(0.62, 0.64, 0.67), 0.28, 0.85)
+	_box(Vector3(5.4, 3.4, 0.16), Vector3(0.0, 1.7, -9.72), oak)
+	_box(Vector3(18.0, 1.45, 0.22), Vector3(0.0, 4.12, -9.62), slate)
+	_box(Vector3(18.0, 0.06, 0.26), Vector3(0.0, 3.38, -9.60), trim)
+	_box(Vector3(18.0, 0.06, 0.26), Vector3(0.0, 4.86, -9.60), trim)
+	# Warm glowing fascia accent & main MENSA sign
+	_box(Vector3(4.6, 0.05, 0.06), Vector3(0.0, 3.56, -9.48), _glow(Color(1.0, 0.62, 0.22), 1.6))
+	_label("MENSA", Vector3(0, 4.18, -9.45), 1.15, Color(1.0, 0.56, 0.22), true)
+
+	# Framed menu & campus notice boards cleanly fitted inside the wall bays
+	_mensa_board("TODAY'S MENU",
+		"Pasta Pomodoro ........ 2,80\nVegan Lentil Curry .... 3,10\nCurrywurst & Fries .... 2,50\nAlignment Soup .... ask staff",
+		Vector3(-3.6, 2.38, -9.60), Color(0.84, 0.36, 0.16))
+	_mensa_board("EXAM SEASON",
+		"Free espresso for anyone\nwho can explain\nbackpropagation clearly",
+		Vector3(3.6, 2.38, -9.60), Color(0.24, 0.52, 0.42))
+	_mensa_board("NEURIPS NOTICE",
+		"Registration is full.\nPlease do not spar\nover poster slots.\nCoffee for authors only.",
+		Vector3(-7.3, 2.38, -9.60), Color(0.28, 0.42, 0.62))
+	_mensa_board("LOST & FOUND",
+		"1x Quantum State\nAnswers to 'Schrodinger'\nReward: 8x H100 hours",
+		Vector3(7.3, 2.38, -9.60), Color(0.72, 0.52, 0.18))
+
+
+func _mensa_board(title: String, body: String, position_: Vector3, accent: Color) -> void:
+	var frame := _mat(Color(0.36, 0.23, 0.14), 0.55)
+	var board_mat := _mat(Color(0.06, 0.09, 0.08), 0.88)
+	_box(Vector3(2.96, 1.48, 0.07), position_, frame)
+	_box(Vector3(2.80, 1.32, 0.08), position_, board_mat)
+	_box(Vector3(2.80, 0.24, 0.09), position_ + Vector3(0, 0.54, 0.0), _mat(accent, 0.5))
+
+	var head := _label(title, position_ + Vector3(0.0, 0.54, 0.055), 0.14, Color(1.0, 0.96, 0.88), true)
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var text_lbl := _label(body, position_ + Vector3(-1.26, -0.06, 0.055), 0.115, Color(0.94, 0.93, 0.86), true)
+	text_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	text_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	text_lbl.width = 1050.0
+	text_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
+
+func _mensa_counter() -> void:
+	var steel := _mat(Color(0.68, 0.70, 0.73), 0.28, 0.85)
+	var dark_steel := _mat(Color(0.20, 0.22, 0.25), 0.38, 0.75)
+	var wood_front := _mat(Color(0.38, 0.24, 0.14), 0.58)
+
+	# Modular kitchenBar cabinetry along the serving counter + warm oak front & stainless top
+	for i in 7:
+		_prop("res://assets/stage_props/mensa/kitchenBar.glb", Vector3(-3.8 + i * 1.03, 0.02, -8.32), Vector3.ZERO, Vector3(2.4, 2.2, 2.4))
+	_prop("res://assets/stage_props/mensa/kitchenBarEnd.glb", Vector3(3.41, 0.02, -8.32), Vector3.ZERO, Vector3(2.4, 2.2, 2.4))
+	_box(Vector3(7.6, 0.90, 0.06), Vector3(-0.1, 0.47, -8.30), wood_front)
+	_box(Vector3(8.6, 0.06, 0.82), Vector3(0.1, 0.95, -8.56), steel)
+
+	# Brushed steel tray slide rail along the front of the serving line
+	for ry in [0.76, 0.82]:
+		_box(Vector3(7.8, 0.02, 0.03), Vector3(-0.2, ry, -8.06), steel)
+	for rx in [-3.8, -1.9, 0.0, 1.9, 3.6]:
+		_box(Vector3(0.04, 0.03, 0.22), Vector3(rx, 0.78, -8.17), dark_steel)
+
+	# Recessed bain-marie food wells & vivid dishes under a glass sneeze guard + warm heat lamp
+	_box(Vector3(5.8, 0.03, 0.56), Vector3(-0.6, 0.97, -8.58), dark_steel)
+	var foods := [
+		Color(0.85, 0.28, 0.12), # tomato pasta
+		Color(0.92, 0.72, 0.22), # schnitzel & fries
+		Color(0.26, 0.58, 0.22), # fresh salad
+		Color(0.88, 0.54, 0.14), # lentil curry
+		Color(0.93, 0.90, 0.82), # mashed potatoes
+		Color(0.68, 0.22, 0.30), # berry compote
+	]
+	for i in 6:
+		var fx := -3.0 + i * 0.96
+		_box(Vector3(0.84, 0.05, 0.44), Vector3(fx, 0.99, -8.58), steel)
+		_box(Vector3(0.74, 0.06, 0.36), Vector3(fx, 1.00, -8.58), _mat(foods[i], 0.52))
+
+	# Sneeze guard posts, angled glass shield, and warm under-canopy heat strip
+	for px in [-3.5, -1.2, 1.2, 3.5]:
+		_cylinder(0.025, 0.62, Vector3(px, 1.28, -8.24), steel)
+	var glass := _mat(Color(0.82, 0.92, 1.0, 0.22), 0.05)
 	glass.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	_box(Vector3(9.0, 0.5, 0.02), Vector3(0, 1.25, -8.25), glass)
-	var foods := [Color(0.85, 0.3, 0.12), Color(0.9, 0.75, 0.25), Color(0.3, 0.55, 0.2), Color(0.55, 0.35, 0.2), Color(0.92, 0.9, 0.85)]
-	for i in 10:
-		_box(Vector3(0.7, 0.06, 0.45), Vector3(-4.0 + i * 0.9, 0.97, -8.6), _mat(foods[i % foods.size()], 0.6))
-	# Counter serving plates, coffee cups, and bar stools
-	for pi in [-3.5, -1.5, 0.5, 2.5]:
-		_prop("res://assets/stage_props/mensa/plate-dinner.glb", Vector3(pi, 1.07, -8.35), Vector3.ZERO, Vector3(0.12, 0.12, 0.12))
-		_prop("res://assets/stage_props/mensa/cup-coffee.glb", Vector3(pi + 0.3, 1.04, -8.35), Vector3.ZERO, Vector3(0.08, 0.08, 0.08))
-		_prop("res://assets/stage_props/mensa/stoolBar.glb", Vector3(pi, 0.0, -7.5), Vector3.ZERO, Vector3(1.2, 1.2, 1.2))
+	var shield := _box(Vector3(7.2, 0.44, 0.02), Vector3(0.0, 1.32, -8.22), glass)
+	shield.rotation_degrees = Vector3(-16, 0, 0)
+	_box(Vector3(7.2, 0.05, 0.24), Vector3(0.0, 1.56, -8.32), dark_steel)
+	_box(Vector3(6.9, 0.025, 0.10), Vector3(0.0, 1.53, -8.34), _glow(Color(1.0, 0.78, 0.44), 2.2))
 
-	_label("MENSA", Vector3(0, 3.3, -9.7), 1.2, Color(0.95, 0.4, 0.15), true)
-	_board("TODAY'S MENU\nPasta Pomodoro ........ 2,80\nVegan Lentil Curry .... 3,10\nCurrywurst & Fries .... 2,50\nAlignment Soup .... ask staff",
-		Vector3(-3.6, 2.3, -9.75))
-	_board("EXAM SEASON\nFree coffee for anyone\nwho can explain\nbackpropagation", Vector3(3.6, 2.3, -9.75))
-	_board("NEURIPS NOTICE\nRegistration full.\nPlease do not spar\nover poster slots.\nCoffee for authors only.", Vector3(-7.5, 2.3, -9.75))
-	_board("LOST & FOUND\n1x Quantum State\nAnswers to 'Schrodinger'\nReward: 8x H100 GPU hours", Vector3(7.5, 2.3, -9.75))
+	# Tray pickup stack at left end of counter
+	var tray_colors := [Color(0.22, 0.42, 0.54), Color(0.68, 0.32, 0.22), Color(0.28, 0.48, 0.36)]
+	for ti in 6:
+		_box(Vector3(0.46, 0.02, 0.32), Vector3(-3.95, 0.99 + ti * 0.025, -8.46), _mat(tray_colors[ti % tray_colors.size()], 0.45))
+	for pi in 3:
+		_prop("res://assets/stage_props/mensa/plate-dinner.glb", Vector3(-3.95, 0.98 + pi * 0.03, -8.80), Vector3.ZERO, Vector3(0.26, 0.26, 0.26))
 
-	# Professional espresso machine and mug stacks on the counter
-	_prop("res://assets/stage_props/mensa/kitchenCoffeeMachine.glb", Vector3(3.8, 0.95, -8.5), Vector3(0, 180, 0), Vector3(1.3, 1.3, 1.3))
-	_prop("res://assets/stage_props/mensa/cup-coffee.glb", Vector3(3.6, 1.03, -8.35), Vector3.ZERO, Vector3(0.09, 0.09, 0.09))
-	_prop("res://assets/stage_props/mensa/cup-coffee.glb", Vector3(4.0, 1.03, -8.4), Vector3.ZERO, Vector3(0.09, 0.09, 0.09))
-	# Cafeteria waste bins, indoor potted plants and supply boxes
-	_prop("res://assets/stage_props/mensa/trashcan.glb", Vector3(-6.5, 0.0, -8.5), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/mensa/trashcan.glb", Vector3(6.5, 0.0, -8.5), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/mensa/pottedPlant.glb", Vector3(-8.2, 0.0, -6.5), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/mensa/pottedPlant.glb", Vector3(8.2, 0.0, -6.5), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/mensa/cardboardBoxClosed.glb", Vector3(-8.6, 0.0, -8.2), Vector3(0, 25, 0), Vector3(1.3, 1.3, 1.3))
+	# Coffee & checkout station at the right end of counter (clear of cashier at x=4.2, z=-8.4)
+	_prop("res://assets/stage_props/mensa/kitchenCoffeeMachine.glb", Vector3(3.0, 0.98, -8.38), Vector3(0, 180, 0), Vector3(2.3, 2.3, 2.3))
+	_prop("res://assets/stage_props/mensa/cup-coffee.glb", Vector3(3.55, 0.98, -8.35), Vector3.ZERO, Vector3(0.42, 0.42, 0.42))
+	_prop("res://assets/stage_props/mensa/cup-coffee.glb", Vector3(3.75, 0.98, -8.48), Vector3.ZERO, Vector3(0.42, 0.42, 0.42))
+	_prop("res://assets/stage_props/mensa/plate-dinner.glb", Vector3(2.4, 0.98, -8.36), Vector3.ZERO, Vector3(0.28, 0.28, 0.28))
+	_box(Vector3(0.46, 0.26, 0.34), Vector3(4.05, 1.10, -8.68), dark_steel)
+	_box(Vector3(0.30, 0.16, 0.03), Vector3(4.05, 1.24, -8.52), _glow(Color(0.45, 0.90, 0.65), 1.4))
 
-	# Long tables with trays at the back and the sides, people having lunch.
-	var table_mat := _mat(Color(0.85, 0.83, 0.78), 0.5)
-	var lamp_mat := _mat(Color(0.15, 0.16, 0.18), 0.3, 0.7)
-	var bulb_mat := _glow(Color(1.0, 0.9, 0.72), 3.5)
+	# Cafeteria waste bins, potted plants, and supply boxes
+	_prop("res://assets/stage_props/mensa/trashcan.glb", Vector3(-6.4, 0.02, -8.6), Vector3.ZERO, Vector3(2.0, 2.0, 2.0))
+	_prop("res://assets/stage_props/mensa/trashcan.glb", Vector3(6.4, 0.02, -8.6), Vector3.ZERO, Vector3(2.0, 2.0, 2.0))
+	_prop("res://assets/stage_props/mensa/pottedPlant.glb", Vector3(-8.4, 0.02, -7.1), Vector3.ZERO, Vector3(2.1, 2.1, 2.1))
+	_prop("res://assets/stage_props/mensa/pottedPlant.glb", Vector3(8.4, 0.02, -7.1), Vector3.ZERO, Vector3(2.1, 2.1, 2.1))
+	_prop("res://assets/stage_props/mensa/pottedPlant.glb", Vector3(-9.1, 0.02, 1.4), Vector3.ZERO, Vector3(2.0, 2.0, 2.0))
+	_prop("res://assets/stage_props/mensa/pottedPlant.glb", Vector3(9.1, 0.02, 1.4), Vector3.ZERO, Vector3(2.0, 2.0, 2.0))
+	_prop("res://assets/stage_props/mensa/cardboardBoxClosed.glb", Vector3(-8.8, 0.02, -8.4), Vector3(0, 22, 0), Vector3(1.9, 1.9, 1.9))
+
+
+func _mensa_tables() -> void:
+	var table_top := _mat(Color(0.86, 0.80, 0.70), 0.45)
+	var steel := _mat(Color(0.66, 0.68, 0.72), 0.3, 0.82)
+	var lamp_shade := _mat(Color(0.24, 0.22, 0.20), 0.35, 0.55)
+	var lamp_rim := _mat(Color(0.85, 0.68, 0.40), 0.28, 0.8)
+	var bulb_mat := _glow(Color(1.0, 0.88, 0.65), 2.4)
+	var tray_colors := [Color(0.24, 0.42, 0.56), Color(0.68, 0.34, 0.24), Color(0.28, 0.48, 0.36)]
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
-	for spot: Vector3 in [Vector3(-4.5, 0, -6.0), Vector3(0.0, 0, -6.0), Vector3(4.5, 0, -6.0), Vector3(-7.0, 0, -2.0), Vector3(7.0, 0, -2.0)]:
-		_box(Vector3(3.2, 0.05, 1.0), spot + Vector3(0, 0.75, 0), table_mat)
-		if absf(spot.z) > 4.0:
-			_prop("res://assets/stage_props/mensa/table.glb", spot + Vector3(-0.8, 0.0, 0), Vector3.ZERO, Vector3(1.8, 2.3, 1.8))
-			_prop("res://assets/stage_props/mensa/table.glb", spot + Vector3(0.8, 0.0, 0), Vector3.ZERO, Vector3(1.8, 2.3, 1.8))
-		else:
-			_prop("res://assets/stage_props/mensa/tableRound.glb", spot + Vector3(0, 0.27, 0), Vector3.ZERO, Vector3(2.0, 2.0, 2.0))
-		# Hanging pendant lamp over each table
-		_cylinder(0.01, 1.6, spot + Vector3(0, 2.7, 0), lamp_mat)
-		_cylinder(0.22, 0.14, spot + Vector3(0, 1.9, 0), lamp_mat)
-		_cylinder(0.08, 0.04, spot + Vector3(0, 1.83, 0), bulb_mat)
-		_light(spot + Vector3(0, 1.8, 0), Color(1.0, 0.92, 0.75), 1.6, 4.5)
-		# Table condiment caddy with real ketchup and mustard bottles
-		_box(Vector3(0.14, 0.06, 0.18), spot + Vector3(0, 0.78, 0), steel)
-		_prop("res://assets/stage_props/mensa/bottle-ketchup.glb", spot + Vector3(-0.035, 0.87, 0), Vector3.ZERO, Vector3(0.06, 0.06, 0.06))
-		_prop("res://assets/stage_props/mensa/bottle-musterd.glb", spot + Vector3(0.035, 0.87, 0), Vector3.ZERO, Vector3(0.06, 0.06, 0.06))
-		for lx in [-1.45, 1.45]:
-			_box(Vector3(0.06, 0.74, 0.8), spot + Vector3(lx, 0.37, 0), steel)
+
+	# Three long Mensa tables at the back row (aligned with stage_life student seats)
+	for spot: Vector3 in [Vector3(-4.5, 0, -6.0), Vector3(0.0, 0, -6.0), Vector3(4.5, 0, -6.0)]:
+		_prop("res://assets/stage_props/mensa/table.glb", spot + Vector3(-1.51, 0.02, 0.40), Vector3.ZERO, Vector3(1.8, 2.25, 1.8))
+		_prop("res://assets/stage_props/mensa/table.glb", spot + Vector3(0.0, 0.02, 0.40), Vector3.ZERO, Vector3(1.8, 2.25, 1.8))
+		_box(Vector3(3.08, 0.045, 0.88), spot + Vector3(0, 0.745, 0), table_top)
+		_mensa_pendant(spot, lamp_shade, lamp_rim, bulb_mat)
+
+		# Table condiment caddy with visible ketchup & mustard bottles
+		_box(Vector3(0.18, 0.05, 0.22), spot + Vector3(0, 0.785, 0), steel)
+		_prop("res://assets/stage_props/mensa/bottle-ketchup.glb", spot + Vector3(-0.045, 0.80, 0), Vector3.ZERO, Vector3(0.42, 0.42, 0.42))
+		_prop("res://assets/stage_props/mensa/bottle-musterd.glb", spot + Vector3(0.045, 0.80, 0), Vector3.ZERO, Vector3(0.42, 0.42, 0.42))
+
 		for k in 4:
 			for side in [-1, 1]:
-				var seat := spot + Vector3(-1.2 + k * 0.8, 0, side * 0.75)
+				var sx := -1.14 + k * 0.76
+				var seat := spot + Vector3(sx, 0.02, side * 0.70)
 				var chair_model := "res://assets/stage_props/mensa/chair.glb" if (k % 2 == 0) else "res://assets/stage_props/mensa/chairRounded.glb"
-				_prop(chair_model, seat, Vector3(0, 0 if side == -1 else 180, 0), Vector3(1.6, 1.6, 1.6))
-				# Tray, plate, bowl, and coffee cup on table in front of seat
-				_box(Vector3(0.42, 0.02, 0.3), spot + Vector3(-1.2 + k * 0.8, 0.785, side * 0.25), _mat(Color(0.3, 0.4, 0.55), 0.5))
-				_prop("res://assets/stage_props/mensa/plate-dinner.glb", spot + Vector3(-1.25 + k * 0.8, 0.89, side * 0.25), Vector3.ZERO, Vector3(0.10, 0.10, 0.10))
-				if rng.randf() < 0.6:
-					_prop("res://assets/stage_props/mensa/cup-coffee.glb", spot + Vector3(-1.08 + k * 0.8, 0.86, side * 0.32), Vector3.ZERO, Vector3(0.075, 0.075, 0.075))
-				if rng.randf() < 0.4:
-					_prop("res://assets/stage_props/mensa/bowl.glb", spot + Vector3(-1.38 + k * 0.8, 0.87, side * 0.28), Vector3.ZERO, Vector3(0.08, 0.08, 0.08))
-				# (Capsule stand-in diners used to sit here; the stage-life students are the
-				# crowd now. The rolls stay so the table settings keep their layout.)
-				if rng.randf() < 0.55:
-					rng.randi()
+				# Chair GLBs have origin at (0,0,-0.2) corner, size 0.2x0.47x0.2 -> offset by half-width to center
+				var cx_off := -0.22 if side == -1 else 0.22
+				var cz_off := 0.22 if side == -1 else -0.22
+				_prop(chair_model, seat + Vector3(cx_off, 0.0, cz_off), Vector3(0, 0 if side == -1 else 180, 0), Vector3(2.2, 1.9, 2.2))
 
-	# Tray return trolley and water station at the flank
-	_box(Vector3(1.1, 1.4, 0.65), Vector3(-8.8, 0.7, -4.5), steel)
-	for ty in [0.4, 0.75, 1.1]:
-		_box(Vector3(0.9, 0.03, 0.5), Vector3(-8.8, ty, -4.5), _mat(Color(0.2, 0.25, 0.35)))
-		_prop("res://assets/stage_props/mensa/plate.glb", Vector3(-8.8, ty + 0.11, -4.5), Vector3.ZERO, Vector3(0.10, 0.10, 0.10))
-	_cylinder(0.14, 0.45, Vector3(-8.8, 1.55, -4.5), _mat(Color(0.85, 0.9, 0.95, 0.6), 0.1))
-	for cy in 3:
-		_cylinder(0.05, 0.1, Vector3(-8.5, 1.48 + cy * 0.06, -4.4), _mat(Color(0.95, 0.95, 0.9)))
-	_ambience("res://assets/audio/ambience/market_chatter.ogg", -20.0)
+				# Tray and tableware resting flush on tabletop (y = 0.768)
+				var tray_pos := spot + Vector3(sx, 0.778, side * 0.24)
+				_box(Vector3(0.46, 0.02, 0.32), tray_pos, _mat(tray_colors[(k + (1 if side > 0 else 0)) % tray_colors.size()], 0.48))
+				_prop("res://assets/stage_props/mensa/plate-dinner.glb", tray_pos + Vector3(-0.04, 0.01, 0), Vector3.ZERO, Vector3(0.26, 0.26, 0.26))
+				if rng.randf() < 0.65:
+					_prop("res://assets/stage_props/mensa/cup-coffee.glb", tray_pos + Vector3(0.14, 0.01, 0.06), Vector3.ZERO, Vector3(0.40, 0.40, 0.40))
+				if rng.randf() < 0.45:
+					_prop("res://assets/stage_props/mensa/bowl.glb", tray_pos + Vector3(0.13, 0.01, -0.07), Vector3.ZERO, Vector3(0.30, 0.30, 0.30))
+
+	# Two clean round cafe tables on the flanks (clear of standing stage_life students at z=-3.2)
+	for side_x in [-7.4, 7.4]:
+		var rspot := Vector3(side_x, 0.0, -1.6)
+		_prop("res://assets/stage_props/mensa/tableRound.glb", rspot + Vector3(-0.69, 0.56, 0.80), Vector3.ZERO, Vector3(2.0, 2.0, 2.0))
+		_mensa_pendant(rspot, lamp_shade, lamp_rim, bulb_mat)
+		_prop("res://assets/stage_props/mensa/chairRounded.glb", rspot + Vector3(-0.78, 0.02, 0.22), Vector3(0, 90, 0), Vector3(2.1, 1.9, 2.1))
+		_prop("res://assets/stage_props/mensa/chairRounded.glb", rspot + Vector3(0.78, 0.02, -0.22), Vector3(0, -90, 0), Vector3(2.1, 1.9, 2.1))
+		_prop("res://assets/stage_props/mensa/cup-coffee.glb", rspot + Vector3(-0.22, 0.75, 0.12), Vector3.ZERO, Vector3(0.42, 0.42, 0.42))
+		_prop("res://assets/stage_props/mensa/plate-dinner.glb", rspot + Vector3(0.20, 0.75, -0.10), Vector3.ZERO, Vector3(0.26, 0.26, 0.26))
+		_prop("res://assets/stage_props/mensa/bottle-ketchup.glb", rspot + Vector3(0.0, 0.75, 0.22), Vector3.ZERO, Vector3(0.40, 0.40, 0.40))
+
+	# Tray return trolley at the left flank (clear of student_8 at -8.2, -4.0)
+	_box(Vector3(1.1, 1.4, 0.65), Vector3(-8.9, 0.72, -5.6), steel)
+	for ty in [0.42, 0.77, 1.12]:
+		_box(Vector3(0.92, 0.03, 0.52), Vector3(-8.9, ty, -5.6), _mat(Color(0.22, 0.30, 0.40)))
+		_prop("res://assets/stage_props/mensa/plate.glb", Vector3(-8.9, ty + 0.02, -5.6), Vector3.ZERO, Vector3(0.28, 0.28, 0.28))
+	_cylinder(0.14, 0.45, Vector3(-8.9, 1.65, -5.6), _mat(Color(0.85, 0.92, 0.98, 0.6), 0.1))
+
+
+func _mensa_pendant(spot: Vector3, shade: Material, rim: Material, bulb: Material) -> void:
+	_cylinder(0.012, 3.45, spot + Vector3(0, 4.25, 0), shade)
+	_cylinder(0.26, 0.14, spot + Vector3(0, 2.52, 0), shade)
+	_cylinder(0.28, 0.03, spot + Vector3(0, 2.44, 0), rim)
+	_cylinder(0.14, 0.04, spot + Vector3(0, 2.43, 0), bulb)
+
+
+func _mensa_lighting() -> void:
+	# Warm ceiling light panels for overhead cafeteria rhythm
+	var housing := _mat(Color(0.24, 0.25, 0.28), 0.4, 0.7)
+	var panel := _glow(Color(1.0, 0.93, 0.78), 1.8)
+	for cz in [-6.0, -1.5]:
+		for cx in [-5.0, 0.0, 5.0]:
+			_box(Vector3(2.2, 0.08, 0.75), Vector3(cx, 5.84, cz), housing)
+			_box(Vector3(2.04, 0.04, 0.60), Vector3(cx, 5.79, cz), panel)
+
+	# Warm lights over the three main dining tables & serving counter (replaces removed dojo lights)
+	for lx in [-4.5, 0.0, 4.5]:
+		_light(Vector3(lx, 2.35, -6.0), Color(1.0, 0.87, 0.66), 1.8, 5.2)
+	for cx in [-2.0, 2.0]:
+		_light(Vector3(cx, 2.25, -8.3), Color(1.0, 0.82, 0.56), 2.1, 5.5)
+	# Cool-crisp window daylight bounce from the left side windows
+	_light(Vector3(-8.2, 2.6, -2.5), Color(0.86, 0.93, 1.0), 1.6, 7.5)
+	_light(Vector3(-8.2, 2.6, -6.5), Color(0.86, 0.93, 1.0), 1.4, 7.0)
 
 
 # --- Senate Hearing Room (the ring) ----------------------------------------------------
