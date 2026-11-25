@@ -7,11 +7,11 @@
 background_mode = 1
 background_color = Color(0.05, 0.08, 0.12, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.18, 0.24, 0.34, 1)
-ambient_light_energy = 0.65
+ambient_light_color = Color(0.24, 0.33, 0.46, 1)
+ambient_light_energy = 0.95
 reflected_light_source = 1
 tonemap_mode = 4
-tonemap_exposure = 0.9
+tonemap_exposure = 0.96
 ssao_enabled = true
 ssao_radius = 0.75
 ssao_intensity = 1.1
@@ -34,7 +34,7 @@ volumetric_fog_anisotropy = 0.68
 volumetric_fog_length = 24.0
 volumetric_fog_sky_affect = 0.0
 adjustment_enabled = true
-adjustment_contrast = 1.18
+adjustment_contrast = 1.14
 adjustment_saturation = 1.16
 
 [node name="Foundry" instance=ExtResource("1_base")]
@@ -44,7 +44,7 @@ environment = SubResource("Environment_foundry")
 
 [node name="DuskLight" parent="Lights" index="0"]
 light_color = Color(0.55, 0.76, 0.98, 1)
-light_energy = 0.22
+light_energy = 0.3
 
 [node name="StreetLamp" parent="Lights" index="1"]
 transform = Transform3D(1, 0, 0, 0, -0.224951, 0.97437, 0, -0.97437, -0.224951, 0, 5.2, -1.2)
@@ -58,11 +58,11 @@ spot_angle = 50.0
 
 [node name="FrontFill" parent="Lights" index="2"]
 transform = Transform3D(0.94174194, 0.15938279, -0.29617444, 0, 0.88058996, 0.4738791, 0.3363364, -0.44627184, 0.8292884, -2.5, 4.2, 7)
-light_color = Color(0.82, 0.9, 1, 1)
-light_energy = 1.85
+light_color = Color(0.84, 0.92, 1, 1)
+light_energy = 2.35
 light_volumetric_fog_energy = 0.0
-spot_range = 15.0
-spot_angle = 42.0
+spot_range = 18.0
+spot_angle = 52.0
 
 [node name="Retheme" type="Node3D" parent="." index="2"]
 script = ExtResource("2_retheme")

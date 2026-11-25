@@ -744,6 +744,28 @@ func training_tests() -> void:
 	hold(5, 28)
 	check("Training: playback replays the recording", p2.position.x > p2x + 0.3, "dx %.2f" % (p2.position.x - p2x))
 	dc.stance = TrainingDummyController.Stance.STAND
+
+	# Simple-game training UI: plain key names incl. Power/Super, no "INPUT 99",
+	# bottom hint strip (with pad buttons when pad is in use), frame data default OFF.
+	check("Training: frame data defaults OFF and is labelled advanced",
+		not tm.show_frame_data and not tm._frame_label.get_parent().visible
+		and tm._menu.find_children("*", "Label", true, false).any(func(l: Label) -> bool: return l.text == "Frame data (advanced)"))
+	press(InputBuffer.POWER, 6); step(2)
+	var hist_text: String = tm.format_history()
+	check("Training: plain input display and history with Power/Super, no LP or INPUT 99",
+		hist_text.begins_with("RECENT INPUTS") and not hist_text.contains("99") and not hist_text.contains("LP")
+		and hist_text.contains("O (Power)")
+		and tm._input_display.lamps.any(func(l: Array) -> bool: return l[0] == InputBuffer.POWER and l[1] == "O")
+		and tm._input_display.lamps.any(func(l: Array) -> bool: return l[0] == InputBuffer.SUPER and l[1] == "P"),
+		hist_text)
+	var status_panel := tm._status.get_parent() as Control
+	check("Training: hint strip moved off top stage sign to bottom",
+		status_panel.anchor_top == 1.0 and status_panel.anchor_bottom == 1.0)
+	tm._set_using_pad(true)
+	check("Training: pad buttons shown when a pad is in use",
+		tm._status.text.contains("Back") and tm._status.text.contains("L3")
+		and tm._input_display.lamps.any(func(l: Array) -> bool: return l[0] == InputBuffer.POWER and l[1] == "LB"))
+	tm._set_using_pad(false)
 	gs.mode = gs.Mode.VS_CPU
 
 
@@ -1325,6 +1347,14 @@ func stage_life_tests() -> void:
 	for i in 40:
 		await process_frame
 	check("Stage life: bubbles fade away", crowd.bubble_count() <= 2)
+	# Regression: bubbles that were freed behind the crowd's back must not break a shout.
+	for i in 12:
+		crowd.shout_line("regression %d" % i, "big_hit")
+		for b in crowd._bubbles:
+			if is_instance_valid(b):
+				b.free() # freed without the crowd noticing
+	var shout_ok: bool = crowd.shout_line("after free", "big_hit") != null or crowd.bubble_count() <= 2
+	check("Stage life: shouting after bubbles were freed does not touch freed bubbles", shout_ok and crowd.bubble_count() <= 2)
 	crowd.free()
 
 	# The sim is unaffected: the same CPU-vs-CPU fight with and without the crowd ends identically.
@@ -5033,6 +5063,17 @@ func showdown_tests() -> void:
 	rocket.free()
 	dragon.free()
 	var zuck: CharacterData = gs.find_character(&"zuckerbot")
+	var zuck_slots := EasySpecials.slots(zuck)
+	var zuck_power: MoveData = zuck_slots.get(5)
+	var like_node := ProjectileLooks.build(&"like_bomb", Color(0.2, 0.52, 1.0))
+	var like_thumb := like_node.get_node_or_null("Thumb") as Node3D
+	var like_badge := like_node.get_node_or_null("Badge") as Node3D
+	ProjectileLooks.animate(like_node, &"like_bomb", Vector3.RIGHT, 0.25, 0.016)
+	check("Showdown C8: Zuckerbot's Power slot is Like Bomb with projectile_look",
+		zuck_power != null and zuck_power.name == "Like Bomb" and zuck_power.input == "236P"
+		and zuck_power.projectile_look == &"like_bomb" and zuck_power.fires_projectile()
+		and like_thumb != null and like_badge != null)
+	like_node.free()
 	var donald: CharacterData = gs.find_character(&"donald")
 	var donald_moves := {}
 	for mv: MoveData in donald.moves:
@@ -5717,8 +5758,8 @@ func showdown_tests() -> void:
 	change_scene_to_file("res://scenes/title.tscn")
 	await process_frame; await process_frame
 	var disclaimer := current_scene.find_child("Disclaimer", true, false) as Label
-	check("Showdown: the title screen shows the parody disclaimer", disclaimer != null
-		and disclaimer.text == "Parody. Not affiliated with or endorsed by any real person or company.")
+	check("Showdown: the title screen shows the parody disclaimer once (from the splash image, no extra label)",
+		not FileAccess.get_file_as_string("res://scripts/ui/title_screen.gd").contains("Not affiliated") and FileAccess.file_exists("res://assets/ui/splash.png"))
 	var frames := 0
 	while (current_scene == null or current_scene.scene_file_path != "res://scenes/main_menu.tscn") and frames < 2400:
 		await process_frame

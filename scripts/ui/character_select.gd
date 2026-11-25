@@ -277,11 +277,14 @@ func _make_portrait_button(character: CharacterData) -> Button:
 	var label := Label.new()
 	label.text = character.display_name
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# One size for every tile: the longest name sets it, so the names match even when one
+	# ("Mark Zuckerbot") has to shrink to fit.
 	var font_sz := clampi(int(side * 0.17), 16, 26)
-	# Long names ("Mark Zuckerbot") shrink until they fit the tile instead of being cut.
 	var font := label.get_theme_default_font()
-	while font_sz > 12 and font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_sz).x > side - PORTRAIT_INSET * 2 - 6:
-		font_sz -= 1
+	var max_width := side - PORTRAIT_INSET * 2 - 6
+	for character_data: CharacterData in GameState.roster:
+		while font_sz > 12 and font.get_string_size(character_data.display_name, HORIZONTAL_ALIGNMENT_LEFT, -1, font_sz).x > max_width:
+			font_sz -= 1
 	label.add_theme_font_size_override("font_size", font_sz)
 	label.add_theme_constant_override("outline_size", 8)
 	label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))

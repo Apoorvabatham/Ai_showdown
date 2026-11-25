@@ -1275,10 +1275,10 @@ func _build_foundry() -> void:
 	probe.size = Vector3(26.0, 7.0, 20.0)
 	probe.origin_offset = Vector3(0.0, 2.4, -2.5)
 	probe.update_mode = ReflectionProbe.UPDATE_ONCE
-	probe.intensity = 0.72
+	probe.intensity = 0.80
 	probe.max_distance = 30.0
 	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
-	probe.ambient_color = Color(0.05, 0.08, 0.12)
+	probe.ambient_color = Color(0.10, 0.15, 0.22)
 	add_child(probe)
 
 	var floor_mat := _pbr_texture_mat(
@@ -1313,9 +1313,9 @@ func _build_foundry() -> void:
 			_cylinder(0.06, 0.14, Vector3(cx, 0.07, cz), esd_corner_amber)
 
 	# 2. Enclosed dark cleanroom shell: back wall, side walls, structural mullions, HEPA ceiling
-	var wall_mat := _mat(Color(0.17, 0.21, 0.28), 0.38, 0.25)
-	var strut_mat := _mat(Color(0.36, 0.40, 0.48), 0.26, 0.80)
-	var dark_metal := _mat(Color(0.10, 0.12, 0.16), 0.32, 0.75)
+	var wall_mat := _mat(Color(0.22, 0.27, 0.36), 0.38, 0.25)
+	var strut_mat := _mat(Color(0.42, 0.46, 0.54), 0.26, 0.80)
+	var dark_metal := _mat(Color(0.14, 0.17, 0.22), 0.32, 0.75)
 	# Back wall & side walls (prevents market/outdoor sky leaks)
 	_box(Vector3(26.0, 6.0, 0.25), Vector3(0, 3.0, -6.2), wall_mat)
 	for sx in [-12.0, 12.0]:
@@ -1388,9 +1388,9 @@ func _build_foundry() -> void:
 	_cylinder(0.055, 0.14, Vector3(-0.62, 0.86, -3.95), beacon_amber)
 	_cylinder(0.055, 0.14, Vector3(0.62, 0.86, -3.95), beacon_amber)
 
-	# Darkened robotic wafer transfer arms & grounded conveyors flanking load port
-	var gunmetal := Color(0.48, 0.52, 0.58)
-	var dark_machinery := Color(0.38, 0.42, 0.48)
+	# Robotic wafer transfer arms & grounded conveyors flanking load port
+	var gunmetal := Color(0.68, 0.74, 0.82)
+	var dark_machinery := Color(0.56, 0.62, 0.70)
 	for ax in [-1.65, 1.65]:
 		_box(Vector3(0.45, 0.55, 0.45), Vector3(ax, 0.275, -4.05), dark_metal)
 	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/robot-arm-a.glb", Vector3(-1.65, 0.55, -4.05), Vector3(0, 50, 0), Vector3(0.62, 0.62, 0.62)), gunmetal, 0.32, 0.6)
@@ -1419,17 +1419,17 @@ func _build_foundry() -> void:
 	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/catwalk-stairs.glb", Vector3(-8.8, 0.0, -5.5), Vector3(0, 90, 0), Vector3(1.2, 1.2, 1.2)), dark_machinery, 0.4, 0.55)
 	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/catwalk-stairs.glb", Vector3(8.8, 0.0, -5.5), Vector3(0, -90, 0), Vector3(1.2, 1.2, 1.2)), dark_machinery, 0.4, 0.55)
 	# Flanking overhead monitors (never blocking center EUV title)
-	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-hanging-wide.glb", Vector3(-3.5, 3.7, -4.25), Vector3.ZERO, Vector3(1.0, 1.0, 1.0)), Color(0.35, 0.42, 0.50), 0.3, 0.5)
-	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-hanging-wide.glb", Vector3(3.5, 3.7, -4.25), Vector3.ZERO, Vector3(1.0, 1.0, 1.0)), Color(0.35, 0.42, 0.50), 0.3, 0.5)
-	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-panel-wide.glb", Vector3(-7.6, 2.1, -5.9), Vector3.ZERO, Vector3(1.2, 1.2, 1.2)), gunmetal, 0.35, 0.5)
-	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-panel-wide.glb", Vector3(7.6, 2.1, -5.9), Vector3.ZERO, Vector3(1.2, 1.2, 1.2)), gunmetal, 0.35, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-hanging-wide.glb", Vector3(-3.5, 3.7, -4.25), Vector3.ZERO, Vector3(1.0, 1.0, 1.0)), Color(0.48, 0.56, 0.66), 0.3, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-hanging-wide.glb", Vector3(3.5, 3.7, -4.25), Vector3.ZERO, Vector3(1.0, 1.0, 1.0)), Color(0.48, 0.56, 0.66), 0.3, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-panel-wide.glb", Vector3(-8.1, 2.15, -5.95), Vector3.ZERO, Vector3(1.0, 1.0, 1.0)), gunmetal, 0.35, 0.5)
+	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/screen-panel-wide.glb", Vector3(8.1, 2.15, -5.95), Vector3.ZERO, Vector3(1.0, 1.0, 1.0)), gunmetal, 0.35, 0.5)
 	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/box-large.glb", Vector3(-9.0, 0.0, -4.0), Vector3.ZERO, Vector3(1.5, 1.5, 1.5)), dark_machinery, 0.4, 0.5)
 	_foundry_tint_prop(_prop("res://assets/stage_props/foundry/box-large.glb", Vector3(9.0, 0.0, -4.0), Vector3.ZERO, Vector3(1.5, 1.5, 1.5)), dark_machinery, 0.4, 0.5)
 
-	var foup_mat := _mat(Color(0.12, 0.14, 0.18), 0.22, 0.55)
+	var foup_mat := _mat(Color(0.16, 0.19, 0.24), 0.22, 0.55)
 	var foup_teal := _glow(Color(0.08, 0.90, 0.88), 2.2)
 	var foup_amber := _glow(Color(1.0, 0.55, 0.06), 2.2)
-	var pod_xs := [-6.2, -2.5, 2.5, 6.2]
+	var pod_xs := [-6.4, -2.65, 2.65, 6.4]
 	for i in pod_xs.size():
 		var fx: float = pod_xs[i]
 		_box(Vector3(0.08, 0.38, 0.1), Vector3(fx, 3.8, -4.2), rail_mat)
@@ -1458,25 +1458,42 @@ func _build_foundry() -> void:
 	rng.seed = 2026
 	for sx in [-5.8, 5.8]:
 		_bunny_person(Vector3(sx, 3.25, -5.5), rng)
-	for bx in [-3.4, 3.4]:
-		_bunny_person(Vector3(bx, 0.0, -5.5), rng)
+	for bx in [-5.7, 5.7]:
+		_bunny_person(Vector3(bx, 0.0, -4.9), rng)
 
-	# 8. Satirical cleanroom signage and metrics boards (clear, legible, unobscured)
-	_box(Vector3(4.6, 0.5, 0.14), Vector3(0.0, 3.38, -4.18), dark_metal)
+	# 8. Satirical cleanroom signage and metrics boards (framed inside panels, clear of foreground geometry)
+	_box(Vector3(4.3, 0.48, 0.14), Vector3(0.0, 3.38, -4.18), dark_metal)
 	_label("GPU FOUNDRY — FAB 4090", Vector3(0.0, 3.38, -4.09), 0.30, Color(0.18, 0.92, 0.78), true)
-	_board("CLEANROOM PROTOCOL (CLASS 1)\n• Full bunny suit mandatory\n• No leather jackets in air shower\n• 3-frame jabs only (vibration < 0.1nm)\n• Scrapped wafers deducted from bonus\n• If laser pulses: continue fighting",
-		Vector3(-5.25, 2.05, -5.95))
-	_board("FAB 4090 METRICS\n• Process: 1.8nm Hype-FinFET\n• Die Yield: 88.4% (dropping)\n• EUV Uptime: 99.98%\n• Wafer Cost: $42,000 / piece\n• Today's Scrap: 12 wafers (blame P2)",
-		Vector3(5.25, 2.05, -5.95))
+	var board_trim := _mat(Color(0.24, 0.30, 0.38), 0.32, 0.75)
+	var board_face := _mat(Color(0.07, 0.09, 0.11), 0.88)
+	var foundry_boards := [
+		[
+			Vector3(-5.20, 2.30, -5.95),
+			"CLEANROOM PROTOCOL (CLASS 1)\n• Full bunny suit mandatory\n• No leather jackets in air shower\n• 3-frame jabs only (vibration < 0.1nm)\n• Scrapped wafers deducted from bonus\n• If laser pulses: continue fighting",
+		],
+		[
+			Vector3(5.20, 2.30, -5.95),
+			"FAB 4090 METRICS\n• Process: 1.8nm Hype-FinFET\n• Die Yield: 88.4% (dropping)\n• EUV Uptime: 99.98%\n• Wafer Cost: $42,000 / piece\n• Today's Scrap: 12 wafers (blame P2)",
+		],
+	]
+	for fb: Array in foundry_boards:
+		var bpos: Vector3 = fb[0]
+		_box(Vector3(3.26, 1.38, 0.03), bpos + Vector3(0.0, 0.0, -0.02), board_trim)
+		_box(Vector3(3.16, 1.28, 0.05), bpos, board_face)
+		var blbl := _label(fb[1], bpos + Vector3(-1.44, 0.0, 0.04), 0.125, Color(0.92, 0.95, 0.92), true)
+		blbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		blbl.autowrap_mode = TextServer.AUTOWRAP_OFF
 	_label("DANGER: 13.5nm EUV BEAM\nAUTHORIZED CHIP ARCHITECTS ONLY", Vector3(0.0, 2.75, -4.17), 0.115, Color(1.0, 0.45, 0.12), true)
 
-	# 9. Coloured warning spotlights (teal/amber) with volumetric fog shafts & EUV chamber glow
-	_foundry_spot(Vector3(-5.0, 4.9, -2.6), Vector3(-4.2, 0.0, -4.6), Color(0.08, 0.88, 0.92), 4.6, 11.5, 36.0, 7.5)
-	_foundry_spot(Vector3(5.0, 4.9, -2.6), Vector3(4.2, 0.0, -4.6), Color(0.08, 0.88, 0.92), 4.6, 11.5, 36.0, 7.5)
+	# 9. Coloured warning spotlights (teal/amber) with volumetric fog shafts, EUV glow & background bay fill
+	_foundry_spot(Vector3(-5.0, 4.9, -2.6), Vector3(-5.0, 0.4, -4.8), Color(0.08, 0.88, 0.92), 4.8, 12.5, 44.0, 7.0)
+	_foundry_spot(Vector3(5.0, 4.9, -2.6), Vector3(5.0, 0.4, -4.8), Color(0.08, 0.88, 0.92), 4.8, 12.5, 44.0, 7.0)
 	_foundry_spot(Vector3(-2.3, 4.4, -2.6), Vector3(-2.0, 0.0, -4.2), Color(1.0, 0.56, 0.08), 3.8, 10.0, 34.0, 7.0)
 	_foundry_spot(Vector3(2.3, 4.4, -2.6), Vector3(2.0, 0.0, -4.2), Color(1.0, 0.56, 0.08), 3.8, 10.0, 34.0, 7.0)
-	_light(Vector3(0.0, 1.75, -4.35), Color(0.76, 0.20, 1.0), 2.8, 6.0)
-	_light(Vector3(0.0, 2.8, 1.5), Color(0.78, 0.86, 0.98), 1.4, 9.0)
+	_light(Vector3(0.0, 1.75, -4.35), Color(0.76, 0.20, 1.0), 3.0, 6.5)
+	_light(Vector3(-5.8, 3.6, -4.0), Color(0.76, 0.90, 1.0), 2.0, 8.5)
+	_light(Vector3(5.8, 3.6, -4.0), Color(0.76, 0.90, 1.0), 2.0, 8.5)
+	_light(Vector3(0.0, 2.8, 1.5), Color(0.80, 0.88, 1.0), 1.6, 10.0)
 
 	# 10. Ambient ventilation audio
 	_ambience("res://assets/audio/ambience/wind.ogg", -24.0)

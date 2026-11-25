@@ -4,7 +4,7 @@ extends Control
 ## load on background threads (GameState.preload_fighters), then the main menu. Loading
 ## them here keeps the first visit to character select from stalling for seconds.
 ## The splash (tools/build_showdown_art.py) carries the AI Showdown logo and the parody
-## disclaimer, which also stays on screen as a label.
+## disclaimer, shown once (from the image).
 
 const MAIN_MENU_SCENE := "res://scenes/main_menu.tscn"
 const SPLASH := "res://assets/ui/splash.png"
@@ -34,10 +34,9 @@ func _ready() -> void:
 	add_child(splash)
 
 	var box := VBoxContainer.new()
-	box.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	box.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	box.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	box.offset_bottom = -64 # near the bottom, above the splash's disclaimer line
+	box.offset_top = 28 # at the top: the fighters' feet and the splash's disclaimer are below
 	box.add_theme_constant_override("separation", 5)
 	box.modulate.a = 0.0
 	add_child(box)
@@ -62,18 +61,6 @@ func _ready() -> void:
 	_bar.add_theme_stylebox_override("background", track)
 	_bar.add_theme_stylebox_override("fill", fill)
 	box.add_child(_bar)
-
-	var disclaimer := Label.new()
-	disclaimer.name = "Disclaimer"
-	disclaimer.text = "Parody. Not affiliated with or endorsed by any real person or company."
-	disclaimer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	disclaimer.add_theme_font_size_override("font_size", 18)
-	disclaimer.add_theme_color_override("font_color", Color(0.9, 0.9, 0.95))
-	disclaimer.add_theme_constant_override("outline_size", 6)
-	disclaimer.add_theme_color_override("font_outline_color", Color.BLACK)
-	disclaimer.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	disclaimer.offset_top = 10
-	add_child(disclaimer)
 
 	GameState.preload_fighters()
 

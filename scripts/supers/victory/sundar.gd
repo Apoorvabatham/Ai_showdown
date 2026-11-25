@@ -37,21 +37,21 @@ func run() -> void:
 	var right := attacker.forward.cross(Vector3.UP).normalized()
 	var side := 1.0 if (fight.camera.global_position - winner).dot(right) >= 0.0 else -1.0
 	var toward_camera := right * side
-	camera.fov = 70.0
-	camera.global_position = winner + toward_camera * 6.3 + Vector3(0, 1.0, 0)
-	_cam_look = winner - toward_camera * 10.0 + Vector3(0, 5.2, 0)
+	camera.fov = 56.0
+	camera.global_position = winner + toward_camera * 6.0 + Vector3(0, 1.2, 0)
+	_cam_look = winner - toward_camera * 6.5 + Vector3(0, 3.6, 0)
 	camera.look_at(_cam_look)
 	track = null
-	board.global_position = winner - toward_camera * 10.0 + Vector3(0, 7.8, 0)
+	board.global_position = winner - toward_camera * 6.5 + Vector3(0, 5.45, 0)
 	board.look_at(board.global_position - toward_camera, Vector3.UP)
 	sound("victory")
 
 	# The sky turns into a results page.
 	board.visible = true
 	var open := create_tween()
-	open.tween_property(board, "scale", Vector3.ONE * 1.2, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	open.tween_property(board, "scale", Vector3.ONE * 0.70, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	var dolly := create_tween()
-	dolly.tween_property(camera, "global_position", winner + toward_camera * 5.4 + Vector3(0, 1.0, 0), 5.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	dolly.tween_property(camera, "global_position", winner + toward_camera * 5.3 + Vector3(0, 1.2, 0), 5.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await wait(0.6)
 	sound("keyboard_typing", -6.0)
 	if query:
@@ -89,35 +89,35 @@ static func results_page() -> Node3D:
 	for i in 6:
 		root.add_child(text("Pickai"[i], 1.3, colors[i], Vector3(-6.8 + i * 0.75, 3.5, 0.0)))
 	# Search bar with the query.
-	root.add_child(SuperStandins.box(Vector3(7.6, 0.95, 0.04), Vector3(2.4, 3.5, 0.0), unlit(Color(0.9, 0.91, 0.94)), "SearchBar"))
-	root.add_child(SuperStandins.box(Vector3(7.4, 0.8, 0.04), Vector3(2.4, 3.5, 0.02), unlit(Color(1, 1, 1))))
-	var query_label := text("how to beat sundar?", 0.55, INK, Vector3(-0.9, 3.5, 0.06))
+	root.add_child(SuperStandins.box(Vector3(7.6, 0.95, 0.04), Vector3(2.55, 3.5, 0.0), unlit(Color(0.9, 0.91, 0.94)), "SearchBar"))
+	root.add_child(SuperStandins.box(Vector3(7.4, 0.8, 0.04), Vector3(2.55, 3.5, 0.02), unlit(Color(1, 1, 1))))
+	var query_label := text("how to beat sundar?", 0.42, INK, Vector3(-0.85, 3.5, 0.06))
 	query_label.name = "Query"
 	query_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	root.add_child(query_label)
-	root.add_child(text("Q", 0.7, Color(0.26, 0.52, 0.96), Vector3(5.7, 3.5, 0.06)))
+	root.add_child(text("Q", 0.65, Color(0.26, 0.52, 0.96), Vector3(5.9, 3.5, 0.06)))
 	root.add_child(text("All    Images    News    Videos    Winners", 0.38, Color(0.4, 0.42, 0.46), Vector3(0, 2.5, 0.0)))
 	root.add_child(SuperStandins.box(Vector3(BOARD_W, 0.04, 0.04), Vector3(0, 2.2, 0.0), unlit(Color(0.85, 0.86, 0.9))))
 	root.add_child(text("About 1 result (0.0001 seconds)", 0.34, Color(0.4, 0.42, 0.46), Vector3(0, 1.7, 0.0)))
 	# Result 1: the winner, highlighted.
 	var first := Node3D.new()
 	first.name = "Result1"
-	first.add_child(SuperStandins.box(Vector3(11.5, 2.2, 0.03), Vector3(0, 0.0, -0.01), unlit(Color(0.88, 0.94, 1.0))))
-	first.add_child(text("www.pickai-search.com  >  undefeated", 0.34, Color(0.15, 0.55, 0.2), Vector3(0, 0.7, 0.0)))
-	first.add_child(text("Sundar Pickai - Flawless Victory!", 0.9, Color(0.1, 0.25, 0.8), Vector3(0, 0.05, 0.0)))
-	first.add_child(text("Did you mean: *Opponent knocked out cold*? (0.0001s)", 0.36, Color(0.25, 0.28, 0.35), Vector3(0, -0.7, 0.0)))
+	first.add_child(SuperStandins.box(Vector3(12.6, 2.1, 0.03), Vector3(0, 0.0, -0.01), unlit(Color(0.88, 0.94, 1.0))))
+	first.add_child(text("www.pickai-search.com  >  undefeated", 0.32, Color(0.15, 0.55, 0.2), Vector3(0, 0.68, 0.0)))
+	first.add_child(text("Sundar Pickai - Flawless Victory!", 0.56, Color(0.1, 0.25, 0.8), Vector3(0, 0.05, 0.0)))
+	first.add_child(text("Did you mean: *Opponent knocked out cold*? (0.0001s)", 0.32, Color(0.25, 0.28, 0.35), Vector3(0, -0.65, 0.0)))
 	first.position = Vector3(0, 0.45, 0.04)
 	root.add_child(first)
 	var second := Node3D.new()
 	second.name = "Result2"
-	second.add_child(text("Sponsored: Emergency ice pack for your face", 0.5, Color(0.1, 0.25, 0.75), Vector3(0, 0.0, 0.0)))
-	second.add_child(text("Ad  -  www.ice-for-bruises.biz", 0.3, Color(0.2, 0.5, 0.25), Vector3(0, 0.45, 0.0)))
+	second.add_child(text("Sponsored: Emergency ice pack for your face", 0.38, Color(0.1, 0.25, 0.75), Vector3(0, 0.0, 0.0)))
+	second.add_child(text("Ad  -  www.ice-for-bruises.biz", 0.28, Color(0.2, 0.5, 0.25), Vector3(0, 0.42, 0.0)))
 	second.position = Vector3(0, -1.5, 0.04)
 	root.add_child(second)
 	var third := Node3D.new()
 	third.name = "Result3"
-	third.add_child(text("Tutorial: How to accept defeat gracefully", 0.5, Color(0.1, 0.25, 0.75), Vector3(0, 0.0, 0.0)))
-	third.add_child(text("www.better-luck-next-round.org", 0.3, Color(0.4, 0.42, 0.46), Vector3(0, 0.45, 0.0)))
+	third.add_child(text("Tutorial: How to accept defeat gracefully", 0.38, Color(0.1, 0.25, 0.75), Vector3(0, 0.0, 0.0)))
+	third.add_child(text("www.better-luck-next-round.org", 0.28, Color(0.4, 0.42, 0.46), Vector3(0, 0.42, 0.0)))
 	third.position = Vector3(0, -2.8, 0.04)
 	root.add_child(third)
 	return root

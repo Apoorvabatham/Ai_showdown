@@ -83,7 +83,7 @@ const PERSONALITIES := {
 			throw = 0.7, string = 0.7, sidestep = 0.8},
 	},
 	&"mira": {
-		name = "Brawler", blurb = "powers up when you give her room, then rushes you down", preferred_range = 1.0,
+		name = "Brawler", blurb = "powers up when you give space, then rushes you down", preferred_range = 1.0,
 		aggression = 0.15, block = 0.0, punish = 0.05, anti_air = 0.1,
 		rising_anti_air = 0.7, pressure = 0.5, far_punish = 0.4,
 		weights = {stance = 2.0, rush = 1.6, string = 1.6, dash = 1.4, jump = 1.0, approach = 1.5,

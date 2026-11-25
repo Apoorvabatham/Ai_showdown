@@ -44,6 +44,8 @@ static func build(look: StringName, color: Color) -> Node3D:
 			return _money_bag(color)
 		&"feed_card":
 			return _feed_card(color)
+		&"like_bomb":
+			return _like_bomb(color)
 	push_warning("ProjectileLooks: unknown look %s" % look)
 	return Node3D.new()
 
@@ -51,6 +53,9 @@ static func build(look: StringName, color: Color) -> Node3D:
 ## Starting rotation: a search bar faces the camera (animate keeps it so); a GPU starts
 ## tumbled at an angle picked from `seed_value` (cosmetic).
 static func orient(look: StringName, direction: Vector3, seed_value: int) -> Basis:
+	if look == &"like_bomb":
+		# Faces +Z toward the fight camera (animate keeps it facing the camera).
+		return Basis.IDENTITY
 	if look == &"paper_dragon":
 		var flat := Vector3(direction.x, 0.0, direction.z)
 		return Basis.looking_at(flat.normalized()) if flat.length_squared() > 0.001 else Basis.IDENTITY
@@ -130,6 +135,16 @@ static func animate(node: Node3D, look: StringName, direction: Vector3, age: flo
 				if away.length_squared() > 0.001:
 					node.global_basis = Basis.looking_at(away.normalized()) * Basis(Vector3.FORWARD, 0.12 * sin(age * 12.0))
 			node.scale = Vector3.ONE * (1.0 + 0.08 * sin(age * 16.0))
+		&"like_bomb":
+			var camera := node.get_viewport().get_camera_3d() if node.is_inside_tree() else null
+			if camera:
+				var away := node.global_position - camera.global_position
+				if away.length_squared() > 0.001:
+					node.global_basis = Basis.looking_at(away.normalized()) * Basis(Vector3.FORWARD, 0.15 * sin(age * 14.0))
+			node.scale = Vector3.ONE * (1.0 + 0.1 * sin(age * 22.0))
+			var badge := node.get_node_or_null("Badge") as Node3D
+			if badge:
+				badge.scale = Vector3.ONE * (1.0 + 0.2 * absf(sin(age * 18.0)))
 
 
 # --- Mini rocket -----------------------------------------------------------------
@@ -641,6 +656,82 @@ static func _feed_card(color: Color) -> Node3D:
 	light.light_color = color
 	light.light_energy = 1.0
 	light.omni_range = 1.6
+	root.add_child(light)
+
+	return root
+
+
+# --- Like bomb (Zuckerbot's power move) -----------------------------------------
+
+## A chunky blue thumbs-up "Like" bomb with a pulsing notification heart badge (made-up, no logo).
+static func _like_bomb(color: Color) -> Node3D:
+	var prop := _load_prop("zuckerbot/like_bomb")
+	if prop:
+		return prop
+	var root := Node3D.new()
+	root.name = "LikeBomb"
+
+	var blue := _metal(color, 0.15)
+	var blue_hi := _metal(color.lightened(0.22), 0.15)
+	var blue_glow := _glow(color.lightened(0.25), 1.8)
+	var cuff := _flat(Color(0.95, 0.97, 1.0))
+	var heart_pink := _glow(Color(1.0, 0.24, 0.48), 2.2)
+
+	# White cuff on the wrist side (-X) with a small blue button.
+	root.add_child(_box(Vector3(0.11, 0.27, 0.15), Vector3(-0.20, -0.06, 0.0), cuff))
+	root.add_child(_cylinder(0.022, 0.022, 0.17, Vector3(-0.20, -0.13, 0.0), blue))
+
+	# Chunky blue palm block.
+	root.add_child(_box(Vector3(0.25, 0.28, 0.14), Vector3(-0.02, -0.05, 0.0), blue))
+
+	# Four stacked curled fingers (+X side).
+	for i in 4:
+		var fy := 0.058 - 0.072 * i
+		var fw := 0.13 - 0.008 * i
+		var mat := blue_hi if i % 2 == 0 else blue
+		root.add_child(_box(Vector3(fw, 0.058, 0.135), Vector3(0.14, fy, 0.0), mat))
+		root.add_child(_sphere(0.032, Vector3(0.14 + fw * 0.48, fy, 0.0), mat))
+
+	# Raised thumb (+Y): tilted knuckle + glowing rounded tip.
+	var thumb := Node3D.new()
+	thumb.name = "Thumb"
+	thumb.position = Vector3(-0.02, 0.16, 0.0)
+	thumb.rotation.z = -0.2
+	thumb.add_child(_box(Vector3(0.11, 0.16, 0.13), Vector3.ZERO, blue_hi))
+	thumb.add_child(_sphere(0.066, Vector3(0.0, 0.09, 0.0), blue_glow))
+	root.add_child(thumb)
+
+	# Pulsing notification heart/like badge on the upper right.
+	var badge := Node3D.new()
+	badge.name = "Badge"
+	badge.position = Vector3(0.20, 0.20, 0.05)
+	badge.add_child(_sphere(0.068, Vector3.ZERO, heart_pink))
+	var badge_lbl := Label3D.new()
+	badge_lbl.text = "♥"
+	badge_lbl.font_size = 36
+	badge_lbl.pixel_size = 0.003
+	badge_lbl.modulate = Color(1.0, 0.96, 0.98)
+	badge_lbl.position = Vector3(0.0, 0.0, 0.072)
+	badge_lbl.shaded = false
+	badge.add_child(badge_lbl)
+	root.add_child(badge)
+
+	# "+1" stamp on the front (+Z) face of the palm.
+	var plus_one := Label3D.new()
+	plus_one.text = "+1"
+	plus_one.font_size = 44
+	plus_one.pixel_size = 0.0036
+	plus_one.modulate = Color(0.97, 0.99, 1.0)
+	plus_one.outline_size = 4
+	plus_one.outline_modulate = color.darkened(0.6)
+	plus_one.position = Vector3(-0.01, -0.05, 0.08)
+	plus_one.shaded = false
+	root.add_child(plus_one)
+
+	var light := OmniLight3D.new()
+	light.light_color = color
+	light.light_energy = 1.4
+	light.omni_range = 2.0
 	root.add_child(light)
 
 	return root

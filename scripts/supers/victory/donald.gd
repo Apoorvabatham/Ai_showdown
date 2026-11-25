@@ -6,8 +6,8 @@ extends VictoryScene
 const STATUE_COUNT := 5
 const STATUE_SCALE := 1.35
 const FLAG_SPOTS := [
-	Vector2(-9.5, 1.5), Vector2(9.5, 1.5), Vector2(-8.5, -3.0), Vector2(8.5, -3.0),
-	Vector2(-5.2, -6.2), Vector2(5.2, -6.2), Vector2(-3.4, 3.6), Vector2(3.4, 3.6),
+	Vector2(-8.4, 1.2), Vector2(8.4, 1.2), Vector2(-7.8, -2.8), Vector2(7.8, -2.8),
+	Vector2(-4.8, -5.8), Vector2(4.8, -5.8), Vector2(-6.0, 2.2), Vector2(6.0, 2.2),
 ]
 
 var winner: ScenePuppet # unused: the real fighters are on the stage
@@ -24,7 +24,7 @@ func _init() -> void:
 
 func build() -> void:
 	_centre = (attacker.global_position + defender.global_position) * 0.5
-	_centre.x = 0.0 if absf(_centre.x) > 6.0 else _centre.x
+	_centre.x = clampf(_centre.x, -2.5, 2.5)
 	_gold = SuperStandins.metal(Color(1.0, 0.76, 0.2), 1.0, 0.22)
 	_gold.emission_enabled = true
 	_gold.emission = Color(0.9, 0.6, 0.1)
@@ -54,9 +54,9 @@ func build() -> void:
 
 
 func run() -> void:
-	camera.fov = 55.0
-	camera.global_position = _centre + Vector3(0.0, 2.7, 9.5)
-	camera.look_at(_centre + Vector3(0.0, 2.0, -3.0))
+	camera.fov = 50.0
+	camera.global_position = _centre + Vector3(0.0, 2.25, 6.9)
+	camera.look_at(_centre + Vector3(0.0, 1.45, -2.0))
 	sound("victory")
 	var rise_end := 0.0
 	# Flags pop up around the edges, first the near ones, then the statues rise.
@@ -76,7 +76,8 @@ func run() -> void:
 	_confetti()
 	_goldify_all() # late model pieces (hair, accessories) get the gold too
 	await wait(rise_end)
-	big_text("SO MUCH WINNING!", _centre + Vector3(0.0, 4.4, -0.5), Color(1.0, 0.94, 0.72), 0.72)
+	var msg := big_text("SO MUCH WINNING!", _centre + Vector3(0.0, 3.35, -1.8), Color(1.0, 0.94, 0.72), 0.68)
+	msg.outline_size = 18
 	_confetti()
 	await wait(1.6)
 	_confetti()
@@ -91,8 +92,8 @@ func _process(delta: float) -> void:
 		if cloth:
 			cloth.rotation.y = sin(_time * 3.0 + i) * 0.18
 	if camera and _time > 0.1 and attacker:
-		camera.global_position.x = _centre.x + sin(_time * 0.25) * 1.6
-		camera.look_at(_centre + Vector3(0.0, 2.0, -3.0))
+		camera.global_position.x = _centre.x + sin(_time * 0.25) * 1.1
+		camera.look_at(_centre + Vector3(0.0, 1.45, -2.0))
 
 
 func _goldify(statue: ScenePuppet) -> void:
