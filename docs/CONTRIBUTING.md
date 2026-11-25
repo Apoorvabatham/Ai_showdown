@@ -98,7 +98,7 @@ so pick a short lowercase id and never rename it later without renaming those fi
 
 ### 3.1 Pick a kit
 
-The `kit` decides moves, frame data, animations, combo trials, CPU personality and showcase.
+The `kit` decides moves, frame data, animations, CPU personality and showcase.
 
 | `kit` | Archetype | Plays like |
 |---|---|---|
@@ -475,10 +475,6 @@ Keys (all optional):
   Give it a `name` and an `input`.
 - `stats`: `{CharacterData field: value}`, e.g. `stats = {max_health = 1020}`. Applied
   after the ROSTER `stats`.
-- `trials`: a list of combo trials that replaces the kit's, e.g.
-  `trials = [{name = "Jab String", steps = ["LP", "LP", "HP"], corner = false, tip = "..."}]`.
-  `steps` is a plain array of inputs. Without `trials`, the kit's trials are kept, minus any
-  that use a removed input.
 
 Order of application (`tools/build_showdown_roster.gd`):
 
@@ -488,9 +484,7 @@ Order of application (`tools/build_showdown_roster.gd`):
 3. `tweak` on the kept moves. Keys are the kit's file names, not the new names. A tweak of
    a removed or unknown move stops the build.
 4. `add`: each clone is built from its source, then `set` is applied.
-5. Trials: the `trials` list if given, otherwise the kit's, with names and tips renamed to
-   the new move names.
-6. Any `.tres` left in `data/moves/<id>/` that is no longer built is deleted.
+5. Any `.tres` left in `data/moves/<id>/` that is no longer built is deleted.
 
 Rebuild one fighter (leave out the id to rebuild all of them):
 
@@ -498,15 +492,12 @@ Rebuild one fighter (leave out the id to rebuild all of them):
 godot --headless --path . -s res://tools/build_showdown_roster.gd -- sundar
 ```
 
-Check its trials and balance:
+Check its balance:
 
 ```bash
-godot --headless --path . -s res://tools/check_trials.gd -- sundar
 godot --headless --path . -s res://tools/balance_sim.gd -- 4 2 sundar
 ```
 
-`check_trials.gd` plays every trial against every dummy and lists any the demo cannot
-finish. It exits with code 1 on failure. Add `stage=dojo` to test trials with a wall.
 `balance_sim.gd` takes matches, difficulty (0-2) and the fighter id, as in section 4.
 
 CPU style and showcase are looked up by fighter id too. `SHOWDOWN_PERSONALITIES` in
