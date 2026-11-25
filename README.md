@@ -19,7 +19,7 @@ A parody 2-player 3D fighting game in which caricatures of AI-industry public pe
   - **Demo** (two CPU fighters).
 - Best of 3 rounds. There is no story mode.
 - The Online menu is hidden (`SHOW_ONLINE = false` in `scripts/ui/main_menu.gd`) because `online/servers.json` still points at the original game's lobby server.
-- Fighting-game systems inherited from the original engine: super meter with cinematic supers, counter hits, combos, juggles, throws, blocking, sidesteps, and a deterministic 60 Hz simulation with a headless regression suite.
+- Fighting-game systems inherited from the original engine: one-button Power specials, a super meter with cinematic supers, counter hits, throws, blocking and sidesteps, plus a deterministic 60 Hz simulation with a headless regression suite. Combos and juggles are there if you want them; no motion inputs are needed to play.
 
 ## Screenshots
 
@@ -67,11 +67,13 @@ The retheme code is `scripts/stages/stage_retheme.gd`; the scenes `scenes/stages
 | Move / jump / crouch | W A S D | Left stick / D-pad |
 | Light / Heavy Punch | U / I | X / Y |
 | Light / Heavy Kick | J / K | A / B |
+| Power special | O | LB |
+| Super | P | RT |
 | Sidestep | L | RB |
 | Pause & move list | Esc | Start |
 
-- **Specials** use motion inputs (for example down, down-forward, forward + P), and a full super meter enables the double motion (down, down-forward, forward twice) + P/K. Each fighter's moves are listed in the pause menu.
-- **Player 2** uses the arrow keys with numpad 4/5 (punches), 1/2 (kicks) and 6 (sidestep), or a second gamepad.
+- **Power specials:** the Power button fires the fighter's signature special; hold a direction (forward, back or down) with Power for the other specials. **Super** fires the super once the meter is full. No motion inputs to learn; the pause menu lists each fighter's moves.
+- **Player 2** uses the arrow keys with numpad 4/5 (punches), 1/2 (kicks), 7/8 (Power/Super) and 6 (sidestep), or a second gamepad. On keyboards without a numpad the fallback keys are `[` `]` (punches), `;` `'` (kicks), `\` (Power), `=` (Super) and `/` (sidestep).
 - **Remapping:** every key and gamepad button can be changed per player in **Options → Controls**.
 
 ## Power-move voice drop-in
