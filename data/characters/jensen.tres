@@ -103,37 +103,6 @@ rival_lines = {
 "algorithm": ["Who do you think trains you?", "Running on my hardware, losing on my hardware."],
 "sundar": ["Your data centres run on my chips.", "Please, order more."]
 }
-combo_trials = Array[Dictionary]([{
-&"corner": false,
-&"name": "Jab String",
-&"steps": PackedStringArray("LP", "LP", "HP"),
-&"tip": "Jabs chain into each other and into the straight."
-}, {
-&"corner": false,
-&"name": "Keynote Kick Rush",
-&"steps": PackedStringArray("6LK", "6HP"),
-&"tip": "Hold forward: the snap kick chains into the advancing straight."
-}, {
-&"corner": false,
-&"name": "Fireball Confirm",
-&"steps": PackedStringArray("LP", "HP", "236P"),
-&"tip": "Cancel the straight into Tensor Blast as it hits."
-}, {
-&"corner": false,
-&"name": "Leather Uppercut",
-&"steps": PackedStringArray("2LP", "2LP", "623P"),
-&"tip": "Low jabs, then cancel into the dragon punch."
-}, {
-&"corner": true,
-&"name": "Corner Splat",
-&"steps": PackedStringArray("HK", "WALL", "6LK", "6HP"),
-&"tip": "A roundhouse near the edge splats them: walk in and follow up."
-}, {
-&"corner": false,
-&"name": "Leather Jacket Tornado",
-&"steps": PackedStringArray("LP", "HP", "236236P"),
-&"tip": "With a full meter, cancel the straight into the super."
-}])
 max_health = 1040
 power_rating = 0.55
 speed_rating = 0.55

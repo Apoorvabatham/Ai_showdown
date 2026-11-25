@@ -69,37 +69,6 @@ win_quotes = PackedStringArray("Thank you for your engagement.", "Are you still 
 rival_lines = {
 "zuckerbot": ["I made you.", "Engagement: up 400 percent."]
 }
-combo_trials = Array[Dictionary]([{
-&"corner": false,
-&"name": "Jab String",
-&"steps": PackedStringArray("LP", "LP", "HP"),
-&"tip": "Jabs chain into each other and into the straight."
-}, {
-&"corner": false,
-&"name": "Step In",
-&"steps": PackedStringArray("6LK", "6HP"),
-&"tip": "Hold forward: the step kick chains into the rushing hook."
-}, {
-&"corner": false,
-&"name": "Data Stream",
-&"steps": PackedStringArray("LP", "HP", "236P"),
-&"tip": "Cancel the straight into Data Stream as it hits."
-}, {
-&"corner": false,
-&"name": "Compute Rush",
-&"steps": PackedStringArray("2LP", "2LK", "236K"),
-&"tip": "Low jabs, then cancel into the armoured Compute Rush."
-}, {
-&"corner": true,
-&"name": "Corner Splat",
-&"steps": PackedStringArray("HK", "WALL", "LK", "HP"),
-&"tip": "A roundhouse near the edge splats them: walk in and follow up."
-}, {
-&"corner": false,
-&"name": "Engagement Loop",
-&"steps": PackedStringArray("LP", "LP", "236236K"),
-&"tip": "With a full meter, confirm from light attacks into Engagement Loop."
-}])
 max_health = 1050
 walk_speed = 2.6
 back_walk_speed = 2.0

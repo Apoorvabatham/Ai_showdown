@@ -6,7 +6,7 @@ extends SceneTree
 ## Run: godot --headless --path . -s res://tools/build_showdown_roster.gd
 ## (append `-- <id> ...` to rebuild only those fighters)
 ##
-## A fighter keeps its kit's moves, frame data, animations and combo trials; this renames
+## A fighter keeps its kit's moves, frame data, animations; this renames
 ## the specials and the super, scales the damage, and sets the look, stats and lines.
 ## Rebuilding keeps the generated outfit (tools/build_outfits.gd) and uses the portrait
 ## (tools/render_portraits.gd) once it has been rendered and imported. Order:
@@ -22,7 +22,7 @@ const MOVES_DIR := "res://data/moves/"
 const PORTRAIT_DIR := "res://assets/ui/portraits/"
 const MALE_BODY := "res://assets/characters/base/Superhero_Male_FullBody.gltf"
 const HAIR_DIR := "res://assets/characters/hair/"
-## Per-fighter moveset overrides (remove / tweak / add moves, stats, trials).
+## Per-fighter moveset overrides (remove / tweak / add moves, stats).
 const MOVESETS: Dictionary = preload("res://tools/showdown_movesets.gd").MOVESETS
 const SKINS := {
 	&"light": "res://assets/characters/base/T_Superhero_Male_Light.png",
@@ -384,7 +384,6 @@ func _build(spec: Dictionary, order: int) -> void:
 	var overrides: Dictionary = MOVESETS.get(spec.id, {})
 	for key: String in overrides.get("stats", {}):
 		data.set(key, overrides.stats[key])
-	var renames := {} # old name -> new name, for the combo trial tips
 	var dir := MOVES_DIR + String(spec.id) + "/"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(dir))
 	var built := {} # move file -> MoveData, in order
@@ -394,7 +393,6 @@ func _build(spec: Dictionary, order: int) -> void:
 			continue
 		var move := kit_move.duplicate() as MoveData
 		if spec.moves.has(file):
-			renames[kit_move.name] = spec.moves[file]
 			move.name = spec.moves[file]
 		move.damage = roundi(kit_move.damage * spec.damage)
 		move.chip_damage = roundi(kit_move.chip_damage * spec.damage)
@@ -432,24 +430,6 @@ func _build(spec: Dictionary, order: int) -> void:
 	var inputs := {}
 	for move in moves:
 		inputs[move.input] = true
-	var trials: Array[Dictionary] = []
-	var own_trials: Variant = overrides.get("trials") # get(): the keys are StringNames
-	if own_trials != null:
-		for trial: Dictionary in own_trials:
-			var copy := trial.duplicate(true)
-			copy[&"steps"] = PackedStringArray(trial.steps)
-			trials.append(copy)
-	for trial in kit.combo_trials if own_trials == null else []:
-		var steps: PackedStringArray = trial.steps
-		if not Array(steps).all(func(s: String) -> bool: return s == "WALL" or inputs.has(s) or inputs.has(s.trim_prefix("6"))):
-			continue # uses a move this fighter no longer has
-		var copy := trial.duplicate(true)
-		for key in copy.keys():
-			if String(key) == "name" or String(key) == "tip":
-				for old: String in renames:
-					copy[key] = String(copy[key]).replace(old, renames[old])
-		trials.append(copy)
-	data.combo_trials = trials
 
 	var err := ResourceSaver.save(data, path)
 	print("%-10s %-16s kit %-7s %d moves  %s" % [spec.id, spec.name, spec.kit, moves.size(), "ok" if err == OK else "ERROR %d" % err])

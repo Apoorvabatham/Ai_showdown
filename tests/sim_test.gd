@@ -744,92 +744,7 @@ func training_tests() -> void:
 	hold(5, 28)
 	check("Training: playback replays the recording", p2.position.x > p2x + 0.3, "dx %.2f" % (p2.position.x - p2x))
 	dc.stance = TrainingDummyController.Stance.STAND
-	await trial_tests(tm)
 	gs.mode = gs.Mode.VS_CPU
-
-
-## Combo trials: the data, the checker, playing one, the corner setup and the demo.
-func trial_tests(tm: TrainingMode) -> void:
-	var gs = root.get_node("GameState")
-	var real_path := TrainingMode.trials_path
-	TrainingMode.trials_path = "user://trials_test.cfg"
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(TrainingMode.trials_path))
-
-	for c: CharacterData in gs.roster:
-		var bad := []
-		var corner := false
-		for t: Dictionary in c.combo_trials:
-			for step: String in t.steps:
-				var found := step == "WALL" or c.moves.any(func(mv: MoveData) -> bool: return mv.input == step)
-				if not found:
-					bad.append("%s: %s" % [t.name, step])
-			corner = corner or (t.corner and "WALL" in t.steps)
-		check("Trials: %s has 5+, every step one of its moves, a corner trial" % c.id, c.combo_trials.size() >= 5 and bad.is_empty() and corner, str(bad))
-
-	# The checker: in order, one combo; multi-hits count once; "~" finishers and walls.
-	var mv := func(input: String) -> MoveData: return p1._move_for_input(input)
-	var t := ComboTrial.new({name = "t", steps = PackedStringArray(["LP", "HP", "WALL", "236P"])})
-	t.move_started(mv.call("LP")); t.hit(mv.call("LP"))
-	t.move_started(mv.call("HP")); t.hit(mv.call("HP")); t.hit(mv.call("HP"))
-	check("Trial checker: steps in order, a move's second hit ignored", t.progress == 2, "progress %d" % t.progress)
-	t.wall()
-	t.move_started(mv.call("236P")); t.hit(mv.call("~dragon_finish")); t.hit(mv.call("236P"))
-	check("Trial checker: wall step, '~' finisher ignored, completes", t.done and t.progress == 4)
-	t = ComboTrial.new({name = "t", steps = PackedStringArray(["LP", "HP"])})
-	t.move_started(mv.call("LP")); t.hit(mv.call("LP"))
-	t.move_started(mv.call("2LK")); t.hit(mv.call("2LK"))
-	check("Trial checker: a wrong move starts over", t.progress == 0 and not t.done)
-	t.move_started(mv.call("LP")); t.hit(mv.call("LP"))
-	t.combo_ended()
-	check("Trial checker: a dropped combo starts over", t.progress == 0)
-	check("Trial demo: motion input sequence", TrialDemoController.sequence("236P") == [InputBuffer.pack(2, 0), InputBuffer.pack(3, 0),
-		InputBuffer.pack(6, InputBuffer.LP), InputBuffer.pack(6, 0)])
-
-	# Playing the first trial by hand: SUCCESS, saved, then on to the next trial.
-	tm.start_trial(0)
-	check("Trial: starts with the panel, a standing dummy, no meter for a no-super trial",
-			tm.trial != null and tm._trial_panel.visible and tm.dummy_controller.stance == TrainingDummyController.Stance.STAND
-			and not tm.infinite_meter and p1.meter == 0 and tm.trial_text().contains("JAB STRING"))
-	approach(0.9)
-	press(InputBuffer.LP) # each press once the previous hit lands (and its hitstop is over)
-	wait_until(func() -> bool: return p2.combo_hits == 1 and p1.hitstop == 0, 30)
-	press(InputBuffer.LP)
-	wait_until(func() -> bool: return p2.combo_hits == 2 and p1.hitstop == 0, 30)
-	press(InputBuffer.HP); step(20)
-	check("Trial: Jab String done by hand", tm.completed_trials.has(0) and m.hud.center_label.text == "SUCCESS!", m.hud.center_label.text)
-	check("Trial: completion saved", TrainingMode.load_completed(p1.data.id).has(0))
-	step(TrainingMode.SUCCESS_TICKS + 2)
-	check("Trial: moves on to the next trial", tm.trial_index == 1 and tm.trial.progress == 0, "trial %d" % tm.trial_index)
-
-	# A super trial gets the meter; a corner trial starts at the edge.
-	var super_index := -1
-	var corner_index := -1
-	for i in tm.trials.size():
-		if "236236P" in tm.trials[i].steps: super_index = i
-		if tm.trials[i].corner: corner_index = i
-	tm.start_trial(super_index)
-	step(1)
-	check("Trial: full meter for the super trial", tm.infinite_meter and p1.meter == Fighter.MAX_METER)
-	tm.start_trial(corner_index)
-	check("Trial: corner trial puts the dummy at the edge", absf(p2.position.x) > p2.bounds_half_extent - 0.2 and dist() < 1.3,
-			"dummy x %.2f, gap %.2f" % [p2.position.x, dist()])
-
-	# Every Kenji trial's demo completes it (tools/check_trials.gd runs the whole roster).
-	for i in tm.trials.size():
-		tm.start_trial(i)
-		tm.start_demo()
-		var done := [false]
-		tm.trial.completed.connect(func() -> void: done[0] = true)
-		var ticks := 0
-		while tm.demo != null and ticks < 1200:
-			step(); ticks += 1
-		check("Trial demo completes \"%s\"" % tm.trials[i].name, done[0] and tm.demo == null and p1.controller == ctl, "%d ticks" % ticks)
-	check("Trial: a demo doesn't count as completed", not tm.completed_trials.has(2))
-	tm.start_trial(-1)
-	check("Trial: back to free training", tm.trial == null and not tm._trial_panel.visible)
-
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(TrainingMode.trials_path))
-	TrainingMode.trials_path = real_path
 
 
 func specials_tests() -> void:
@@ -5070,7 +4985,7 @@ func showdown_tests() -> void:
 	var sundar_super: MoveData = sundar.moves.filter(func(mv: MoveData) -> bool: return mv.super_move)[0]
 	check("Showdown: Sundar is a trapper, not a copy of Jensen", links.projectile_count == 3 and "214P" in sundar_inputs
 		and "214K" in sundar_inputs and sundar_super.projectile_origin == &"sky" and sundar_super.hit_level == MoveData.HitLevel.OVERHEAD
-		and not "~dragon_finish" in sundar_inputs and sundar.combo_trials.size() == 6 and sundar.walk_speed < jensen.walk_speed
+		and not "~dragon_finish" in sundar_inputs and sundar.walk_speed < jensen.walk_speed
 		and sundar.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Trapper" and FighterShowcase.ROUTINES.has(&"sundar"),
 		str(sundar_inputs))
 	var power_moves := {}
@@ -5131,7 +5046,7 @@ func showdown_tests() -> void:
 		and donald_moves.get("63214P").command_grab and donald_moves.get("63214P").name == "You're Fired"
 		and donald_super.name == "Shower of Tariffs" and donald_super.super_fx == &"tariff_stamp"
 		and donald.max_health > zuck.max_health and donald.weight > zuck.weight and donald.walk_speed < zuck.walk_speed
-		and donald.combo_trials.size() == 6 and donald.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Tycoon"
+		and donald.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Tycoon"
 		and FighterShowcase.ROUTINES.has(&"donald") and zuck.moves.all(func(mv: MoveData) -> bool: return not mv.barrier and mv.armor_hits == 0))
 
 	var xi: CharacterData = gs.find_character(&"xi")
@@ -5158,7 +5073,6 @@ func showdown_tests() -> void:
 		and agi_moves.has("236K") and (agi_moves["236K"] as MoveData).armor_hits > 0
 		and agi_moves.has("214K") and (agi_moves["214K"] as MoveData).teleport > 0.0
 		and agi_super.name == "Engagement Loop" and not agi_moves.has("623K")
-		and agi.combo_trials.size() == 6
 		and agi.lookup(AIController.SHOWDOWN_PERSONALITIES).name == "Optimiser"
 		and FighterShowcase.ROUTINES.has(&"algorithm"))
 

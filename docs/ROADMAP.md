@@ -100,7 +100,7 @@ New `MoveData` fields (all simulation, all in saved state):
 Per-fighter moves: today `tools/build_showdown_roster.gd` copies the kit and only renames.
 New: **`tools/showdown_movesets.gd`** holds per-fighter overrides (`replace`, `add`, `remove`,
 field tweaks, stats) so a fighter can diverge from its kit. CPU personality
-(`AIController.PERSONALITIES`), showcase routines and combo trials get per-fighter entries
+(`AIController.PERSONALITIES`), showcase routines get per-fighter entries
 that fall back to the kit.
 
 ## 2. Power moves, super scenes and victory scenes (owner-approved structure)

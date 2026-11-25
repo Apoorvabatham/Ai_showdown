@@ -349,7 +349,6 @@ func _build(spec: Dictionary, order: int) -> void:
 	data.kit = &""
 	data.voice_fallback = &""
 	data.moves = [] as Array[MoveData]
-	data.combo_trials = []
 
 	# Look: the shared base body (male or female) and the generated outfit
 	# (tools/build_outfits.gd, specs keyed by the NPC id).

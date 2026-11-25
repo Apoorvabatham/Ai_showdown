@@ -15,9 +15,6 @@ extends RefCounted
 ##           applied. `damage` / `chip_damage` are scaled by the ROSTER `damage` unless `set`
 ##           gives them. Give it a `name` and an `input`.
 ##   stats:  {CharacterData field: value}: applied after the ROSTER `stats`.
-##   trials: Array of combo trials replacing the kit's (as in data/kits/*.tres; `steps` a
-##           plain Array of inputs).
-##           Without it, the kit's trials are kept minus any that use a removed input.
 ##
 ## A fighter with an entry here should also get its own CPU personality
 ## (AIController.PERSONALITIES) and showcase routine (FighterShowcase.ROUTINES), keyed by
@@ -176,20 +173,6 @@ const MOVESETS := {
 				invuln_frames = 8, camera_intensity = 0.6, super_fx = &"search_result",
 				cinematic = &"not_found", cinematic_ticks = 320}},
 		},
-		trials = [
-			{name = "Jab String", steps = ["LP", "LP", "HP"], corner = false,
-				tip = "Jabs chain into each other and into the straight."},
-			{name = "Quarterly Push", steps = ["6LK", "6HP"], corner = false,
-				tip = "Hold forward: the Quarterly Kick chains into the Pixel Push."},
-			{name = "Ten Blue Links", steps = ["LP", "HP", "236P"], corner = false,
-				tip = "Cancel the straight into Ten Blue Links as it hits."},
-			{name = "I'm Feeling Lucky", steps = ["2LP", "2LP", "623P"], corner = false,
-				tip = "Low jabs, then cancel into the rising uppercut."},
-			{name = "Corner Splat", steps = ["HK", "WALL", "6LK", "6HP"], corner = true,
-				tip = "A roundhouse near the edge splats them: walk in and follow up."},
-			{name = "404 Not Found", steps = ["LP", "HP", "236236P"], corner = false,
-				tip = "With a full meter, cancel the straight into the super: block it standing!"},
-		],
 	},
 	# Donald Tarrif: armoured powerhouse (was a copy of Valka's grappler kit).
 	&"donald": {
@@ -220,20 +203,6 @@ const MOVESETS := {
 				projectile_color = Color(0.85, 0.7, 0.4), damage = 0, chip_damage = 0,
 				startup = 16, recovery = 28}},
 		},
-		trials = [
-			{name = "Jab String", steps = ["LP", "LP", "HP"], corner = false,
-				tip = "Jabs chain into each other and into the straight."},
-			{name = "Low Order", steps = ["2LP", "2LP", "623P"], corner = false,
-				tip = "Low jabs, then cancel into the Executive Order."},
-			{name = "Knee and Order", steps = ["6LK", "623P"], corner = false,
-				tip = "Cancel the knee lift into the Executive Order while they're in the air."},
-			{name = "Trade War", steps = ["LP", "HP", "236P"], corner = false,
-				tip = "Cancel the straight into two shipping containers."},
-			{name = "Corner Splat", steps = ["HK", "WALL", "LK", "HP"], corner = true,
-				tip = "A roundhouse near the edge splats them: walk in and follow up."},
-			{name = "Tackle to the Wall", steps = ["6HP", "WALL", "LP", "623P"], corner = true,
-				tip = "The armoured tackle splats them on the edge: jab, then cancel into the Executive Order."},
-		],
 	},
 	# Ram Altman: Hype Brawler, funding round money rain and exponential scaling law.
 	&"ram": {
@@ -291,19 +260,5 @@ const MOVESETS := {
 				projectile_speed = 0.0, hitbox_radius = 0.0, damage = 0, chip_damage = 0, teleport = 1.0,
 				startup = 14, active = 1, recovery = 22, invuln_frames = 15, camera_intensity = 0.0}},
 		},
-		trials = [
-			{name = "Jab String", steps = ["LP", "LP", "HP"], corner = false,
-				tip = "Jabs chain into each other and into the straight."},
-			{name = "Step In", steps = ["6LK", "6HP"], corner = false,
-				tip = "Hold forward: the step kick chains into the rushing hook."},
-			{name = "Data Stream", steps = ["LP", "HP", "236P"], corner = false,
-				tip = "Cancel the straight into Data Stream as it hits."},
-			{name = "Compute Rush", steps = ["2LP", "2LK", "236K"], corner = false,
-				tip = "Low jabs, then cancel into the armoured Compute Rush."},
-			{name = "Corner Splat", steps = ["HK", "WALL", "LK", "HP"], corner = true,
-				tip = "A roundhouse near the edge splats them: walk in and follow up."},
-			{name = "Engagement Loop", steps = ["LP", "LP", "236236K"], corner = false,
-				tip = "With a full meter, confirm from light attacks into Engagement Loop."},
-		],
 	},
 }

@@ -117,32 +117,6 @@ win_quotes = PackedStringArray("Machines of loving grace. And one loving uppercu
 rival_lines = {
 "ram": ["We left for a reason.", "Safety first. Then the knockout."]
 }
-combo_trials = Array[Dictionary]([{
-&"corner": false,
-&"name": "Red-Team Chain",
-&"steps": PackedStringArray("6LP", "HP"),
-&"tip": "Hold forward: the chain punch flows into the straight."
-}, {
-&"corner": false,
-&"name": "Double-Check Palm",
-&"steps": PackedStringArray("6LP", "6HP"),
-&"tip": "Hold forward: the chain punch flows into the double palm."
-}, {
-&"corner": false,
-&"name": "Low Palm",
-&"steps": PackedStringArray("2LP", "2LK", "236P"),
-&"tip": "Cancel the low kick into Interpretability Palm at once: it is slow to come out."
-}, {
-&"corner": true,
-&"name": "Palm to the Wall",
-&"steps": PackedStringArray("LP", "HP", "236P", "WALL", "6LP", "HP"),
-&"tip": "Interpretability Palm near the edge splats them: walk in and follow up."
-}, {
-&"corner": false,
-&"name": "Constitutional Shield",
-&"steps": PackedStringArray("6LP", "HP", "236236P"),
-&"tip": "With a full meter, cancel the straight into the super."
-}])
 back_walk_speed = 1.7
 dash_speed = 6.2
 weight = 0.95

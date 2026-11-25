@@ -108,37 +108,6 @@ win_quotes = PackedStringArray("Nobody has ever seen a win like that. Nobody.", 
 rival_lines = {
 "xi": ["Your punches are coming in way too cheap.", "Great deal. Best deal ever."]
 }
-combo_trials = Array[Dictionary]([{
-&"corner": false,
-&"name": "Jab String",
-&"steps": PackedStringArray("LP", "LP", "HP"),
-&"tip": "Jabs chain into each other and into the straight."
-}, {
-&"corner": false,
-&"name": "Low Order",
-&"steps": PackedStringArray("2LP", "2LP", "623P"),
-&"tip": "Low jabs, then cancel into the Executive Order."
-}, {
-&"corner": false,
-&"name": "Knee and Order",
-&"steps": PackedStringArray("6LK", "623P"),
-&"tip": "Cancel the knee lift into the Executive Order while they're in the air."
-}, {
-&"corner": false,
-&"name": "Trade War",
-&"steps": PackedStringArray("LP", "HP", "236P"),
-&"tip": "Cancel the straight into two shipping containers."
-}, {
-&"corner": true,
-&"name": "Corner Splat",
-&"steps": PackedStringArray("HK", "WALL", "LK", "HP"),
-&"tip": "A roundhouse near the edge splats them: walk in and follow up."
-}, {
-&"corner": true,
-&"name": "Tackle to the Wall",
-&"steps": PackedStringArray("6HP", "WALL", "LP", "623P"),
-&"tip": "The armoured tackle splats them on the edge: jab, then cancel into the Executive Order."
-}])
 max_health = 1100
 walk_speed = 1.5
 back_walk_speed = 1.1

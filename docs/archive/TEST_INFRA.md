@@ -199,7 +199,7 @@ The test suite organizes all 582 assertions into a 4-tier verification hierarchy
 | **Audio Architecture** | `scripts/autoload/audio.gd` | `polish_tests`, `_crowd_tests` | 1352–1450 | 14 | Tier 1 | 4-bus architecture, -1.0 dB Master limiter, dynamic crowd excitement state machine. |
 | **Parody Stages** | `scripts/stages/stage_retheme.gd`| `stage_tests`, `showdown_tests` | 1211–1351, 4837–4856 | 19 | Tier 1 & 3 | Retheme procedural prop generation, stage boundaries, lighting setup, thumbnail paths. |
 | **Engine Stages** | `scenes/stages/` | `train_tests` through `temple_tests` | 1451–2165 | 47 | Tier 1 & 3 | Parallax train streaming, night market neon flickering, Kowloon courtyard time-of-day. |
-| **Training & Combo Trials**| `scenes/training/` | `training_tests`, `trial_tests` | 691–832 | 25 | Tier 1 | Input history display, frame data advantage readout, combo trial evaluation, demo playback. |
+| **Training**| `scenes/training/` | `training_tests` | 691–747 | 25 | Tier 1 | Input history display, frame data advantage readout, dummy recording and playback. |
 | **AI Decision Making** | `scripts/ai/` | `ai_tests`, `personality_tests` | 393–434, 1654–1706 | 11 | Tier 1 & 3 | Reaction delays, anti-air responses, archetype spacing profiles, deterministic seeds. |
 | **Rollback Netplay Engine** | `scripts/net/` | `rollback_tests`, `net_tests` | 3388–3822 | 56 | Tier 2 & 3 | Full state serialization, frame resimulation, desync detection, packet jitter handling. |
 | **Netplay Security & Crypto**| `scripts/net/` | `security_tests`, `crypto_tests` | 3874–4249 | 36 | Tier 2 | Challenge rate limiting, cookie forgery rejection, MITM protection, AES packet encryption. |
