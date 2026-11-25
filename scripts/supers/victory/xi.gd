@@ -32,13 +32,16 @@ func build() -> void:
 
 	_gold_trim = SuperStandins.metal(Color(1.0, 0.82, 0.2), 0.9, 0.25)
 
-	# Arrange lanterns closer around the arena at varied heights so they fill the frame cleanly.
+	# Hang the lanterns to either side of the banner and behind its plane, so they frame
+	# the scene without covering either line of the callout.
 	for i in LANTERN_COUNT:
 		var angle := float(i) / float(LANTERN_COUNT) * TAU + randf_range(-0.15, 0.15)
 		var dist := randf_range(2.2, 4.8)
+		var side := 1.0 if cos(angle) >= 0.0 else -1.0
+		var x := side * maxf(absf(cos(angle) * dist), 3.2)
 		var lantern := _make_lantern()
 		add_child(lantern)
-		var spawn_pos := _centre + Vector3(cos(angle) * dist, randf_range(0.15, 0.9), sin(angle) * dist * 0.45 - 1.2)
+		var spawn_pos := _centre + Vector3(x, randf_range(0.15, 0.9), -3.7 + sin(angle) * 0.6)
 		lantern.global_position = spawn_pos
 		lanterns.append(lantern)
 		_lantern_speeds.append(randf_range(1.4, 2.6))
