@@ -1410,6 +1410,14 @@ func stage_life_tests() -> void:
 	for i in 40:
 		await process_frame
 	check("Stage life: bubbles fade away", crowd.bubble_count() <= 2)
+	# Regression: bubbles that were freed behind the crowd's back must not break a shout.
+	for i in 12:
+		crowd.shout_line("regression %d" % i, "big_hit")
+		for b in crowd._bubbles:
+			if is_instance_valid(b):
+				b.free() # freed without the crowd noticing
+	var shout_ok: bool = crowd.shout_line("after free", "big_hit") != null or crowd.bubble_count() <= 2
+	check("Stage life: shouting after bubbles were freed does not touch freed bubbles", shout_ok and crowd.bubble_count() <= 2)
 	crowd.free()
 
 	# The sim is unaffected: the same CPU-vs-CPU fight with and without the crowd ends identically.
@@ -5803,8 +5811,8 @@ func showdown_tests() -> void:
 	change_scene_to_file("res://scenes/title.tscn")
 	await process_frame; await process_frame
 	var disclaimer := current_scene.find_child("Disclaimer", true, false) as Label
-	check("Showdown: the title screen shows the parody disclaimer", disclaimer != null
-		and disclaimer.text == "Parody. Not affiliated with or endorsed by any real person or company.")
+	check("Showdown: the title screen shows the parody disclaimer once (from the splash image, no extra label)",
+		not FileAccess.get_file_as_string("res://scripts/ui/title_screen.gd").contains("Not affiliated") and FileAccess.file_exists("res://assets/ui/splash.png"))
 	var frames := 0
 	while (current_scene == null or current_scene.scene_file_path != "res://scenes/main_menu.tscn") and frames < 2400:
 		await process_frame

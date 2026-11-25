@@ -16,7 +16,7 @@ var _back: MeshInstance3D
 var _mat: StandardMaterial3D
 var _fading := false
 var _half_width := 0.0
-const SCREEN_MARGIN := 12.0 # px kept between a bubble and the screen edge
+const SCREEN_MARGIN := 28.0 # px kept between a bubble and the screen edge
 
 
 func setup(key_: String, line_: String) -> void:
@@ -79,18 +79,31 @@ func _keep_on_screen() -> void:
 	if camera.is_position_behind(anchor):
 		return
 	var right := camera.global_basis.x
-	var left_px := camera.unproject_position(anchor - right * _half_width * scale.x).x
-	var right_px := camera.unproject_position(anchor + right * _half_width * scale.x).x
+	var left_pt := camera.unproject_position(anchor - right * _half_width * scale.x)
+	var right_pt := camera.unproject_position(anchor + right * _half_width * scale.x)
+	var left_px := left_pt.x
+	var right_px := right_pt.x
 	var width_px := right_px - left_px
 	if width_px <= 1.0:
 		return
-	var screen_w := get_viewport().get_visible_rect().size.x
+	var screen := get_viewport().get_visible_rect().size
+	var screen_w := screen.x
 	var shift_px := 0.0
 	if left_px < SCREEN_MARGIN:
 		shift_px = SCREEN_MARGIN - left_px
 	elif right_px > screen_w - SCREEN_MARGIN:
 		shift_px = (screen_w - SCREEN_MARGIN) - right_px
 	var world_shift := right * (shift_px / width_px * _half_width * 2.0 * scale.x)
+	# Vertical: keep the bubble below the top edge and above the bottom one.
+	var up := camera.global_basis.y
+	var y_px := left_pt.y
+	var half_h_px := width_px * 0.15 + 12.0
+	var shift_y := 0.0
+	if y_px - half_h_px < SCREEN_MARGIN:
+		shift_y = SCREEN_MARGIN - (y_px - half_h_px)
+	elif y_px + half_h_px > screen.y - SCREEN_MARGIN:
+		shift_y = (screen.y - SCREEN_MARGIN) - (y_px + half_h_px)
+	world_shift -= up * (shift_y / width_px * _half_width * 2.0 * scale.x)
 	var local_shift := global_basis.inverse() * world_shift
 	_label.position = local_shift
 	_back.position = local_shift
