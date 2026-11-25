@@ -372,171 +372,476 @@ func _build_mensa() -> void:
 
 func _build_senate() -> void:
 	var stage := get_parent()
+	_senate_strip_ring(stage)
+
+	var dark_wood := _pbr_texture_mat(
+		"res://assets/stage_props/senate/textures/lacquered_cherry_wood_diff_1k.jpg",
+		"res://assets/stage_props/senate/textures/lacquered_cherry_wood_nor_1k.jpg",
+		"res://assets/stage_props/senate/textures/lacquered_cherry_wood_rough_1k.jpg",
+		Vector3(3.0, 2.0, 1.0), 0.46)
+	dark_wood.albedo_color = Color(0.42, 0.22, 0.13)
+
+	var panel_wood := _pbr_texture_mat(
+		"res://assets/stage_props/senate/textures/lacquered_cherry_wood_diff_1k.jpg",
+		"res://assets/stage_props/senate/textures/lacquered_cherry_wood_nor_1k.jpg",
+		"res://assets/stage_props/senate/textures/lacquered_cherry_wood_rough_1k.jpg",
+		Vector3(2.0, 2.0, 1.0), 0.48)
+	panel_wood.albedo_color = Color(0.54, 0.28, 0.16)
+
+	var trim_wood := _mat(Color(0.18, 0.09, 0.05), 0.44)
+	var brass := _mat(Color(0.84, 0.66, 0.27), 0.26, 0.85)
+	var oxblood := _mat(Color(0.24, 0.06, 0.06), 0.46)
+
+	var probe := ReflectionProbe.new()
+	probe.name = "SenateReflectionProbe"
+	probe.size = Vector3(26.0, 8.0, 22.0)
+	probe.origin_offset = Vector3(0.0, 2.5, -3.5)
+	probe.update_mode = ReflectionProbe.UPDATE_ONCE
+	probe.intensity = 0.65
+	probe.max_distance = 30.0
+	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
+	probe.ambient_color = Color(0.24, 0.16, 0.11)
+	add_child(probe)
+
+	_senate_build_floor_and_railing(stage, dark_wood, trim_wood, brass)
+	_senate_build_chamber(dark_wood, panel_wood, trim_wood, brass)
+	_senate_build_banner(trim_wood, brass)
+	_senate_build_dais(dark_wood, panel_wood, trim_wood, brass, oxblood)
+	_senate_build_flags(brass)
+	_senate_build_gallery(dark_wood, trim_wood, brass)
+
+	# Warm atmospheric wash on the banner, witness area, and flanking gallery (non-shadowing for 60 fps)
+	_light(Vector3(0.0, 4.0, -7.0), Color(1.0, 0.88, 0.68), 1.9, 9.5)
+	_light(Vector3(0.0, 2.2, -5.6), Color(1.0, 0.84, 0.60), 1.6, 8.5)
+	_light(Vector3(-7.0, 3.4, -6.4), Color(1.0, 0.84, 0.60), 1.8, 9.5)
+	_light(Vector3(7.0, 3.4, -6.4), Color(1.0, 0.84, 0.60), 1.8, 9.5)
+	_ambience("res://assets/audio/ambience/arena_crowd.ogg", -26.0)
+
+
+func _senate_strip_ring(stage: Node) -> void:
+	for node_name in ["Truss", "Crowd", "Dust", "CameraFlashes", "CanvasShadows", "ArenaShadows"]:
+		_remove(stage, node_name)
+	var arena := stage.get_node_or_null("Arena")
+	if arena:
+		for child in arena.get_children():
+			if child.name == "Floor":
+				var floor_mesh := child as MeshInstance3D
+				if floor_mesh:
+					floor_mesh.material_override = _mat(Color(0.14, 0.055, 0.055), 0.92)
+			else:
+				child.queue_free()
 	var ring := stage.get_node_or_null("BoxingRing")
 	if ring:
 		for child in ring.get_children():
 			if child.name.begins_with("Rope_") or child.name.begins_with("Corner_") or child.name.begins_with("Step_") \
 					or child.name in ["LogoDisc", "LogoText"]:
 				child.queue_free()
+
+
+func _senate_build_floor_and_railing(stage: Node, dark_wood: Material, trim_wood: Material, brass: Material) -> void:
+	var ring := stage.get_node_or_null("BoxingRing")
+	if ring:
 		var canvas := ring.get_node_or_null("Canvas") as MeshInstance3D
 		if canvas:
-			canvas.material_override = _mat(Color(0.1, 0.13, 0.32), 0.9)
+			var carpet := _pbr_texture_mat(
+				"res://assets/stages/ring/textures/terlenka_diff_1k.jpg",
+				"res://assets/stages/ring/textures/terlenka_nor_gl_1k.jpg",
+				"res://assets/stages/ring/textures/terlenka_rough_1k.jpg",
+				Vector3(8.0, 8.0, 1.0), 0.90)
+			carpet.albedo_color = Color(0.10, 0.14, 0.30)
+			canvas.material_override = carpet
 		var apron := ring.get_node_or_null("Apron") as MeshInstance3D
 		if apron:
-			apron.material_override = _mat(Color(0.32, 0.18, 0.09), 0.5)
+			apron.material_override = dark_wood
 		var banners := ["HEARING ON AI OVERSIGHT", "PLEASE REMAIN SEATED", "NO PHOTOGRAPHY (PLEASE)", "TESTIMONY IN PROGRESS"]
 		for i in 4:
 			var banner := ring.get_node_or_null("ApronBanner%d" % i) as Label3D
 			if banner:
 				banner.text = banners[i]
+				banner.modulate = Color(0.90, 0.75, 0.36)
 
-	# The public gallery in hearing-room clothes (dark suits, a few white shirts) instead of
-	# the arena's bright jerseys.
-	var crowd := stage.get_node_or_null("Crowd") as Crowd
-	if crowd:
-		crowd.palette = PackedColorArray([Color(0.06, 0.07, 0.1), Color(0.1, 0.1, 0.12), Color(0.14, 0.12, 0.1),
-			Color(0.05, 0.08, 0.16), Color(0.55, 0.55, 0.58), Color(0.2, 0.06, 0.07)])
-		if crowd.multimesh:
-			crowd._ready() # already built with the arena colors: rebuild
+	# Woven gold and crimson carpet border trim around the fight floor
+	var border_gold := _mat(Color(0.58, 0.45, 0.18), 0.85)
+	var border_crimson := _mat(Color(0.32, 0.07, 0.08), 0.88)
+	for sz in [-4.12, 4.12]:
+		_box(Vector3(8.32, 0.008, 0.08), Vector3(0, 0.004, sz), border_gold)
+	for sx in [-4.12, 4.12]:
+		_box(Vector3(0.08, 0.008, 8.32), Vector3(sx, 0.004, 0), border_gold)
+	for sz in [-3.98, 3.98]:
+		_box(Vector3(8.00, 0.008, 0.04), Vector3(0, 0.004, sz), border_crimson)
+	for sx in [-3.98, 3.98]:
+		_box(Vector3(0.04, 0.008, 8.00), Vector3(sx, 0.004, 0), border_crimson)
 
-	# Environment atmosphere pass: stately hearing room fog
-	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
-	if we and we.environment:
-		we.environment = we.environment.duplicate()
-		we.environment.tonemap_mode = Environment.TONE_MAPPER_ACES
-		we.environment.tonemap_exposure = 0.95
-		we.environment.glow_enabled = true
-		we.environment.glow_bloom = 0.18
-		we.environment.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
-		we.environment.adjustment_enabled = true
-		we.environment.adjustment_contrast = 1.20
-		we.environment.adjustment_saturation = 1.10
-		we.environment.volumetric_fog_enabled = true
-		we.environment.volumetric_fog_albedo = Color(0.85, 0.78, 0.65)
-		we.environment.volumetric_fog_density = 0.0035
-
-	# Reflection probe for polished mahogany and brass specular reflections
-	var probe := ReflectionProbe.new()
-	probe.name = "SenateReflectionProbe"
-	probe.size = Vector3(22.0, 7.0, 18.0)
-	probe.origin_offset = Vector3(0.0, 2.5, -4.0)
-	probe.update_mode = ReflectionProbe.UPDATE_ONCE
-	probe.intensity = 0.75
-	probe.max_distance = 30.0
-	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
-	probe.ambient_color = Color(0.2, 0.16, 0.12)
-	add_child(probe)
-
-	# The committee's emblem woven into the carpet (made up: not any real seal).
-	_cylinder(1.25, 0.012, Vector3(0, 0.006, 0), _mat(Color(0.75, 0.6, 0.25), 0.6))
-	_cylinder(1.12, 0.014, Vector3(0, 0.007, 0), _mat(Color(0.1, 0.13, 0.32), 0.9))
-	var emblem := _label("COMMITTEE\nON AI", Vector3(0, 0.02, 0), 0.26, Color(0.85, 0.7, 0.3))
+	# Woven antique-gold committee medallion inlaid in the carpet
+	_cylinder(1.24, 0.008, Vector3(0, 0.004, 0), border_gold)
+	_cylinder(1.14, 0.010, Vector3(0, 0.005, 0), _mat(Color(0.08, 0.11, 0.25), 0.90))
+	var emblem := _label("COMMITTEE\nON AI", Vector3(0, 0.015, 0), 0.24, Color(0.88, 0.75, 0.40))
 	emblem.rotation = Vector3(-PI / 2, 0, 0)
-	# Wooden railing round the floor where the ropes were (sides hide from the camera,
-	# like the ropes did).
-	var wood := _pbr_texture_mat(
+
+	# Mahogany railing round the floor (camera-side rail hides automatically)
+	var rail_wood := _pbr_texture_mat(
 		"res://assets/stage_props/senate/textures/lacquered_cherry_wood_diff_1k.jpg",
 		"res://assets/stage_props/senate/textures/lacquered_cherry_wood_nor_1k.jpg",
 		"res://assets/stage_props/senate/textures/lacquered_cherry_wood_rough_1k.jpg",
-		Vector3(4, 2, 1), 0.35)
-	var sides := [[Vector3(0, 0, -4.45), Vector3(9.0, 0.08, 0.1), 0], [Vector3(0, 0, 4.45), Vector3(9.0, 0.08, 0.1), 1],
-		[Vector3(-4.45, 0, 0), Vector3(0.1, 0.08, 9.0), 2], [Vector3(4.45, 0, 0), Vector3(0.1, 0.08, 9.0), 3]]
+		Vector3(4.0, 2.0, 1.0), 0.56)
+	rail_wood.albedo_color = Color(0.32, 0.16, 0.09)
+	var sides := [
+		[Vector3(0, 0, -4.45), Vector3(9.0, 0.08, 0.11), 0],
+		[Vector3(0, 0, 4.45), Vector3(9.0, 0.08, 0.11), 1],
+		[Vector3(-4.45, 0, 0), Vector3(0.11, 0.08, 9.0), 2],
+		[Vector3(4.45, 0, 0), Vector3(0.11, 0.08, 9.0), 3]
+	]
 	for side: Array in sides:
 		var group := Node3D.new()
 		group.add_to_group(&"ring_side_%d" % side[2])
 		add_child(group)
-		_box(side[1], side[0] + Vector3(0, 0.95, 0), wood, group)
-		var along: Vector3 = Vector3(1, 0, 0) if side[1].x > 1.0 else Vector3(0, 0, 1)
+		var is_x: bool = side[1].x > 1.0
+		var along := Vector3(1, 0, 0) if is_x else Vector3(0, 0, 1)
+		_box(side[1], side[0] + Vector3(0, 0.94, 0), rail_wood, group)
+		_box(side[1] * Vector3(1.0, 0.75, 0.75), side[0] + Vector3(0, 0.12, 0), trim_wood, group)
 		for k in 13:
-			_box(Vector3(0.06, 0.92, 0.06), side[0] + along * (-4.2 + k * 0.7) + Vector3(0, 0.46, 0), wood, group)
-	# The dais: a long raised desk across the back, nameplates and microphones, the
-	# committee's chairs, flags-in-spirit (plain banners) and the title on the wall.
-	var desk_wood := wood
-	_box(Vector3(14.0, 1.8, 1.2), Vector3(0, -0.1, -7.2), desk_wood)
-	_box(Vector3(14.4, 0.08, 1.4), Vector3(0, 0.84, -7.25), _mat(Color(0.22, 0.11, 0.05), 0.35))
+			_box(Vector3(0.055, 0.80, 0.055), side[0] + along * (-4.2 + k * 0.7) + Vector3(0, 0.52, 0), rail_wood, group)
+		for end_sign in [-1.0, 1.0]:
+			var post_pos: Vector3 = side[0] + along * (4.45 * end_sign)
+			_box(Vector3(0.14, 1.02, 0.14), post_pos + Vector3(0, 0.51, 0), trim_wood, group)
+			_box(Vector3(0.16, 0.04, 0.16), post_pos + Vector3(0, 1.04, 0), brass, group)
+
+
+func _senate_build_chamber(dark_wood: Material, panel_wood: Material, trim_wood: Material, brass: Material) -> void:
+	var plaster := _mat(Color(0.46, 0.40, 0.32), 0.88)
+	var drape := _mat(Color(0.32, 0.06, 0.07), 0.86)
+	var ceiling_plaster := _mat(Color(0.30, 0.25, 0.20), 0.90)
+
+	# Full-width rear wall, side walls, and coffered ceiling (encloses the room cleanly)
+	_box(Vector3(28.0, 8.6, 0.3), Vector3(0, 3.3, -9.45), dark_wood)
+	_box(Vector3(28.0, 2.6, 0.36), Vector3(0, 0.3, -9.40), trim_wood)
+	_box(Vector3(28.0, 0.18, 0.42), Vector3(0, 1.65, -9.38), trim_wood)
+	_box(Vector3(28.0, 0.36, 0.46), Vector3(0, 6.25, -9.35), trim_wood)
+
+	for sx in [-12.6, 12.6]:
+		_box(Vector3(0.3, 8.6, 20.0), Vector3(sx, 3.3, 0.2), dark_wood)
+		_box(Vector3(0.36, 2.6, 20.0), Vector3(sx, 0.3, 0.2), trim_wood)
+		_box(Vector3(0.44, 0.32, 20.0), Vector3(sx, 6.25, 0.2), trim_wood)
+		for sz in [-6.5, -2.5, 1.5]:
+			_box(Vector3(0.42, 6.4, 0.45), Vector3(sx, 3.0, sz), trim_wood)
+			_senate_sconce(Vector3(sx + (0.28 if sx < 0 else -0.28), 3.4, sz), brass, 90.0 if sx < 0 else -90.0)
+
+	# Coffered ceiling above the chamber
+	_box(Vector3(28.0, 0.25, 20.0), Vector3(0, 6.85, 0.2), ceiling_plaster)
+	for bx in [-9.0, -4.5, 0.0, 4.5, 9.0]:
+		_box(Vector3(0.35, 0.35, 18.0), Vector3(bx, 6.62, -0.5), trim_wood)
+	for bz in [-7.5, -3.5, 0.5]:
+		_box(Vector3(26.0, 0.35, 0.35), Vector3(0, 6.62, bz), trim_wood)
+
+	# Classical fluted mahogany pilasters along the rear wall
+	for px in [-10.6, -7.3, -4.15, 4.15, 7.3, 10.6]:
+		_box(Vector3(0.52, 6.4, 0.28), Vector3(px, 3.0, -9.24), dark_wood)
+		_box(Vector3(0.64, 0.35, 0.34), Vector3(px, 0.95, -9.22), trim_wood)
+		_box(Vector3(0.66, 0.32, 0.36), Vector3(px, 5.95, -9.20), trim_wood)
+		_box(Vector3(0.68, 0.06, 0.38), Vector3(px, 5.78, -9.19), brass)
+		for fx in [-0.14, 0.0, 0.14]:
+			_box(Vector3(0.05, 4.5, 0.04), Vector3(px + fx, 3.4, -9.09), trim_wood)
+
+	# Recessed flank architectural bays with limestone panels, crimson velvet drapes & sconces
+	for bx in [-8.95, -5.72, 5.72, 8.95]:
+		_box(Vector3(2.4, 3.8, 0.08), Vector3(bx, 3.9, -9.27), plaster)
+		_box(Vector3(2.52, 0.14, 0.14), Vector3(bx, 5.82, -9.24), trim_wood)
+		_box(Vector3(2.2, 1.3, 0.10), Vector3(bx, 1.0, -9.24), panel_wood)
+		for dx in [-0.95, -0.72, 0.72, 0.95]:
+			_cylinder(0.11, 3.7, Vector3(bx + dx, 3.9, -9.16), drape)
+		_box(Vector3(2.3, 0.18, 0.18), Vector3(bx, 5.68, -9.14), drape)
+		_senate_sconce(Vector3(bx, 3.55, -9.12), brass, 0.0)
+
+
+func _senate_sconce(pos: Vector3, brass: Material, yaw_deg: float) -> void:
+	var sconce := Node3D.new()
+	sconce.position = pos
+	sconce.rotation_degrees = Vector3(0, yaw_deg, 0)
+	add_child(sconce)
+	_box(Vector3(0.14, 0.30, 0.04), Vector3(0, 0, 0), brass, sconce)
+	_box(Vector3(0.04, 0.04, 0.16), Vector3(0, -0.02, 0.08), brass, sconce)
+	var shade_glow := _glow(Color(1.0, 0.82, 0.48), 2.8)
+	var bulb := CylinderMesh.new()
+	bulb.top_radius = 0.08
+	bulb.bottom_radius = 0.05
+	bulb.height = 0.18
+	bulb.radial_segments = 16
+	_instance(bulb, Vector3(0, 0.08, 0.14), shade_glow, sconce)
+
+
+func _senate_build_banner(trim_wood: Material, brass: Material) -> void:
+	# Deep midnight-navy plaque framed in walnut and brass so gold lettering reads crisply
+	var plaque_bg := _mat(Color(0.055, 0.075, 0.14), 0.65)
+	_box(Vector3(7.6, 3.25, 0.12), Vector3(0, 3.72, -9.26), trim_wood)
+	_box(Vector3(7.2, 2.88, 0.14), Vector3(0, 3.72, -9.22), plaque_bg)
+	# Brass frame rails around the committee plaque
+	for fy in [5.18, 2.26]:
+		_box(Vector3(7.32, 0.08, 0.16), Vector3(0, fy, -9.20), brass)
+	for fx in [-3.62, 3.62]:
+		_box(Vector3(0.08, 3.00, 0.16), Vector3(fx, 3.72, -9.20), brass)
+
+	# Stylized original Senate Subcommittee Seal above the header
+	var seal := Node3D.new()
+	seal.position = Vector3(0, 4.58, -9.12)
+	add_child(seal)
+	var outer_ring := CylinderMesh.new()
+	outer_ring.top_radius = 0.38
+	outer_ring.bottom_radius = 0.38
+	outer_ring.height = 0.04
+	outer_ring.radial_segments = 28
+	var ring_mi := _instance(outer_ring, Vector3.ZERO, brass, seal)
+	ring_mi.rotation_degrees = Vector3(90, 0, 0)
+	var inner_disc := CylinderMesh.new()
+	inner_disc.top_radius = 0.32
+	inner_disc.bottom_radius = 0.32
+	inner_disc.height = 0.05
+	inner_disc.radial_segments = 28
+	var disc_mi := _instance(inner_disc, Vector3(0, 0, 0.01), _mat(Color(0.09, 0.13, 0.28), 0.7), seal)
+	disc_mi.rotation_degrees = Vector3(90, 0, 0)
+	for cx in [-0.12, 0.0, 0.12]:
+		_box(Vector3(0.045, 0.30, 0.03), Vector3(cx, -0.02, 0.03), brass, seal)
+	_box(Vector3(0.38, 0.055, 0.03), Vector3(0, 0.16, 0.03), brass, seal)
+	_box(Vector3(0.40, 0.055, 0.03), Vector3(0, -0.18, 0.03), brass, seal)
+
+	_label("SUBCOMMITTEE ON ARTIFICIAL INTELLIGENCE", Vector3(0, 3.78, -9.10), 0.34, Color(1.0, 0.85, 0.42), true)
+
+	# Framed "IN SESSION" indicator plaque
+	_box(Vector3(2.25, 0.48, 0.08), Vector3(0, 2.98, -9.15), brass)
+	_box(Vector3(2.13, 0.38, 0.10), Vector3(0, 2.98, -9.13), _mat(Color(0.14, 0.035, 0.035), 0.5))
+	_label("IN SESSION", Vector3(0, 2.98, -9.06), 0.22, Color(1.0, 0.42, 0.26), true)
+
+
+func _senate_build_dais(dark_wood: Material, panel_wood: Material, trim_wood: Material, brass: Material, oxblood: Material) -> void:
+	# Raised committee dais with paneled front and dark walnut desktop
+	_box(Vector3(14.0, 1.8, 1.2), Vector3(0, -0.1, -7.2), dark_wood)
+	_box(Vector3(14.4, 0.08, 1.4), Vector3(0, 0.84, -7.25), trim_wood)
+	for px in range(-6, 7, 2):
+		_box(Vector3(1.5, 1.15, 0.05), Vector3(px, 0.25, -6.58), panel_wood)
+		_box(Vector3(0.08, 1.35, 0.07), Vector3(px + 0.9, 0.25, -6.58), trim_wood)
+
+	# Flanking dark mahogany bookcases filled with bound legal volumes
+	_senate_bookcase(Vector3(-8.2, 0.0, -8.55), dark_wood, trim_wood)
+	_senate_bookcase(Vector3(8.2, 0.0, -8.55), dark_wood, trim_wood)
+
 	var names := ["SEN. GRAY", "SEN. OKAFOR", "SEN. LINDQVIST", "CHAIR", "SEN. MORALES", "SEN. PATEL", "SEN. BROOKS"]
-	var leather := _mat(Color(0.12, 0.08, 0.06), 0.4)
+	var mic_mat := _mat(Color(0.08, 0.08, 0.09), 0.3, 0.8)
+	var mic_head := _mat(Color(0.65, 0.67, 0.70), 0.25, 0.9)
+	var plate_wood := _mat(Color(0.10, 0.05, 0.03), 0.4)
 	for i in names.size():
 		var x := -5.4 + i * 1.8
-		_box(Vector3(0.8, 0.18, 0.05), Vector3(x, 0.97, -6.6), _mat(Color(0.95, 0.93, 0.88), 0.5))
-		_label(names[i], Vector3(x, 0.97, -6.57), 0.09, Color(0.1, 0.1, 0.1))
-		_cylinder(0.012, 0.35, Vector3(x + 0.3, 1.05, -6.85), _mat(Color(0.1, 0.1, 0.1), 0.3, 0.8))
-		_box(Vector3(0.7, 1.3, 0.25), Vector3(x, 1.05, -8.1), leather)
-		_prop("res://assets/stage_props/senate/chairDesk.glb", Vector3(x, 0.0, -7.8), Vector3.ZERO, Vector3(2.0, 2.0, 2.0))
-		_prop("res://assets/stage_props/senate/laptop.glb", Vector3(x - 0.25, 0.88, -6.85), Vector3(0, 180, 0), Vector3(1.1, 1.1, 1.1))
-		_prop("res://assets/stage_props/senate/books.glb", Vector3(x + 0.38, 0.88, -6.85), Vector3(0, 90, 0), Vector3(0.9, 0.9, 0.9))
-	# Chairman's brass gavel and solid walnut sound block
-	var brass := _mat(Color(0.85, 0.72, 0.32), 0.25, 0.85)
-	_box(Vector3(0.24, 0.04, 0.24), Vector3(0.42, 0.90, -6.8), _mat(Color(0.25, 0.12, 0.05), 0.3))
-	_cylinder(0.02, 0.26, Vector3(0.42, 0.95, -6.8), _mat(Color(0.3, 0.15, 0.07), 0.3))
+		# Walnut & brass nameplate
+		_box(Vector3(0.84, 0.20, 0.06), Vector3(x, 0.98, -6.60), brass)
+		_box(Vector3(0.78, 0.15, 0.08), Vector3(x, 0.98, -6.59), plate_wood)
+		_label(names[i], Vector3(x, 0.98, -6.54), 0.085, Color(0.96, 0.88, 0.68), true)
+		# Gooseneck microphone
+		_box(Vector3(0.08, 0.025, 0.08), Vector3(x + 0.32, 0.89, -6.82), mic_mat)
+		_cylinder(0.011, 0.34, Vector3(x + 0.32, 1.06, -6.82), mic_mat)
+		_cylinder(0.018, 0.05, Vector3(x + 0.32, 1.24, -6.80), mic_head)
+		# Oxblood leather & mahogany committee chair behind seat (clear of StageCrowd senators)
+		_senate_chair(Vector3(x, 0.0, -8.02), 0.0, trim_wood, oxblood)
+		_prop("res://assets/stage_props/senate/books.glb", Vector3(x - 0.35, 0.88, -6.88), Vector3(0, 90, 0), Vector3(0.85, 0.85, 0.85))
+
+	# Warm green-glass & brass banker's lamps along the dais
+	for lx in [-4.5, -1.5, 1.5, 4.5]:
+		_senate_banker_lamp(Vector3(lx, 0.88, -6.92), brass, Color(0.04, 0.24, 0.10))
+	_light(Vector3(-2.6, 1.4, -6.6), Color(1.0, 0.78, 0.42), 1.8, 5.5)
+	_light(Vector3(2.6, 1.4, -6.6), Color(1.0, 0.78, 0.42), 1.8, 5.5)
+
+	# Chairman's brass gavel and walnut sound block
+	_box(Vector3(0.24, 0.04, 0.24), Vector3(0.42, 0.90, -6.8), trim_wood)
+	_cylinder(0.02, 0.26, Vector3(0.42, 0.95, -6.8), dark_wood)
 	_cylinder(0.035, 0.12, Vector3(0.42, 0.97, -6.7), brass)
+
 	# Stately planters flanking the dais
-	_prop("res://assets/stage_props/senate/plantSmall1.glb", Vector3(-6.2, 0.85, -6.8), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/senate/plantSmall1.glb", Vector3(6.2, 0.85, -6.8), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
-	# C-SPAN witness table just outside the railing
-	var witness_wood := wood
-	_box(Vector3(2.4, 0.85, 0.9), Vector3(0, 0.425, -4.95), witness_wood)
-	_box(Vector3(0.65, 0.14, 0.04), Vector3(0, 0.92, -4.55), _mat(Color(0.95, 0.93, 0.88), 0.5))
-	_label("WITNESS", Vector3(0, 0.92, -4.52), 0.08, Color(0.1, 0.1, 0.1))
+	_prop("res://assets/stage_props/senate/plantSmall1.glb", Vector3(-6.4, 0.85, -6.85), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
+	_prop("res://assets/stage_props/senate/plantSmall1.glb", Vector3(6.4, 0.85, -6.85), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
+
+	# Witness table just behind the center railing
+	_box(Vector3(2.5, 0.85, 0.92), Vector3(0, 0.425, -4.95), dark_wood)
+	_box(Vector3(2.6, 0.06, 1.0), Vector3(0, 0.85, -4.95), trim_wood)
+	_box(Vector3(2.1, 0.62, 0.04), Vector3(0, 0.44, -4.48), panel_wood)
+	_box(Vector3(0.70, 0.16, 0.05), Vector3(0, 0.94, -4.55), brass)
+	_box(Vector3(0.64, 0.12, 0.07), Vector3(0, 0.94, -4.54), plate_wood)
+	_label("WITNESS", Vector3(0, 0.94, -4.50), 0.075, Color(0.96, 0.88, 0.68), true)
 	for mx in [-0.22, 0.22]:
-		_cylinder(0.008, 0.30, Vector3(mx, 0.98, -4.8), _mat(Color(0.1, 0.1, 0.1), 0.3, 0.8))
-	_cylinder(0.08, 0.22, Vector3(-0.6, 0.95, -4.85), _mat(Color(0.85, 0.92, 1.0, 0.4), 0.05))
-	# Brass lamp, witness laptop, legal books and swivel chair
-	_prop("res://assets/stage_props/senate/lampRoundTable.glb", Vector3(-0.85, 0.85, -4.85), Vector3.ZERO, Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/senate/chairDesk.glb", Vector3(0, 0.0, -5.7), Vector3(0, 180, 0), Vector3(1.8, 1.8, 1.8))
-	_prop("res://assets/stage_props/senate/laptop.glb", Vector3(0.35, 0.88, -4.85), Vector3.ZERO, Vector3(1.1, 1.1, 1.1))
-	_prop("res://assets/stage_props/senate/books.glb", Vector3(-0.38, 0.88, -4.85), Vector3(0, 45, 0), Vector3(0.9, 0.9, 0.9))
-	# Stacks of hearing briefing binders
-	_box(Vector3(0.32, 0.12, 0.26), Vector3(0.65, 0.91, -4.85), _mat(Color(0.12, 0.2, 0.45), 0.6))
-	# Official stenographer recording station (matching data/stage_life/senate.json pos [-1.8, 0.0, -5.2])
-	_prop("res://assets/stage_props/senate/desk.glb", Vector3(-1.8, 0.0, -5.3), Vector3(0, 45, 0), Vector3(1.6, 1.6, 1.6))
-	_prop("res://assets/stage_props/senate/chairDesk.glb", Vector3(-1.5, 0.0, -5.6), Vector3(0, 45, 0), Vector3(1.6, 1.6, 1.6))
-	_prop("res://assets/stage_props/senate/laptop.glb", Vector3(-1.8, 0.62, -5.3), Vector3(0, 45, 0), Vector3(0.9, 0.9, 0.9))
-	_prop("res://assets/stage_props/senate/books.glb", Vector3(-2.1, 0.62, -5.4), Vector3(0, 135, 0), Vector3(0.7, 0.7, 0.7))
-	# Committee dais executive wing extensions
-	_prop("res://assets/stage_props/senate/deskCorner.glb", Vector3(-7.2, 0.0, -7.5), Vector3(0, 90, 0), Vector3(1.8, 1.8, 1.8))
-	_prop("res://assets/stage_props/senate/deskCorner.glb", Vector3(7.2, 0.0, -7.5), Vector3(0, 0, 0), Vector3(1.8, 1.8, 1.8))
-	# Stately bookcases on the rear wall
-	_prop("res://assets/stage_props/senate/bookcaseClosedWide.glb", Vector3(-6.8, 0.0, -8.7), Vector3.ZERO, Vector3(1.6, 1.6, 1.6))
-	_prop("res://assets/stage_props/senate/bookcaseClosedWide.glb", Vector3(6.8, 0.0, -8.7), Vector3.ZERO, Vector3(1.6, 1.6, 1.6))
-	_prop("res://assets/stage_props/senate/bookcaseClosed.glb", Vector3(-8.6, 0.0, -8.7), Vector3.ZERO, Vector3(1.6, 1.6, 1.6))
-	_prop("res://assets/stage_props/senate/bookcaseClosed.glb", Vector3(8.6, 0.0, -8.7), Vector3.ZERO, Vector3(1.6, 1.6, 1.6))
-	_prop("res://assets/stage_props/senate/speakerSmall.glb", Vector3(-6.0, 3.2, -8.8), Vector3(15, 0, 0), Vector3(1.5, 1.5, 1.5))
-	_prop("res://assets/stage_props/senate/speakerSmall.glb", Vector3(6.0, 3.2, -8.8), Vector3(15, 0, 0), Vector3(1.5, 1.5, 1.5))
+		_cylinder(0.008, 0.30, Vector3(mx, 1.00, -4.78), mic_mat)
+		_cylinder(0.015, 0.04, Vector3(mx, 1.16, -4.76), mic_head)
+	# Water pitcher & glass, banker's lamp, briefing binder, witness chair
+	var crystal := _mat(Color(0.82, 0.90, 0.98, 0.32), 0.06)
+	crystal.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_cylinder(0.065, 0.20, Vector3(0.55, 0.98, -4.85), crystal)
+	_cylinder(0.032, 0.10, Vector3(0.42, 0.93, -4.82), crystal)
+	_senate_banker_lamp(Vector3(-0.92, 0.88, -4.85), brass, Color(0.04, 0.24, 0.10))
+	_senate_chair(Vector3(0, 0.0, -5.72), 180.0, trim_wood, oxblood)
+	_prop("res://assets/stage_props/senate/books.glb", Vector3(-0.48, 0.88, -4.88), Vector3(0, 45, 0), Vector3(0.85, 0.85, 0.85))
+	_box(Vector3(0.32, 0.08, 0.26), Vector3(0.82, 0.92, -4.85), _mat(Color(0.10, 0.16, 0.36), 0.6))
+
+	# Compact dark-walnut stenographer station matching data/stage_life/senate.json [-1.8, 0.0, -5.2]
+	_box(Vector3(0.72, 0.68, 0.50), Vector3(-1.8, 0.34, -5.35), dark_wood)
+	_box(Vector3(0.78, 0.05, 0.56), Vector3(-1.8, 0.70, -5.35), trim_wood)
+	_box(Vector3(0.28, 0.06, 0.22), Vector3(-1.8, 0.75, -5.30), mic_mat)
+	_senate_chair(Vector3(-1.55, 0.0, -5.75), 45.0, trim_wood, oxblood)
+
+
+func _senate_banker_lamp(pos: Vector3, brass: Material, shade_color: Color) -> void:
+	var lamp := Node3D.new()
+	lamp.position = pos
+	add_child(lamp)
+	var base := CylinderMesh.new()
+	base.top_radius = 0.09
+	base.bottom_radius = 0.09
+	base.height = 0.03
+	base.radial_segments = 16
+	_instance(base, Vector3(0, 0.015, 0), brass, lamp)
+	var stem := CylinderMesh.new()
+	stem.top_radius = 0.016
+	stem.bottom_radius = 0.016
+	stem.height = 0.32
+	stem.radial_segments = 12
+	_instance(stem, Vector3(0, 0.17, -0.02), brass, lamp)
+	_box(Vector3(0.02, 0.02, 0.09), Vector3(0, 0.33, 0.02), brass, lamp)
+	var shade_mat := _mat(shade_color, 0.16)
+	shade_mat.emission_enabled = true
+	shade_mat.emission = Color(0.12, 0.45, 0.18)
+	shade_mat.emission_energy_multiplier = 0.35
+	var shade := CylinderMesh.new()
+	shade.top_radius = 0.075
+	shade.bottom_radius = 0.075
+	shade.height = 0.24
+	shade.radial_segments = 16
+	var shade_mi := _instance(shade, Vector3(0, 0.32, 0.05), shade_mat, lamp)
+	shade_mi.rotation_degrees = Vector3(0, 0, 90)
+	_box(Vector3(0.20, 0.03, 0.09), Vector3(0, 0.285, 0.05), _glow(Color(1.0, 0.80, 0.42), 3.8), lamp)
+
+
+func _senate_chair(pos: Vector3, yaw_deg: float, wood_mat: Material, leather_mat: Material) -> void:
+	var chair := Node3D.new()
+	chair.position = pos
+	chair.rotation_degrees = Vector3(0, yaw_deg, 0)
+	add_child(chair)
+	_box(Vector3(0.54, 0.08, 0.50), Vector3(0, 0.44, 0), leather_mat, chair)
+	_box(Vector3(0.56, 0.78, 0.12), Vector3(0, 0.88, -0.20), leather_mat, chair)
+	_box(Vector3(0.60, 0.82, 0.05), Vector3(0, 0.88, -0.25), wood_mat, chair)
+	for ax in [-0.27, 0.27]:
+		_box(Vector3(0.06, 0.06, 0.42), Vector3(ax, 0.64, -0.02), wood_mat, chair)
+	var ped := CylinderMesh.new()
+	ped.top_radius = 0.04
+	ped.bottom_radius = 0.04
+	ped.height = 0.40
+	ped.radial_segments = 12
+	_instance(ped, Vector3(0, 0.22, 0), wood_mat, chair)
+
+
+func _senate_bookcase(pos: Vector3, dark_wood: Material, trim_wood: Material) -> void:
+	var bc := Node3D.new()
+	bc.position = pos
+	add_child(bc)
+	_box(Vector3(1.9, 3.2, 0.42), Vector3(0, 1.6, 0), trim_wood, bc)
+	_box(Vector3(1.72, 2.9, 0.36), Vector3(0, 1.6, 0.04), dark_wood, bc)
+	var book_colors := [
+		Color(0.38, 0.08, 0.08),
+		Color(0.09, 0.15, 0.32),
+		Color(0.10, 0.24, 0.14),
+		Color(0.32, 0.22, 0.09)
+	]
+	for sy in [0.75, 1.40, 2.05, 2.65]:
+		_box(Vector3(1.74, 0.05, 0.42), Vector3(0, sy, 0.06), trim_wood, bc)
+		for bi in 9:
+			var bx := -0.72 + bi * 0.18
+			var bh := 0.34 + (bi % 3) * 0.04
+			_box(Vector3(0.13, bh, 0.24), Vector3(bx, sy + 0.03 + bh * 0.5, 0.12), _mat(book_colors[(bi + int(sy * 3)) % book_colors.size()], 0.65), bc)
+
+
+func _senate_build_flags(brass: Material) -> void:
+	# Ceremonial standing flags flanking the dais banner (US-inspired stripes + Senate navy standard)
+	_senate_flag(Vector3(-5.55, 0.0, -8.35), brass, true, 5.0)
+	_senate_flag(Vector3(-4.60, 0.0, -8.40), brass, false, 3.5)
+	_senate_flag(Vector3(4.60, 0.0, -8.40), brass, false, -3.5)
+	_senate_flag(Vector3(5.55, 0.0, -8.35), brass, true, -5.0)
+
+
+func _senate_flag(pos: Vector3, brass: Material, striped: bool, tilt_z_deg: float) -> void:
+	var flag := Node3D.new()
+	flag.position = pos
+	flag.rotation_degrees = Vector3(3.0, 0.0, tilt_z_deg)
+	add_child(flag)
+	# Brass pedestal base, mahogany pole, spearhead finial
+	var base_plate := CylinderMesh.new()
+	base_plate.top_radius = 0.22
+	base_plate.bottom_radius = 0.22
+	base_plate.height = 0.08
+	base_plate.radial_segments = 16
+	_instance(base_plate, Vector3(0, 0.04, 0), brass, flag)
+	var base_dome := CylinderMesh.new()
+	base_dome.top_radius = 0.06
+	base_dome.bottom_radius = 0.18
+	base_dome.height = 0.12
+	base_dome.radial_segments = 16
+	_instance(base_dome, Vector3(0, 0.12, 0), brass, flag)
+	var pole := CylinderMesh.new()
+	pole.top_radius = 0.024
+	pole.bottom_radius = 0.024
+	pole.height = 4.3
+	pole.radial_segments = 12
+	_instance(pole, Vector3(0, 2.2, 0), _mat(Color(0.24, 0.12, 0.06), 0.42), flag)
+	var finial := CylinderMesh.new()
+	finial.top_radius = 0.004
+	finial.bottom_radius = 0.055
+	finial.height = 0.22
+	finial.radial_segments = 12
+	_instance(finial, Vector3(0, 4.46, 0), brass, flag)
+
+	# Pleated vertical draped fabric folds hanging from the upper pole
+	var navy := _mat(Color(0.08, 0.13, 0.34), 0.85)
+	var red := _mat(Color(0.55, 0.08, 0.09), 0.85)
+	var cream := _mat(Color(0.84, 0.81, 0.74), 0.85)
+	var gold := _mat(Color(0.76, 0.60, 0.22), 0.65)
+	for fold in 6:
+		var fx := (fold - 2.5) * 0.065
+		var fz := 0.08 + sin(fold * 1.4) * 0.05
+		var h := 2.45 - (fold % 2) * 0.08
+		if striped:
+			var strip_mat := red if (fold % 2 == 0) else cream
+			_box(Vector3(0.075, h, 0.05), Vector3(fx, 2.95, fz), strip_mat, flag)
+			if fold < 3:
+				_box(Vector3(0.082, 0.92, 0.062), Vector3(fx, 3.68, fz + 0.01), navy, flag)
+		else:
+			var fold_mat := gold if (fold == 2 or fold == 3) else navy
+			_box(Vector3(0.078, h, 0.05), Vector3(fx, 2.95, fz), fold_mat, flag)
+
+
+func _senate_build_gallery(dark_wood: Material, trim_wood: Material, brass: Material) -> void:
 	# Broadcast television cameras on the flank wings with flash lights
-	var tally_mat := _glow(Color(1.0, 0.12, 0.12), 4.5)
+	var tally_mat := _glow(Color(1.0, 0.12, 0.12), 4.0)
+	var rig_mat := _mat(Color(0.14, 0.15, 0.17), 0.4, 0.6)
+	var cam_body := _mat(Color(0.07, 0.07, 0.09), 0.35, 0.5)
 	var rng_senate := RandomNumberGenerator.new()
 	rng_senate.seed = 42
 	for cam_x in [-6.4, 6.4]:
-		_cylinder(0.025, 1.3, Vector3(cam_x, 0.65, -3.8), _mat(Color(0.2, 0.2, 0.22), 0.4, 0.6))
-		_box(Vector3(0.32, 0.35, 0.55), Vector3(cam_x, 1.45, -3.8), _mat(Color(0.1, 0.1, 0.12), 0.3, 0.5))
-		_cylinder(0.09, 0.32, Vector3(cam_x, 1.45, -3.45), _mat(Color(0.05, 0.05, 0.06), 0.2, 0.8))
+		_cylinder(0.025, 1.3, Vector3(cam_x, 0.65, -3.8), rig_mat)
+		_box(Vector3(0.32, 0.35, 0.55), Vector3(cam_x, 1.45, -3.8), cam_body)
+		_cylinder(0.09, 0.32, Vector3(cam_x, 1.45, -3.45), _mat(Color(0.04, 0.04, 0.05), 0.2, 0.8))
 		_cylinder(0.03, 0.05, Vector3(cam_x, 1.66, -3.7), tally_mat)
-		# Camera operator standing behind the rig
-		_person(Vector3(cam_x, 0.0, -4.25), Color(0.12, 0.12, 0.14), rng_senate)
-		# C-SPAN camera flash unit
+		_person(Vector3(cam_x, 0.0, -4.25), Color(0.10, 0.10, 0.12), rng_senate)
 		var flash_light := OmniLight3D.new()
 		flash_light.position = Vector3(cam_x, 1.8, -3.3)
-		flash_light.light_color = Color(0.9, 0.95, 1.0)
+		flash_light.light_color = Color(0.95, 0.96, 1.0)
 		flash_light.light_energy = 0.0
 		flash_light.omni_range = 6.0
 		add_child(flash_light)
-		_flashers.append([flash_light, 3.5])
-	# Flanking public gallery benches with observers and aides
+		_flashers.append([flash_light, 3.2])
+
+	# Flanking dark mahogany gallery benches (matching data/stage_life/senate.json aides/citizens)
 	for gx in [-7.2, 7.2]:
+		var inward := 1.0 if gx < 0.0 else -1.0
 		for gz in [-1.5, 0.5, 2.5]:
-			_prop("res://assets/stage_props/senate/bench.glb", Vector3(gx, 0.0, gz), Vector3(0, 90 if gx < 0 else -90, 0), Vector3(1.5, 1.5, 1.5))
-			_person(Vector3(gx - 0.35, 0.26, gz), Color(0.15, 0.16, 0.22), rng_senate)
-			_person(Vector3(gx + 0.35, 0.26, gz), Color(0.25, 0.25, 0.28), rng_senate)
-	_box(Vector3(16.0, 5.0, 0.2), Vector3(0, 1.5, -9.0), _mat(Color(0.3, 0.2, 0.14), 0.7)) # dark wood panelling: the gold title reads on it
-	for x in [-7.0, -5.6, 5.6, 7.0]:
-		_box(Vector3(0.9, 3.0, 0.04), Vector3(x, 2.2, -8.85), _mat(Color(0.12, 0.18, 0.45) if absf(x) > 6.0 else Color(0.6, 0.1, 0.12), 0.8))
-	_label("SUBCOMMITTEE ON ARTIFICIAL INTELLIGENCE", Vector3(0, 3.4, -8.85), 0.36, Color(0.95, 0.78, 0.35), true)
-	_light(Vector3(0, 3.0, -5.0), Color(1.0, 0.9, 0.75), 3.0, 10.0)
-	_light(Vector3(-5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 1.3, 8.0)
-	_light(Vector3(5.5, 3.2, -8.5), Color(1.0, 0.88, 0.7), 1.3, 8.0)
-	_label("IN SESSION", Vector3(0, 2.75, -8.85), 0.22, Color(0.95, 0.25, 0.2), true)
-	_ambience("res://assets/audio/ambience/arena_crowd.ogg", -24.0)
+			_box(Vector3(0.55, 0.08, 1.45), Vector3(gx, 0.24, gz), dark_wood)
+			_box(Vector3(0.10, 0.56, 1.45), Vector3(gx - inward * 0.24, 0.50, gz), trim_wood)
+			_box(Vector3(0.45, 0.24, 0.08), Vector3(gx, 0.12, gz - 0.62), trim_wood)
+			_box(Vector3(0.45, 0.24, 0.08), Vector3(gx, 0.12, gz + 0.62), trim_wood)
+			_box(Vector3(0.04, 0.04, 1.45), Vector3(gx - inward * 0.24, 0.80, gz), brass)
+			_person(Vector3(gx, 0.28, gz - 0.35), Color(0.12, 0.14, 0.20), rng_senate)
+			_person(Vector3(gx, 0.28, gz + 0.35), Color(0.20, 0.20, 0.24), rng_senate)
 
 
 # --- GPU Foundry (the night market) ----------------------------------------------------

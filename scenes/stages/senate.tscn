@@ -3,8 +3,94 @@
 [ext_resource type="PackedScene" path="res://scenes/stages/ring.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/stages/stage_retheme.gd" id="2_retheme"]
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_senate"]
+sky_top_color = Color(0.42, 0.34, 0.27, 1)
+sky_horizon_color = Color(0.36, 0.27, 0.19, 1)
+ground_bottom_color = Color(0.1, 0.07, 0.05, 1)
+ground_horizon_color = Color(0.22, 0.15, 0.11, 1)
+
+[sub_resource type="Sky" id="Sky_senate"]
+sky_material = SubResource("ProceduralSkyMaterial_senate")
+
+[sub_resource type="Environment" id="Environment_senate"]
+background_mode = 1
+background_color = Color(0.06, 0.04, 0.03, 1)
+sky = SubResource("Sky_senate")
+ambient_light_source = 3
+ambient_light_energy = 0.32
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.94
+ssao_enabled = true
+ssao_radius = 0.7
+ssao_intensity = 1.15
+glow_enabled = true
+glow_intensity = 0.45
+glow_bloom = 0.06
+glow_blend_mode = 1
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0028
+volumetric_fog_albedo = Color(0.95, 0.86, 0.72, 1)
+volumetric_fog_length = 32.0
+adjustment_enabled = true
+adjustment_contrast = 1.12
+adjustment_saturation = 1.06
+
 [node name="SenateHearing" instance=ExtResource("1_base")]
 edge_style = 0
+
+[node name="WorldEnvironment" parent="."]
+environment = SubResource("Environment_senate")
+
+[node name="KeyLight" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 0.173648, 0.984808, 0, -0.984808, 0.173648, 0, 8.5, 1.2)
+light_color = Color(1, 0.95, 0.86, 1)
+light_energy = 11.0
+light_volumetric_fog_energy = 1.0
+shadow_enabled = true
+spot_range = 16.0
+spot_attenuation = 0.6
+spot_angle = 42.0
+
+[node name="TrussSpot1" parent="Lights"]
+transform = Transform3D(-0.6331, 0.3575, -0.6865, 0, 0.887, 0.4618, 0.7741, 0.2924, -0.5617, -5.5, 4.8, -4.5)
+light_color = Color(0.92, 0.95, 1, 1)
+light_energy = 8.0
+light_volumetric_fog_energy = 0.9
+shadow_enabled = false
+spot_range = 15.0
+spot_angle = 34.0
+
+[node name="TrussSpot2" parent="Lights"]
+transform = Transform3D(0.7926, 0.197, -0.577, 0, 0.9464, 0.3231, 0.6098, -0.2561, 0.7501, -5, 4, 5.5)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 3.6
+light_volumetric_fog_energy = 0.6
+shadow_enabled = false
+spot_range = 16.0
+spot_angle = 44.0
+
+[node name="TrussSpot3" parent="Lights"]
+transform = Transform3D(-0.6331, -0.3575, 0.6865, 0, 0.887, 0.4618, -0.7741, 0.2924, -0.5617, 5.5, 4.8, -4.5)
+light_color = Color(0.92, 0.95, 1, 1)
+light_energy = 8.0
+light_volumetric_fog_energy = 0.9
+shadow_enabled = false
+spot_range = 15.0
+spot_angle = 34.0
+
+[node name="TrussSpot4" parent="Lights"]
+transform = Transform3D(0.7926, -0.197, 0.577, 0, 0.9464, 0.3231, -0.6098, -0.2561, 0.7501, 5, 4, 5.5)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 3.6
+light_volumetric_fog_energy = 0.6
+shadow_enabled = false
+spot_range = 16.0
+spot_angle = 44.0
+
+[node name="ArenaFill" parent="Lights"]
+light_color = Color(0.96, 0.88, 0.76, 1)
+light_energy = 0.28
 
 [node name="Retheme" type="Node3D" parent="." index="1"]
 script = ExtResource("2_retheme")
