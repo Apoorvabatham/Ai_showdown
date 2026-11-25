@@ -55,7 +55,7 @@ func run() -> void:
 	# 1. Wide shot: Opponent trapped in giant text box, Yann at podium
 	shot("prompt_terminal", "Cam_Wide", box_spot + Vector3(0.0, 0.6, 0.0))
 	sound("victory")
-	big_text("PROMPT: PREDICT NEXT TOKEN", box_spot + Vector3(0, 1.4, 0), Color(0.3, 0.85, 1.0), 0.6, WIDE_TIME + TYPE_TIME)
+	big_text("PROMPT: PREDICT NEXT TOKEN", box_spot + Vector3(0, 1.5, 0), Color(0.3, 0.85, 1.0), 0.65, WIDE_TIME - 0.12)
 	await wait(WIDE_TIME)
 
 	# 2. Camera cuts to opponent in text box, typing starts
@@ -64,7 +64,7 @@ func run() -> void:
 	victim.face = &"pain"
 	
 	# Typed text prompt appears
-	big_text("> you lose_", box_spot + Vector3(0, 1.3, -1.0), Color(0.95, 0.95, 0.4), 1.0, 2.2)
+	big_text("> you lose_", box_spot + Vector3(0, 1.35, -0.8), Color(0.95, 0.95, 0.4), 0.95, TYPE_TIME + SUGGEST_TIME - 0.1)
 	sound("keyboard_typing")
 	await wait(TYPE_TIME)
 

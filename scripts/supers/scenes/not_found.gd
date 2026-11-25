@@ -17,6 +17,7 @@ const LENGTH := TYPE_TIME + LOAD_TIME + ERROR_TIME + GLITCH_TIME + SCATTER_TIME 
 
 const URL := "https://www.skill-issue.com/you/are/here"
 const PAGE_COLOR := Color(0.62, 0.72, 0.9)
+const VICTIM_IN_PAGE_SCALE := Vector3(0.76, 0.76, 0.76)
 
 var window: Node3D
 var victim: ScenePuppet
@@ -38,6 +39,7 @@ func build() -> void:
 	var void_set := load_set("browser_void")
 	window = prop("sundar/browser_window", browser_window, void_set)
 	window.global_transform = marker("browser_void", "Window")
+	window.scale = Vector3.ONE * 1.18
 	_url_label = window.find_child("Url", true, false) as Label3D
 	_progress = window.find_child("Progress", true, false) as Node3D
 	_page_error = window.find_child("PageError", true, false) as Node3D
@@ -49,10 +51,11 @@ func build() -> void:
 		_page_error.visible = false
 	if _progress:
 		_progress.scale.x = 0.001
-	# The opponent, stuck inside the page, behind the frame.
+	# The opponent, stuck inside the page, scaled so their head sits cleanly below the toolbar.
 	var inside := window.find_child("Inside", true, false) as Node3D
 	victim = puppet(defender, window)
-	victim.position = inside.position if inside else Vector3(0, 0.3, -0.3)
+	victim.position = (inside.position if inside else Vector3(0, 0.3, -0.3)) + Vector3(0, -0.04, 0)
+	victim.scale = VICTIM_IN_PAGE_SCALE
 	victim.rotation.y = PI # faces the viewer
 	victim.hold(&"fight/wall_splat", 0.25)
 	victim.face = &"pain"
@@ -68,6 +71,7 @@ func build() -> void:
 	keyboard.rotate_object_local(Vector3.RIGHT, -0.5)
 	pixels = Node3D.new()
 	pixels.visible = false
+	pixels.scale = VICTIM_IN_PAGE_SCALE
 	window.add_child(pixels)
 	build_pixels()
 
@@ -119,9 +123,9 @@ func run() -> void:
 
 	# ...and are pixelated away.
 	victim.visible = false
-	victim.scale = Vector3.ONE
+	victim.scale = VICTIM_IN_PAGE_SCALE
 	pixels.visible = true
-	big_text("404: SKILL NOT FOUND!", window.global_position + Vector3(0, 3.6, 0.8), Color(1.0, 0.3, 0.3), 0.52, 1.0)
+	big_text("404: SKILL NOT FOUND!", window.global_position + Vector3(0, 4.1, 0.8), Color(1.0, 0.3, 0.3), 0.56, 1.0)
 	scatter_pixels()
 	await wait(SCATTER_TIME)
 	await wait(EMPTY_TIME)
@@ -139,14 +143,14 @@ func run() -> void:
 		_progress.scale.x = 0.001
 		var reload := create_tween()
 		reload.tween_property(_progress, "scale:x", 1.0, RELOAD_TIME * 0.6)
-	big_text("SYSTEM RESTORED!", window.global_position + Vector3(0, 3.6, 0.8), Color(0.28, 0.95, 0.55), 0.52, 0.5)
+	big_text("SYSTEM RESTORED!", window.global_position + Vector3(0, 4.1, 0.8), Color(0.28, 0.95, 0.55), 0.56, 0.5)
 	victim.visible = true
 	victim.scale = Vector3.ONE * 0.05
 	victim.face = &"pain"
 	victim.play(&"fight/thrown", 1.0)
 	victim.model.flash(Color(1, 1, 1), 0.4)
 	var back := create_tween()
-	back.tween_property(victim, "scale", Vector3.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	back.tween_property(victim, "scale", VICTIM_IN_PAGE_SCALE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	await wait(RELOAD_TIME)
 
 
@@ -158,7 +162,7 @@ func _process(delta: float) -> void:
 		keyboard.scale = Vector3.ONE * (1.0 + 0.015 * sin(_time * 40.0))
 	if _glitching and victim:
 		var flick := int(_time * 30.0) % 3
-		victim.scale = Vector3(1.0 + 0.25 * (flick - 1), 1.0 - 0.15 * (flick - 1), 1.0)
+		victim.scale = VICTIM_IN_PAGE_SCALE * Vector3(1.0 + 0.25 * (flick - 1), 1.0 - 0.15 * (flick - 1), 1.0)
 		victim.visible = int(_time * 24.0) % 4 != 0
 
 

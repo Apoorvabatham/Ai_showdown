@@ -169,7 +169,7 @@ func _hit(index: int, at: Vector3) -> void:
 	victim.model.flash(color, 0.3)
 	Fx.pixels(self, at, 10, 1.3)
 	glitch.burst(0.08)
-	big_text(HIT_WORDS[index], at + Vector3(-0.1, 0.35, 0.4), color, 0.42, PUNCH_TIME * 0.8)
+	big_text(HIT_WORDS[index], at + Vector3(0.0, 0.62, 0.4), color, 0.44, PUNCH_TIME * 0.8)
 	var home := marker("metaverse", "Victim").origin
 	var clip := &"ual1/Hit_Head" if index % 2 == 0 else &"ual1/Hit_Chest"
 	var tween := create_tween()

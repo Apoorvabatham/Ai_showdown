@@ -42,7 +42,7 @@ func build() -> void:
 	stamp.visible = false
 
 	seal_mark = prop("dario/safe_seal", _seal_standin, hall)
-	seal_mark.global_position = marker("constitution_hall", "Stamp").origin + Vector3(0, -0.3, 0.48)
+	seal_mark.global_position = marker("constitution_hall", "Stamp").origin + Vector3(0, -0.45, 0.48)
 	seal_mark.visible = false
 
 
@@ -80,9 +80,10 @@ func run() -> void:
 	_impact(scroll_spot + Vector3(0, -0.3, 0.5))
 	seal_mark.visible = true
 
-	# Stamp retracts
+	# Stamp retracts out of camera view
 	var lift := create_tween()
-	lift.tween_property(stamp, "global_position", scroll_spot + Vector3(0, 1.5, 3.8), STAMP_TIME * 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	lift.tween_property(stamp, "global_position", scroll_spot + Vector3(0, 6.5, 2.0), STAMP_TIME * 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	lift.tween_callback(func() -> void: stamp.visible = false)
 	await wait(STAMP_TIME * 0.55)
 
 	# 4. Resolution: Safe compliance & gentle topple
@@ -161,7 +162,7 @@ func _scroll_standin() -> Node3D:
 	label.modulate = Color(0.18, 0.10, 0.04)
 	label.outline_size = 3
 	label.outline_modulate = Color(0.96, 0.92, 0.82)
-	label.position = Vector3(0, 0.25, 0.48)
+	label.position = Vector3(0, 0.42, 0.48)
 	label.shaded = false
 	root.add_child(label)
 	return root
