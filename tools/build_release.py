@@ -75,7 +75,8 @@ def export(preset: str, output: str) -> None:
     os.makedirs(os.path.dirname(output), exist_ok=True)
     if os.path.exists(output):
         os.remove(output)
-    result = run([godot(), "--headless", "--path", ROOT, "--export-release", preset, output], timeout=900)
+    # ~400 MB of assets: packing alone can take >15 min on a busy laptop (seen 2026-11-25).
+    result = run([godot(), "--headless", "--path", ROOT, "--export-release", preset, output], timeout=2700)
     if not os.path.exists(output):
         print(result.stdout[-3000:], result.stderr[-3000:])
         fail(f"export of '{preset}' produced no file")
