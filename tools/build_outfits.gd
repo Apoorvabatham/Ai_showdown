@@ -328,14 +328,14 @@ func _showdown_specs() -> Dictionary:
 			Color(0.75, 0.75, 0.75), Color(0.25, 0.27, 0.32), Color(0.8, 0.8, 0.78)),
 		"dario": _tee_spec(Color(0.82, 0.33, 0.14), Color(0.14, 0.16, 0.22), Color(0.86, 0.86, 0.82),
 			Color(0.90, 0.88, 0.82), Color(0.10, 0.10, 0.12), Color(0.12, 0.12, 0.12)),
-		"zuckerbot": _hoodie_spec(Color(0.42, 0.43, 0.45), Color(0.15, 0.2, 0.32), Color(0.8, 0.8, 0.78),
+		"zuckerbot": _hoodie_spec(Color(0.42, 0.43, 0.45), Color(0.15, 0.2, 0.32), Color(0.16, 0.19, 0.26),
 			Color(0.1, 0.18, 0.42), Color(0.08, 0.08, 0.1), Color(0.75, 0.75, 0.75)),
 		"jensen": _leather_jacket_spec(black_leather, Color(0.2, 0.2, 0.21), Color(0.08, 0.08, 0.09),
 			Color(0.3, 0.18, 0.1), Color(0.12, 0.12, 0.13), Color(0.2, 0.2, 0.22)),
 		"yann": _blazer_spec(Color(0.16, 0.16, 0.18), Color(0.68, 0.74, 0.85), Color(0.11, 0.14, 0.22),
 			Color(0.24, 0.15, 0.10), Color(0.30, 0.32, 0.35), Color(0.10, 0.10, 0.12)),
-		"geoff": _cardigan_spec(Color(0.55, 0.47, 0.36), Color(0.28, 0.2, 0.13), Color(0.3, 0.3, 0.32), Color(0.66, 0.74, 0.82),
-			Color(0.2, 0.26, 0.2), Color(0.12, 0.12, 0.12)),
+		"geoff": _cardigan_spec(Color(0.16, 0.34, 0.22), Color(0.10, 0.22, 0.14), Color(0.22, 0.23, 0.26), Color(0.80, 0.86, 0.92),
+			Color(0.40, 0.13, 0.16), Color(0.13, 0.13, 0.15), Color(0.22, 0.13, 0.07), Color(0.06, 0.06, 0.07)),
 		"sundar": _tee_spec(Color(0.12, 0.12, 0.13), Color(0.18, 0.22, 0.28), Color(0.08, 0.08, 0.08),
 			Color(0.9, 0.9, 0.92), Color(0.12, 0.12, 0.14), Color(0.12, 0.12, 0.12)),
 		"donald": _suit_spec(navy, white_shirt, Color(0.75, 0.06, 0.08), Color(0.05, 0.05, 0.05),
@@ -509,8 +509,6 @@ func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit:
 			{slot = Slot.MAIN, offset = 0.013, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.03),
 				drape = _pants_drape(L, {base = 0.013, flare = 0.01, hem = L.ankle + 0.03, amount = 0.6, cover = hem, cover_max = 0.016,
 					pin = func(p: Vector3) -> bool: return p.y > hem})},
-			# Leather shoes, soles flat on the floor.
-			{slot = Slot.TRIM, offset = 0.016, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},
 		]
 		if tie != null:
 			var bottom: float = (L.hip - 0.06) if long_tie else (L.waist + 0.02)
@@ -523,6 +521,7 @@ func _suit_spec(suit: Color, shirt: Color, tie: Variant, shoes: Color, alt_suit:
 	return {
 		detailed = true,
 		pieces = pieces,
+		shoes = {style = &"dress", upper = Slot.TRIM, sole = Slot.TRIM, sock = Slot.MAIN},
 		colors = [suit, shoes, tie if tie != null else shirt, shirt, suit.darkened(0.5)],
 		alt_colors = [alt_suit, Color(0.2, 0.12, 0.06), alt_tie if alt_tie != null else shirt,
 			Color(0.85, 0.85, 0.83), alt_suit.darkened(0.5)],
@@ -560,12 +559,11 @@ func _blazer_spec(blazer: Color, shirt: Color, jeans: Color, shoes: Color,
 			{slot = Slot.ACCENT, offset = 0.013, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.03),
 				drape = _pants_drape(L, {base = 0.013, flare = 0.01, hem = L.ankle + 0.03, amount = 0.6, cover = hem, cover_max = 0.016,
 					pin = func(p: Vector3) -> bool: return p.y > hem})},
-			# Brown leather shoes
-			{slot = Slot.TRIM, offset = 0.016, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},
 		]
 	return {
 		detailed = true,
 		pieces = pieces,
+		shoes = {style = &"dress", upper = Slot.TRIM, sole = Slot.TRIM, sock = Slot.MAIN},
 		colors = [blazer, shoes, jeans, shirt, Color(0.12, 0.11, 0.10)],
 		alt_colors = [alt_blazer, Color(0.12, 0.1, 0.08), alt_jeans, Color(0.85, 0.85, 0.88), Color(0.2, 0.2, 0.2)],
 		fabrics = [&"cotton", &"leather", &"denim", &"cotton", &"leather"],
@@ -652,12 +650,11 @@ func _zhongshan_spec(suit: Color, shoes: Color, alt_suit: Color, alt_shoes: Colo
 			{slot = Slot.MAIN, offset = 0.013, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.03),
 				drape = _pants_drape(L, {base = 0.013, flare = 0.01, hem = L.ankle + 0.03, amount = 0.6, cover = hem, cover_max = 0.016,
 					pin = func(p: Vector3) -> bool: return p.y > hem})},
-			# Leather shoes, flat soles.
-			{slot = Slot.TRIM, offset = 0.016, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},
 		]
 	return {
 		detailed = true,
 		pieces = pieces,
+		shoes = {style = &"dress", upper = Slot.TRIM, sole = Slot.TRIM, sock = Slot.MAIN},
 		colors = [suit, shoes, Color(0.88, 0.10, 0.10), Color(0.95, 0.95, 0.93), Color(0.88, 0.74, 0.22)],
 		alt_colors = [alt_suit, alt_shoes, Color(0.88, 0.10, 0.10), Color(0.95, 0.95, 0.93), Color(0.82, 0.82, 0.85)],
 		fabrics = [&"cotton", &"leather", &"cotton", &"cotton", &"metal"],
@@ -686,10 +683,8 @@ func _sweater_spec(sweater: Color, pants: Color, shoes: Color, pants_fabric: Str
 				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, hem + 0.03),
 					drape = _pants_drape(L, {base = 0.011, flare = 0.008, hem = L.ankle + 0.05, amount = 0.7, cover = hem, cover_max = 0.014,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
-				{slot = Slot.EXTRA, offset = 0.017, flat_soles = true, trim_slot = Slot.TRIM,
-					region = func(p, n): return _legs(p, -1.0, L.ankle + 0.07),
-					trim = func(p, n): return 0.026 - p.y},
 			],
+		shoes = {style = &"sneaker", upper = Slot.EXTRA, sole = Slot.TRIM, sock = Slot.EXTRA},
 		colors = [sweater, sweater.darkened(0.25), pants, shoes],
 		alt_colors = [alt_sweater, alt_sweater.darkened(0.25), alt_pants, alt_shoes],
 		fabrics = [&"cotton", &"stretch", pants_fabric, &"leather"],
@@ -709,10 +704,8 @@ func _tee_spec(tee: Color, jeans: Color, shoes: Color, alt_tee: Color, alt_jeans
 				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, hem + 0.03),
 					drape = _pants_drape(L, {base = 0.011, flare = 0.008, hem = L.ankle + 0.05, amount = 0.7, cover = hem, cover_max = 0.012,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
-				{slot = Slot.EXTRA, offset = 0.017, flat_soles = true, trim_slot = Slot.TRIM,
-					region = func(p, n): return _legs(p, -1.0, L.ankle + 0.07),
-					trim = func(p, n): return 0.026 - p.y},
 			],
+		shoes = {style = &"sneaker", upper = Slot.EXTRA, sole = Slot.TRIM, sock = Slot.EXTRA},
 		colors = [tee, Color(0.8, 0.8, 0.78), jeans, shoes],
 		alt_colors = [alt_tee, Color(0.1, 0.1, 0.1), alt_jeans, alt_shoes],
 		fabrics = [&"cotton", &"leather", &"denim", &"leather"],
@@ -743,8 +736,8 @@ func _leather_jacket_spec(jacket: Color, tee: Color, jeans: Color, alt_jacket: C
 				{slot = Slot.ACCENT, offset = 0.012, region = func(p, n): return _legs(p, L.ankle + 0.06, L.waist),
 					drape = _pants_drape(L, {base = 0.012, flare = 0.006, hem = L.ankle + 0.06, amount = 0.6,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
-				{slot = Slot.EXTRA, offset = 0.018, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.1)},
 			],
+		shoes = {style = &"boot", upper = Slot.EXTRA, sole = Slot.EXTRA, sock = Slot.EXTRA},
 		colors = [jacket, tee, jeans, Color(0.06, 0.05, 0.05), Color(0.75, 0.75, 0.78)],
 		alt_colors = [alt_jacket, alt_tee, alt_jeans, Color(0.25, 0.15, 0.08), Color(0.8, 0.65, 0.3)],
 		fabrics = [&"leather", &"cotton", &"denim", &"leather", &"metal"],
@@ -796,11 +789,8 @@ func _hoodie_spec(hoodie: Color, jeans: Color, shoes: Color, alt_hoodie: Color, 
 				{slot = Slot.ACCENT, offset = 0.011, region = func(p, n): return _legs(p, L.ankle + 0.05, hem + 0.03),
 					drape = _pants_drape(L, {base = 0.011, flare = 0.008, hem = L.ankle + 0.05, amount = 0.7, cover = hem, cover_max = 0.014,
 						pin = func(p: Vector3) -> bool: return p.y > L.waist - 0.03})},
-				# Sneakers, pale soles.
-				{slot = Slot.EXTRA, offset = 0.017, flat_soles = true, trim_slot = Slot.DETAIL,
-					region = func(p, n): return _legs(p, -1.0, L.ankle + 0.07),
-					trim = func(p, n): return 0.026 - p.y},
 			],
+		shoes = {style = &"sneaker", upper = Slot.EXTRA, sole = Slot.DETAIL, sock = Slot.EXTRA},
 		hood_roll = {slot = Slot.TRIM},
 		colors = [hoodie, hoodie.darkened(0.18), jeans, shoes, Color(0.82, 0.82, 0.78)],
 		alt_colors = [alt_hoodie, alt_hoodie.darkened(0.18), alt_jeans, alt_shoes, Color(0.86, 0.86, 0.82)],
@@ -808,42 +798,44 @@ func _hoodie_spec(hoodie: Color, jeans: Color, shoes: Color, alt_hoodie: Color, 
 	}
 
 
-## Cardigan, open in a V with a button band, over a collared shirt; trousers and
-## leather shoes. Slots: cardigan, button band and shoes, trousers, shirt, buttons.
-func _cardigan_spec(cardigan: Color, band: Color, trousers: Color, shirt: Color, alt_cardigan: Color, alt_trousers: Color) -> Dictionary:
+## Cardigan, open in a V with ribbed trim, over a collared shirt; trousers and
+## leather dress shoes. Slots: cardigan, trim ribbing, trousers, shirt, shoes.
+func _cardigan_spec(cardigan: Color, band: Color, trousers: Color, shirt: Color, alt_cardigan: Color, alt_trousers: Color,
+		shoes := Color(0.20, 0.12, 0.07), alt_shoes := Color(0.08, 0.08, 0.09)) -> Dictionary:
 	return {
 		detailed = true,
 		pieces = func(L: Dictionary) -> Array:
-			var v_bottom: float = (L.chest + L.waist) * 0.5 - 0.02
-			var hem: float = L.hip - 0.08
+			var v_bottom: float = L.chest - 0.08
+			var hem: float = L.hip - 0.025
 			var cuff: float = L.wrist - 0.035
-			var card := func(p, n): return minf(_top(p, L, hem, cuff), -_v_cut(p, n, L, v_bottom, 0.085))
+			var card := func(p, n): return minf(_top(p, L, hem, cuff), -_front_v(p, L, v_bottom, 0.080))
 			return [
-				# Cardigan body and sleeves, open in a V
-				{slot = Slot.MAIN, offset = 0.020, region = card},
-				# Trim band along the V opening
-				{slot = Slot.TRIM, offset = 0.025, hide = false, stitches = false, region = func(p, n):
-					return minf(card.call(p, n), _v_cut(p, n, L, v_bottom, 0.085) + 0.022)},
-				# 4 horn buttons down the front placket below the V
-				{slot = Slot.DETAIL, offset = 0.027, hide = false, stitches = false, region = func(p, n):
-					if p.z <= 0.02 or n.z < 0.4:
-						return -1.0
-					var d := -1.0
-					for y_btn in [v_bottom - 0.03, v_bottom - 0.07, v_bottom - 0.11, v_bottom - 0.15]:
-						d = maxf(d, 0.0075 - Vector2(p.x, p.y - y_btn).length())
-					return d},
-				# Collared shirt showing in the V and cuffs
-				{slot = Slot.EXTRA, offset = 0.008, region = func(p, n): return _top(p, L, L.waist - 0.06, L.wrist - 0.025)},
+				# Draped cardigan body and sleeves with clean V-opening, ribbed cuffs/hem/V-trim
+				{slot = Slot.MAIN, offset = 0.018, trim_slot = Slot.TRIM,
+					region = card,
+					trim = func(p: Vector3, _n: Vector3) -> float:
+						var v_band: float = _front_v(p, L, v_bottom - 0.024, 0.080) + 0.024
+						var hem_rib: float = (hem + 0.032) - p.y
+						var cuff_rib: float = absf(p.x) - (cuff - 0.032)
+						return maxf(v_band, maxf(hem_rib, cuff_rib)),
+					drape = _top_drape(L, {base = 0.018, sleeve_end = cuff, cuff_flare = 0.008, sag = 0.006,
+						amount = 0.55, chest_fall = 10, fine_below = L.chest + 0.05,
+						fine = func(p: Vector3) -> bool: return _front_v(p, L, v_bottom - 0.04, 0.080) > -0.05})},
+				# Collared shirt showing cleanly in the V, closed at throat, and at cuffs
+				{slot = Slot.EXTRA, offset = 0.008, region = func(p: Vector3, _n: Vector3) -> float:
+					var band_r: float = minf(minf(p.y - (L.waist - 0.04), (L.neck + 0.026) - p.y), (L.wrist - 0.022) - absf(p.x))
+					if p.z > L.neck_z - 0.005:
+						return band_r
+					return minf(band_r, -_neck_hole(p, L))},
 				# Trousers
-				{slot = Slot.ACCENT, offset = 0.012, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.03),
+				{slot = Slot.ACCENT, offset = 0.012, region = func(p, n): return _legs(p, L.ankle + 0.03, hem + 0.05),
 					drape = _pants_drape(L, {base = 0.012, flare = 0.008, hem = L.ankle + 0.03, amount = 0.5, cover = hem, cover_max = 0.014,
 						pin = func(p: Vector3) -> bool: return p.y > hem})},
-				# Walking shoes
-				{slot = Slot.TRIM, offset = 0.013, flat_soles = true, region = func(p, n): return _legs(p, -1.0, L.ankle + 0.05)},
 			],
-		colors = [cardigan, band, trousers, shirt, Color(0.18, 0.12, 0.08)],
-		alt_colors = [alt_cardigan, alt_cardigan.darkened(0.3), alt_trousers, Color(0.85, 0.85, 0.83), Color(0.12, 0.12, 0.12)],
-		fabrics = [&"cotton", &"leather", &"cotton", &"cotton", &"leather"],
+		shoes = {style = &"dress", upper = Slot.DETAIL, sole = Slot.DETAIL, sock = Slot.ACCENT},
+		colors = [cardigan, band, trousers, shirt, shoes],
+		alt_colors = [alt_cardigan, alt_cardigan.darkened(0.32), alt_trousers, Color(0.85, 0.85, 0.83), alt_shoes],
+		fabrics = [&"cotton", &"cotton", &"cotton", &"cotton", &"leather"],
 	}
 
 
@@ -858,9 +850,7 @@ func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color, variants: Array =
 		pieces = func(L: Dictionary) -> Array:
 			return [
 				{slot = Slot.MAIN, offset = 0.005, trim_slot = Slot.TRIM,
-					# (Everything but the soles: the body keeps those few triangles, an empty
-					# mesh can't be saved.)
-					region = func(p, n): return p.y - 0.012,
+					region = func(p, n): return p.y - (L.ankle - 0.020),
 					trim = func(p, n):
 						var sides: float = signf(p.x) * n.x - 0.94 if absf(p.x) < ARM_LIMIT else n.y - 0.9
 						var chest: float = 0.007 - absf(p.y - (L.chest - 0.02))
@@ -868,6 +858,7 @@ func _bodysuit_spec(suit: Color, glow: Color, alt_glow: Color, variants: Array =
 						var eyes: float = (0.012 - absf(p.y - (L.head_top - 0.12))) if p.z > 0.05 and p.y > L.neck + 0.05 else -1.0
 						return maxf(maxf(sides, chest), maxf(front, eyes))},
 			],
+		shoes = {style = &"bodysuit", upper = Slot.MAIN, sole = Slot.MAIN, sock = Slot.MAIN},
 		colors = [suit, glow],
 		alt_colors = [Color(0.9, 0.9, 0.92), alt_glow],
 		variants = variants,
@@ -961,6 +952,14 @@ func _v_cut(p: Vector3, n: Vector3, L: Dictionary, bottom: float, width: float, 
 	if p.y > top:
 		return -1.0
 	if p.z <= 0.0 or n.z < 0.15:
+		return -1.0
+	var half_width: float = width * (p.y - bottom) / (L.neck - bottom)
+	return minf(half_width - absf(p.x), p.y - bottom)
+
+
+## Smooth front-only V opening without normal-angle discontinuities, for draped garments.
+func _front_v(p: Vector3, L: Dictionary, bottom: float, width: float) -> float:
+	if p.z <= L.neck_z:
 		return -1.0
 	var half_width: float = width * (p.y - bottom) / (L.neck - bottom)
 	return minf(half_width - absf(p.x), p.y - bottom)
@@ -1287,6 +1286,19 @@ func _build(model_scene: PackedScene, spec: Dictionary, face_shape: Dictionary =
 		var binds := [_bind_index(skeleton, "Head"), _bind_index(skeleton, "neck_01"), _bind_index(skeleton, "spine_03")]
 		triangles += _add_headband_knot(tools[spec.headband_knot.slot], spec.headband_knot, L, surface, binds, detailed)
 		used[spec.headband_knot.slot] = true
+	if spec.has("shoes"):
+		var shoe_spec: Dictionary = spec.shoes
+		var hide_y: float = L.ankle + (0.055 if shoe_spec.style == &"boot" else (0.020 if shoe_spec.style == &"bodysuit" else 0.035))
+		for t in indices.size() / 3:
+			var a: Vector3 = verts[indices[t * 3]]
+			var b: Vector3 = verts[indices[t * 3 + 1]]
+			var c: Vector3 = verts[indices[t * 3 + 2]]
+			if absf(a.x) < ARM_LIMIT and a.y < hide_y and b.y < hide_y and c.y < hide_y:
+				hidden[t] = 1
+		triangles += _add_shoes(tools, L, shoe_spec, detailed)
+		used[shoe_spec.upper] = true
+		used[shoe_spec.sole] = true
+		used[shoe_spec.sock] = true
 
 	var outfit := ArrayMesh.new()
 	for slot in Slot.size():
@@ -1799,6 +1811,239 @@ class _Surface:
 			for dy in [-1, 0, 1]:
 				keys.append(center + Vector2i(dx, dy))
 		return keys
+
+
+## Builds sculpted 3D shoes (dress shoes, sneakers, boots or smooth bodysuit feet) on
+## both feet, hiding bare toes and skinning across foot / ball / calf bones.
+func _add_shoes(tools: Array[SurfaceTool], L: Dictionary, shoe_spec: Dictionary, detailed: bool) -> int:
+	var style: StringName = shoe_spec.style
+	var st_upper: SurfaceTool = tools[shoe_spec.upper]
+	var st_sole: SurfaceTool = tools[shoe_spec.sole]
+	var st_sock: SurfaceTool = tools[shoe_spec.sock]
+	var z_back := -0.146 if style == &"bodysuit" else -0.150
+	var z_front := 0.148 if style == &"dress" else (0.144 if style == &"boot" else (0.132 if style == &"bodysuit" else 0.140))
+	var y_floor := -0.010
+	var is_dress := style == &"dress"
+	var is_boot := style == &"boot"
+	var is_body := style == &"bodysuit"
+	var welt := 0.0 if is_body else (0.0025 if (is_dress or is_boot) else 0.003)
+
+	var cx_at := func(u: float) -> float:
+		return 0.120 + 0.012 * sin(PI * pow(u, 0.85))
+	var hw_at := func(u: float) -> float:
+		var base := 0.043
+		if u < 0.14:
+			base = 0.043 * sqrt(sin(PI * 0.5 * clampf(u / 0.14, 0.0, 1.0)))
+		elif u < 0.40:
+			var t := (u - 0.14) / 0.26
+			var waist := 0.044 if is_dress else 0.050
+			base = lerpf(0.043, waist, sin(PI * 0.5 * t))
+		elif u < 0.70:
+			var t := (u - 0.40) / 0.30
+			var waist := 0.044 if is_dress else 0.050
+			var ball := 0.059 if is_dress else (0.057 if is_body else 0.062)
+			base = lerpf(waist, ball, smoothstep(0.0, 1.0, t))
+		else:
+			var t := clampf((u - 0.70) / 0.30, 0.0, 1.0)
+			var ball := 0.059 if is_dress else (0.057 if is_body else 0.062)
+			var exp_t := 0.72 if is_dress else 0.52
+			base = ball * pow(cos(PI * 0.5 * t), exp_t)
+		return maxf(base, 0.006)
+	var yb_at := func(u: float) -> float:
+		if is_body:
+			return y_floor
+		var toe_spring := 0.005 * pow(clampf((u - 0.82) / 0.18, 0.0, 1.0), 1.6)
+		if is_dress or is_boot:
+			var arch := smoothstep(0.26, 0.35, u) * (1.0 - smoothstep(0.42, 0.52, u))
+			return y_floor + (0.010 if is_dress else 0.007) * arch + toe_spring
+		return y_floor + toe_spring
+	var ys_at := func(u: float) -> float:
+		var yb: float = yb_at.call(u)
+		if is_body:
+			return yb + 0.004
+		if is_dress:
+			var heel_t := 1.0 - smoothstep(0.24, 0.36, u)
+			return lerpf(yb + 0.011, y_floor + 0.022, heel_t)
+		if is_boot:
+			var heel_t := 1.0 - smoothstep(0.26, 0.38, u)
+			return lerpf(yb + 0.016, y_floor + 0.024, heel_t)
+		return yb + 0.022
+	var yu_at := func(u: float) -> float:
+		var ys: float = ys_at.call(u)
+		var collar_h := 0.088 if is_body else (0.092 if is_dress else 0.106)
+		if u <= 0.38:
+			var dip := sin(PI * clampf(u / 0.38, 0.0, 1.0)) * (0.006 if is_body else 0.010)
+			return collar_h - dip
+		var t := clampf((u - 0.38) / 0.62, 0.0, 1.0)
+		var arch := lerpf(collar_h, 0.062, smoothstep(0.0, 0.45, t))
+		var toe := lerpf(arch, 0.042, smoothstep(0.42, 0.80, t))
+		var tip := lerpf(toe, ys + 0.005, smoothstep(0.78, 1.0, t))
+		return maxf(tip, ys + 0.004)
+
+	var triangles := 0
+	const NU := 18
+	const NA := 10
+	for leg_index in 2:
+		var side := 1.0 if leg_index == 0 else -1.0
+		var suffix := "l" if leg_index == 0 else "r"
+		var f_bind := _bind_index(_skeleton, "foot_" + suffix)
+		var b_bind := _bind_index(_skeleton, "ball_" + suffix)
+		var c_bind := _bind_index(_skeleton, "calf_" + suffix)
+		var skin_fn := func(p: Vector3) -> Array:
+			var ball_t: float = smoothstep(0.030, 0.080, p.z)
+			var calf_t: float = clampf((p.y - (float(L.ankle) + 0.015)) / 0.055, 0.0, 0.45) * (1.0 - ball_t)
+			var foot_w: float = maxf(1.0 - ball_t - calf_t, 0.0)
+			var tot: float = maxf(foot_w + ball_t + calf_t, 0.0001)
+			return [PackedInt32Array([f_bind, b_bind, c_bind, 0]),
+				PackedFloat32Array([foot_w / tot, ball_t / tot, calf_t / tot, 0.0])]
+
+		# 1. Sole + heel (omitted as separate rim for bodysuit; bodysuit emits clean closed bottom)
+		var sole_shade := 0.68 if (is_dress or is_boot) else (0.96 if not is_body else 0.90)
+		var sole_slices: Array = []
+		for i in NU + 1:
+			var u := lerpf(0.02, 0.98, float(i) / NU)
+			var z := lerpf(z_back, z_front, u)
+			var cx: float = cx_at.call(u)
+			var hw: float = hw_at.call(u) + welt * sin(PI * u)
+			var yb: float = yb_at.call(u)
+			var ys: float = ys_at.call(u)
+			sole_slices.append([
+				Vector3(side * (cx - hw), yb, z),
+				Vector3(side * (cx + hw), yb, z),
+				Vector3(side * (cx + hw), ys, z),
+				Vector3(side * (cx - hw), ys, z),
+			])
+		for i in NU:
+			var a: Array = sole_slices[i]
+			var b: Array = sole_slices[i + 1]
+			triangles += _shoe_quad(st_sole, [a[0], a[1], b[1], b[0]], Vector3.DOWN, skin_fn, detailed, sole_shade * 0.85)
+			triangles += _shoe_quad(st_sole, [a[1], a[2], b[2], b[1]], Vector3(side, 0.0, 0.0), skin_fn, detailed, sole_shade)
+			triangles += _shoe_quad(st_sole, [a[3], a[0], b[0], b[3]], Vector3(-side, 0.0, 0.0), skin_fn, detailed, sole_shade)
+			triangles += _shoe_quad(st_sole, [a[2], a[3], b[3], b[2]], Vector3.UP, skin_fn, detailed, sole_shade * 0.9)
+		var s0: Array = sole_slices[0]
+		var s1: Array = sole_slices[NU]
+		triangles += _shoe_quad(st_sole, [s0[0], s0[3], s0[2], s0[1]], Vector3.BACK, skin_fn, detailed, sole_shade)
+		triangles += _shoe_quad(st_sole, [s1[0], s1[1], s1[2], s1[3]], Vector3.FORWARD, skin_fn, detailed, sole_shade)
+
+		# 2. Smooth contoured upper (no toe grooves)
+		var grid: Array = []
+		var gnorm: Array = []
+		for i in NU + 1:
+			var u := lerpf(0.02, 0.98, float(i) / NU)
+			var z := lerpf(z_back, z_front, u)
+			var cx: float = cx_at.call(u)
+			var hw: float = hw_at.call(u)
+			var ys: float = ys_at.call(u) - 0.002
+			var yu: float = yu_at.call(u)
+			var row: Array[Vector3] = []
+			var nrow: Array[Vector3] = []
+			for j in NA + 1:
+				var ang := PI * float(j) / NA
+				var x := side * (cx - hw * cos(ang))
+				var y := lerpf(ys, yu, pow(sin(ang), 0.78))
+				row.append(Vector3(x, y, z))
+				nrow.append(Vector3.ZERO)
+			grid.append(row)
+			gnorm.append(nrow)
+		for i in NU:
+			for j in NA:
+				var p00: Vector3 = grid[i][j]
+				var p10: Vector3 = grid[i + 1][j]
+				var p11: Vector3 = grid[i + 1][j + 1]
+				var p01: Vector3 = grid[i][j + 1]
+				var fn := (p10 - p00).cross(p01 - p00)
+				if fn.dot(Vector3(p00.x - side * cx_at.call(lerpf(0.02, 0.98, float(i) / NU)), p00.y - y_floor, 0.0)) < 0.0:
+					fn = -fn
+				gnorm[i][j] += fn
+				gnorm[i + 1][j] += fn
+				gnorm[i + 1][j + 1] += fn
+				gnorm[i][j + 1] += fn
+		for i in NU:
+			for j in NA:
+				var corners := [grid[i][j], grid[i + 1][j], grid[i + 1][j + 1], grid[i][j + 1]]
+				var norms := [gnorm[i][j], gnorm[i + 1][j], gnorm[i + 1][j + 1], gnorm[i][j + 1]]
+				triangles += _shoe_smooth_quad(st_upper, corners, norms, skin_fn, detailed, 1.0)
+		# Close heel & toe upper ends
+		for end_idx in [0, NU]:
+			var end_n := Vector3.BACK if end_idx == 0 else Vector3.FORWARD
+			var row: Array[Vector3] = grid[end_idx]
+			var base_pt := (row[0] + row[NA]) * 0.5
+			for j in NA:
+				triangles += _shoe_tri(st_upper, [base_pt, row[j], row[j + 1]], end_n, skin_fn, detailed, 0.95)
+
+		# 3. Ankle collar & sock / boot shaft (connects inside trouser hem, zero bare ankle skin)
+		var sock_top: float = float(L.ankle) + (0.088 if is_boot else (0.035 if is_body else 0.055))
+		var collar_top: float = float(L.ankle) + (0.022 if not is_dress else 0.008)
+		var collar_bot := 0.068
+		var acx := side * 0.123
+		var acz := -0.084
+		const NC := 12
+		if not is_boot and not is_body:
+			# Padded collar rim around shoe opening
+			triangles += _shoe_tube(st_upper, acx, acz, 0.047, 0.051, collar_bot, collar_top, NC, skin_fn, detailed, 0.94)
+		# Inner sock / boot shaft
+		var shaft_rx := 0.048 if is_boot else 0.043
+		var shaft_rz := 0.052 if is_boot else 0.047
+		var shaft_shade := 1.0 if (is_boot or is_body) else 0.85
+		triangles += _shoe_tube(st_sock, acx, acz, shaft_rx, shaft_rz, collar_bot, sock_top, NC, skin_fn, detailed, shaft_shade)
+	return triangles
+
+
+func _shoe_tube(st: SurfaceTool, cx: float, cz: float, rx: float, rz: float, y0: float, y1: float, segs: int,
+		skin_fn: Callable, detailed: bool, shade: float) -> int:
+	var triangles := 0
+	var bot: Array[Vector3] = []
+	var top: Array[Vector3] = []
+	var norms: Array[Vector3] = []
+	for k in segs + 1:
+		var ang := TAU * float(k) / segs
+		var nx := cos(ang)
+		var nz := sin(ang)
+		bot.append(Vector3(cx + rx * nx, y0, cz + rz * nz))
+		top.append(Vector3(cx + rx * nx, y1, cz + rz * nz))
+		norms.append(Vector3(nx / rx, 0.0, nz / rz).normalized())
+	for k in segs:
+		triangles += _shoe_smooth_quad(st, [bot[k], bot[k + 1], top[k + 1], top[k]],
+			[norms[k], norms[k + 1], norms[k + 1], norms[k]], skin_fn, detailed, shade)
+	return triangles
+
+
+func _shoe_quad(st: SurfaceTool, corners: Array, normal: Vector3, skin_fn: Callable, detailed: bool, shade: float) -> int:
+	var n := normal.normalized()
+	return _shoe_smooth_quad(st, corners, [n, n, n, n], skin_fn, detailed, shade)
+
+
+func _shoe_smooth_quad(st: SurfaceTool, corners: Array, normals: Array, skin_fn: Callable, detailed: bool, shade: float) -> int:
+	var avg_n := ((normals[0] as Vector3) + (normals[1] as Vector3) + (normals[2] as Vector3) + (normals[3] as Vector3)).normalized()
+	var t1 := _shoe_tri(st, [corners[0], corners[1], corners[2]], avg_n, skin_fn, detailed, shade, [normals[0], normals[1], normals[2]])
+	var t2 := _shoe_tri(st, [corners[0], corners[2], corners[3]], avg_n, skin_fn, detailed, shade, [normals[0], normals[2], normals[3]])
+	return t1 + t2
+
+
+func _shoe_tri(st: SurfaceTool, corners: Array, face_normal: Vector3, skin_fn: Callable, detailed: bool, shade: float,
+		vnormals: Array = []) -> int:
+	var a: Vector3 = corners[0]
+	var b: Vector3 = corners[1]
+	var c: Vector3 = corners[2]
+	if (b - a).cross(c - a).length() < MIN_TRIANGLE_AREA:
+		return 0
+	var order := [0, 1, 2]
+	if (b - a).cross(c - a).dot(face_normal) > 0.0:
+		order = [0, 2, 1]
+	for idx: int in order:
+		var pt: Vector3 = corners[idx]
+		var n: Vector3 = (vnormals[idx] as Vector3).normalized() if not vnormals.is_empty() else face_normal.normalized()
+		if n.length_squared() < 0.001:
+			n = Vector3.UP
+		var inf: Array = skin_fn.call(pt)
+		if detailed:
+			st.set_color(Color(shade, shade, shade))
+		st.set_normal(n)
+		st.set_uv(Vector2(pt.x * 2.0 + pt.z * 2.0, pt.y * 2.0))
+		st.set_bones(inf[0])
+		st.set_weights(inf[1])
+		st.add_vertex(pt)
+	return 1
 
 
 ## Heights and widths of the T-pose body, from the skeleton's rest pose.
