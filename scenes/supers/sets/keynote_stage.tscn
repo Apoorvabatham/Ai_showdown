@@ -1,251 +1,385 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://assets/stage_props/senate/speakerSmall.glb" id="1_speaker"]
-[ext_resource type="PackedScene" path="res://assets/stage_props/server_farm/structure-barrier.glb" id="2_barrier"]
-[ext_resource type="PackedScene" path="res://assets/stage_props/server_farm/container-tall.glb" id="3_container_tall"]
-[ext_resource type="PackedScene" path="res://assets/stage_props/server_farm/container-wide.glb" id="4_container_wide"]
-[ext_resource type="PackedScene" path="res://assets/stage_props/foundry/catwalk-straight.glb" id="5_catwalk"]
-[ext_resource type="FontFile" uid="uid://w5xllttmlvm3" path="res://assets/fonts/InterDisplay-BlackItalic.otf" id="6_font"]
+[ext_resource type="FontFile" uid="uid://w5xllttmlvm3" path="res://assets/fonts/InterDisplay-BlackItalic.otf" id="2_font"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/server_farm/Textures/anti_skid_tiles_diff_1k.jpg" id="3_tiles_diff"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/server_farm/Textures/anti_skid_tiles_nor_1k.jpg" id="4_tiles_nor"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/server_farm/Textures/anti_skid_tiles_rough_1k.jpg" id="5_tiles_rough"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/foundry/Textures/metal_plate_02_diff_1k.jpg" id="6_metal_diff"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/foundry/Textures/metal_plate_02_nor_1k.jpg" id="7_metal_nor"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/foundry/Textures/metal_plate_02_rough_1k.jpg" id="8_metal_rough"]
 
-[sub_resource type="Environment" id="Environment_8eoi1"]
+[sub_resource type="Environment" id="Environment_Keynote"]
 background_mode = 1
-background_color = Color(0.01, 0.015, 0.02, 1)
+background_color = Color(0.025, 0.032, 0.045, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.5, 0.55, 0.65, 1)
-ambient_light_energy = 0.9
+ambient_light_color = Color(0.42, 0.5, 0.6, 1)
+ambient_light_energy = 0.85
 tonemap_mode = 2
 glow_enabled = true
-glow_intensity = 0.85
-glow_bloom = 0.25
+glow_intensity = 0.75
+glow_bloom = 0.2
+fog_enabled = true
+fog_light_color = Color(0.06, 0.1, 0.09, 1)
+fog_density = 0.012
 
-[sub_resource type="StandardMaterial3D" id="Mat_StageGloss"]
-albedo_color = Color(0.05, 0.06, 0.08, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_StageDeck"]
+albedo_color = Color(0.24, 0.27, 0.31, 1)
+albedo_texture = ExtResource("3_tiles_diff")
+metallic = 0.35
+roughness = 0.32
+roughness_texture = ExtResource("5_tiles_rough")
+normal_enabled = true
+normal_texture = ExtResource("4_tiles_nor")
+uv1_scale = Vector3(10, 6, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_AuditoriumFloor"]
+albedo_color = Color(0.14, 0.16, 0.2, 1)
+albedo_texture = ExtResource("6_metal_diff")
 metallic = 0.4
-roughness = 0.12
+roughness = 0.45
+roughness_texture = ExtResource("8_metal_rough")
+normal_enabled = true
+normal_texture = ExtResource("7_metal_nor")
+uv1_scale = Vector3(16, 12, 1)
 
-[sub_resource type="PlaneMesh" id="Mesh_Floor"]
-size = Vector2(60, 40)
+[sub_resource type="StandardMaterial3D" id="Mat_AcousticWall"]
+albedo_color = Color(0.07, 0.08, 0.11, 1)
+roughness = 0.88
 
-[sub_resource type="StandardMaterial3D" id="Mat_ScreenFrameDark"]
-albedo_color = Color(0.02, 0.02, 0.03, 1)
-roughness = 0.3
-metallic = 0.5
+[sub_resource type="StandardMaterial3D" id="Mat_DarkMetal"]
+albedo_color = Color(0.16, 0.18, 0.21, 1)
+albedo_texture = ExtResource("6_metal_diff")
+metallic = 0.75
+roughness = 0.35
+roughness_texture = ExtResource("8_metal_rough")
+normal_enabled = true
+normal_texture = ExtResource("7_metal_nor")
+uv1_scale = Vector3(3, 3, 1)
 
-[sub_resource type="BoxMesh" id="Mesh_ScreenBack"]
-size = Vector3(17.2, 7.4, 0.3)
+[sub_resource type="StandardMaterial3D" id="Mat_ScreenFrame"]
+albedo_color = Color(0.03, 0.035, 0.045, 1)
+metallic = 0.65
+roughness = 0.28
 
 [sub_resource type="StandardMaterial3D" id="Mat_ScreenDisplay"]
 shading_mode = 0
-albedo_color = Color(0.04, 0.12, 0.06, 1)
-
-[sub_resource type="BoxMesh" id="Mesh_ScreenFace"]
-size = Vector3(16.2, 6.6, 0.1)
+albedo_color = Color(0.03, 0.11, 0.05, 1)
 
 [sub_resource type="StandardMaterial3D" id="Mat_NvidiaGreen"]
 shading_mode = 0
-albedo_color = Color(0.46, 0.82, 0.05, 1)
+albedo_color = Color(0.46, 0.86, 0.06, 1)
 
-[sub_resource type="BoxMesh" id="Mesh_ScreenBorderH"]
-size = Vector3(16.4, 0.14, 0.2)
-
-[sub_resource type="BoxMesh" id="Mesh_ScreenBorderV"]
-size = Vector3(0.14, 6.8, 0.2)
-
-[sub_resource type="BoxMesh" id="Mesh_StageGlowEdge"]
-size = Vector3(15.0, 0.15, 0.2)
+[sub_resource type="StandardMaterial3D" id="Mat_SoftGreenGlow"]
+albedo_color = Color(0.32, 0.68, 0.08, 1)
+emission_enabled = true
+emission = Color(0.38, 0.82, 0.08, 1)
+emission_energy_multiplier = 1.6
 
 [sub_resource type="StandardMaterial3D" id="Mat_SpotHousing"]
+albedo_color = Color(0.12, 0.13, 0.16, 1)
+metallic = 0.8
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_SpotLens"]
 shading_mode = 0
-albedo_color = Color(1, 1, 0.9, 1)
+albedo_color = Color(1, 0.96, 0.85, 1)
 
-[sub_resource type="BoxMesh" id="Mesh_SpotHousing"]
-size = Vector3(0.6, 0.5, 0.6)
+[sub_resource type="PlaneMesh" id="Mesh_AuditoriumFloor"]
+size = Vector2(44, 34)
 
-[sub_resource type="StandardMaterial3D" id="Mat_TrussTower"]
-albedo_color = Color(0.2, 0.22, 0.25, 1)
-metallic = 0.85
-roughness = 0.35
+[sub_resource type="BoxMesh" id="Mesh_StageDeck"]
+size = Vector3(15.0, 0.3, 8.6)
+
+[sub_resource type="BoxMesh" id="Mesh_BackWall"]
+size = Vector3(30.0, 14.0, 0.4)
+
+[sub_resource type="BoxMesh" id="Mesh_SideWall"]
+size = Vector3(0.4, 14.0, 26.0)
+
+[sub_resource type="BoxMesh" id="Mesh_AcousticFin"]
+size = Vector3(0.45, 12.0, 0.9)
+
+[sub_resource type="BoxMesh" id="Mesh_LightStripV"]
+size = Vector3(0.06, 9.5, 0.08)
+
+[sub_resource type="BoxMesh" id="Mesh_ScreenBack"]
+size = Vector3(13.2, 5.6, 0.35)
+
+[sub_resource type="BoxMesh" id="Mesh_ScreenFace"]
+size = Vector3(12.4, 4.9, 0.08)
+
+[sub_resource type="BoxMesh" id="Mesh_ScreenBorderH"]
+size = Vector3(12.6, 0.12, 0.16)
+
+[sub_resource type="BoxMesh" id="Mesh_ScreenBorderV"]
+size = Vector3(0.12, 5.14, 0.16)
+
+[sub_resource type="BoxMesh" id="Mesh_StageEdgeGlow"]
+size = Vector3(15.0, 0.08, 0.12)
+
+[sub_resource type="BoxMesh" id="Mesh_StageSideGlow"]
+size = Vector3(0.12, 0.08, 8.6)
+
+[sub_resource type="BoxMesh" id="Mesh_TrussBeam"]
+size = Vector3(16.0, 0.35, 0.45)
 
 [sub_resource type="BoxMesh" id="Mesh_TrussColumn"]
-size = Vector3(0.8, 11.0, 0.8)
+size = Vector3(0.45, 9.2, 0.45)
+
+[sub_resource type="CylinderMesh" id="Mesh_SpotCan"]
+top_radius = 0.18
+bottom_radius = 0.24
+height = 0.42
+
+[sub_resource type="CylinderMesh" id="Mesh_SpotLens"]
+top_radius = 0.2
+bottom_radius = 0.2
+height = 0.04
+
+[sub_resource type="BoxMesh" id="Mesh_AudienceRiser"]
+size = Vector3(18.0, 0.5, 1.8)
 
 [node name="keynote_stage" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_8eoi1")
+environment = SubResource("Environment_Keynote")
 
-[node name="StageFloor" type="MeshInstance3D" parent="."]
-material_override = SubResource("Mat_StageGloss")
-mesh = SubResource("Mesh_Floor")
+[node name="AuditoriumFloor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+material_override = SubResource("Mat_AuditoriumFloor")
+mesh = SubResource("Mesh_AuditoriumFloor")
+
+[node name="StageDeck" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -1.2)
+material_override = SubResource("Mat_StageDeck")
+mesh = SubResource("Mesh_StageDeck")
+
+[node name="StageEdgeFront" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 3.12)
+material_override = SubResource("Mat_NvidiaGreen")
+mesh = SubResource("Mesh_StageEdgeGlow")
+
+[node name="StageEdgeLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.52, -0.02, -1.2)
+material_override = SubResource("Mat_SoftGreenGlow")
+mesh = SubResource("Mesh_StageSideGlow")
+
+[node name="StageEdgeRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.52, -0.02, -1.2)
+material_override = SubResource("Mat_SoftGreenGlow")
+mesh = SubResource("Mesh_StageSideGlow")
+
+[node name="BackWall" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, -7.2)
+material_override = SubResource("Mat_AcousticWall")
+mesh = SubResource("Mesh_BackWall")
+
+[node name="SideWallLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -12.5, 6.5, 1.0)
+material_override = SubResource("Mat_AcousticWall")
+mesh = SubResource("Mesh_SideWall")
+
+[node name="SideWallRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 12.5, 6.5, 1.0)
+material_override = SubResource("Mat_AcousticWall")
+mesh = SubResource("Mesh_SideWall")
+
+[node name="AcousticFinL1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.2, 5.5, -6.5)
+material_override = SubResource("Mat_DarkMetal")
+mesh = SubResource("Mesh_AcousticFin")
+
+[node name="AcousticFinL1Strip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.2, 4.8, -6.02)
+material_override = SubResource("Mat_SoftGreenGlow")
+mesh = SubResource("Mesh_LightStripV")
+
+[node name="AcousticFinL2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.2, 5.5, -4.0)
+material_override = SubResource("Mat_DarkMetal")
+mesh = SubResource("Mesh_AcousticFin")
+
+[node name="AcousticFinL2Strip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.2, 4.8, -3.52)
+material_override = SubResource("Mat_SoftGreenGlow")
+mesh = SubResource("Mesh_LightStripV")
+
+[node name="AcousticFinR1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.2, 5.5, -6.5)
+material_override = SubResource("Mat_DarkMetal")
+mesh = SubResource("Mesh_AcousticFin")
+
+[node name="AcousticFinR1Strip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.2, 4.8, -6.02)
+material_override = SubResource("Mat_SoftGreenGlow")
+mesh = SubResource("Mesh_LightStripV")
+
+[node name="AcousticFinR2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.2, 5.5, -4.0)
+material_override = SubResource("Mat_DarkMetal")
+mesh = SubResource("Mesh_AcousticFin")
+
+[node name="AcousticFinR2Strip" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.2, 4.8, -3.52)
+material_override = SubResource("Mat_SoftGreenGlow")
+mesh = SubResource("Mesh_LightStripV")
 
 [node name="ScreenBack" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.3, -7.1)
-material_override = SubResource("Mat_ScreenFrameDark")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, -5.8)
+material_override = SubResource("Mat_ScreenFrame")
 mesh = SubResource("Mesh_ScreenBack")
 
 [node name="ScreenFace" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.3, -6.95)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, -5.62)
 material_override = SubResource("Mat_ScreenDisplay")
 mesh = SubResource("Mesh_ScreenFace")
 
 [node name="ScreenBorderTop" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.65, -6.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.12, -5.58)
 material_override = SubResource("Mat_NvidiaGreen")
 mesh = SubResource("Mesh_ScreenBorderH")
 
 [node name="ScreenBorderBottom" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, -6.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08, -5.58)
 material_override = SubResource("Mat_NvidiaGreen")
 mesh = SubResource("Mesh_ScreenBorderH")
 
 [node name="ScreenBorderLeft" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.15, 4.3, -6.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.24, 3.6, -5.58)
 material_override = SubResource("Mat_NvidiaGreen")
 mesh = SubResource("Mesh_ScreenBorderV")
 
 [node name="ScreenBorderRight" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.15, 4.3, -6.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.24, 3.6, -5.58)
 material_override = SubResource("Mat_NvidiaGreen")
 mesh = SubResource("Mesh_ScreenBorderV")
 
 [node name="ScreenSlogan" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.1, -6.8)
-font = ExtResource("6_font")
-pixel_size = 0.007
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.35, -5.52)
+font = ExtResource("2_font")
+pixel_size = 0.0058
 modulate = Color(0.55, 0.95, 0.1, 1)
 outline_modulate = Color(0.02, 0.05, 0.01, 1)
-outline_size = 18
+outline_size = 16
 text = "THE MORE YOU BUY,
 THE MORE YOU SAVE!"
-font_size = 110
+font_size = 104
 
 [node name="ScreenTicker" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, -6.8)
-font = ExtResource("6_font")
-pixel_size = 0.006
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.15, -5.52)
+font = ExtResource("2_font")
+pixel_size = 0.0048
 modulate = Color(1, 0.85, 0.2, 1)
 outline_modulate = Color(0.04, 0.04, 0.02, 1)
 outline_size = 12
 text = "★ 1000x FASTER ★ 0% DISCOUNTS ★ SOLD OUT FOREVER ★"
-font_size = 64
+font_size = 58
 
-[node name="StageFrontEdgeGlow" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 3.5)
-material_override = SubResource("Mat_NvidiaGreen")
-mesh = SubResource("Mesh_StageGlowEdge")
+[node name="TrussOverhead" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.9, -1.8)
+material_override = SubResource("Mat_DarkMetal")
+mesh = SubResource("Mesh_TrussBeam")
 
-[node name="CatwalkTruss" parent="." instance=ExtResource("5_catwalk")]
-transform = Transform3D(1.8, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 10.4, -2.0)
-
-[node name="TrussTowerLeft" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, 5.5, -2.0)
-material_override = SubResource("Mat_TrussTower")
+[node name="TrussColumnL" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8, 4.4, -1.8)
+material_override = SubResource("Mat_DarkMetal")
 mesh = SubResource("Mesh_TrussColumn")
 
-[node name="TrussTowerRight" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 5.5, -2.0)
-material_override = SubResource("Mat_TrussTower")
+[node name="TrussColumnR" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8, 4.4, -1.8)
+material_override = SubResource("Mat_DarkMetal")
 mesh = SubResource("Mesh_TrussColumn")
-
-[node name="SpotJensen" type="SpotLight3D" parent="."]
-transform = Transform3D(0.960104, 0.05125, -0.274906, 0.279642, -0.175959, 0.943843, 0, -0.983063, -0.18327, -5, 10.3, -2)
-light_color = Color(1, 0.97, 0.9, 1)
-light_energy = 9.0
-spot_range = 20.0
-spot_angle = 22.0
 
 [node name="SpotHousingJensen" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 10.2, -2)
+transform = Transform3D(1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, -3.5, 8.55, -1.7)
 material_override = SubResource("Mat_SpotHousing")
-mesh = SubResource("Mesh_SpotHousing")
+mesh = SubResource("Mesh_SpotCan")
 
-[node name="SpotCenter" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.190615, 0.981665, 0, -0.981665, -0.190615, 0, 10.3, -2)
+[node name="SpotLensJensen" type="MeshInstance3D" parent="SpotHousingJensen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.22, 0)
+material_override = SubResource("Mat_SpotLens")
+mesh = SubResource("Mesh_SpotLens")
+
+[node name="SpotJensen" type="SpotLight3D" parent="."]
+transform = Transform3D(0.965926, 0.088521, -0.24321, 0.258819, -0.330366, 0.907673, 0, -0.939693, -0.34202, -3.5, 8.5, -1.5)
 light_color = Color(1, 0.97, 0.9, 1)
-light_energy = 9.0
-shadow_enabled = true
-spot_range = 20.0
-spot_angle = 22.0
+light_energy = 8.5
+spot_range = 18.0
+spot_angle = 26.0
 
 [node name="SpotHousingCenter" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.2, -2)
+transform = Transform3D(1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, 0, 8.55, -1.7)
 material_override = SubResource("Mat_SpotHousing")
-mesh = SubResource("Mesh_SpotHousing")
+mesh = SubResource("Mesh_SpotCan")
 
-[node name="SpotVictim" type="SpotLight3D" parent="."]
-transform = Transform3D(0.960104, -0.05125, 0.274906, -0.279642, -0.175959, 0.943843, 0, -0.983063, -0.18327, 5, 10.3, -2)
-light_color = Color(1, 0.97, 0.9, 1)
+[node name="SpotLensCenter" type="MeshInstance3D" parent="SpotHousingCenter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.22, 0)
+material_override = SubResource("Mat_SpotLens")
+mesh = SubResource("Mesh_SpotLens")
+
+[node name="SpotCenter" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.241922, 0.970296, 0, -0.970296, -0.241922, 0, 8.5, -1.5)
+light_color = Color(0.96, 1, 0.92, 1)
 light_energy = 9.0
-spot_range = 20.0
-spot_angle = 22.0
+shadow_enabled = true
+spot_range = 18.0
+spot_angle = 28.0
 
 [node name="SpotHousingVictim" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 10.2, -2)
+transform = Transform3D(1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, 3.5, 8.55, -1.7)
 material_override = SubResource("Mat_SpotHousing")
-mesh = SubResource("Mesh_SpotHousing")
+mesh = SubResource("Mesh_SpotCan")
+
+[node name="SpotLensVictim" type="MeshInstance3D" parent="SpotHousingVictim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.22, 0)
+material_override = SubResource("Mat_SpotLens")
+mesh = SubResource("Mesh_SpotLens")
+
+[node name="SpotVictim" type="SpotLight3D" parent="."]
+transform = Transform3D(0.965926, -0.088521, 0.24321, -0.258819, -0.330366, 0.907673, 0, -0.939693, -0.34202, 3.5, 8.5, -1.5)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 8.5
+spot_range = 18.0
+spot_angle = 26.0
 
 [node name="SunLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.939693, -0.144544, 0.309976, 0, 0.906308, 0.422618, -0.34202, -0.397131, 0.851651, 0, 0, 0)
 light_color = Color(0.95, 0.97, 1, 1)
-light_energy = 0.9
+light_energy = 0.85
 shadow_enabled = true
 
 [node name="GreenRimLight" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -4)
-light_color = Color(0.5, 0.85, 0.2, 1)
-light_energy = 3.0
-omni_range = 16.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8, -3.8)
+light_color = Color(0.45, 0.9, 0.15, 1)
+light_energy = 2.4
+omni_range = 14.0
+
+[node name="AudienceRiser1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, 8.2)
+material_override = SubResource("Mat_AcousticWall")
+mesh = SubResource("Mesh_AudienceRiser")
 
 [node name="SpeakerLeft" parent="." instance=ExtResource("1_speaker")]
-transform = Transform3D(1.4, 0, 0, 0, 1.3523, 0.362347, 0, -0.362347, 1.3523, -3.5, 0.05, 3.2)
-
-[node name="SpeakerCenter" parent="." instance=ExtResource("1_speaker")]
-transform = Transform3D(1.4, 0, 0, 0, 1.3523, 0.362347, 0, -0.362347, 1.3523, 0, 0.05, 3.2)
+transform = Transform3D(0.9, 0, 0.2, 0, 0.869333, 0.232937, -0.2, -0.232937, 0.869333, -3.8, 0.0, 2.7)
 
 [node name="SpeakerRight" parent="." instance=ExtResource("1_speaker")]
-transform = Transform3D(1.4, 0, 0, 0, 1.3523, 0.362347, 0, -0.362347, 1.3523, 3.5, 0.05, 3.2)
-
-[node name="Barrier1" parent="." instance=ExtResource("2_barrier")]
-transform = Transform3D(0, 0, 1.4, 0, 1.4, 0, -1.4, 0, 0, -7.2, 0, 1.5)
-
-[node name="Barrier2" parent="." instance=ExtResource("2_barrier")]
-transform = Transform3D(0, 0, 1.4, 0, 1.4, 0, -1.4, 0, 0, -7.2, 0, 4.2)
-
-[node name="Barrier3" parent="." instance=ExtResource("2_barrier")]
-transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, -5.5, 0, 5.5)
-
-[node name="Barrier4" parent="." instance=ExtResource("2_barrier")]
-transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 5.5, 0, 5.5)
-
-[node name="Barrier5" parent="." instance=ExtResource("2_barrier")]
-transform = Transform3D(0, 0, -1.4, 0, 1.4, 0, 1.4, 0, 0, 7.2, 0, 4.2)
-
-[node name="ServerRackLeft1" parent="." instance=ExtResource("3_container_tall")]
-transform = Transform3D(-6.11959e-08, 0, 1.4, 0, 1.4, 0, -1.4, 0, -6.11959e-08, -9.0, 0, -3.5)
-
-[node name="ServerRackLeft2" parent="." instance=ExtResource("4_container_wide")]
-transform = Transform3D(-6.11959e-08, 0, 1.4, 0, 1.4, 0, -1.4, 0, -6.11959e-08, -9.0, 0, 0.2)
-
-[node name="ServerRackRight1" parent="." instance=ExtResource("3_container_tall")]
-transform = Transform3D(-6.11959e-08, 0, -1.4, 0, 1.4, 0, 1.4, 0, -6.11959e-08, 9.0, 0, -3.5)
-
-[node name="ServerRackRight2" parent="." instance=ExtResource("4_container_wide")]
-transform = Transform3D(-6.11959e-08, 0, -1.4, 0, 1.4, 0, 1.4, 0, -6.11959e-08, 9.0, 0, 0.2)
+transform = Transform3D(0.9, 0, -0.2, 0, 0.869333, 0.232937, 0.2, -0.232937, 0.869333, 3.8, 0.0, 2.7)
 
 [node name="Jensen" type="Marker3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -2.3, 0, 0)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -1.65, 0, 0.3)
 
 [node name="Victim" type="Marker3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.3, 0, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.65, 0, 0.3)
 
 [node name="Center" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0, 0.3)
 
 [node name="Cam_Wide" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 9.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 5.8)
 
 [node name="Cam_Low" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.7, 6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 0.7, 4.4)
 
 [node name="Cam_Hero" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 1.5, 5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.4, 4.2)
