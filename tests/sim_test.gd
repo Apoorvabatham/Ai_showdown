@@ -744,6 +744,28 @@ func training_tests() -> void:
 	hold(5, 28)
 	check("Training: playback replays the recording", p2.position.x > p2x + 0.3, "dx %.2f" % (p2.position.x - p2x))
 	dc.stance = TrainingDummyController.Stance.STAND
+
+	# Simple-game training UI: plain key names incl. Power/Super, no "INPUT 99",
+	# bottom hint strip (with pad buttons when pad is in use), frame data default OFF.
+	check("Training: frame data defaults OFF and is labelled advanced",
+		not tm.show_frame_data and not tm._frame_label.get_parent().visible
+		and tm._menu.find_children("*", "Label", true, false).any(func(l: Label) -> bool: return l.text == "Frame data (advanced)"))
+	press(InputBuffer.POWER, 6); step(2)
+	var hist_text: String = tm.format_history()
+	check("Training: plain input display and history with Power/Super, no LP or INPUT 99",
+		hist_text.begins_with("RECENT INPUTS") and not hist_text.contains("99") and not hist_text.contains("LP")
+		and hist_text.contains("O (Power)")
+		and tm._input_display.lamps.any(func(l: Array) -> bool: return l[0] == InputBuffer.POWER and l[1] == "O")
+		and tm._input_display.lamps.any(func(l: Array) -> bool: return l[0] == InputBuffer.SUPER and l[1] == "P"),
+		hist_text)
+	var status_panel := tm._status.get_parent() as Control
+	check("Training: hint strip moved off top stage sign to bottom",
+		status_panel.anchor_top == 1.0 and status_panel.anchor_bottom == 1.0)
+	tm._set_using_pad(true)
+	check("Training: pad buttons shown when a pad is in use",
+		tm._status.text.contains("Back") and tm._status.text.contains("L3")
+		and tm._input_display.lamps.any(func(l: Array) -> bool: return l[0] == InputBuffer.POWER and l[1] == "LB"))
+	tm._set_using_pad(false)
 	gs.mode = gs.Mode.VS_CPU
 
 
