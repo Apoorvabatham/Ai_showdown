@@ -39,6 +39,9 @@ Claude merges it. If you are such an agent: stay in your worktree, commit there,
 
 - Godot 4.7.2. After any change run
   `godot --headless --path . -s res://tests/sim_test.gd`; it must print `0 failure(s)`.
+- **On the owner's laptop, run Godot only through `C:\Users\batha\.local\bin\godot-q.cmd`**
+  (same arguments as godot). It allows at most 2 Godot jobs machine-wide (others wait) and runs
+  them at low priority, so the laptop stays usable. Never start several Godot runs in parallel.
 - Fighter looks: one fighter at a time; the owner approves each. Any change must be clearly
   distinct, not subtle (HANDOFF §3).
 - Generated files (`data/characters/`, `data/moves/`) are never hand-edited: change the
