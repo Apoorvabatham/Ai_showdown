@@ -57,7 +57,7 @@ func build() -> void:
 	victim.position = (inside.position if inside else Vector3(0, 0.3, -0.3)) + Vector3(0, -0.04, 0.20)
 	victim.scale = VICTIM_IN_PAGE_SCALE
 	victim.rotation.y = PI # faces the viewer
-	victim.hold(&"fight/wall_splat", 0.15)
+	victim.hold(&"ual1/Hit_Chest", 0.12)
 	victim.face = &"pain"
 	# Sundar, off to the side, typing on a floating keyboard.
 	sundar = puppet(attacker, void_set)

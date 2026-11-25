@@ -88,7 +88,7 @@ func run() -> void:
 	shot("lecture_hall", "Cam_Geoff", podium + Vector3(-0.1, 0.05, 0.3))
 	geoff.play(&"fight/crouch_guard")
 	geoff.face = &"sad"
-	big_text("WHAT HAVE I DONE?!", podium + Vector3(0.1, 1.45, 0.2), Color(1.0, 0.45, 0.45), 0.78, REGRET_TIME - 0.15)
+	big_text("WHAT HAVE I DONE?!", podium + Vector3(0.1, 1.45, 0.2), Color(1.0, 0.45, 0.45), 0.78, REGRET_TIME - 0.28)
 	await wait(REGRET_TIME)
 
 	# 4. Final Catastrophic Overfit Blast

@@ -187,8 +187,11 @@ func big_text(text: String, at: Vector3, color := Color(1.0, 0.94, 0.72), size :
 func _update_big_texts() -> void:
 	for i in range(_big_texts.size() - 1, -1, -1):
 		var entry: Dictionary = _big_texts[i]
+		if not is_instance_valid(entry["label"]):
+			_big_texts.remove_at(i)
+			continue
 		var label: Label3D = entry["label"]
-		if not is_instance_valid(label) or not label.is_inside_tree():
+		if not label.is_inside_tree():
 			_big_texts.remove_at(i)
 			continue
 		_fit_big_text(entry)
