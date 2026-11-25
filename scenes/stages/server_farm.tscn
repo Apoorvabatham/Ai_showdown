@@ -2,8 +2,90 @@
 
 [ext_resource type="PackedScene" path="res://scenes/stages/rooftop.tscn" id="1_base"]
 [ext_resource type="Script" path="res://scripts/stages/stage_retheme.gd" id="2_retheme"]
+[ext_resource type="Shader" path="res://assets/stages/rooftop/night_skyline.gdshader" id="3_sky_shader"]
+[ext_resource type="Texture2D" path="res://assets/stages/rooftop/shanghai_bund_skyline.jpg" id="4_sky_tex"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_server_farm_sky"]
+shader = ExtResource("3_sky_shader")
+shader_parameter/skyline = ExtResource("4_sky_tex")
+shader_parameter/top_elevation = 52.0
+shader_parameter/u_offset = 0.8
+shader_parameter/section_start = 0.335
+shader_parameter/section_end = 0.805
+shader_parameter/zenith_color = Color(0.02, 0.04, 0.09, 1)
+shader_parameter/haze_color = Color(0.05, 0.08, 0.15, 1)
+shader_parameter/energy = 0.72
+shader_parameter/city_light_density = 0.18
+
+[sub_resource type="Sky" id="Sky_server_farm"]
+sky_material = SubResource("ShaderMaterial_server_farm_sky")
+radiance_size = 2
+
+[sub_resource type="Environment" id="Environment_server_farm"]
+background_mode = 2
+sky = SubResource("Sky_server_farm")
+ambient_light_source = 3
+ambient_light_energy = 0.48
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.96
+ssr_enabled = true
+ssr_max_steps = 16
+ssr_fade_in = 0.15
+ssr_fade_out = 2.0
+ssr_depth_tolerance = 0.25
+ssao_enabled = false
+glow_enabled = true
+glow_intensity = 0.85
+glow_bloom = 0.14
+glow_blend_mode = 1
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0055
+volumetric_fog_albedo = Color(0.24, 0.44, 0.72, 1)
+volumetric_fog_length = 38.0
+volumetric_fog_sky_affect = 0.0
+adjustment_enabled = true
+adjustment_contrast = 1.14
+adjustment_saturation = 1.12
 
 [node name="ServerFarm" instance=ExtResource("1_base")]
+
+[node name="WorldEnvironment" parent="."]
+environment = SubResource("Environment_server_farm")
+
+[node name="Moonlight" parent="Lights"]
+light_color = Color(0.55, 0.68, 1, 1)
+light_energy = 0.55
+
+[node name="FloodlightL" parent="Lights"]
+light_color = Color(0.76, 0.88, 1, 1)
+light_energy = 4.6
+light_volumetric_fog_energy = 1.6
+
+[node name="FloodlightR" parent="Lights"]
+light_color = Color(0.76, 0.88, 1, 1)
+light_energy = 4.6
+light_volumetric_fog_energy = 1.6
+
+[node name="TopFill" parent="Lights"]
+light_color = Color(0.84, 0.91, 1, 1)
+light_energy = 2.8
+
+[node name="WetReflections" parent="Lights"]
+intensity = 0.9
+max_distance = 40.0
+size = Vector3(26, 9, 22)
+origin_offset = Vector3(0, 1.5, -2.5)
+ambient_mode = 2
+ambient_color = Color(0.06, 0.09, 0.15, 1)
+
+[node name="NeonGlow0" parent="."]
+light_color = Color(0.85, 0.22, 0.65, 1)
+light_energy = 0.85
+
+[node name="NeonGlow1" parent="."]
+light_color = Color(0.15, 0.82, 1, 1)
+light_energy = 1.2
 
 [node name="Retheme" type="Node3D" parent="." index="1"]
 script = ExtResource("2_retheme")
