@@ -738,8 +738,8 @@ func _resolve_throws() -> void:
 		a.tech_apart()
 		b.tech_apart()
 		if not resimulating:
-			hud.note(0, "TECH")
-			hud.note(1, "TECH")
+			hud.note(0, "ESCAPED!")
+			hud.note(1, "ESCAPED!")
 		return
 	for attacker in fighters:
 		if not attacker.is_throw_grab_frame():
@@ -865,9 +865,9 @@ func _resolve_hits() -> void:
 			if not resimulating:
 				cinematic_started.emit(attacker, defender, move)
 		if result == Fighter.HitResult.COUNTER and not resimulating:
-			hud.note(fighters.find(attacker), "COUNTER")
+			hud.note(fighters.find(attacker), "INTERRUPT!")
 		elif result == Fighter.HitResult.ARMORED and not resimulating:
-			hud.note(fighters.find(defender), "ARMOR")
+			hud.note(fighters.find(defender), "TANKED IT!")
 		last_hit_point = hit[2]
 		hit_landed.emit(attacker, defender, move, result)
 
@@ -895,7 +895,7 @@ func _reverse(reverser: Fighter, attacker: Fighter, point: Vector3) -> void:
 	attacker.on_grabbed_by(reverser, false)
 	last_hit_point = point
 	if not resimulating:
-		hud.note(fighters.find(reverser), "REVERSAL")
+		hud.note(fighters.find(reverser), "COMEBACK!")
 	reversal_landed.emit(reverser, attacker)
 	throw_landed.emit(reverser, attacker)
 
@@ -919,7 +919,7 @@ func _on_wall_hit(fighter: Fighter) -> void:
 
 func _on_throw_teched(defender: Fighter) -> void:
 	if not resimulating:
-		hud.note(fighters.find(defender), "TECH")
+		hud.note(fighters.find(defender), "ESCAPED!")
 
 
 # --- Rollback support ------------------------------------------------------------
