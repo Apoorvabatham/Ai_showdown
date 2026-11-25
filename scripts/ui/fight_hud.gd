@@ -75,6 +75,7 @@ const ARROWS :={"1": "↙", "2": "↓", "3": "↘", "4": "←", "6": "→", "7":
 @onready var move_list_panel: Control = %MoveListPanel
 @onready var move_list_label: Label = %MoveListLabel
 
+var _move_list_grid: GridContainer
 var _trail_tweens := {}
 var _note_tweens := {} # note label -> its tween
 var _announce_tween: Tween
@@ -185,6 +186,7 @@ func _style_top() -> void:
 	UiStyle.use_glass(get_node_or_null("PauseMenu/Center/Row/Panel"), 36.0)
 	UiStyle.use_glass(move_list_panel, 32.0)
 	%MoveListButton.text = "Controls"
+	_build_move_list()
 
 
 ## Newcomer help: the controls in a glass pill near the bottom for a few seconds, the first
@@ -234,10 +236,7 @@ func setup(p1: Fighter, p2: Fighter, rounds_to_win: int, p2_tag: String = "CPU")
 	for pips in [p1_pips, p2_pips]:
 		for i in rounds_to_win:
 			pips.add_child(_make_pip())
-	var mono := SystemFont.new()
-	mono.font_names = PackedStringArray(["Consolas", "DejaVu Sans Mono", "Menlo", "monospace"])
-	move_list_label.add_theme_font_override("font", mono)
-	move_list_label.text = _move_list_text(p1.data)
+	_fill_move_list(p1.data)
 	for label in [p1_combo, p2_combo, p1_note, p2_note, center_label, sub_label]:
 		label.text = ""
 
@@ -728,14 +727,47 @@ func _make_pip() -> Panel:
 	return pip
 
 
-func _move_list_text(character: CharacterData) -> String:
+## The controls screen: the theme font instead of a monospace one, with the columns as a
+## GridContainer so they line up without space padding.
+func _build_move_list() -> void:
+	var panel := move_list_label.get_parent() as PanelContainer
+	if panel == null or _move_list_grid != null:
+		return
+	var box := VBoxContainer.new()
+	box.name = "MoveListBox"
+	box.add_theme_constant_override("separation", 10)
+	panel.remove_child(move_list_label)
+	panel.add_child(box)
+	box.add_child(move_list_label)
+	_move_list_grid = GridContainer.new()
+	_move_list_grid.name = "MoveListGrid"
+	_move_list_grid.columns = 3
+	_move_list_grid.add_theme_constant_override("h_separation", 28)
+	_move_list_grid.add_theme_constant_override("v_separation", 6)
+	box.add_child(_move_list_grid)
+	var footer := Label.new()
+	footer.add_theme_font_size_override("font_size", 20)
+	footer.add_theme_color_override("font_color", UiStyle.ACCENT)
+	footer.text = "Fill the SUPER bar by fighting, then press Super."
+	box.add_child(footer)
+
+
+func _fill_move_list(character: CharacterData) -> void:
+	if _move_list_grid == null:
+		return
+	move_list_label.text = "%s - CONTROLS" % character.display_name.to_upper()
+	for child in _move_list_grid.get_children():
+		_move_list_grid.remove_child(child)
+		child.queue_free()
 	# Plain buttons only (the parody needs no fighting-game notation).
-	var lines := PackedStringArray(["%s - CONTROLS" % character.display_name.to_upper(), ""])
 	for row: Array in EasySpecials.simple_rows(character, _p1_key_names()):
-		lines.append(("%-16s %-14s %s" % row).strip_edges(false, true))
-	lines.append("")
-	lines.append("Fill the SUPER bar by fighting, then press Super.")
-	return "\n".join(lines)
+		for column in 3:
+			var cell := Label.new()
+			cell.text = str(row[column])
+			cell.add_theme_font_size_override("font_size", 22)
+			if column == 0:
+				cell.add_theme_color_override("font_color", UiStyle.ACCENT)
+			_move_list_grid.add_child(cell)
 
 
 ## P1's bound key names by action ("lp" -> "U"). Looked up at run time: this script also
