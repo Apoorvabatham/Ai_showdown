@@ -17,6 +17,7 @@ Godot only via `C:\Users\batha\.local\bin\godot-q.cmd` (2 slots, mutex-based sin
 - `relay/xi-banner`: Xi victory lanterns no longer cover the banner (5 lines).
 - `relay/story-proof`: story text proofreading (7 files, small).
 - `relay/g-hotspot`: Server Farm light 2.8 -> 1.4 (judge on a fight capture).
+- `relay/jaw-test` (4120b38): deterministic jaw test via set_voice_frame() hook (inactive in play); suite 0 failure(s) x2.
 
 ## In progress (worktree -> what's left)
 - `relay/g-style` (agent-worktrees/.../relay_g-style): style clips Jensen/Zuckerbot/Xi, UNCOMMITTED.
@@ -25,7 +26,6 @@ Godot only via `C:\Users\batha\.local\bin\godot-q.cmd` (2 slots, mutex-based sin
 - `relay/g-xi-likeness`: Xi round 2 (Opus continuing Gemini's work). MUST revert other fighters' hair
   changes (Jensen approved at 1505752). Needs owner approval of docs/review/likeness/xi_round2.png.
   Branch also carries Jensen's approved likeness: merge after Xi is approved (or cherry-pick 1505752).
-- `relay/jaw-test`: deterministic "A shout opens the jaw" test (Sonnet finishing).
 - Yann `word_tokens` missing clip `fight/overhead_smash` (Sonnet, worktree under .claude/worktrees).
 - Alt-outfit shoes (Sonnet, .claude/worktrees). Dario's red alt outfit is barefoot.
 - Relay jobs: docs-refresh (OpenCode), stage-thumbs (OpenCode HY4), senate-desks (OpenCode),
