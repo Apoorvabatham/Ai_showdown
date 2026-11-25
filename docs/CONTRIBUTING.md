@@ -50,6 +50,10 @@ extra code.
 
 1. Install **Godot 4.7.2** (the standard build, not .NET) and put the binary on your
    `PATH` as `godot`. Any `godot` alias or full path works in the commands below.
+   On the owner's laptop, run Godot through
+   `C:\Users\batha\.local\bin\godot-q.cmd` instead of `godot` — same arguments, but it
+   allows at most 2 Godot jobs machine-wide and runs them at low priority. Never start
+   several Godot runs in parallel.
 2. Clone the repo and import the assets once (needed before the first run and after
    adding any PNG, OGG or model):
 
@@ -459,7 +463,7 @@ are written to `user://balance_results.json`.
 
 A roster fighter can play differently from its kit. Its overrides live in `MOVESETS` in
 `tools/showdown_movesets.gd`, keyed by fighter id. The `sundar` entry is a full example:
-it removes two kit moves, tweaks one, adds three and sets its own trials. Do not edit
+it removes two kit moves, tweaks one, adds three. Do not edit
 `data/moves/<id>/` by hand. The roster builder rewrites it.
 
 Keys (all optional):
