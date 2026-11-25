@@ -12,13 +12,13 @@ const GOLD := Color(1.0, 0.82, 0.3)
 const MIN_SECONDS := 0.6
 const TIPS := [
 	"Hold back to block. Hold down-back to block lows; overheads must be blocked standing.",
-	"Normals that connect can be cancelled into a special move.",
 	"Power button (O): your signature move. Add forward, back or down for the others.",
+	"Down + Power (O / LB) fires one of your specials, no warm-up required.",
+	"Back + Power (O / LB) fires another special; Forward + Power fires the next.",
 	"Fill the SUPER meter, then press Super (P) for a screen-changing super move.",
+	"The SUPER meter fills when you hit AND when you get hit, so even a rough round charges Super (P / RT).",
 	"Light Punch + Light Kick up close throws. Press it again as you're grabbed to break free.",
 	"Sidestep (L / RB) to dodge fireballs and step around attacks.",
-	"Dragon-punch motions (forward, down, down-forward + punch) are invincible as they start: perfect against jump-ins.",
-	"Tap forward twice to dash in, back twice to backdash out.",
 	"Hitting an opponent during their attack's startup is a COUNTER hit: more damage, more stun.",
 	"Training mode shows live frame data. Plus frames mean it's your turn.",
 	"Donald's Trade War containers tumble along the floor: jump them or sidestep.",
