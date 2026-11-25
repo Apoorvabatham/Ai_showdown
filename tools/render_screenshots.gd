@@ -85,12 +85,26 @@ func _fight(shot: Array) -> void:
 		for mv in p1.data.moves:
 			if mv.super_move:
 				super_move = mv
-		p1.position.x = fight.fighters[1].position.x - 1.3 * signf(fight.fighters[1].position.x - p1.position.x)
+		# Both stand still up close so the super connects and its scene plays.
+		var p2: Fighter = fight.fighters[1]
+		p1.controller = fight.dummy
+		p2.controller = fight.dummy
+		fight.dummy.mode = DummyController.Mode.STAND
+		p1.position.x = p2.position.x - 0.9 * signf(p2.position.x - p1.position.x)
 		p1.add_meter(p1.MAX_METER)
+		var started := [false]
+		fight.cinematic_started.connect(func(_a, _d, _m): started[0] = true)
 		p1._start_move(super_move, false)
-		for i in 26:
+		var guard := 0
+		while not started[0] and guard < 600:
+			fight.step()
+			guard += 1
+			if guard % 3 == 0:
+				await process_frame
+		for i in 20:
 			fight.step()
 			await process_frame
+	fight.hud.set_debug_text("") # the F-key debug line only shows in debug builds
 	await _frames(12)
 	_save(shot[0])
 
