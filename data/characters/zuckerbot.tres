@@ -22,6 +22,7 @@
 [ext_resource type="Resource" path="res://data/moves/zuckerbot/valkyrie_slam.tres" id="21_7bj5o"]
 [ext_resource type="Resource" path="res://data/moves/zuckerbot/spinning_lariat.tres" id="22_ypdyu"]
 [ext_resource type="Resource" path="res://data/moves/zuckerbot/thunder_valkyrie.tres" id="23_08k0e"]
+[ext_resource type="Resource" path="res://data/moves/zuckerbot/like_bomb.tres" id="23_507e8"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/zuckerbot_body.res" id="24_8fbpp"]
 [ext_resource type="Script" path="res://scripts/character_data.gd" id="24_n7hc1"]
 [ext_resource type="ArrayMesh" path="res://assets/characters/outfits/zuckerbot_outfit.res" id="25_507e8"]
@@ -104,4 +105,4 @@ weight = 1.15
 throw_damage = 150
 power_rating = 0.8
 speed_rating = 0.4
-moves = Array[ExtResource("6_e7n0n")]([ExtResource("7_m6y5y"), ExtResource("8_unmaa"), ExtResource("9_q0dgj"), ExtResource("10_2qwxw"), ExtResource("11_xs5d5"), ExtResource("12_bgh70"), ExtResource("13_gjckp"), ExtResource("14_jauun"), ExtResource("15_tak2n"), ExtResource("16_grndd"), ExtResource("17_2nowt"), ExtResource("18_u4x7l"), ExtResource("19_ckd4p"), ExtResource("20_86871"), ExtResource("21_7bj5o"), ExtResource("22_ypdyu"), ExtResource("23_08k0e")])
+moves = Array[ExtResource("6_e7n0n")]([ExtResource("7_m6y5y"), ExtResource("8_unmaa"), ExtResource("9_q0dgj"), ExtResource("10_2qwxw"), ExtResource("11_xs5d5"), ExtResource("12_bgh70"), ExtResource("13_gjckp"), ExtResource("14_jauun"), ExtResource("15_tak2n"), ExtResource("16_grndd"), ExtResource("17_2nowt"), ExtResource("18_u4x7l"), ExtResource("19_ckd4p"), ExtResource("20_86871"), ExtResource("21_7bj5o"), ExtResource("22_ypdyu"), ExtResource("23_08k0e"), ExtResource("23_507e8")])
