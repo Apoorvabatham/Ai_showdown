@@ -34,7 +34,7 @@ A parody 2-player 3D fighting game in which caricatures of AI-industry public pe
 
 ## Roster
 
-Fighters have individual builds (height, belly, slim or heavy), glasses and hair pieces, defined per fighter in the roster builder.
+Fighters have individual builds (height, belly, slim or heavy), glasses, hair pieces and shoes, defined per fighter in the roster builder.
 
 ![Roster model sheet](docs/screenshots/roster.jpg)
 
@@ -52,7 +52,11 @@ Fighters have individual builds (height, belly, slim or heavy), glasses and hair
 | xi | Xi Winping | aelia | Open-Source Squad |
 | algorithm | AGI (final boss) | rhea | Engagement Loop |
 
+Each fighter also has a themed Power move that throws an animated object. Mark Zuckerbot's Power slot is **Like Bomb**, a pair of blue thumbs-up projectiles (`data/moves/zuckerbot/like_bomb.tres`; ROADMAP §2).
+
 ## Stages
+
+The stages have had a realism pass (lighting, materials and props).
 
 - **Server Farm**: the original rooftop, rethemed.
 - **Mensa**: a university cafeteria, rethemed from the dojo.
