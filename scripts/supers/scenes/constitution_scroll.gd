@@ -55,7 +55,7 @@ func run() -> void:
 	sound("victory")
 	dario.play(&"fight/focus_stance")
 	dario.face = &"shout"
-	big_text("ARTICLE 1: SAFETY!", dario.global_position + Vector3(0.5, 2.3, 0), Color(1.0, 0.92, 0.7), 0.85, UNFURL_TIME)
+	big_text("ARTICLE 1: SAFETY!", dario.global_position + Vector3(0.5, 2.3, 0), Color(1.0, 0.92, 0.7), 0.85, UNFURL_TIME - 0.18)
 	await wait(UNFURL_TIME)
 
 	# 2. Giant constitution scroll descends and wraps around opponent
@@ -66,7 +66,7 @@ func run() -> void:
 	wrap_tween.tween_property(scroll, "scale", Vector3(1.05, 1.0, 1.05), WRAP_TIME).from(Vector3(0.08, 1.0, 0.08)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	victim.play(&"fight/crouch_guard")
 	victim.face = &"surprise"
-	big_text("BOUND BY PRINCIPLES!", scroll_spot + Vector3(0, 2.2, 0), Color(0.95, 0.85, 0.4), 0.8, WRAP_TIME)
+	big_text("BOUND BY PRINCIPLES!", scroll_spot + Vector3(0, 2.2, 0), Color(0.95, 0.85, 0.4), 0.8, WRAP_TIME - 0.18)
 	await wait(WRAP_TIME)
 
 	# 3. Giant stamp slams onto the front of the scroll

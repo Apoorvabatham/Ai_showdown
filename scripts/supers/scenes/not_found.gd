@@ -51,13 +51,13 @@ func build() -> void:
 		_page_error.visible = false
 	if _progress:
 		_progress.scale.x = 0.001
-	# The opponent, stuck inside the page, scaled so their head sits cleanly below the toolbar.
+	# The opponent, stuck inside the page, scaled and nudged forward so their head stays clear of the backing.
 	var inside := window.find_child("Inside", true, false) as Node3D
 	victim = puppet(defender, window)
-	victim.position = (inside.position if inside else Vector3(0, 0.3, -0.3)) + Vector3(0, -0.04, 0)
+	victim.position = (inside.position if inside else Vector3(0, 0.3, -0.3)) + Vector3(0, -0.04, 0.20)
 	victim.scale = VICTIM_IN_PAGE_SCALE
 	victim.rotation.y = PI # faces the viewer
-	victim.hold(&"fight/wall_splat", 0.25)
+	victim.hold(&"fight/wall_splat", 0.15)
 	victim.face = &"pain"
 	# Sundar, off to the side, typing on a floating keyboard.
 	sundar = puppet(attacker, void_set)

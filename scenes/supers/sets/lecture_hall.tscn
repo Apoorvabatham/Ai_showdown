@@ -395,50 +395,50 @@ transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 2.2, 0.5, 0)
 material_override = SubResource("Mat_NodeOutput")
 mesh = SubResource("Mesh_BoardNode")
 
-[node name="Podium" type="Node3D" parent="."]
+[node name="Lectern" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 0.22, 0.2)
 
-[node name="Base" type="MeshInstance3D" parent="Podium"]
+[node name="Base" type="MeshInstance3D" parent="Lectern"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 material_override = SubResource("Mat_DarkCherry")
 mesh = SubResource("Mesh_PodiumBase")
 
-[node name="Column" type="MeshInstance3D" parent="Podium"]
+[node name="Column" type="MeshInstance3D" parent="Lectern"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.62, 0)
 material_override = SubResource("Mat_DarkCherry")
 mesh = SubResource("Mesh_PodiumCol")
 
-[node name="Top" type="MeshInstance3D" parent="Podium"]
+[node name="Top" type="MeshInstance3D" parent="Lectern"]
 transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 1.18, 0)
 material_override = SubResource("Mat_DaisWood")
 mesh = SubResource("Mesh_PodiumTop")
 
-[node name="MicStem" type="MeshInstance3D" parent="Podium"]
+[node name="MicStem" type="MeshInstance3D" parent="Lectern"]
 transform = Transform3D(0.965926, -0.24321, 0.088521, 0.258819, 0.907673, -0.330366, 0, 0.34202, 0.939693, 0.3, 1.35, -0.1)
 material_override = SubResource("Mat_Brass")
 mesh = SubResource("Mesh_MicStem")
 
-[node name="MicHead" type="MeshInstance3D" parent="Podium"]
+[node name="MicHead" type="MeshInstance3D" parent="Lectern"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.52, -0.05)
 material_override = SubResource("Mat_DarkIron")
 mesh = SubResource("Mesh_MicHead")
 
-[node name="LampBase" type="MeshInstance3D" parent="Podium"]
+[node name="LampBase" type="MeshInstance3D" parent="Lectern"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 1.28, -0.15)
 material_override = SubResource("Mat_Brass")
 mesh = SubResource("Mesh_LampStem")
 
-[node name="LampShade" type="MeshInstance3D" parent="Podium"]
+[node name="LampShade" type="MeshInstance3D" parent="Lectern"]
 transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, -0.35, 1.38, -0.15)
 material_override = SubResource("Mat_BankerGreen")
 mesh = SubResource("Mesh_LampShade")
 
-[node name="Papers" type="MeshInstance3D" parent="Podium"]
+[node name="Papers" type="MeshInstance3D" parent="Lectern"]
 transform = Transform3D(0.996195, 0.022558, 0.084186, 0, 0.965926, -0.258819, -0.087156, 0.257834, 0.96225, 0, 1.22, 0.02)
 material_override = SubResource("Mat_Paper")
 mesh = SubResource("Mesh_Paper")
 
-[node name="PodiumBooks" parent="Podium" instance=ExtResource("3_books")]
+[node name="PodiumBooks" parent="Lectern" instance=ExtResource("3_books")]
 transform = Transform3D(1.2, 0, 0.2, 0, 1.2, 0, -0.2, 0, 1.2, 0.38, 1.22, 0.14)
 
 [node name="Tier1Riser" type="MeshInstance3D" parent="."]
@@ -503,8 +503,6 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.5, 0.22, -0.8)
 [node name="Board" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 2.4, -3.1)
 
-[node name="PodiumMarker" type="Marker3D" parent="."]
-
 [node name="Podium" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 1.42, 0.2)
 
@@ -515,7 +513,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.9, 5.2)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.55, 2.5)
 
 [node name="Cam_Geoff" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 1.48, 2.35)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 1.52, 2.15)
 
 [node name="Cam_Zap" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 1.65, 3.85)

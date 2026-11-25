@@ -34,24 +34,40 @@ albedo_color = Color(0.18, 0.38, 0.2, 1)
 roughness = 0.85
 metallic = 0.05
 
+[sub_resource type="FastNoiseLite" id="Noise_Clouds"]
+frequency = 0.018
+fractal_octaves = 4
+
+[sub_resource type="Gradient" id="Grad_Clouds"]
+offsets = PackedFloat32Array(0.42, 0.72)
+colors = PackedColorArray(1, 1, 1, 0, 0.96, 0.98, 1, 0.75)
+
+[sub_resource type="NoiseTexture2D" id="Tex_Clouds"]
+width = 512
+height = 256
+seamless = true
+color_ramp = SubResource("Grad_Clouds")
+noise = SubResource("Noise_Clouds")
+
 [sub_resource type="StandardMaterial3D" id="Mat_EarthOcean"]
-albedo_color = Color(0.04, 0.2, 0.56, 1)
-roughness = 0.38
-metallic = 0.12
+albedo_color = Color(0.03, 0.16, 0.48, 1)
+roughness = 0.35
+metallic = 0.1
 
 [sub_resource type="StandardMaterial3D" id="Mat_EarthClouds"]
-albedo_color = Color(0.92, 0.96, 1, 0.22)
-roughness = 0.85
+albedo_color = Color(1, 1, 1, 1)
+albedo_texture = SubResource("Tex_Clouds")
+roughness = 0.9
 transparency = 1
 
 [sub_resource type="StandardMaterial3D" id="Mat_Atmosphere"]
-albedo_color = Color(0.18, 0.55, 1, 0.14)
-roughness = 0.25
+albedo_color = Color(0.2, 0.6, 1, 0.18)
+roughness = 0.2
 transparency = 1
-cull_mode = 0
+cull_mode = 1
 emission_enabled = true
-emission = Color(0.14, 0.44, 0.92, 1)
-emission_energy_multiplier = 0.28
+emission = Color(0.16, 0.5, 0.98, 1)
+emission_energy_multiplier = 0.35
 
 [sub_resource type="StandardMaterial3D" id="Mat_SunGlow"]
 shading_mode = 0

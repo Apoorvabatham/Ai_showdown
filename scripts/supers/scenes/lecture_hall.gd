@@ -68,7 +68,7 @@ func run() -> void:
 	geoff.face = &"smile"
 	victim.play(&"ual1/Idle")
 	victim.face = &"surprise"
-	big_text("<< 1986: BACKPROPAGATION", board + Vector3(-1.2, 1.35, 1.6), Color(0.25, 1.0, 0.65), 0.78, 1.8)
+	big_text("<< 1986: BACKPROPAGATION", board + Vector3(-1.2, 1.35, 1.6), Color(0.25, 1.0, 0.65), 0.78, REWIND_TIME - 0.15)
 	await wait(REWIND_TIME)
 
 	# 2. Synaptic Network Ignites & Zaps Opponent
@@ -79,7 +79,7 @@ func run() -> void:
 	_update_beams(board, opp)
 	victim.play(&"fight/crouch_guard")
 	victim.face = &"pain"
-	big_text("SYNAPTIC ACTIVATION!", opp + Vector3(0, 1.75, 0.4), Color(1.0, 0.85, 0.3), 0.72, 1.6)
+	big_text("SYNAPTIC ACTIVATION!", opp + Vector3(0, 1.75, 0.4), Color(1.0, 0.85, 0.3), 0.72, ZAP_TIME - 0.15)
 	await wait(ZAP_TIME)
 
 	# 3. Geoff's Regret & Second Thoughts
@@ -88,7 +88,7 @@ func run() -> void:
 	shot("lecture_hall", "Cam_Geoff", podium + Vector3(-0.1, 0.05, 0.3))
 	geoff.play(&"fight/crouch_guard")
 	geoff.face = &"sad"
-	big_text("WHAT HAVE I DONE?!", podium + Vector3(0.1, 1.45, 0.2), Color(1.0, 0.45, 0.45), 0.78, 1.8)
+	big_text("WHAT HAVE I DONE?!", podium + Vector3(0.1, 1.45, 0.2), Color(1.0, 0.45, 0.45), 0.78, REGRET_TIME - 0.15)
 	await wait(REGRET_TIME)
 
 	# 4. Final Catastrophic Overfit Blast

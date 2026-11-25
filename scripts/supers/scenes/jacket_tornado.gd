@@ -157,8 +157,8 @@ func _process(delta: float) -> void:
 func jacket_return(seconds: float) -> void:
 	_jacket_spinning = false
 	var back := create_tween().set_parallel(true)
-	back.tween_property(jacket, "global_position", jensen.global_position + Vector3(0, 1.3, 0), seconds).set_trans(Tween.TRANS_QUAD)
-	back.tween_property(jacket, "scale", Vector3.ONE * 0.9, seconds)
+	back.tween_property(jacket, "global_position", jensen.global_position + Vector3(0, 1.3, 0), seconds * 0.65).set_trans(Tween.TRANS_QUAD)
+	back.tween_property(jacket, "scale", Vector3.ONE * 0.45, seconds * 0.65)
 	back.chain().tween_callback(func() -> void: jacket.visible = false)
 
 

@@ -69,7 +69,7 @@ func run() -> void:
 	shot("scaling_chart", "Cam_Ram", podium + Vector3(0, 0.2, 0.4))
 	ram.play(&"fight/victory_point")
 	ram.face = &"smile"
-	big_text("AGI NEXT YEAR!", podium + Vector3(0, 1.7, 0.2), Color(0.25, 0.95, 1.0), 0.78, KEYNOTE_TIME - 0.1)
+	big_text("AGI NEXT YEAR!", podium + Vector3(0, 1.7, 0.2), Color(0.25, 0.95, 1.0), 0.78, KEYNOTE_TIME - 0.25)
 	await wait(KEYNOTE_TIME)
 
 	# 4. The Plummet & Crash Landing
