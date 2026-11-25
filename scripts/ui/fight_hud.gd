@@ -99,6 +99,7 @@ var _bonus_label: Label
 var _bonus_tween: Tween
 var _quote_label: Label # intro lines and win quotes, under the announcement
 var _quote_tween: Tween
+var _cinematic := false
 
 
 func _ready() -> void:
@@ -248,6 +249,9 @@ func announce(text: String, sub: String = "", pop: bool = false) -> void:
 	center_label.text = text
 	sub_label.text = sub
 	sub_label.visible = sub != "" # an empty line would push the title up
+	if _cinematic:
+		center_label.add_theme_font_size_override("font_size", 56 if sub != "" else 70)
+		sub_label.add_theme_font_size_override("font_size", 30)
 	if _announce_tween:
 		_announce_tween.kill()
 	center_label.scale = Vector2.ONE
@@ -551,23 +555,49 @@ func _process(_delta: float) -> void:
 
 # --- Victory cinematic ------------------------------------------------------------
 
-## Letterbox bars in, fight HUD out, announcements to the lower third. `instant` skips the
-## transition (the pre-fight intro starts that way).
+## Letterbox bars in, fight HUD out; title sits in the top bar and quote in the bottom bar
+## so neither fighter is covered. `instant` skips the transition (the pre-fight intro).
 func start_cinematic(instant := false) -> void:
+	_cinematic = true
 	_animate_cinematic(1.0)
 	if instant:
 		_cinematic_tween.custom_step(1.0)
-	(center_label.get_parent() as Control).size_flags_vertical = Control.SIZE_SHRINK_END
-	# Keep the lower-third title and menu above the bottom letterbox bar.
+	var center_box := center_label.get_parent() as VBoxContainer
+	center_box.reparent(self, false)
+	move_child(center_box, pause_menu.get_index())
+	center_box.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	center_box.anchor_bottom = 0.11
+	center_box.offset_left = 40.0
+	center_box.offset_right = -40.0
+	center_box.offset_top = 0.0
+	center_box.offset_bottom = 0.0
+	center_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	center_box.add_theme_constant_override("separation", 2)
+	center_label.add_theme_font_size_override("font_size", 56 if sub_label.visible else 70)
+	sub_label.add_theme_font_size_override("font_size", 30)
+	_quote_label.reparent(self, false)
+	move_child(_quote_label, pause_menu.get_index())
+	_quote_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	_quote_label.anchor_top = 0.89
+	_quote_label.anchor_bottom = 1.0
+	_quote_label.anchor_left = 0.04
+	_quote_label.anchor_right = 0.96
+	_quote_label.offset_left = 0.0
+	_quote_label.offset_right = 0.0
+	_quote_label.offset_top = 0.0
+	_quote_label.offset_bottom = 0.0
+	_quote_label.custom_minimum_size = Vector2.ZERO
+	_quote_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_quote_label.add_theme_font_size_override("font_size", 32)
+	# Result menu sits in the bottom-right corner above the bottom letterbox bar.
 	$Margin.add_theme_constant_override("margin_bottom", int(get_viewport().get_visible_rect().size.y * 0.13))
-	center_label.add_theme_font_size_override("font_size", 96)
-	# Result menu sits in the bottom-right corner so it doesn't cover the winner.
 	result_panel.reparent($Margin, false)
 	result_panel.size_flags_horizontal = Control.SIZE_SHRINK_END
 	result_panel.size_flags_vertical = Control.SIZE_SHRINK_END
 
 
 func end_cinematic() -> void:
+	_cinematic = false
 	if _cinematic_tween:
 		_cinematic_tween.kill()
 	show_quote("")
@@ -577,11 +607,26 @@ func end_cinematic() -> void:
 	debug_label.modulate.a = 1.0
 	_meter_root.modulate.a = 1.0
 	_score_label.modulate.a = 1.0
-	(center_label.get_parent() as Control).size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var center_box := center_label.get_parent() as VBoxContainer
+	if center_box.get_parent() != $Margin:
+		center_box.reparent($Margin, false)
+		$Margin.move_child(center_box, 1)
+	center_box.size_flags_horizontal = Control.SIZE_FILL
+	center_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	center_box.alignment = BoxContainer.ALIGNMENT_BEGIN
+	center_box.add_theme_constant_override("separation", 10)
 	$Margin.add_theme_constant_override("margin_bottom", 30)
 	center_label.add_theme_font_size_override("font_size", 140)
-	if result_panel.get_parent() != center_label.get_parent():
-		result_panel.reparent(center_label.get_parent(), false)
+	sub_label.add_theme_font_size_override("font_size", 56)
+	if _quote_label.get_parent() != center_box:
+		_quote_label.reparent(center_box, false)
+		center_box.move_child(_quote_label, sub_label.get_index() + 1)
+	_quote_label.custom_minimum_size = Vector2(900, 0)
+	_quote_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_quote_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_quote_label.add_theme_font_size_override("font_size", 40)
+	if result_panel.get_parent() != center_box:
+		result_panel.reparent(center_box, false)
 		result_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		result_panel.size_flags_vertical = Control.SIZE_FILL
 

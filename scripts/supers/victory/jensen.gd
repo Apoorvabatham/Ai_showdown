@@ -3,10 +3,10 @@ extends VictoryScene
 ## his own leather jacket with a giant marker while graphics cards rain down like confetti.
 
 const TornadoScene := preload("res://scripts/supers/scenes/jacket_tornado.gd")
-const LOOK := Vector3(-0.4, 1.0, 0.0) # what the camera looks at, from the stage centre
+const LOOK := Vector3(-0.7, 2.15, -1.5) # relative to Center, keeps the full keynote screen and Jensen framed
 const GPU_COUNT := 90
 const SPAWN_RATE := 22.0 # cards per second
-const FLOOR_Y := 0.12
+const FLOOR_Y := 0.08
 const COLORS := [Color(0.46, 0.73, 0.0), Color(0.9, 0.2, 0.2), Color(0.2, 0.6, 1.0), Color(1.0, 0.8, 0.2)]
 
 var winner: ScenePuppet
@@ -32,11 +32,11 @@ func build() -> void:
 	_rng.seed = 5090
 	_stage = load_set("keynote_stage")
 	var spot := marker("keynote_stage", "Center").origin - _stage.global_position # local to the set
-	# The jacket, huge, on a stand, front to the camera.
+	# The jacket, large on a stand to the right so the keynote screen text stays clear above it.
 	jacket = prop("jensen/leather_jacket", TornadoScene.leather_jacket, _stage)
-	jacket.scale = Vector3.ONE * 2.3
-	jacket.position = spot + Vector3(0.6, 2.3, 0.0)
-	var pole := SuperStandins.box(Vector3(0.1, 1.4, 0.1), spot + Vector3(0.6, 0.7, 0.0), SuperStandins.metal(Color(0.7, 0.72, 0.75), 0.9, 0.3), "Stand")
+	jacket.scale = Vector3.ONE * 1.85
+	jacket.position = spot + Vector3(1.1, 1.72, 0.4)
+	var pole := SuperStandins.box(Vector3(0.09, 1.0, 0.09), spot + Vector3(1.1, 0.5, 0.4), SuperStandins.metal(Color(0.7, 0.72, 0.75), 0.9, 0.3), "Stand")
 	_stage.add_child(pole)
 	# The signature, written in silver on the chest as the marker scribbles.
 	signature = Label3D.new()
@@ -57,8 +57,8 @@ func build() -> void:
 	pen.add_child(SuperStandins.box(Vector3(0.16, 0.12, 0.16), Vector3(0, 0.4, 0), SuperStandins.metal(Color(0.46, 0.73, 0.0), 0.4, 0.4)))
 	_stage.add_child(pen)
 	winner = puppet(attacker, _stage)
-	winner.position = spot + Vector3(-1.45, 0, 0.5)
-	winner.look_at(winner.global_position + Vector3(1.0, 0, -0.5))
+	winner.position = spot + Vector3(-1.85, 0, 0.6)
+	winner.look_at(winner.global_position + Vector3(1.0, 0, -0.3))
 	winner.face = &"grin"
 
 
@@ -66,26 +66,28 @@ func run() -> void:
 	show_set("keynote_stage")
 	var spot := marker("keynote_stage", "Center").origin
 	shot("keynote_stage", "Cam_Wide", spot + LOOK)
-	camera.global_position = spot + Vector3(-0.2, 1.8, 8.0)
+	camera.fov = 52.0
+	camera.global_position = spot + Vector3(-0.7, 2.0, 9.2)
 	sound("victory")
 	sound("whoosh", -6.0)
 	winner.play(&"ual1/Interact")
-	_pen_home = jacket.position + Vector3(-0.9, -0.5, 0.35)
+	_pen_home = jacket.position + Vector3(-0.9, -0.45, 0.35)
 	pen.position = _pen_home
 	pen.rotation.z = -0.8
 	_signing = true
 	_raining = true
 	var push := create_tween()
-	push.tween_property(camera, "global_position", spot + Vector3(-0.2, 1.6, 6.2), 4.0).set_trans(Tween.TRANS_SINE)
+	push.tween_property(camera, "global_position", spot + Vector3(-0.7, 1.85, 7.6), 4.0).set_trans(Tween.TRANS_SINE)
 	await wait(0.6)
 	sound("gpu_sparks", -4.0)
 	var write := create_tween()
 	write.tween_method(func(t: float) -> void: signature.text = "Jensen ★".substr(0, ceili(t * 8.0)), 0.0, 1.0, 1.4)
 	await wait(1.8)
 	_signing = false
-	# Done: the jacket flexes, the screen says it.
+	# Done: the jacket flexes, callout floats cleanly above Jensen without hiding the jacket or screen.
 	pen.visible = false
-	big_text("1000x PERFORMANCE!", spot + Vector3(0.0, 2.2, 1.0), Color(0.35, 0.95, 1.0), 0.5, 3.5)
+	var perf := big_text("1000x PERFORMANCE!", winner.global_position + Vector3(0.15, 2.5, 0.2), Color(0.35, 0.95, 1.0), 0.50)
+	perf.outline_size = 18
 	sound("gpu_sparks", -2.0)
 	winner.look_at(Vector3(camera.global_position.x, winner.global_position.y, camera.global_position.z))
 	winner.play(&"fight/victory_fist_pump")
@@ -132,9 +134,13 @@ func spawn_card() -> void:
 	for light in node.find_children("*", "OmniLight3D", true, false):
 		light.queue_free() # dozens of cards: no lights
 	var spot := marker("keynote_stage", "Center").origin - _stage.global_position
-	node.position = spot + Vector3(_rng.randf_range(-5.0, 5.5), _rng.randf_range(8.0, 12.0), _rng.randf_range(-3.0, 4.5))
+	var rx := _rng.randf_range(-5.5, 4.5)
+	var rz := _rng.randf_range(-4.8, 1.0)
+	if rx > -2.4 and rx < -1.1 and rz > -0.2:
+		rz -= 2.2 # keep falling GPUs clear of Jensen and the camera lens
+	node.position = spot + Vector3(rx, _rng.randf_range(7.5, 11.0), rz)
 	node.rotation = Vector3(_rng.randf() * TAU, _rng.randf() * TAU, _rng.randf() * TAU)
-	node.scale = Vector3.ONE * _rng.randf_range(0.8, 1.3)
+	node.scale = Vector3.ONE * _rng.randf_range(0.65, 0.95)
 	_stage.add_child(node)
 	_cards.append({node = node, vy = _rng.randf_range(-3.0, 0.0), vx = _rng.randf_range(-0.8, 0.8),
 			axis = Vector3(_rng.randf_range(-1, 1), _rng.randf_range(-1, 1), _rng.randf_range(-1, 1)).normalized(),
