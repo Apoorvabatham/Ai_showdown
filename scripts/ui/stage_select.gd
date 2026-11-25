@@ -109,7 +109,8 @@ func _make_card(entry: Dictionary) -> Button:
 		card.add_child(mark)
 		var random := _label("Random", int(_card_size.y * 0.2), Color.WHITE)
 		random.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-		random.offset_bottom = 6
+		random.grow_vertical = Control.GROW_DIRECTION_BEGIN  # grow upwards, stay inside the card
+		random.offset_bottom = -6
 		card.add_child(random)
 
 	card.focus_entered.connect(func() -> void:
