@@ -551,14 +551,14 @@ func fx_tests() -> void:
 	await create_timer(0.4).timeout
 	check("Hit flash: the overlay is removed once it fades", meshes.all(func(mi: MeshInstance3D) -> bool: return mi.material_overlay == null))
 	# A new callout isn't dimmed by an earlier one's fade, and takes its event's colour.
-	m.hud.note(1, "COUNTER")
+	m.hud.note(1, "INTERRUPT!")
 	await create_timer(0.85).timeout
-	m.hud.note(1, "ARMOR")
+	m.hud.note(1, "TANKED IT!")
 	await create_timer(0.3).timeout
 	var note_label: Label = m.hud.p2_note
 	check("HUD note: a new callout stays fully visible while the previous one would be fading",
-		note_label.text == "ARMOR" and note_label.modulate.a > 0.99 and note_label.scale.is_equal_approx(Vector2.ONE)
-		and note_label.get_theme_color("font_color") == m.hud.NOTE_COLORS["ARMOR"], "a %.2f" % note_label.modulate.a)
+		note_label.text == "TANKED IT!" and note_label.modulate.a > 0.99 and note_label.scale.is_equal_approx(Vector2.ONE)
+		and note_label.get_theme_color("font_color") == m.hud.NOTE_COLORS["TANKED IT!"], "a %.2f" % note_label.modulate.a)
 	check("audio buses exist", AudioServer.get_bus_index("Music") > 0 and AudioServer.get_bus_index("SFX") > 0 and AudioServer.get_bus_index("Voice") > 0
 		and AudioServer.get_bus_index("Ambience") > 0)
 	var limiters := range(AudioServer.get_bus_effect_count(0)).filter(func(i: int) -> bool: return AudioServer.get_bus_effect(0, i) is AudioEffectHardLimiter)

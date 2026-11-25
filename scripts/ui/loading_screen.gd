@@ -12,20 +12,19 @@ const GOLD := Color(1.0, 0.82, 0.3)
 const MIN_SECONDS := 0.6
 const TIPS := [
 	"Hold back to block. Hold down-back to block lows; overheads must be blocked standing.",
-	"Power button (O): your signature move. Add forward, back or down for the others.",
-	"Down + Power (O / LB) fires one of your specials, no warm-up required.",
-	"Back + Power (O / LB) fires another special; Forward + Power fires the next.",
+	"Power button (O): your signature move, no warm-up required.",
+	"Add forward, back or down to Power (O / LB) for your other specials.",
 	"Fill the SUPER meter, then press Super (P) for a screen-changing super move.",
 	"The SUPER meter fills when you hit AND when you get hit, so even a rough round charges Super (P / RT).",
 	"Light Punch + Light Kick up close throws. Press it again as you're grabbed to break free.",
 	"Sidestep (L / RB) to dodge fireballs and step around attacks.",
-	"Hitting an opponent during their attack's startup is a COUNTER hit: more damage, more stun.",
-	"Training mode shows live frame data. Plus frames mean it's your turn.",
 	"Donald's Trade War containers tumble along the floor: jump them or sidestep.",
 	"Jensen's GPU Rain falls from above: keep moving, don't just block.",
 	"Sundar's Search Result bars come from every side; a sidestep beats most of them.",
 	"AGI changes at 60% and 25% health: in its last phase it copies your favourite special.",
 	"Supers that connect cut to a scene: blocked or whiffed, they're just a big move.",
+	"Sundar's super is called 404 Not Found. It still hits.",
+	"Donald's Build the Wall is a barrier. It is exactly as subtle as it sounds.",
 ]
 
 var _paths: Array[String] = []

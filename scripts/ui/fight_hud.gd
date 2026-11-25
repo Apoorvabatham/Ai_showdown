@@ -45,10 +45,10 @@ void fragment() {
 ## Callout colours, matching each event's effect colour in FightFx; others use NOTE_COLOR.
 const NOTE_COLOR := Color(1.0, 0.62, 0.2)
 const NOTE_COLORS := {
-	"COUNTER": Color(1.0, 0.36, 0.22),
-	"ARMOR": Color(0.5, 1.0, 0.45),
-	"REVERSAL": Color(0.5, 1.0, 0.82),
-	"TECH": Color(0.55, 0.8, 1.0),
+	"INTERRUPT!": Color(1.0, 0.36, 0.22),
+	"TANKED IT!": Color(0.5, 1.0, 0.45),
+	"COMEBACK!": Color(0.5, 1.0, 0.82),
+	"ESCAPED!": Color(0.55, 0.8, 1.0),
 }
 const NOTE_POP := 1.35 # a callout starts this much larger and settles
 
@@ -283,7 +283,7 @@ func set_round_wins(wins: Array[int]) -> void:
 			((pips.get_child(i) as Panel).get_theme_stylebox("panel") as StyleBoxFlat).bg_color = PIP_ON if lit else PIP_OFF
 
 
-## Short callout ("COUNTER", "TECH") under a player's side: pops in, holds, fades out.
+## Short callout ("INTERRUPT!", "ESCAPED!") under a player's side: pops in, holds, fades out.
 func note(player_index: int, text: String) -> void:
 	var label := p1_note if player_index == 0 else p2_note
 	if _note_tweens.has(label):

@@ -52,7 +52,7 @@ func run() -> void:
 
 	# 1. Dario invokes the constitution
 	shot("constitution_hall", "Cam_Wide", scroll_spot + Vector3(-0.4, 0.5, 0.0))
-	sound("victory")
+	sound("opening_sting")
 	dario.play(&"fight/focus_stance")
 	dario.face = &"shout"
 	big_text("ARTICLE 1: SAFETY!", dario.global_position + Vector3(0.5, 2.3, 0), Color(1.0, 0.92, 0.7), 0.85, UNFURL_TIME)
@@ -99,7 +99,7 @@ func run() -> void:
 
 func _impact(pos: Vector3) -> void:
 	_shake = 0.4
-	sound("victory", -4.0)
+	sound("stamp_thud")
 	var flash := OmniLight3D.new()
 	flash.light_color = Color(1.0, 0.9, 0.5)
 	flash.light_energy = 7.0

@@ -1,185 +1,137 @@
-3D FIGHTER  -  v0.10.3 (prototype)  -  macOS
-============================================
+AI Showdown  -  v0.10.3  (macOS)
+==================================
 
-A one-on-one 3D fighting game inspired by Street Fighter and Tekken, with a
-dynamic action camera that moves in on the fighter taking the hits.
+Parody. Not affiliated with or endorsed by any real person or company.
 
-HOW TO PLAY
------------
-1. Unzip, and (optionally) drag 3DFighter.app into your Applications folder.
-2. Double-click to play. The app is signed and notarized by Apple, so it opens
-   like any other app (macOS may ask once to confirm it was downloaded from
-   the internet; click "Open").
+A one-on-one 3D parody fighting game where tech founders, AI researchers,
+leaders and AGI itself settle their differences in best-of-three bouts across
+four stages. One-button Power specials, cinematic Supers, and no motion
+inputs required.
 
-Requirements: macOS 11 Big Sur or newer, Apple Silicon (M1 or later) or an
-Intel Mac with Metal-capable graphics. Runs natively on both.
 
-CONTROLS            Keyboard          Gamepad
---------            --------          -------
-Move / jump / crouch  W A S D         Left stick / D-pad
-Light Punch           U               X
-Heavy Punch           I               Y
-Light Kick            J               A
-Heavy Kick            K               B
-Sidestep              L               RB
-Pause / move list     Esc             Start
+HOW TO RUN
+----------
+1. Open the zip in Finder (if macOS didn't already extract it).
+2. Drag AIShowdown.app into Applications, or double-click it right here.
 
-VERSUS (2 PLAYERS) - choose "Versus" in the main menu
-Player 2 keyboard: Arrows move, Numpad 4 / 5 punch, Numpad 1 / 2 kick,
-Numpad 6 sidestep (no numpad: [ ] punch, ; ' kick, / sidestep).
-Gamepad 1 is Player 1 and Gamepad 2 is Player 2 (swap in Options).
-On the character select screen each player picks in turn with
-Light Punch (select) and Heavy Punch (back).
+Note: If macOS says the app cannot be opened or is from an unidentified
+developer, Control-click AIShowdown.app -> Open -> Open (only needed once),
+or allow it in System Settings -> Privacy & Security.
 
-STAGES: after picking fighters, choose the Boxing Ring, the Dojo, the Rooftop,
-the Temple, the Beach, the Night Market, the Express, the Kowloon
-Courtyard or Random.
+Includes an offline Player's Manual (manual.html).
 
-ARCADE - choose "Arcade" in the main menu
-Fight your way up a ladder of CPU opponents to the final boss: your own
-shadow, who starts every round with a full super meter. Score points for
-damage, time left, health left and perfect rounds; lose and you can
-continue (the stage restarts). Clear it to see your results, your best
-score for that fighter, and the credits.
 
-ONLINE - choose "Online" in the main menu
-One player chooses Host Game. On the same network the other player sees
-the game under "Games on your network" and picks it; otherwise they type
-the host's address and choose Join. The host is asked to accept each
-player who tries to join. Both pick a fighter, the host picks the stage, and you fight
-with rollback netcode (the game hides network lag by predicting your
-opponent's input and correcting it instantly when it arrives).
-- Same network: the host's address is shown on the Host screen
-  (e.g. 192.168.1.20).
-- Over the internet, the easy way: Online -> Internet Lobby. Press Connect
-  (the server address is filled in), then Open a Room, or pick a room from
-  the list, or type a friend's 6-letter room code. No port forwarding: the
-  game connects you directly when it can and through the server's relay
-  when it can't. Tick "Hide my IP address" to always use the relay.
-  Rooms that allow spectators have a Watch button: spectators see the match
-  live with a 3-second delay and can send reactions with keys 1-6.
-- Over the internet without the lobby: the host forwards UDP port 7777 on
-  their router and shares their public IP address.
-- Allow the game through your firewall if asked.
-- Both players need the same version of the game.
-- The connection is encrypted. Both screens show a 6-digit security code
-  (character select, and in the leave prompt): if the codes match, nobody
-  is listening in; if they differ, leave the match.
-- Esc during an online match asks before leaving (an online match can't
-  pause). The bar at the bottom shows ping, rollback and connection quality.
+FIGHTERS (11)
+-------------
+- Ram Altman       (Super: Scaling Law)
+- tesla man        (Super: Rocket Launch)
+- Dario Amoday     (Super: Constitutional Shield)
+- Mark Zuckerbot   (Super: Metaverse Trap)
+- Jensen Wong      (Super: Leather Jacket Tornado)
+- Yann LeCant      (Super: It's Just Autocomplete)
+- Geoff Hintoff    (Super: I Regret Nothing... Wait)
+- Sundar Pickai    (Super: 404 Not Found)
+- Donald Tarrif    (Super: Shower of Tariffs)
+- Xi Winping       (Super: Open-Source Squad)
+- AGI              (Final Boss; Super: Engagement Loop)
 
-TRAINING - choose "Training" in the main menu
-Pick your fighter, then the training dummy. Endless health, no timer.
-Tab (gamepad Back): training menu - dummy stance (stand / crouch / jump /
-  CPU / playback), guard (none / block all / after first hit / random),
-  health refill, frame data, input history, hitboxes.
-Backspace (gamepad L3): reset positions.
-F6: record the dummy - you control it for up to 10 seconds; F6 again to stop.
-F7: play the recording back on a loop (on / off).
-Frame data shows each attack's startup, active and recovery frames and
-the measured frame advantage on hit or block.
 
-Block: hold back (standing) or down-back (crouching).
-Dash: tap forward twice. Backdash: tap back twice.
-Throw: Light Punch + Light Kick together, up close.
-Signature moves: forward + Heavy Punch (and see the move list in the pause menu).
+STAGES (4)
+----------
+- Server Farm
+- Mensa
+- Senate Hearing Room
+- GPU Foundry
 
-SPECIAL MOVES (P = either punch, K = either kick; written facing right)
-  Kenji   down, down-forward, forward + P ... Ki Blast (fireball)
-          forward, down, down-forward + P ... Rising Dragon (invincible uppercut)
-  Rhea    down, down-forward, forward + K ... Gale Slide (low slide)
-          forward, down, down-forward + K ... Crescent Rise (rising kick)
-  Brutus  down, down-forward, forward + P ... Bull Charge
-          down, down-back, back + P ......... Earthquake (low ground pound)
-  Valka   forward, half-circle to back + P .. Valkyrie Slam (command grab:
-                                              unblockable, can't be broken)
-          forward, down, down-forward + P ... Spinning Lariat (through fireballs)
-  Jin     down, down-forward, forward + K ... Spinning Back Kick
-          forward, down, down-forward + K ... Tornado Kick (invincible anti-air)
-          forward + Heavy Kick .............. Axe Kick (overhead)
-  Mira    down, down-forward, forward + P ... Bagyo Rush (punch flurry)
-          forward, down, down-forward + K ... Lawin Rise (rising flip kick)
-          down, down-back, back + P ......... Lakas Stance (+1 Focus)
-          down + K in the air ............... Lawin Drop (dive kick)
-Normal attacks that connect can be cancelled into a special.
 
-FOCUS (Mira): each Lakas Stance adds a Focus level, up to 3 (the pips by
-her SUPER meter). Every level makes Bagyo Rush and Lawin Rise stronger, and
-at level 3 her super ends in a shockwave strike. She loses it all when
-she's knocked down.
+MODES
+-----
+- Story             - Fighter campaign with dialogue, rival bout and AGI boss
+- Vs CPU            - Best-of-3 match against the AI on a chosen stage
+- 1v1 Quick Match   - One round against a random CPU on a random stage
+- Versus            - Two players on one computer (keyboard or gamepads)
+- Arcade            - Ladder ending with AGI as the final boss in the Senate
+- Training          - Practice room with frame data and dummy controls
+- Demo              - Two CPU fighters until you press a button
+- Options / Best Scores / Replays / Credits
 
-SUPER: landing and taking hits fills the SUPER meter (bottom corners).
-When it's full, do down, down-forward, forward twice + P (Kenji, Brutus, Mira)
-or + K (Rhea, Jin) for the character's super. Valka's super is a command grab. Sidestep dodges fireballs.
+Note: The Online menu is hidden in this build (online/servers.json still
+points at the original 3D Fighter lobby server).
 
-Remap any key or gamepad button (triggers too) in Options -> Controls.
 
-Options (main menu): music / effects / announcer volume, action camera
-(Off / Subtle / Full), CPU difficulty (Easy / Normal / Hard), display
-(Windowed / Borderless / Exclusive), window size, resolution (720p to
-Native; 1080p by default) and graphics (High / Medium / Low). On a slow
-computer, try a lower resolution first: it helps the most.
-On older Intel Macs, setting the Action Camera to "Subtle" can help performance.
+CONTROLS
+--------
+Action                  Keyboard (P1)      Gamepad
+----------------------  -----------------  ----------------------
+Move / jump / crouch    W A S D            Left stick / D-pad
+Light / Heavy Punch     U / I              X / Y
+Light / Heavy Kick      J / K              A / B
+Power special           O                  LB
+Super                   P                  RT
+Sidestep                L                  RB
+Pause & move list       Esc                Start
 
-CREDITS
--------
-Made with Godot Engine (MIT License) - https://godotengine.org
+Power specials: Press Power (O / LB) for your fighter's signature special, or
+hold a direction (forward, back or down) with Power for their other specials.
+Press Super (P / RT) once the SUPER meter is full. No motion inputs are
+needed; open the pause menu during a fight to see your fighter's move list.
 
-Third-party assets are CC0 (public domain) except Aelia's model (CC BY),
-credited with thanks:
-- Characters & animations: Quaternius - Universal Base Characters,
-  Universal Animation Library 1 & 2 - https://quaternius.com
-- Aelia: "Aelia Character Preview" by Abinady10 -
-  https://blendswap.com/blend/30219 (CC BY; rigged, posed and recoloured)
-- Stage lighting & textures: Poly Haven - "Basement Boxing Ring" HDRI by
-  Sergej Majboroda; Terlenka, Fabric Leather 02, Concrete Floor Worn 001
-  - https://polyhaven.com; Dojo: Tatami Mat, Hinoki Planks, Japanese Cedar
-  Planks (Charlotte Baglioni, Rico Cilliers), Dark Wood (Dario Barresi,
-  Dimitrios Savva, Rico Cilliers), White Plaster 02 (Rob Tuytel);
-  Rooftop skyline: "Shanghai Bund" HDRI by Greg Zaal; Temple: "Belfast Sunset"
-  sky (Greg Zaal, Dimitrios Savva, Jarod Guest), Monastery Stone Floor (Amal
-  Kumar), Japanese Stone Wall, Gravel Floor 03, Grey Roof Tiles; Beach:
-  "Kloofendal 48d Partly Cloudy" sky (Greg Zaal, Jarod Guest), Coast Sand
-  01, Thatch Roof Angled (Rob Tuytel, Dimitrios Savva), Palm Tree Bark
-  (Dimitrios Savva, Rico Cilliers), Bamboo Wall (Amal Kumar); Night Market:
-  "Qwantani Dusk 2" sky (Greg Zaal, Jarod Guest), Asphalt 02 (Rob Tuytel),
-  Brick Pavement and Rusty Corrugated Iron (Charlotte Baglioni), Painted
-  Plaster Wall and Wood Planks (Amal Kumar), Painted Metal Shutter (Dario
-  Barresi, Rico Cilliers, Charlotte Baglioni); Express: "Kloppenheim 06" sky
-  (Greg Zaal, Jarod Guest), Aerial Grass Rock (Rob Tuytel); outfit fabrics:
-  Cotton Jersey and Bi Stretch (colormass, Rico Cilliers), Denim Fabric 06
-  (Greg Zaal, Rico Cilliers)
-- Music: "Heavy Battle 2", "Space Battle" and "Jazzy Battle Theme" (night
-  market) by MintoDog; "Determination" by HydroGene (dojo); "Midnight
-  Drive" by congusbongus (rooftop); "Boss_Koto" by G_P (temple); "Funky
-  House" by Of Far Different Nature (beach); "Determined Pursuit" by Emma_MA
-  (Express)
-  - https://opengameart.org
-- Fighter voices: "Male Grunt/Yelling sounds" by HaelDB, "Female Hurt Grunts &
-  Groans" by AuraVoice - https://opengameart.org
-- Sound effects & announcer: Kenney - Impact Sounds, Interface Sounds,
-  Voiceover Pack: Fighter - https://kenney.nl
-- Ambient sound: "AMB Rain Loop 1" by kresiek-the-furry, "High traffic road
-  sounds" by ignasd, "Background voices" by pauliuw, "Crowd Shouting/Speaking
-  Ambience" by starninjas, "Applause in a large hall or church" by expl0it3r,
-  "Beach Ocean Waves" by qubodup (recorded by jasinski), "Park ambiences" by
-  thimras, "Fire Crackling" by antumdeluge, "Solo Seagull Sound Effects" by
-  rango-mango - https://opengameart.org
-- Crowd reactions: "Group Ooh" and "Group Wow" by CHallSmith, "Crowd Ooohs and
-  Ahhhs" by noah0189, "Crowd Gasping In Surprise" by Shane Vincent, "Small
-  Crowd Gasps" and "Sporting Event with Steady Cheers" by craigsmith,
-  "Millerntor Stadium Crowd Reaction" by Philipp Feit (Sound Of Sankt Pauli),
-  "Football Crowd - Reaction To Goal" by D.jones, "Crowd aah" and "Crowd shock"
-  by an anonymous contributor - https://freesound.org (CC0)
-- Train sounds: "freight train pass fast short heavy rail track clacks" by
-  kyles, "Train Track Joints Slow (Loop)" by KayleRustone, "Train Pass By" by
-  GreekIrish - https://freesound.org (CC0)
+Player 2: Arrow keys with Numpad 4/5 (punches), 1/2 (kicks), 7/8
+(Power/Super) and 6 (sidestep), or a second gamepad. On keyboards without a
+numpad, the fallback keys are [ ] (punches), ; ' (kicks), \ (Power),
+= (Super) and / (sidestep).
 
-Stages (including the jeepneys), crowds, fighter outfits, additional fight
-and special-move animations, portraits, key art and logo, and synthesized
-sounds were created for this project. The logo is lettered with the
-"Permanent Marker" font by Font Diner (Apache 2.0).
+Remapping: Every key and gamepad button can be changed per player in
+Options -> Controls.
 
-LICENSE: code (c) 2026 Clint Christopher Canada, MIT License. Original
-assets (c) 2026 Clint Christopher Canada, CC BY 4.0
-(https://creativecommons.org/licenses/by/4.0/). Third-party assets: CC0, Aelia's model CC BY.
+
+SETTINGS
+--------
+Saved to:
+  ~/Library/Application Support/Godot/app_userdata/AI Showdown/
+
+
+REQUIREMENTS
+------------
+- macOS on Apple Silicon or Intel, with Metal support.
+- If the game runs slowly on a high-DPI Retina display, lower Resolution or
+  Graphics in Options.
+
+
+CREDITS & LICENSE
+-----------------
+Based on 3D Fighter by Clint Christopher Canada (MIT / CC BY 4.0).
+
+Source code is licensed under the MIT License; original assets created for
+the project are licensed under CC BY 4.0 unless noted otherwise in
+assets/CREDITS.md. Third-party assets (including Quaternius base characters
+and animations, Kenney sound packs and stage kits, Poly Haven textures and
+HDRIs, and OpenGameArt music/voices) are CC0 1.0, except:
+- "Aelia Character Preview" by Abinady10 (CC BY)
+- Inter / Inter Display fonts by Rasmus Andersson (SIL Open Font License 1.1)
+- Permanent Marker font (Apache 2.0)
+
+Built with Godot Engine (https://godotengine.org, MIT License).
+
+------------------------------------------------------------------------
+MIT License
+
+Copyright (c) 2026 Clint Christopher Canada
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

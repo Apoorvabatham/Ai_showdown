@@ -1,0 +1,309 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aj22y"]
+albedo_color = Color(0.16, 0.18, 0.24, 1)
+metallic = 0.3
+roughness = 0.45
+
+[sub_resource type="BoxMesh" id="BoxMesh_w7pjn"]
+size = Vector3(16.4, 9.4, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4uu4f"]
+albedo_color = Color(0.98, 0.98, 1, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_s4ei2"]
+size = Vector3(16, 9, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g6syd"]
+albedo_color = Color(0.93, 0.94, 0.96, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_fl232"]
+size = Vector3(16, 0.72, 0.04)
+
+[sub_resource type="BoxMesh" id="BoxMesh_d2jot"]
+size = Vector3(8, 0.98, 0.04)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wqjsf"]
+size = Vector3(7.8, 0.82, 0.03)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rm2vx"]
+size = Vector3(16, 0.035, 0.03)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qdqb6"]
+albedo_color = Color(0.87, 0.93, 1, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_3bncw"]
+size = Vector3(12.6, 2.5, 0.03)
+
+[sub_resource type="BoxMesh" id="BoxMesh_yee2c"]
+size = Vector3(9, 0.055, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_q5ptt"]
+size = Vector3(6, 0.055, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4vith"]
+size = Vector3(8, 0.055, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tynw7"]
+size = Vector3(7, 0.055, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_j6ga2"]
+size = Vector3(0.14, 6.4, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vqs8i"]
+size = Vector3(0.18, 1.6, 0.03)
+
+[node name="ResultsPage" type="Node3D" unique_id=800080346]
+
+[node name="Frame" type="MeshInstance3D" parent="." unique_id=1853054525]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.12)
+material_override = SubResource("StandardMaterial3D_aj22y")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_w7pjn")
+
+[node name="Page" type="MeshInstance3D" parent="." unique_id=634598692]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.02)
+material_override = SubResource("StandardMaterial3D_4uu4f")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_s4ei2")
+
+[node name="Header" type="MeshInstance3D" parent="." unique_id=1523757022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.05, 0)
+material_override = SubResource("StandardMaterial3D_g6syd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_fl232")
+
+[node name="@Label3D@249" type="Label3D" parent="." unique_id=1354018550]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, 4.05, 0.08)
+pixel_size = 0.01209
+modulate = Color(0.26, 0.52, 0.96, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "S"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@250" type="Label3D" parent="." unique_id=1217675090]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.68, 4.05, 0.08)
+pixel_size = 0.01209
+modulate = Color(0.92, 0.26, 0.21, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "E"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@251" type="Label3D" parent="." unique_id=2062759717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.26, 4.05, 0.08)
+pixel_size = 0.01209
+modulate = Color(0.98, 0.74, 0.02, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "A"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@252" type="Label3D" parent="." unique_id=803785768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.84, 4.05, 0.08)
+pixel_size = 0.01209
+modulate = Color(0.26, 0.52, 0.96, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "R"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@253" type="Label3D" parent="." unique_id=530035218]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.42, 4.05, 0.08)
+pixel_size = 0.01209
+modulate = Color(0.2, 0.66, 0.33, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "C"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@254" type="Label3D" parent="." unique_id=1141467971]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 4.05, 0.08)
+pixel_size = 0.01209
+modulate = Color(0.92, 0.26, 0.21, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "H"
+font_size = 64
+outline_size = 6
+
+[node name="SearchBar" type="MeshInstance3D" parent="." unique_id=1215876603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 4.05, 0)
+material_override = SubResource("StandardMaterial3D_g6syd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_d2jot")
+
+[node name="@MeshInstance3D@255" type="MeshInstance3D" parent="." unique_id=550931120]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 4.05, 0.03)
+material_override = SubResource("StandardMaterial3D_4uu4f")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_wqjsf")
+
+[node name="Query" type="Label3D" parent="." unique_id=1189167735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 4.05, 0.12)
+pixel_size = 0.00775
+modulate = Color(0.12, 0.13, 0.16, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "who won the fight?"
+font_size = 64
+outline_size = 6
+horizontal_alignment = 0
+
+[node name="@Label3D@256" type="Label3D" parent="." unique_id=504486129]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.8, 4.05, 0.12)
+pixel_size = 0.00961
+modulate = Color(0.1, 0.25, 0.8, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "Q"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@257" type="Label3D" parent="." unique_id=1981392554]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 3.05, 0.08)
+pixel_size = 0.00527
+modulate = Color(0.4, 0.42, 0.46, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "All    Images    News    Videos    Winners"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@258" type="Label3D" parent="." unique_id=1983141979]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 3.05, 0.089999996)
+pixel_size = 0.00527
+modulate = Color(0.1, 0.25, 0.8, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "All"
+font_size = 64
+outline_size = 6
+
+[node name="@MeshInstance3D@259" type="MeshInstance3D" parent="." unique_id=1592401777]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.72, 0.02)
+material_override = SubResource("StandardMaterial3D_g6syd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_rm2vx")
+
+[node name="@Label3D@260" type="Label3D" parent="." unique_id=1035336516]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3, 2.25, 0.08)
+pixel_size = 0.00465
+modulate = Color(0.4, 0.42, 0.46, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "About 1 result (0.0001 seconds)"
+font_size = 64
+outline_size = 6
+
+[node name="Result1" type="Node3D" parent="." unique_id=1762569468]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0.04)
+
+[node name="Card" type="MeshInstance3D" parent="Result1" unique_id=1379566099]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.01)
+material_override = SubResource("StandardMaterial3D_qdqb6")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_3bncw")
+
+[node name="@Label3D@261" type="Label3D" parent="Result1" unique_id=1868360041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.82, 0.08)
+pixel_size = 0.00465
+modulate = Color(0.13, 0.52, 0.2, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "www.results.test  >  winners"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@262" type="Label3D" parent="Result1" unique_id=1192313342]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0.08)
+pixel_size = 0.0124
+modulate = Color(0.1, 0.25, 0.8, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "Sundar Pickai - Flawless Victory!"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@263" type="Label3D" parent="Result1" unique_id=2021458642]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0.08)
+pixel_size = 0.00496
+modulate = Color(0.4, 0.42, 0.46, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "Knocked out cold. Full recap, rules and replays inside."
+font_size = 64
+outline_size = 6
+
+[node name="TextLine" type="MeshInstance3D" parent="Result1" unique_id=893544646]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -0.85, 0.02)
+material_override = SubResource("StandardMaterial3D_g6syd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_yee2c")
+
+[node name="@MeshInstance3D@264" type="MeshInstance3D" parent="Result1" unique_id=252094637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1.05, 0.02)
+material_override = SubResource("StandardMaterial3D_g6syd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_q5ptt")
+
+[node name="Result2" type="Node3D" parent="." unique_id=562984251]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.7, 0.04)
+
+[node name="@Label3D@265" type="Label3D" parent="Result2" unique_id=816245236]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0.08)
+pixel_size = 0.006975
+modulate = Color(0.1, 0.25, 0.8, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "Sponsored: ice packs for that knockout"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@266" type="Label3D" parent="Result2" unique_id=854724495]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.32, 0.08)
+pixel_size = 0.00434
+modulate = Color(0.13, 0.52, 0.2, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "Ad  -  www.example-gear.test"
+font_size = 64
+outline_size = 6
+
+[node name="TextLine" type="MeshInstance3D" parent="Result2" unique_id=249003293]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.62, 0.02)
+material_override = SubResource("StandardMaterial3D_g6syd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_4vith")
+
+[node name="Result3" type="Node3D" parent="." unique_id=11967350]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.1, 0.04)
+
+[node name="@Label3D@267" type="Label3D" parent="Result3" unique_id=78789519]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0.08)
+pixel_size = 0.006975
+modulate = Color(0.1, 0.25, 0.8, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "Tutorial: how to accept defeat gracefully"
+font_size = 64
+outline_size = 6
+
+[node name="@Label3D@268" type="Label3D" parent="Result3" unique_id=1074412722]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.32, 0.08)
+pixel_size = 0.00434
+modulate = Color(0.4, 0.42, 0.46, 1)
+outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+text = "www.example-coaching.test"
+font_size = 64
+outline_size = 6
+
+[node name="TextLine" type="MeshInstance3D" parent="Result3" unique_id=1108222344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -0.62, 0.02)
+material_override = SubResource("StandardMaterial3D_g6syd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_tynw7")
+
+[node name="ScrollTrack" type="MeshInstance3D" parent="." unique_id=2012217782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7, 0.2, 0.02)
+material_override = SubResource("StandardMaterial3D_g6syd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_j6ga2")
+
+[node name="ScrollThumb" type="MeshInstance3D" parent="." unique_id=127705602]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7, 1.8, 0.04)
+material_override = SubResource("StandardMaterial3D_aj22y")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_vqs8i")
