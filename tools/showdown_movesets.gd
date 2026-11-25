@@ -100,9 +100,19 @@ const MOVESETS := {
 				camera_intensity = 0.2}},
 		},
 	},
-	# Mark Zuckerbot: the Metaverse Trap (command grab) plays its scene when it connects.
+	# Mark Zuckerbot: Like Bomb power move + Metaverse Trap (command grab) super scene.
 	&"zuckerbot": {
 		tweak = {thunder_valkyrie = {cinematic = &"metaverse_trap", cinematic_ticks = 390}},
+		add = {
+			# Power move: throws chunky blue thumbs-up "Like" bombs at the opponent.
+			like_bomb = {from = "kenji/ki_blast", set = {name = "Like Bomb", input = "236P",
+				projectile_look = &"like_bomb", projectile_count = 2, projectile_interval = 10,
+				projectile_speed = 5.4, projectile_lifetime = 95,
+				projectile_color = Color(0.2, 0.52, 1.0),
+				hitbox_radius = 0.34, damage = 32, chip_damage = 4,
+				startup = 14, recovery = 30, hitstun = 18, blockstun = 14,
+				camera_intensity = 0.15}},
+		},
 	},
 	# Jensen Wong: Tensor Blast (kit fireball) plus the GPU Rain power move.
 	&"jensen": {

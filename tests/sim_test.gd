@@ -5055,6 +5055,17 @@ func showdown_tests() -> void:
 	rocket.free()
 	dragon.free()
 	var zuck: CharacterData = gs.find_character(&"zuckerbot")
+	var zuck_slots := EasySpecials.slots(zuck)
+	var zuck_power: MoveData = zuck_slots.get(5)
+	var like_node := ProjectileLooks.build(&"like_bomb", Color(0.2, 0.52, 1.0))
+	var like_thumb := like_node.get_node_or_null("Thumb") as Node3D
+	var like_badge := like_node.get_node_or_null("Badge") as Node3D
+	ProjectileLooks.animate(like_node, &"like_bomb", Vector3.RIGHT, 0.25, 0.016)
+	check("Showdown C8: Zuckerbot's Power slot is Like Bomb with projectile_look",
+		zuck_power != null and zuck_power.name == "Like Bomb" and zuck_power.input == "236P"
+		and zuck_power.projectile_look == &"like_bomb" and zuck_power.fires_projectile()
+		and like_thumb != null and like_badge != null)
+	like_node.free()
 	var donald: CharacterData = gs.find_character(&"donald")
 	var donald_moves := {}
 	for mv: MoveData in donald.moves:
