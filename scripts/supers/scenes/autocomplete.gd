@@ -54,7 +54,7 @@ func run() -> void:
 
 	# 1. Wide shot: Opponent trapped in giant text box, Yann at podium
 	shot("prompt_terminal", "Cam_Wide", box_spot + Vector3(0.0, 0.6, 0.0))
-	sound("victory")
+	sound("opening_sting")
 	big_text("PROMPT: PREDICT NEXT TOKEN", box_spot + Vector3(0, 1.4, 0), Color(0.3, 0.85, 1.0), 0.6, WIDE_TIME + TYPE_TIME)
 	await wait(WIDE_TIME)
 
