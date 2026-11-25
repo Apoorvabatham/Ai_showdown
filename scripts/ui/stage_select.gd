@@ -25,10 +25,12 @@ func _ready() -> void:
 	UiStyle.add_backdrop(self, background)
 
 	var column := VBoxContainer.new()
-	column.set_anchors_preset(Control.PRESET_FULL_RECT)
 	column.alignment = BoxContainer.ALIGNMENT_CENTER
 	column.add_theme_constant_override("separation", 34)
-	add_child(column)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.add_child(column)
+	add_child(center)
 	var heading := _label("SELECT STAGE", 72, Color.WHITE)
 	UiStyle.use_display_font([heading])
 	column.add_child(heading)
@@ -40,8 +42,8 @@ func _ready() -> void:
 	var entries: Array = GameState.stages.duplicate()
 	entries.append({path = "", name = "Random", thumb = "", blurb = "Let fate decide."})
 	# Cards shrink to fit however many stages there are (16:9 thumbnails).
-	var available := get_viewport_rect().size.x - 120.0 - CARD_GAP * (entries.size() - 1)
-	var width := minf(MAX_CARD_WIDTH, available / entries.size() - 16.0)
+	var available := get_viewport_rect().size.x - 80.0 - CARD_GAP * (entries.size() - 1)
+	var width := minf(MAX_CARD_WIDTH, available / entries.size() - 8.0)
 	_card_size = Vector2(width, width * 9.0 / 16.0)
 	for entry: Dictionary in entries:
 		row.add_child(_make_card(entry))
@@ -101,10 +103,15 @@ func _make_card(entry: Dictionary) -> Button:
 		image.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card.add_child(image)
 	else:
-		var mark := _label("?", int(_card_size.y * 0.6), Color(0.6, 0.6, 0.7))
-		mark.set_anchors_preset(Control.PRESET_FULL_RECT)
-		mark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		var mark := _label("?", int(_card_size.y * 0.55), Color(0.6, 0.6, 0.7))
+		mark.set_anchors_preset(Control.PRESET_TOP_WIDE)
+		mark.offset_top = 6
 		card.add_child(mark)
+		var random := _label("Random", int(_card_size.y * 0.2), Color.WHITE)
+		random.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+		random.grow_vertical = Control.GROW_DIRECTION_BEGIN  # grow upwards, stay inside the card
+		random.offset_bottom = -6
+		card.add_child(random)
 
 	card.focus_entered.connect(func() -> void:
 		_name_label.text = String(entry.name).to_upper()
