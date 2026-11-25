@@ -12,7 +12,7 @@ const OUT_DIR := "res://docs/review/opencode/"
 const CELL := Vector2i(420, 360)
 const COLUMNS := 3
 ## Props that face +Z (their consumer convention overrides contract 3.1's front = -Z).
-const FRONT_PLUS_Z := ["vr_goggles", "browser_window", "search_bar", "gpu_card"]
+const FRONT_PLUS_Z := ["vr_goggles", "browser_window", "search_bar", "gpu_card", "results_page", "constitution_scroll", "safe_seal", "heavy_letters"]
 
 
 func _initialize() -> void:

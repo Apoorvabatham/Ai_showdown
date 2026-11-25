@@ -1,0 +1,519 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2u5tm"]
+albedo_color = Color(0.36, 0.4, 0.48, 1)
+metallic = 0.25
+roughness = 0.65
+
+[sub_resource type="BoxMesh" id="BoxMesh_5jv5b"]
+size = Vector3(0.68, 0.78, 0.47)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k0mwd"]
+albedo_color = Color(0.62, 0.66, 0.74, 1)
+metallic = 0.2
+roughness = 0.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_lyme0"]
+size = Vector3(0.64, 0.74, 0.45)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hvu2m"]
+albedo_color = Color(0.74, 0.78, 0.84, 1)
+metallic = 0.15
+roughness = 0.55
+
+[sub_resource type="BoxMesh" id="BoxMesh_jcijl"]
+size = Vector3(0.6, 0.68, 0.02)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sw70w"]
+albedo_color = Color(0.3, 0.8, 1, 1)
+emission_enabled = true
+emission = Color(0.3, 0.8, 1, 1)
+emission_energy_multiplier = 2.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_v3had"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_uibb7"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_260eh"]
+albedo_color = Color(0.97, 0.98, 0.92, 1)
+metallic = 0.1
+roughness = 0.5
+
+[sub_resource type="TextMesh" id="TextMesh_5xlo3"]
+text = "Y"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="TextMesh" id="TextMesh_ib87s"]
+text = "Y"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="BoxMesh" id="BoxMesh_pw51q"]
+size = Vector3(0.68, 0.78, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_kjqnt"]
+size = Vector3(0.64, 0.74, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6ls6v"]
+size = Vector3(0.6, 0.68, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pc2ey"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vdo63"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="TextMesh" id="TextMesh_qekpi"]
+text = "O"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="TextMesh" id="TextMesh_scrxy"]
+text = "O"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="BoxMesh" id="BoxMesh_ffnf4"]
+size = Vector3(0.68, 0.78, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cf2oc"]
+size = Vector3(0.64, 0.74, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_33s8s"]
+size = Vector3(0.6, 0.68, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5mueu"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vkj7m"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="TextMesh" id="TextMesh_ym2fh"]
+text = "U"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="TextMesh" id="TextMesh_fedm5"]
+text = "U"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="BoxMesh" id="BoxMesh_tv1mi"]
+size = Vector3(0.68, 0.78, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tasmw"]
+size = Vector3(0.64, 0.74, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_0ctfx"]
+size = Vector3(0.6, 0.68, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_q782r"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mfep6"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="TextMesh" id="TextMesh_wp8yt"]
+text = "L"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="TextMesh" id="TextMesh_0caw2"]
+text = "L"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="BoxMesh" id="BoxMesh_8o22r"]
+size = Vector3(0.68, 0.78, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_q2s6q"]
+size = Vector3(0.64, 0.74, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jb0vo"]
+size = Vector3(0.6, 0.68, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_al0y8"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_sh6oe"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="TextMesh" id="TextMesh_diny1"]
+text = "O"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="TextMesh" id="TextMesh_8jhfh"]
+text = "O"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="BoxMesh" id="BoxMesh_1vxss"]
+size = Vector3(0.68, 0.78, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lfobw"]
+size = Vector3(0.64, 0.74, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mvn0j"]
+size = Vector3(0.6, 0.68, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_iwf5m"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jpr0b"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="TextMesh" id="TextMesh_86nt3"]
+text = "S"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="TextMesh" id="TextMesh_hjf4u"]
+text = "S"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="BoxMesh" id="BoxMesh_gytfa"]
+size = Vector3(0.68, 0.78, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_y0p3i"]
+size = Vector3(0.64, 0.74, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2tt5t"]
+size = Vector3(0.6, 0.68, 0.02)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bc4oi"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6xdq3"]
+size = Vector3(0.67, 0.04, 0.47)
+
+[sub_resource type="TextMesh" id="TextMesh_d3o2y"]
+text = "E"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[sub_resource type="TextMesh" id="TextMesh_wvjxw"]
+text = "E"
+font_size = 100
+pixel_size = 0.0062
+depth = 0.12
+
+[node name="HeavyLetters" type="Node3D" unique_id=1291350541]
+
+[node name="Letter_Y_0" type="Node3D" parent="." unique_id=905584021]
+transform = Transform3D(0.9937252, 0.04017558, -0.10438521, -0.034851667, 0.9980212, 0.05233596, 0.10628129, -0.04836956, 0.99315894, -1, 0.35, -0.3)
+
+[node name="Base" type="MeshInstance3D" parent="Letter_Y_0" unique_id=2063149961]
+material_override = SubResource("StandardMaterial3D_2u5tm")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_5jv5b")
+
+[node name="Slab" type="MeshInstance3D" parent="Letter_Y_0" unique_id=1349558659]
+material_override = SubResource("StandardMaterial3D_k0mwd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_lyme0")
+
+[node name="Face" type="MeshInstance3D" parent="Letter_Y_0" unique_id=121736211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.232)
+material_override = SubResource("StandardMaterial3D_hvu2m")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_jcijl")
+
+[node name="Rim" type="MeshInstance3D" parent="Letter_Y_0" unique_id=1346037001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_v3had")
+
+[node name="@MeshInstance3D@36" type="MeshInstance3D" parent="Letter_Y_0" unique_id=875242242]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_uibb7")
+
+[node name="Letter3D" type="MeshInstance3D" parent="Letter_Y_0" unique_id=89627386]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.2, -0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_5xlo3")
+
+[node name="@MeshInstance3D@37" type="MeshInstance3D" parent="Letter_Y_0" unique_id=1742624759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_ib87s")
+
+[node name="Letter_O_1" type="Node3D" parent="." unique_id=501174536]
+transform = Transform3D(0.99939084, 0, -0.034899496, 0, 1, 0, 0.034899496, 0, 0.99939084, -0.4, 0.35, -0.3)
+
+[node name="Base" type="MeshInstance3D" parent="Letter_O_1" unique_id=654255952]
+material_override = SubResource("StandardMaterial3D_2u5tm")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_pw51q")
+
+[node name="Slab" type="MeshInstance3D" parent="Letter_O_1" unique_id=751300905]
+material_override = SubResource("StandardMaterial3D_k0mwd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_kjqnt")
+
+[node name="Face" type="MeshInstance3D" parent="Letter_O_1" unique_id=1387984586]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.232)
+material_override = SubResource("StandardMaterial3D_hvu2m")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_6ls6v")
+
+[node name="Rim" type="MeshInstance3D" parent="Letter_O_1" unique_id=1873308152]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_pc2ey")
+
+[node name="@MeshInstance3D@38" type="MeshInstance3D" parent="Letter_O_1" unique_id=2034807582]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_vdo63")
+
+[node name="Letter3D" type="MeshInstance3D" parent="Letter_O_1" unique_id=405084205]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.2, -0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_qekpi")
+
+[node name="@MeshInstance3D@39" type="MeshInstance3D" parent="Letter_O_1" unique_id=1228728617]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_scrxy")
+
+[node name="Letter_U_2" type="Node3D" parent="." unique_id=1841837723]
+transform = Transform3D(0.99884576, -0.03305285, 0.034851667, 0.034851667, 0.9980212, -0.05233596, -0.03305285, 0.05349019, 0.9980212, 0.2, 0.35, -0.3)
+
+[node name="Base" type="MeshInstance3D" parent="Letter_U_2" unique_id=19575336]
+material_override = SubResource("StandardMaterial3D_2u5tm")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_ffnf4")
+
+[node name="Slab" type="MeshInstance3D" parent="Letter_U_2" unique_id=1680125940]
+material_override = SubResource("StandardMaterial3D_k0mwd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_cf2oc")
+
+[node name="Face" type="MeshInstance3D" parent="Letter_U_2" unique_id=153870952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.232)
+material_override = SubResource("StandardMaterial3D_hvu2m")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_33s8s")
+
+[node name="Rim" type="MeshInstance3D" parent="Letter_U_2" unique_id=1421911733]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_5mueu")
+
+[node name="@MeshInstance3D@40" type="MeshInstance3D" parent="Letter_U_2" unique_id=2080302040]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_vkj7m")
+
+[node name="Letter3D" type="MeshInstance3D" parent="Letter_U_2" unique_id=1254373788]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.2, -0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_ym2fh")
+
+[node name="@MeshInstance3D@41" type="MeshInstance3D" parent="Letter_U_2" unique_id=276311153]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_fedm5")
+
+[node name="Letter_L_3" type="Node3D" parent="." unique_id=1157647478]
+transform = Transform3D(0.994107, 0.029241048, 0.10438521, -0.034851667, 0.9980212, 0.05233596, -0.102648295, -0.05566554, 0.99315894, -0.9, 0.35, 0.5)
+
+[node name="Base" type="MeshInstance3D" parent="Letter_L_3" unique_id=87361990]
+material_override = SubResource("StandardMaterial3D_2u5tm")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_tv1mi")
+
+[node name="Slab" type="MeshInstance3D" parent="Letter_L_3" unique_id=140207880]
+material_override = SubResource("StandardMaterial3D_k0mwd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_tasmw")
+
+[node name="Face" type="MeshInstance3D" parent="Letter_L_3" unique_id=1862113736]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.232)
+material_override = SubResource("StandardMaterial3D_hvu2m")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_0ctfx")
+
+[node name="Rim" type="MeshInstance3D" parent="Letter_L_3" unique_id=775453845]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_q782r")
+
+[node name="@MeshInstance3D@42" type="MeshInstance3D" parent="Letter_L_3" unique_id=679193557]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_mfep6")
+
+[node name="Letter3D" type="MeshInstance3D" parent="Letter_L_3" unique_id=496041097]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.2, -0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_wp8yt")
+
+[node name="@MeshInstance3D@43" type="MeshInstance3D" parent="Letter_L_3" unique_id=1478306171]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_0caw2")
+
+[node name="Letter_O_4" type="Node3D" parent="." unique_id=632168733]
+transform = Transform3D(0.9945219, 0, -0.104528464, 0, 1, 0, 0.104528464, 0, 0.9945219, -0.3, 0.35, 0.5)
+
+[node name="Base" type="MeshInstance3D" parent="Letter_O_4" unique_id=1311393420]
+material_override = SubResource("StandardMaterial3D_2u5tm")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_8o22r")
+
+[node name="Slab" type="MeshInstance3D" parent="Letter_O_4" unique_id=737888768]
+material_override = SubResource("StandardMaterial3D_k0mwd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_q2s6q")
+
+[node name="Face" type="MeshInstance3D" parent="Letter_O_4" unique_id=343049136]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.232)
+material_override = SubResource("StandardMaterial3D_hvu2m")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_jb0vo")
+
+[node name="Rim" type="MeshInstance3D" parent="Letter_O_4" unique_id=1568268130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_al0y8")
+
+[node name="@MeshInstance3D@44" type="MeshInstance3D" parent="Letter_O_4" unique_id=1837855239]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_sh6oe")
+
+[node name="Letter3D" type="MeshInstance3D" parent="Letter_O_4" unique_id=1844322771]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.2, -0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_diny1")
+
+[node name="@MeshInstance3D@45" type="MeshInstance3D" parent="Letter_O_4" unique_id=1175552051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_8jhfh")
+
+[node name="Letter_S_5" type="Node3D" parent="." unique_id=2115022340]
+transform = Transform3D(0.9987183, -0.03670362, -0.034851667, 0.034851667, 0.9980212, -0.05233596, 0.03670362, 0.05105424, 0.9980212, 0.3, 0.35, 0.5)
+
+[node name="Base" type="MeshInstance3D" parent="Letter_S_5" unique_id=2100405800]
+material_override = SubResource("StandardMaterial3D_2u5tm")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_1vxss")
+
+[node name="Slab" type="MeshInstance3D" parent="Letter_S_5" unique_id=675819275]
+material_override = SubResource("StandardMaterial3D_k0mwd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_lfobw")
+
+[node name="Face" type="MeshInstance3D" parent="Letter_S_5" unique_id=628784650]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.232)
+material_override = SubResource("StandardMaterial3D_hvu2m")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_mvn0j")
+
+[node name="Rim" type="MeshInstance3D" parent="Letter_S_5" unique_id=717836318]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_iwf5m")
+
+[node name="@MeshInstance3D@46" type="MeshInstance3D" parent="Letter_S_5" unique_id=84967836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_jpr0b")
+
+[node name="Letter3D" type="MeshInstance3D" parent="Letter_S_5" unique_id=1225997046]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.2, -0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_86nt3")
+
+[node name="@MeshInstance3D@47" type="MeshInstance3D" parent="Letter_S_5" unique_id=1550151862]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_hjf4u")
+
+[node name="Letter_E_6" type="Node3D" parent="." unique_id=1442251797]
+transform = Transform3D(0.99884576, 0.03305285, 0.034851667, -0.034851667, 0.9980212, 0.05233596, -0.03305285, -0.05349019, 0.9980212, 0.9, 0.35, 0.5)
+
+[node name="Base" type="MeshInstance3D" parent="Letter_E_6" unique_id=1815284598]
+material_override = SubResource("StandardMaterial3D_2u5tm")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_gytfa")
+
+[node name="Slab" type="MeshInstance3D" parent="Letter_E_6" unique_id=1854453578]
+material_override = SubResource("StandardMaterial3D_k0mwd")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_y0p3i")
+
+[node name="Face" type="MeshInstance3D" parent="Letter_E_6" unique_id=942825211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.232)
+material_override = SubResource("StandardMaterial3D_hvu2m")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_2tt5t")
+
+[node name="Rim" type="MeshInstance3D" parent="Letter_E_6" unique_id=900211133]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_bc4oi")
+
+[node name="@MeshInstance3D@48" type="MeshInstance3D" parent="Letter_E_6" unique_id=1743867651]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
+material_override = SubResource("StandardMaterial3D_sw70w")
+cast_shadow = 0
+mesh = SubResource("BoxMesh_6xdq3")
+
+[node name="Letter3D" type="MeshInstance3D" parent="Letter_E_6" unique_id=1943379902]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.2, -0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_d3o2y")
+
+[node name="@MeshInstance3D@49" type="MeshInstance3D" parent="Letter_E_6" unique_id=1344066487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0.245)
+material_override = SubResource("StandardMaterial3D_260eh")
+cast_shadow = 0
+mesh = SubResource("TextMesh_wvjxw")
