@@ -59,7 +59,7 @@ func run() -> void:
 
 	# 1. VHS Rewind to 1986 Lecture Hall
 	shot("lecture_hall", "Cam_Wide", board + Vector3(-1.85, -1.2, 2.4))
-	sound("victory")
+	sound("opening_sting")
 	geoff.play(&"fight/focus_stance")
 	geoff.face = &"smile"
 	victim.play(&"ual1/Idle")

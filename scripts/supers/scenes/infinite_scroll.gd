@@ -38,7 +38,7 @@ func run() -> void:
 
 	# 1. Cyberspace Intro: AGI summons the Giant Phone
 	shot("giant_phone", "Cam_Wide", phone + Vector3(-1.85, -1.2, 2.4))
-	sound("victory")
+	sound("opening_sting")
 	agi.play(&"fight/focus_stance")
 	agi.face = &"smile"
 	victim.play(&"ual1/Idle")

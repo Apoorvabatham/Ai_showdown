@@ -39,7 +39,7 @@ func run() -> void:
 
 	# 1. Keynote Intro: Ram presents the Scaling Law
 	shot("scaling_chart", "Cam_Wide", chart + Vector3(-1.85, -1.2, 2.4))
-	sound("victory")
+	sound("opening_sting")
 	ram.play(&"fight/focus_stance")
 	ram.face = &"smile"
 	victim.play(&"ual1/Idle")
