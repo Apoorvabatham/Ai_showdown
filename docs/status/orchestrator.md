@@ -19,6 +19,7 @@ Godot only via `C:\Users\batha\.local\bin\godot-q.cmd` (2 slots, mutex-based sin
 - `relay/g-hotspot`: Server Farm light 2.8 -> 1.4 (judge on a fight capture).
 - `relay/jaw-test` (4120b38): deterministic jaw test via set_voice_frame() hook (inactive in play); suite 0 failure(s) x2.
 - `worktree-agent-a6d0863ac4eff20fd` (93d13b6): Yann word_tokens -> ual2/OverhandThrow (generator), + test that every move animation exists; suite 0 failure(s).
+- `worktree-agent-a7d397f166056dae0` (6a0801f): render_model_sheet `-- alt` option + alt review images (tool/docs only).
 
 ## In progress (worktree -> what's left)
 - `relay/g-style` (agent-worktrees/.../relay_g-style): style clips Jensen/Zuckerbot/Xi, UNCOMMITTED.
@@ -27,7 +28,7 @@ Godot only via `C:\Users\batha\.local\bin\godot-q.cmd` (2 slots, mutex-based sin
 - `relay/g-xi-likeness`: Xi round 2 (Opus continuing Gemini's work). MUST revert other fighters' hair
   changes (Jensen approved at 1505752). Needs owner approval of docs/review/likeness/xi_round2.png.
   Branch also carries Jensen's approved likeness: merge after Xi is approved (or cherry-pick 1505752).
-- Alt-outfit shoes (Sonnet, .claude/worktrees). Dario's red alt outfit is barefoot.
+- Alt-outfit shoes: Sonnet found alt outfits are only colour palettes on the same mesh, and its renders show shoes for all 11 in alt colours. VERIFY on the next fight capture whether Dario is still barefoot in a fight (the batch-2 Mensa capture showed bare feet); if so, debug the in-fight path fighter.gd:301.
 - Relay jobs: docs-refresh (OpenCode), stage-thumbs (OpenCode HY4), senate-desks (OpenCode),
   select-tiles (OpenCode), sound-test (Cline Lightning), title-overlap (Kilo).
 - Haiku: read-only balance/smoke/determinism check of main.
