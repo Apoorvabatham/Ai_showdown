@@ -34,36 +34,47 @@ albedo_color = Color(0.18, 0.38, 0.2, 1)
 roughness = 0.85
 metallic = 0.05
 
+[sub_resource type="FastNoiseLite" id="Noise_Clouds"]
+frequency = 0.018
+fractal_octaves = 4
+
+[sub_resource type="Gradient" id="Grad_Clouds"]
+offsets = PackedFloat32Array(0.42, 0.72)
+colors = PackedColorArray(1, 1, 1, 0, 0.96, 0.98, 1, 0.75)
+
+[sub_resource type="NoiseTexture2D" id="Tex_Clouds"]
+width = 512
+height = 256
+seamless = true
+color_ramp = SubResource("Grad_Clouds")
+noise = SubResource("Noise_Clouds")
+
 [sub_resource type="StandardMaterial3D" id="Mat_EarthOcean"]
-albedo_color = Color(0.06, 0.28, 0.72, 1)
-roughness = 0.2
-metallic = 0.15
+albedo_color = Color(0.03, 0.16, 0.48, 1)
+roughness = 0.35
+metallic = 0.1
 
 [sub_resource type="StandardMaterial3D" id="Mat_EarthClouds"]
-albedo_color = Color(0.95, 0.98, 1.0, 1)
-roughness = 0.7
+albedo_color = Color(1, 1, 1, 1)
+albedo_texture = SubResource("Tex_Clouds")
+roughness = 0.9
 transparency = 1
-blend_mode = 1
-emission_enabled = true
-emission = Color(0.85, 0.92, 1.0, 1)
-emission_energy_multiplier = 0.45
 
 [sub_resource type="StandardMaterial3D" id="Mat_Atmosphere"]
-albedo_color = Color(0.15, 0.55, 1.0, 1)
-roughness = 0.15
+albedo_color = Color(0.2, 0.6, 1, 0.18)
+roughness = 0.2
 transparency = 1
-blend_mode = 1
-cull_mode = 0
+cull_mode = 1
 emission_enabled = true
-emission = Color(0.2, 0.6, 1.0, 1)
-emission_energy_multiplier = 0.75
+emission = Color(0.16, 0.5, 0.98, 1)
+emission_energy_multiplier = 0.35
 
 [sub_resource type="StandardMaterial3D" id="Mat_SunGlow"]
 shading_mode = 0
 albedo_color = Color(1, 0.95, 0.8, 1)
 emission_enabled = true
 emission = Color(1, 0.95, 0.8, 1)
-emission_energy_multiplier = 6.0
+emission_energy_multiplier = 3.2
 
 [sub_resource type="StandardMaterial3D" id="Mat_RocketBody"]
 albedo_color = Color(0.96, 0.96, 0.98, 1)
@@ -155,7 +166,7 @@ mesh = SubResource("Mesh_Sun")
 [node name="SunLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.8944, -0.3427, 0.2873, 0, 0.6425, 0.7663, -0.4472, -0.6854, 0.5747, 0, 0, 0)
 light_color = Color(1, 0.98, 0.92, 1)
-light_energy = 3.8
+light_energy = 1.45
 shadow_enabled = true
 shadow_max_distance = 300
 
@@ -177,7 +188,7 @@ mesh = SubResource("Mesh_Atmosphere")
 [node name="EarthGlow" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10, -6)
 light_color = Color(0.2, 0.55, 1, 1)
-light_energy = 1.2
+light_energy = 0.35
 omni_range = 60
 omni_attenuation = 1.0
 

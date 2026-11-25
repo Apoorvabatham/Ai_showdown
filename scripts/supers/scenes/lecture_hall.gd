@@ -16,10 +16,13 @@ var victim: ScenePuppet
 var _shake := 0.0
 var _zap_beams: Array[MeshInstance3D] = []
 var _zap_active := false
+var _floor_y := 0.22
+var _knockdown := false
 
 
 func build() -> void:
 	var hall := load_set("lecture_hall")
+	_build_board_links(hall)
 	geoff = puppet(attacker, hall)
 	geoff.global_transform = marker("lecture_hall", "Attacker")
 	geoff.play(&"ual1/Idle")
@@ -56,15 +59,16 @@ func run() -> void:
 	var board := marker("lecture_hall", "Board").origin
 	var podium := marker("lecture_hall", "Podium").origin
 	var opp := marker("lecture_hall", "Opponent").origin
+	_floor_y = opp.y
 
 	# 1. VHS Rewind to 1986 Lecture Hall
-	shot("lecture_hall", "Cam_Wide", board + Vector3(-1.85, -1.2, 2.4))
+	shot("lecture_hall", "Cam_Wide", board + Vector3(-1.4, -0.8, 2.2))
 	sound("opening_sting")
 	geoff.play(&"fight/focus_stance")
 	geoff.face = &"smile"
 	victim.play(&"ual1/Idle")
 	victim.face = &"surprise"
-	big_text("<< 1986: BACKPROPAGATION", board + Vector3(-1.85, 1.6, 1.6), Color(0.25, 1.0, 0.65), 0.85, 2.0)
+	big_text("<< 1986: BACKPROPAGATION", board + Vector3(-1.2, 1.35, 1.6), Color(0.25, 1.0, 0.65), 0.78, REWIND_TIME - 0.15)
 	await wait(REWIND_TIME)
 
 	# 2. Synaptic Network Ignites & Zaps Opponent
@@ -75,31 +79,32 @@ func run() -> void:
 	_update_beams(board, opp)
 	victim.play(&"fight/crouch_guard")
 	victim.face = &"pain"
-	big_text("SYNAPTIC ACTIVATION!", opp + Vector3(0, 1.85, 0.4), Color(1.0, 0.85, 0.3), 0.75, 1.8)
+	big_text("SYNAPTIC ACTIVATION!", opp + Vector3(0, 1.75, 0.4), Color(1.0, 0.85, 0.3), 0.72, ZAP_TIME - 0.15)
 	await wait(ZAP_TIME)
 
 	# 3. Geoff's Regret & Second Thoughts
 	_zap_active = false
 	_hide_beams()
-	shot("lecture_hall", "Cam_Geoff", podium + Vector3(0, 0.2, 0.4))
+	shot("lecture_hall", "Cam_Geoff", podium + Vector3(-0.1, 0.05, 0.3))
 	geoff.play(&"fight/crouch_guard")
 	geoff.face = &"sad"
-	big_text("WHAT HAVE I DONE?!", podium + Vector3(0, 1.8, 0.2), Color(1.0, 0.45, 0.45), 0.85, 2.0)
+	big_text("WHAT HAVE I DONE?!", podium + Vector3(0.1, 1.45, 0.2), Color(1.0, 0.45, 0.45), 0.78, REGRET_TIME - 0.28)
 	await wait(REGRET_TIME)
 
 	# 4. Final Catastrophic Overfit Blast
-	shot("lecture_hall", "Cam_Zap", opp + Vector3(0, 0.5, 0))
+	shot("lecture_hall", "Cam_Zap", opp + Vector3(0, 0.55, 0))
 	sound("shockwave", 2.0)
 	_shake = 0.55
 	_zap_active = true
 	_update_beams(board, opp, true)
+	_knockdown = true
 	victim.play(&"ual2/Hit_Knockback")
 	victim.face = &"pain"
 
 	var blast_fall := create_tween()
-	blast_fall.tween_property(victim, "global_position", opp + Vector3(0, 0, 1.4), 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	blast_fall.tween_property(victim, "global_position", opp + Vector3(0, 0.20, 1.4), 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
-	big_text("PLEASE REGULATE US.", opp + Vector3(0, 2.1, 0.8), Color(1.0, 0.92, 0.7), 0.95, 2.0)
+	big_text("PLEASE REGULATE US.", opp + Vector3(0, 1.9, 0.8), Color(1.0, 0.92, 0.7), 0.84, 2.0)
 	await wait(0.4)
 	_zap_active = false
 	_hide_beams()
@@ -138,6 +143,8 @@ func _hide_beams() -> void:
 
 func _process(delta: float) -> void:
 	super._process(delta)
+	if _knockdown:
+		keep_head_above_floor(victim, _floor_y, 0.16)
 	if camera and _shake > 0.0:
 		_shake = maxf(0.0, _shake - delta * 1.6)
 		camera.h_offset = randf_range(-_shake, _shake) * 0.08
@@ -147,3 +154,28 @@ func _process(delta: float) -> void:
 		var board := marker("lecture_hall", "Board").origin
 		var opp := victim.global_position if is_instance_valid(victim) else marker("lecture_hall", "Opponent").origin
 		_update_beams(board, opp)
+
+
+func _build_board_links(hall: Node3D) -> void:
+	var net := hall.find_child("NeuralNet", true, false)
+	if net == null:
+		return
+	var xs := [-2.2, -0.7, 0.7, 2.2]
+	var layers := [
+		[-0.8, 0.0, 0.8],
+		[-1.0, -0.33, 0.33, 1.0],
+		[-1.0, -0.33, 0.33, 1.0],
+		[-0.5, 0.5],
+	]
+	var line_mat := SuperStandins.metal(Color(0.86, 0.92, 0.86), 0.0, 0.9)
+	for l in layers.size() - 1:
+		var x1: float = xs[l]
+		var x2: float = xs[l + 1]
+		for y1: float in layers[l]:
+			for y2: float in layers[l + 1]:
+				var p1 := Vector3(x1, y1, -0.02)
+				var p2 := Vector3(x2, y2, -0.02)
+				var diff := p2 - p1
+				var bar := SuperStandins.box(Vector3(0.016, diff.length(), 0.008), (p1 + p2) * 0.5, line_mat)
+				bar.rotation.z = -atan2(diff.x, diff.y)
+				net.add_child(bar)

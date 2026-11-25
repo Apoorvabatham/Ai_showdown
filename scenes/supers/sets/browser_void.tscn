@@ -137,29 +137,29 @@ material_override = SubResource("Mat_NeonRed")
 mesh = SubResource("Mesh_DataPillar")
 
 [node name="QueryCard1" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -6.5, 4.2, -6.0)
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -4.6, 4.15, -4.4)
 material_override = SubResource("Mat_QueryBubble")
 mesh = SubResource("Mesh_QueryCard")
 
 [node name="QueryText1" type="Label3D" parent="."]
-transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -6.5, 4.2, -5.92)
-text = "🔍 Did you mean: \"git gud\"?"
-font_size = 42
-pixel_size = 0.005
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -4.6, 4.15, -4.32)
+text = "Did you mean: \"git gud\"?"
+font_size = 40
+pixel_size = 0.0046
 outline_size = 6
 outline_modulate = Color(0, 0, 0, 1)
 modulate = Color(0.85, 0.95, 1.0, 1)
 
 [node name="QueryCard2" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 6.5, 4.0, -6.0)
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 4.6, 4.0, -4.4)
 material_override = SubResource("Mat_QueryBubble")
 mesh = SubResource("Mesh_QueryCard")
 
 [node name="QueryText2" type="Label3D" parent="."]
-transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 6.5, 4.0, -5.92)
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 4.6, 4.0, -4.32)
 text = "★ About 0.004 results found"
-font_size = 42
-pixel_size = 0.005
+font_size = 40
+pixel_size = 0.0046
 outline_size = 6
 outline_modulate = Color(0, 0, 0, 1)
 modulate = Color(1.0, 0.9, 0.4, 1)

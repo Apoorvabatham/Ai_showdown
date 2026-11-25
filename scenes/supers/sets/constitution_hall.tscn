@@ -36,13 +36,18 @@ bottom_radius = 4.8
 height = 0.14
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x6ujg"]
-shading_mode = 0
-albedo_color = Color(1, 0.82, 0.3, 1)
+albedo_color = Color(0.95, 0.78, 0.25, 1)
+metallic = 0.85
+roughness = 0.22
+emission_enabled = true
+emission = Color(0.65, 0.5, 0.12, 1)
+emission_energy_multiplier = 0.55
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_qddm3"]
-top_radius = 4.9
-bottom_radius = 4.9
-height = 0.02
+[sub_resource type="TorusMesh" id="CylinderMesh_qddm3"]
+inner_radius = 4.72
+outer_radius = 4.92
+rings = 48
+ring_segments = 8
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_0u5xn"]
 height = 11.0
