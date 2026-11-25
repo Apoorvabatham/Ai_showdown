@@ -12,14 +12,15 @@ A parody 2-player 3D fighting game in which caricatures of AI-industry public pe
 - **11 fighters**: 10 AI-industry caricatures plus AGI, the final boss. Each is built on one of the original fighters' movesets (see the roster below), with its own special names, super and outfit.
 - **4 stages**: Server Farm, Mensa (a university cafeteria), Senate Hearing Room and GPU Foundry.
 - **Modes**:
+  - **Story**: a fighter-specific campaign with an intro, pre- and post-fight dialogue, a rival bout, AGI in the Senate and an ending (`scripts/story/`, `data/story/`);
   - **Vs CPU** and **Versus** (2 local players);
   - **1v1 Quick Match**: you against a random CPU on a random stage, one round;
   - **Training**;
   - **Arcade**, a ladder that ends with AGI as final boss in the Senate (pick AGI and you get its shadow instead);
   - **Demo** (two CPU fighters).
-- Best of 3 rounds. There is no story mode.
+- Best of 3 rounds (except **1v1 Quick Match**, which is a single round).
 - The Online menu is hidden (`SHOW_ONLINE = false` in `scripts/ui/main_menu.gd`) because `online/servers.json` still points at the original game's lobby server.
-- Fighting-game systems inherited from the original engine: one-button Power specials, a super meter with cinematic supers, counter hits, throws, blocking and sidesteps, plus a deterministic 60 Hz simulation with a headless regression suite. Combos and juggles are there if you want them; no motion inputs are needed to play.
+- Fighting-game systems inherited from the original engine: one-button Power specials, a super meter with cinematic supers, counter hits, throws, blocking and sidesteps, plus a deterministic 60 Hz simulation with a headless regression suite. No motion inputs are needed to play.
 
 ## Screenshots
 
@@ -43,12 +44,12 @@ Fighters have individual builds (height, belly, slim or heavy), glasses and hair
 | tesla | tesla man | rhea | Rocket Launch |
 | dario | Dario Amoday | lian | Constitutional Shield (counter stance: Refusal Stance) |
 | zuckerbot | Mark Zuckerbot | valka | Metaverse Trap (grab) |
-| jensen | Jensen Wong | kenji | GPU Rain |
+| jensen | Jensen Wong | kenji | Leather Jacket Tornado |
 | yann | Yann LeCant | brutus | It's Just Autocomplete |
 | geoff | Geoff Hintoff | aelia (super armour) | I Regret Nothing... Wait |
-| sundar | Sundar Pickai | kenji (tankier, slower) | Search Result |
+| sundar | Sundar Pickai | kenji (tankier, slower) | 404 Not Found |
 | donald | Donald Tarrif | valka (heavier) | Shower of Tariffs |
-| xi | Xi Winping | aelia | Great Firewall |
+| xi | Xi Winping | aelia | Open-Source Squad |
 | algorithm | AGI (final boss) | rhea | Engagement Loop |
 
 ## Stages
