@@ -161,7 +161,17 @@ func _process(delta: float) -> void:
 			if phase == manager.Phase.FIGHT and _last_phase == manager.Phase.INTRO:
 				trigger("round_start")
 			_last_phase = phase
-	_bubbles.assign(_bubbles.filter(func(b) -> bool: return is_instance_valid(b) and not b.is_queued_for_deletion()))
+	_prune_bubbles()
+
+
+## Drops bubbles that were freed or are about to be (a bubble frees itself when it expires,
+## which can happen between two of our frames).
+func _prune_bubbles() -> void:
+	var alive: Array[ShoutBubble] = []
+	for b in _bubbles:
+		if is_instance_valid(b) and not b.is_queued_for_deletion():
+			alive.append(b)
+	_bubbles = alive
 
 
 ## A fight moment `key` (big_hit, super, ko, round_start, throw, wall_hit): a shout bubble
@@ -214,6 +224,7 @@ func _react(key: String) -> void:
 func shout_line(line: String, key: String, actor: StageActor = null, index := -1) -> ShoutBubble:
 	if actors.is_empty():
 		return null
+	_prune_bubbles()
 	if _bubbles.size() >= MAX_BUBBLES:
 		var oldest := _bubbles[0]
 		if oldest.age < BUBBLE_GAP:
@@ -236,6 +247,7 @@ func shout_line(line: String, key: String, actor: StageActor = null, index := -1
 
 ## A random person with no bubble nearby, so two bubbles don't overlap.
 func _free_actor() -> StageActor:
+	_prune_bubbles()
 	var open: Array[StageActor] = []
 	for a in actors:
 		if _bubbles.all(func(b: ShoutBubble) -> bool: return b.get_parent().position.distance_to(a.position) > 2.0):
@@ -262,6 +274,7 @@ func _play_voice(key: String, index: int, actor: StageActor) -> void:
 
 
 func bubble_count() -> int:
+	_prune_bubbles()
 	return _bubbles.size()
 
 
