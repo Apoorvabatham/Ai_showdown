@@ -493,3 +493,18 @@ Done on `main` (suite `0 failure(s)` after every step):
   exposure), Senate (dark wood wall, gallery in suits), Foundry (clear EUV window, boards
   below the HUD); crowd speech bubbles stay on screen.
 - Exported Linux build verified running into a fight.
+
+## 13. Nov 25: status
+
+- **Done**:
+  - `C6` (one-button Power/Super controls), `C10` (AGI boss mode & mirror match), `C11` (Story mode), `C12b` / `C12c` (cinematic supers and victory scenes).
+  - `G4`–`G10` (stages realism, ambient/interaction sounds, crowd life content and voices, and story scripts).
+- **In progress**:
+  - `G12` (Gemini, stage realism pass).
+  - Combo trials are being removed from Training.
+- **Open finish items**:
+  - `F8`: Zuckerbot Like bombs power move.
+  - `F9`: Missing super sounds.
+  - `F10`: Stand-in props.
+  - `F12`: HUD wording.
+  - `F5`: Windows export.
