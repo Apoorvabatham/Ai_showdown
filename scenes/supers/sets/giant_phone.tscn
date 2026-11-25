@@ -1,367 +1,887 @@
 [gd_scene format=3]
 
-[sub_resource type="Environment" id="Environment_khgdb"]
+[ext_resource type="FontFile" uid="uid://w5xllttmlvm3" path="res://assets/fonts/InterDisplay-BlackItalic.otf" id="1_font"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/server_farm/Textures/anti_skid_tiles_diff_1k.jpg" id="2_tiles_diff"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/server_farm/Textures/anti_skid_tiles_nor_1k.jpg" id="3_tiles_nor"]
+[ext_resource type="Texture2D" path="res://assets/stage_props/server_farm/Textures/anti_skid_tiles_rough_1k.jpg" id="4_tiles_rough"]
+
+[sub_resource type="Environment" id="Environment_Phone"]
 background_mode = 1
-background_color = Color(0.02, 0.02, 0.05, 1)
+background_color = Color(0.02, 0.025, 0.055, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.7, 0.85, 1, 1)
-ambient_light_energy = 0.5
+ambient_light_color = Color(0.65, 0.82, 1, 1)
+ambient_light_energy = 0.58
 tonemap_mode = 2
 glow_enabled = true
+glow_intensity = 0.65
+glow_bloom = 0.18
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_srnk1"]
-albedo_color = Color(0.06, 0.07, 0.1, 1)
-metallic = 0.3
-roughness = 0.2
+[sub_resource type="StandardMaterial3D" id="Mat_CyberFloor"]
+albedo_color = Color(0.14, 0.17, 0.26, 1)
+albedo_texture = ExtResource("2_tiles_diff")
+metallic = 0.35
+roughness = 0.22
+roughness_texture = ExtResource("4_tiles_rough")
+normal_enabled = true
+normal_texture = ExtResource("3_tiles_nor")
+uv1_scale = Vector3(14, 10, 1)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_ic4yc"]
-size = Vector2(26, 20)
+[sub_resource type="StandardMaterial3D" id="Mat_BackWall"]
+albedo_color = Color(0.03, 0.04, 0.08, 1)
+roughness = 0.85
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0agju"]
-albedo_color = Color(0.03, 0.04, 0.07, 1)
-roughness = 0.8
+[sub_resource type="StandardMaterial3D" id="Mat_Titanium"]
+albedo_color = Color(0.2, 0.22, 0.28, 1)
+metallic = 0.85
+roughness = 0.24
 
-[sub_resource type="BoxMesh" id="BoxMesh_fwer8"]
-size = Vector3(26, 14, 0.5)
+[sub_resource type="StandardMaterial3D" id="Mat_ScreenBlack"]
+albedo_color = Color(0.03, 0.035, 0.06, 1)
+roughness = 0.35
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4kdia"]
-albedo_color = Color(0.18, 0.2, 0.25, 1)
-metallic = 0.8
-roughness = 0.25
+[sub_resource type="StandardMaterial3D" id="Mat_DynamicIsland"]
+albedo_color = Color(0.01, 0.01, 0.015, 1)
+roughness = 0.12
 
-[sub_resource type="BoxMesh" id="BoxMesh_ey50l"]
-size = Vector3(14, 0.22, 7.5)
+[sub_resource type="StandardMaterial3D" id="Mat_CardBg"]
+albedo_color = Color(0.08, 0.1, 0.16, 1)
+roughness = 0.55
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q3tc3"]
+[sub_resource type="StandardMaterial3D" id="Mat_CardBorder"]
+albedo_color = Color(0.18, 0.24, 0.36, 1)
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Mat_FollowBtn"]
 shading_mode = 0
-albedo_color = Color(0.2, 0.95, 0.95, 1)
+albedo_color = Color(0.16, 0.56, 0.96, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_skbrn"]
-size = Vector3(14.2, 0.04, 0.08)
-
-[sub_resource type="BoxMesh" id="BoxMesh_gw8gu"]
-size = Vector3(5.4, 10.8, 0.55)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kjoce"]
-albedo_color = Color(0.01, 0.01, 0.03, 1)
+[sub_resource type="StandardMaterial3D" id="Mat_MediaBg1"]
+albedo_color = Color(0.14, 0.06, 0.12, 1)
 roughness = 0.5
 
-[sub_resource type="BoxMesh" id="BoxMesh_vmd1m"]
-size = Vector3(5, 10.2, 0.04)
+[sub_resource type="StandardMaterial3D" id="Mat_MediaBg2"]
+albedo_color = Color(0.05, 0.11, 0.18, 1)
+roughness = 0.5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pqqft"]
-albedo_color = Color(0.01, 0.01, 0.02, 1)
-roughness = 0.1
+[sub_resource type="StandardMaterial3D" id="Mat_MediaBg3"]
+albedo_color = Color(0.16, 0.09, 0.04, 1)
+roughness = 0.5
 
-[sub_resource type="BoxMesh" id="BoxMesh_dme4l"]
-size = Vector3(0.9, 0.18, 0.06)
+[sub_resource type="StandardMaterial3D" id="Mat_MediaBg4"]
+albedo_color = Color(0.11, 0.06, 0.18, 1)
+roughness = 0.5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qof7e"]
-albedo_color = Color(0.08, 0.1, 0.15, 1)
-roughness = 0.6
-
-[sub_resource type="BoxMesh" id="BoxMesh_fob1g"]
-size = Vector3(4.4, 1.8, 0.02)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1ak3l"]
+[sub_resource type="StandardMaterial3D" id="Mat_GlowCyan"]
 shading_mode = 0
-albedo_color = Color(0.85, 0.2, 0.45, 1)
+albedo_color = Color(0.2, 0.92, 1.0, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_dvy4b"]
-size = Vector3(4.1, 1.3, 0.02)
+[sub_resource type="StandardMaterial3D" id="Mat_GlowMagenta"]
+shading_mode = 0
+albedo_color = Color(1.0, 0.25, 0.65, 1)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_4p6ie"]
-top_radius = 0.12
-bottom_radius = 0.12
+[sub_resource type="StandardMaterial3D" id="Mat_GlowAmber"]
+shading_mode = 0
+albedo_color = Color(1.0, 0.62, 0.16, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_GlowPurple"]
+shading_mode = 0
+albedo_color = Color(0.7, 0.35, 1.0, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_GlowGreen"]
+shading_mode = 0
+albedo_color = Color(0.25, 0.95, 0.55, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_PlayBadge"]
+shading_mode = 0
+albedo_color = Color(1.0, 1.0, 1.0, 0.88)
+
+[sub_resource type="StandardMaterial3D" id="Mat_ScrubTrack"]
+shading_mode = 0
+albedo_color = Color(0.25, 0.28, 0.36, 1)
+
+[sub_resource type="PlaneMesh" id="Mesh_Floor"]
+size = Vector2(36, 28)
+
+[sub_resource type="BoxMesh" id="Mesh_BackWall"]
+size = Vector3(36, 16, 0.5)
+
+[sub_resource type="BoxMesh" id="Mesh_Dais"]
+size = Vector3(14, 0.22, 7.5)
+
+[sub_resource type="BoxMesh" id="Mesh_DaisTrim"]
+size = Vector3(14.2, 0.04, 0.08)
+
+[sub_resource type="BoxMesh" id="Mesh_GridStripX"]
+size = Vector3(24, 0.01, 0.05)
+
+[sub_resource type="BoxMesh" id="Mesh_GridStripZ"]
+size = Vector3(0.05, 0.01, 20)
+
+[sub_resource type="BoxMesh" id="Mesh_PhoneBody"]
+size = Vector3(5.4, 10.8, 0.55)
+
+[sub_resource type="BoxMesh" id="Mesh_PhoneScreen"]
+size = Vector3(5.0, 10.2, 0.04)
+
+[sub_resource type="BoxMesh" id="Mesh_DynamicIsland"]
+size = Vector3(0.95, 0.18, 0.05)
+
+[sub_resource type="BoxMesh" id="Mesh_HeaderLine"]
+size = Vector3(1.6, 0.035, 0.02)
+
+[sub_resource type="BoxMesh" id="Mesh_CardBorder"]
+size = Vector3(4.5, 1.98, 0.015)
+
+[sub_resource type="BoxMesh" id="Mesh_CardBg"]
+size = Vector3(4.42, 1.90, 0.02)
+
+[sub_resource type="CylinderMesh" id="Mesh_AvatarRing"]
+top_radius = 0.16
+bottom_radius = 0.16
+height = 0.025
+radial_segments = 20
+
+[sub_resource type="CylinderMesh" id="Mesh_AvatarCore"]
+top_radius = 0.13
+bottom_radius = 0.13
 height = 0.03
+radial_segments = 20
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tbqm7"]
-albedo_color = Color(0.08, 0.1, 0.15, 1)
-roughness = 0.6
+[sub_resource type="BoxMesh" id="Mesh_FollowBtn"]
+size = Vector3(0.68, 0.22, 0.02)
 
-[sub_resource type="BoxMesh" id="BoxMesh_oayyk"]
-size = Vector3(4.4, 1.8, 0.02)
+[sub_resource type="BoxMesh" id="Mesh_MediaFrame"]
+size = Vector3(4.12, 0.88, 0.018)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c2ras"]
-shading_mode = 0
-albedo_color = Color(0.2, 0.75, 1, 1)
+[sub_resource type="BoxMesh" id="Mesh_MediaInner"]
+size = Vector3(4.02, 0.80, 0.02)
 
-[sub_resource type="BoxMesh" id="BoxMesh_m0dsk"]
-size = Vector3(4.1, 1.3, 0.02)
+[sub_resource type="CylinderMesh" id="Mesh_PlayCircle"]
+top_radius = 0.16
+bottom_radius = 0.16
+height = 0.025
+radial_segments = 20
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_ctpoy"]
-top_radius = 0.12
-bottom_radius = 0.12
-height = 0.03
+[sub_resource type="PrismMesh" id="Mesh_PlayTri"]
+left_to_right = 0.5
+size = Vector3(0.14, 0.14, 0.03)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mpb64"]
-albedo_color = Color(0.08, 0.1, 0.15, 1)
-roughness = 0.6
+[sub_resource type="BoxMesh" id="Mesh_ScrubTrack"]
+size = Vector3(3.8, 0.035, 0.02)
 
-[sub_resource type="BoxMesh" id="BoxMesh_eg8r1"]
-size = Vector3(4.4, 1.8, 0.02)
+[sub_resource type="BoxMesh" id="Mesh_ScrubFill"]
+size = Vector3(2.3, 0.04, 0.025)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ex6tj"]
-shading_mode = 0
-albedo_color = Color(1, 0.55, 0.15, 1)
+[sub_resource type="BoxMesh" id="Mesh_BarTiny"]
+size = Vector3(0.22, 0.25, 0.025)
 
-[sub_resource type="BoxMesh" id="BoxMesh_mofla"]
-size = Vector3(4.1, 1.3, 0.02)
+[sub_resource type="BoxMesh" id="Mesh_BarMed"]
+size = Vector3(0.22, 0.42, 0.025)
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_qyima"]
-top_radius = 0.12
-bottom_radius = 0.12
-height = 0.03
+[sub_resource type="BoxMesh" id="Mesh_BarTall"]
+size = Vector3(0.22, 0.62, 0.025)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c2hbe"]
-albedo_color = Color(0.08, 0.1, 0.15, 1)
-roughness = 0.6
+[sub_resource type="TorusMesh" id="Mesh_HypnoRing"]
+inner_radius = 0.22
+outer_radius = 0.28
+rings = 24
+ring_segments = 6
 
-[sub_resource type="BoxMesh" id="BoxMesh_elc5s"]
-size = Vector3(4.4, 1.8, 0.02)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_orpbe"]
-shading_mode = 0
-albedo_color = Color(0.65, 0.3, 0.95, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_gyotl"]
-size = Vector3(4.1, 1.3, 0.02)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_vkc16"]
-top_radius = 0.12
-bottom_radius = 0.12
-height = 0.03
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eodpq"]
-shading_mode = 0
-albedo_color = Color(1, 0.25, 0.65, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_lobwq"]
+[sub_resource type="SphereMesh" id="Mesh_SideGlyphHeart"]
 radius = 0.22
 height = 0.44
 
-[sub_resource type="BoxMesh" id="BoxMesh_gln3x"]
+[sub_resource type="BoxMesh" id="Mesh_SideGlyphComment"]
 size = Vector3(0.38, 0.32, 0.1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4qkrj"]
-shading_mode = 0
-albedo_color = Color(1, 0.85, 0.2, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_r1g8v"]
+[sub_resource type="CylinderMesh" id="Mesh_SideGlyphShare"]
 top_radius = 0.18
 bottom_radius = 0.18
 height = 0.1
 
-[node name="giant_phone" type="Node3D" unique_id=878400485]
+[node name="giant_phone" type="Node3D"]
 
-[node name="@WorldEnvironment@2" type="WorldEnvironment" parent="." unique_id=2138934738]
-environment = SubResource("Environment_khgdb")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_Phone")
 
-[node name="@DirectionalLight3D@3" type="DirectionalLight3D" parent="." unique_id=566424231]
-transform = Transform3D(0.90630776, -0.29883623, 0.29883623, 0, 0.70710677, 0.70710677, -0.42261827, -0.6408563, 0.6408563, 0, 0, 0)
-light_color = Color(0.8, 0.95, 1, 1)
-light_energy = 0.9
+[node name="SunLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.906308, -0.298836, 0.298836, 0, 0.707107, 0.707107, -0.422618, -0.640856, 0.640856, 0, 0, 0)
+light_color = Color(0.82, 0.95, 1, 1)
+light_energy = 0.95
 shadow_enabled = true
 
-[node name="@SpotLight3D@4" type="SpotLight3D" parent="." unique_id=1022713757]
-transform = Transform3D(0.9781476, 0.188432, -0.087867275, 0, 0.42261824, 0.9063078, 0.2079117, -0.88650286, 0.41338304, -3.2, 6.5, 2.5)
+[node name="SpotAGI" type="SpotLight3D" parent="."]
+transform = Transform3D(0.978148, 0.188432, -0.087867, 0, 0.422618, 0.906308, 0.207912, -0.886503, 0.413383, -2.8, 6.5, 2.5)
 light_color = Color(0.4, 0.9, 1, 1)
-light_energy = 1.6
+light_energy = 2.0
 spot_range = 14.0
 spot_angle = 38.0
 
-[node name="@SpotLight3D@5" type="SpotLight3D" parent="." unique_id=765807398]
-transform = Transform3D(1, 0, 0, 0, 0.57357645, 0.81915206, 0, -0.81915206, 0.57357645, 0.5, 8, 3.5)
-light_color = Color(0.8, 0.6, 1, 1)
-light_energy = 2.0
+[node name="SpotPhone" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.573576, 0.819152, 0, -0.819152, 0.573576, 0.5, 8, 3.5)
+light_color = Color(0.8, 0.65, 1, 1)
+light_energy = 2.2
 spot_range = 16.0
 spot_angle = 52.0
 
-[node name="@MeshInstance3D@6" type="MeshInstance3D" parent="." unique_id=1971360949]
-material_override = SubResource("StandardMaterial3D_srnk1")
-mesh = SubResource("PlaneMesh_ic4yc")
+[node name="Floor" type="MeshInstance3D" parent="."]
+material_override = SubResource("Mat_CyberFloor")
+mesh = SubResource("Mesh_Floor")
 
-[node name="@MeshInstance3D@7" type="MeshInstance3D" parent="." unique_id=247508664]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, -5.5)
-material_override = SubResource("StandardMaterial3D_0agju")
-mesh = SubResource("BoxMesh_fwer8")
+[node name="BackWall" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, -5.8)
+material_override = SubResource("Mat_BackWall")
+mesh = SubResource("Mesh_BackWall")
 
-[node name="@MeshInstance3D@8" type="MeshInstance3D" parent="." unique_id=3313845]
+[node name="GridX1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, -3.5)
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_GridStripX")
+
+[node name="GridX2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 3.2)
+material_override = SubResource("Mat_GlowMagenta")
+mesh = SubResource("Mesh_GridStripX")
+
+[node name="GridZ1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0.01, 0)
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_GridStripZ")
+
+[node name="GridZ2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0.01, 0)
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_GridStripZ")
+
+[node name="CyberDais" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.11, -1.5)
-material_override = SubResource("StandardMaterial3D_4kdia")
-mesh = SubResource("BoxMesh_ey50l")
+material_override = SubResource("Mat_Titanium")
+mesh = SubResource("Mesh_Dais")
 
-[node name="@MeshInstance3D@9" type="MeshInstance3D" parent="." unique_id=1645731446]
+[node name="DaisFrontTrim" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.22, 2.25)
-material_override = SubResource("StandardMaterial3D_q3tc3")
-mesh = SubResource("BoxMesh_skbrn")
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_DaisTrim")
 
-[node name="@MeshInstance3D@10" type="MeshInstance3D" parent="." unique_id=1052592472]
+[node name="PhoneChassis" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 5.4, -3.2)
-material_override = SubResource("StandardMaterial3D_4kdia")
-mesh = SubResource("BoxMesh_gw8gu")
+material_override = SubResource("Mat_Titanium")
+mesh = SubResource("Mesh_PhoneBody")
 
-[node name="@MeshInstance3D@11" type="MeshInstance3D" parent="." unique_id=706986725]
+[node name="PhoneScreen" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 5.4, -2.94)
-material_override = SubResource("StandardMaterial3D_kjoce")
-mesh = SubResource("BoxMesh_vmd1m")
+material_override = SubResource("Mat_ScreenBlack")
+mesh = SubResource("Mesh_PhoneScreen")
 
-[node name="@MeshInstance3D@12" type="MeshInstance3D" parent="." unique_id=1745383721]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 10, -2.92)
-material_override = SubResource("StandardMaterial3D_pqqft")
-mesh = SubResource("BoxMesh_dme4l")
+[node name="DynamicIsland" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 10.12, -2.91)
+material_override = SubResource("Mat_DynamicIsland")
+mesh = SubResource("Mesh_DynamicIsland")
 
-[node name="@MeshInstance3D@13" type="MeshInstance3D" parent="." unique_id=637264850]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 8.4, -2.92)
-material_override = SubResource("StandardMaterial3D_qof7e")
-mesh = SubResource("BoxMesh_fob1g")
+[node name="StatusTime" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35, 10.12, -2.89)
+font = ExtResource("1_font")
+pixel_size = 0.0032
+modulate = Color(0.95, 0.98, 1, 1)
+text = "9:41"
+font_size = 42
 
-[node name="@MeshInstance3D@14" type="MeshInstance3D" parent="." unique_id=1495472554]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 8.5, -2.905)
-material_override = SubResource("StandardMaterial3D_1ak3l")
-mesh = SubResource("BoxMesh_dvy4b")
+[node name="StatusSignal" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 10.12, -2.89)
+font = ExtResource("1_font")
+pixel_size = 0.003
+modulate = Color(0.25, 0.95, 0.7, 1)
+text = "5G  100%"
+font_size = 40
 
-[node name="@MeshInstance3D@15" type="MeshInstance3D" parent="." unique_id=36226905]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 8.95, -2.89)
-material_override = SubResource("StandardMaterial3D_q3tc3")
-mesh = SubResource("CylinderMesh_4p6ie")
+[node name="AppHeader" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 9.7, -2.89)
+font = ExtResource("1_font")
+pixel_size = 0.0036
+modulate = Color(0.92, 0.96, 1, 1)
+text = "FOR YOU   |   FOLLOWING"
+font_size = 44
 
-[node name="@Label3D@16" type="Label3D" parent="." unique_id=243073671]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.099999994, 8.95, -2.88)
-pixel_size = 0.004
-modulate = Color(1, 1, 1, 0.95)
-text = "#DANCE #VIRAL"
-font_size = 28
+[node name="HeaderUnderline" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 9.54, -2.9)
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_HeaderLine")
 
-[node name="@Label3D@17" type="Label3D" parent="." unique_id=380289474]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 7.7999997, -2.88)
-pixel_size = 0.004
-modulate = Color(1, 0.25, 0.65, 1)
+[node name="Card1" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 8.42, -2.91)
+
+[node name="Border" type="MeshInstance3D" parent="Card1"]
+material_override = SubResource("Mat_CardBorder")
+mesh = SubResource("Mesh_CardBorder")
+
+[node name="Bg" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.005)
+material_override = SubResource("Mat_CardBg")
+mesh = SubResource("Mesh_CardBg")
+
+[node name="AvatarRing" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.9, 0.7, 0.022)
+material_override = SubResource("Mat_GlowMagenta")
+mesh = SubResource("Mesh_AvatarRing")
+
+[node name="AvatarCore" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.9, 0.7, 0.025)
+material_override = SubResource("Mat_MediaBg1")
+mesh = SubResource("Mesh_AvatarCore")
+
+[node name="AvatarInit" type="Label3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 0.7, 0.045)
+font = ExtResource("1_font")
+pixel_size = 0.0032
+modulate = Color(1, 0.9, 0.95, 1)
+text = "N"
+font_size = 46
+
+[node name="Author" type="Label3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.64, 0.72, 0.03)
+pixel_size = 0.003
+horizontal_alignment = 0
+modulate = Color(0.95, 0.97, 1, 1)
+text = "Neural Nora  @nora_ai · 2m"
+font_size = 38
+
+[node name="FollowBtn" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 0.72, 0.025)
+material_override = SubResource("Mat_FollowBtn")
+mesh = SubResource("Mesh_FollowBtn")
+
+[node name="FollowLbl" type="Label3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 0.72, 0.04)
+font = ExtResource("1_font")
+pixel_size = 0.0024
+text = "FOLLOW"
+font_size = 36
+
+[node name="Title" type="Label3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.02, 0.44, 0.03)
+font = ExtResource("1_font")
+pixel_size = 0.0032
+horizontal_alignment = 0
+modulate = Color(1, 1, 1, 1)
+text = "POV: loss curve finally hits 0.0001"
+font_size = 40
+
+[node name="MediaFrame" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0.018)
+material_override = SubResource("Mat_CardBorder")
+mesh = SubResource("Mesh_MediaFrame")
+
+[node name="MediaInner" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0.024)
+material_override = SubResource("Mat_MediaBg1")
+mesh = SubResource("Mesh_MediaInner")
+
+[node name="ArtBar1" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, -0.1, 0.038)
+material_override = SubResource("Mat_GlowMagenta")
+mesh = SubResource("Mesh_BarTall")
+
+[node name="ArtBar2" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, -0.2, 0.038)
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_BarMed")
+
+[node name="ArtBar3" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, -0.28, 0.038)
+material_override = SubResource("Mat_GlowGreen")
+mesh = SubResource("Mesh_BarTiny")
+
+[node name="ArtTag" type="Label3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, -0.1, 0.045)
+font = ExtResource("1_font")
+pixel_size = 0.003
+modulate = Color(1, 0.65, 0.85, 1)
+text = "CONVERGED!"
+font_size = 42
+
+[node name="PlayCircle" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.12, 0.04)
+material_override = SubResource("Mat_PlayBadge")
+mesh = SubResource("Mesh_PlayCircle")
+
+[node name="PlayTri" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.02, -0.12, 0.055)
+material_override = SubResource("Mat_MediaBg1")
+mesh = SubResource("Mesh_PlayTri")
+
+[node name="ScrubTrack" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.48, 0.038)
+material_override = SubResource("Mat_ScrubTrack")
+mesh = SubResource("Mesh_ScrubTrack")
+
+[node name="ScrubFill" type="MeshInstance3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, -0.48, 0.042)
+material_override = SubResource("Mat_GlowMagenta")
+mesh = SubResource("Mesh_ScrubFill")
+
+[node name="EngLike" type="Label3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(1, 0.35, 0.68, 1)
 text = "♥ 4.2M"
-font_size = 28
+font_size = 38
 
-[node name="@MeshInstance3D@18" type="MeshInstance3D" parent="." unique_id=487484522]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 6.2000003, -2.92)
-material_override = SubResource("StandardMaterial3D_tbqm7")
-mesh = SubResource("BoxMesh_oayyk")
+[node name="EngChat" type="Label3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(0.45, 0.9, 1, 1)
+text = "◆ 84K"
+font_size = 38
 
-[node name="@MeshInstance3D@19" type="MeshInstance3D" parent="." unique_id=376584694]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 6.3, -2.905)
-material_override = SubResource("StandardMaterial3D_c2ras")
-mesh = SubResource("BoxMesh_m0dsk")
+[node name="EngShare" type="Label3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(1, 0.85, 0.3, 1)
+text = "↗ 310K"
+font_size = 38
 
-[node name="@MeshInstance3D@20" type="MeshInstance3D" parent="." unique_id=646810347]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 6.7500005, -2.89)
-material_override = SubResource("StandardMaterial3D_q3tc3")
-mesh = SubResource("CylinderMesh_ctpoy")
+[node name="EngSave" type="Label3D" parent="Card1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.85, -0.76, 0.035)
+pixel_size = 0.003
+modulate = Color(0.8, 0.85, 0.95, 1)
+text = "★ SAVE"
+font_size = 34
 
-[node name="@Label3D@21" type="Label3D" parent="." unique_id=847107582]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.099999994, 6.7500005, -2.88)
-pixel_size = 0.004
-modulate = Color(1, 1, 1, 0.95)
-text = "#ALGORITHM #AI"
-font_size = 28
+[node name="Card2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 6.22, -2.91)
 
-[node name="@Label3D@22" type="Label3D" parent="." unique_id=274402106]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 5.6000004, -2.88)
-pixel_size = 0.004
-modulate = Color(1, 0.25, 0.65, 1)
+[node name="Border" type="MeshInstance3D" parent="Card2"]
+material_override = SubResource("Mat_CardBorder")
+mesh = SubResource("Mesh_CardBorder")
+
+[node name="Bg" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.005)
+material_override = SubResource("Mat_CardBg")
+mesh = SubResource("Mesh_CardBg")
+
+[node name="AvatarRing" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.9, 0.7, 0.022)
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_AvatarRing")
+
+[node name="AvatarCore" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.9, 0.7, 0.025)
+material_override = SubResource("Mat_MediaBg2")
+mesh = SubResource("Mesh_AvatarCore")
+
+[node name="AvatarInit" type="Label3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 0.7, 0.045)
+font = ExtResource("1_font")
+pixel_size = 0.0032
+modulate = Color(0.85, 0.98, 1, 1)
+text = "G"
+font_size = 46
+
+[node name="Author" type="Label3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.64, 0.72, 0.03)
+pixel_size = 0.003
+horizontal_alignment = 0
+modulate = Color(0.95, 0.97, 1, 1)
+text = "GPU Goblin  @vram_max · 5m"
+font_size = 38
+
+[node name="FollowBtn" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 0.72, 0.025)
+material_override = SubResource("Mat_FollowBtn")
+mesh = SubResource("Mesh_FollowBtn")
+
+[node name="FollowLbl" type="Label3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 0.72, 0.04)
+font = ExtResource("1_font")
+pixel_size = 0.0024
+text = "FOLLOW"
+font_size = 36
+
+[node name="Title" type="Label3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.02, 0.44, 0.03)
+font = ExtResource("1_font")
+pixel_size = 0.0032
+horizontal_alignment = 0
+modulate = Color(1, 1, 1, 1)
+text = "10 tricks to 10x your context window!"
+font_size = 40
+
+[node name="MediaFrame" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0.018)
+material_override = SubResource("Mat_CardBorder")
+mesh = SubResource("Mesh_MediaFrame")
+
+[node name="MediaInner" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0.024)
+material_override = SubResource("Mat_MediaBg2")
+mesh = SubResource("Mesh_MediaInner")
+
+[node name="ArtNode1" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.3, -0.05, 0.038)
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_AvatarRing")
+
+[node name="ArtNode2" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.75, -0.22, 0.038)
+material_override = SubResource("Mat_GlowGreen")
+mesh = SubResource("Mesh_AvatarRing")
+
+[node name="ArtTag" type="Label3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.1, 0.045)
+font = ExtResource("1_font")
+pixel_size = 0.003
+modulate = Color(0.35, 0.95, 1, 1)
+text = "2M TOKENS"
+font_size = 42
+
+[node name="PlayCircle" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.12, 0.04)
+material_override = SubResource("Mat_PlayBadge")
+mesh = SubResource("Mesh_PlayCircle")
+
+[node name="PlayTri" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.02, -0.12, 0.055)
+material_override = SubResource("Mat_MediaBg2")
+mesh = SubResource("Mesh_PlayTri")
+
+[node name="ScrubTrack" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.48, 0.038)
+material_override = SubResource("Mat_ScrubTrack")
+mesh = SubResource("Mesh_ScrubTrack")
+
+[node name="ScrubFill" type="MeshInstance3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, -0.48, 0.042)
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_ScrubFill")
+
+[node name="EngLike" type="Label3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(1, 0.35, 0.68, 1)
 text = "♥ 1.8M"
-font_size = 28
+font_size = 38
 
-[node name="@MeshInstance3D@23" type="MeshInstance3D" parent="." unique_id=490527068]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 4, -2.92)
-material_override = SubResource("StandardMaterial3D_mpb64")
-mesh = SubResource("BoxMesh_eg8r1")
+[node name="EngChat" type="Label3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(0.45, 0.9, 1, 1)
+text = "◆ 42K"
+font_size = 38
 
-[node name="@MeshInstance3D@24" type="MeshInstance3D" parent="." unique_id=215256730]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 4.1, -2.905)
-material_override = SubResource("StandardMaterial3D_ex6tj")
-mesh = SubResource("BoxMesh_mofla")
+[node name="EngShare" type="Label3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(1, 0.85, 0.3, 1)
+text = "↗ 195K"
+font_size = 38
 
-[node name="@MeshInstance3D@25" type="MeshInstance3D" parent="." unique_id=307338448]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 4.55, -2.89)
-material_override = SubResource("StandardMaterial3D_q3tc3")
-mesh = SubResource("CylinderMesh_qyima")
+[node name="EngSave" type="Label3D" parent="Card2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.85, -0.76, 0.035)
+pixel_size = 0.003
+modulate = Color(0.8, 0.85, 0.95, 1)
+text = "★ SAVE"
+font_size = 34
 
-[node name="@Label3D@26" type="Label3D" parent="." unique_id=375657243]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.099999994, 4.55, -2.88)
-pixel_size = 0.004
-modulate = Color(1, 1, 1, 0.95)
-text = "#LIFEHACKS"
-font_size = 28
+[node name="Card3" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 4.02, -2.91)
 
-[node name="@Label3D@27" type="Label3D" parent="." unique_id=433426761]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 3.4, -2.88)
-pixel_size = 0.004
-modulate = Color(1, 0.25, 0.65, 1)
+[node name="Border" type="MeshInstance3D" parent="Card3"]
+material_override = SubResource("Mat_CardBorder")
+mesh = SubResource("Mesh_CardBorder")
+
+[node name="Bg" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.005)
+material_override = SubResource("Mat_CardBg")
+mesh = SubResource("Mesh_CardBg")
+
+[node name="AvatarRing" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.9, 0.7, 0.022)
+material_override = SubResource("Mat_GlowAmber")
+mesh = SubResource("Mesh_AvatarRing")
+
+[node name="AvatarCore" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.9, 0.7, 0.025)
+material_override = SubResource("Mat_MediaBg3")
+mesh = SubResource("Mesh_AvatarCore")
+
+[node name="AvatarInit" type="Label3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 0.7, 0.045)
+font = ExtResource("1_font")
+pixel_size = 0.0032
+modulate = Color(1, 0.95, 0.85, 1)
+text = "P"
+font_size = 46
+
+[node name="Author" type="Label3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.64, 0.72, 0.03)
+pixel_size = 0.003
+horizontal_alignment = 0
+modulate = Color(0.95, 0.97, 1, 1)
+text = "Prompt Wizard  @token_mage · 9m"
+font_size = 38
+
+[node name="FollowBtn" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 0.72, 0.025)
+material_override = SubResource("Mat_FollowBtn")
+mesh = SubResource("Mesh_FollowBtn")
+
+[node name="FollowLbl" type="Label3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 0.72, 0.04)
+font = ExtResource("1_font")
+pixel_size = 0.0024
+text = "FOLLOW"
+font_size = 36
+
+[node name="Title" type="Label3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.02, 0.44, 0.03)
+font = ExtResource("1_font")
+pixel_size = 0.0032
+horizontal_alignment = 0
+modulate = Color(1, 1, 1, 1)
+text = "400 GPUs melting at 3:00 AM speedrun"
+font_size = 40
+
+[node name="MediaFrame" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0.018)
+material_override = SubResource("Mat_CardBorder")
+mesh = SubResource("Mesh_MediaFrame")
+
+[node name="MediaInner" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0.024)
+material_override = SubResource("Mat_MediaBg3")
+mesh = SubResource("Mesh_MediaInner")
+
+[node name="ArtBar1" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, -0.18, 0.038)
+material_override = SubResource("Mat_GlowAmber")
+mesh = SubResource("Mesh_BarMed")
+
+[node name="ArtBar2" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, -0.1, 0.038)
+material_override = SubResource("Mat_GlowAmber")
+mesh = SubResource("Mesh_BarTall")
+
+[node name="ArtTag" type="Label3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.1, 0.045)
+font = ExtResource("1_font")
+pixel_size = 0.003
+modulate = Color(1, 0.8, 0.35, 1)
+text = "TEMP: 999°C"
+font_size = 42
+
+[node name="PlayCircle" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.12, 0.04)
+material_override = SubResource("Mat_PlayBadge")
+mesh = SubResource("Mesh_PlayCircle")
+
+[node name="PlayTri" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.02, -0.12, 0.055)
+material_override = SubResource("Mat_MediaBg3")
+mesh = SubResource("Mesh_PlayTri")
+
+[node name="ScrubTrack" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.48, 0.038)
+material_override = SubResource("Mat_ScrubTrack")
+mesh = SubResource("Mesh_ScrubTrack")
+
+[node name="ScrubFill" type="MeshInstance3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, -0.48, 0.042)
+material_override = SubResource("Mat_GlowAmber")
+mesh = SubResource("Mesh_ScrubFill")
+
+[node name="EngLike" type="Label3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(1, 0.35, 0.68, 1)
 text = "♥ 920K"
-font_size = 28
+font_size = 38
 
-[node name="@MeshInstance3D@28" type="MeshInstance3D" parent="." unique_id=36949254]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.8000002, -2.92)
-material_override = SubResource("StandardMaterial3D_c2hbe")
-mesh = SubResource("BoxMesh_elc5s")
+[node name="EngChat" type="Label3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(0.45, 0.9, 1, 1)
+text = "◆ 19K"
+font_size = 38
 
-[node name="@MeshInstance3D@29" type="MeshInstance3D" parent="." unique_id=391419631]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.9000002, -2.905)
-material_override = SubResource("StandardMaterial3D_orpbe")
-mesh = SubResource("BoxMesh_gyotl")
+[node name="EngShare" type="Label3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(1, 0.85, 0.3, 1)
+text = "↗ 68K"
+font_size = 38
 
-[node name="@MeshInstance3D@30" type="MeshInstance3D" parent="." unique_id=1596762622]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 2.3500001, -2.89)
-material_override = SubResource("StandardMaterial3D_q3tc3")
-mesh = SubResource("CylinderMesh_vkc16")
+[node name="EngSave" type="Label3D" parent="Card3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.85, -0.76, 0.035)
+pixel_size = 0.003
+modulate = Color(0.8, 0.85, 0.95, 1)
+text = "★ SAVE"
+font_size = 34
 
-[node name="@Label3D@31" type="Label3D" parent="." unique_id=1109537399]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.099999994, 2.3500001, -2.88)
-pixel_size = 0.004
-modulate = Color(1, 1, 1, 0.95)
-text = "#DOOMSCROLL"
-font_size = 28
+[node name="Card4" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.82, -2.91)
 
-[node name="@Label3D@32" type="Label3D" parent="." unique_id=2109454968]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 1.2000002, -2.88)
-pixel_size = 0.004
-modulate = Color(1, 0.25, 0.65, 1)
+[node name="Border" type="MeshInstance3D" parent="Card4"]
+material_override = SubResource("Mat_CardBorder")
+mesh = SubResource("Mesh_CardBorder")
+
+[node name="Bg" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.005)
+material_override = SubResource("Mat_CardBg")
+mesh = SubResource("Mesh_CardBg")
+
+[node name="AvatarRing" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.9, 0.7, 0.022)
+material_override = SubResource("Mat_GlowPurple")
+mesh = SubResource("Mesh_AvatarRing")
+
+[node name="AvatarCore" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.9, 0.7, 0.025)
+material_override = SubResource("Mat_MediaBg4")
+mesh = SubResource("Mesh_AvatarCore")
+
+[node name="AvatarInit" type="Label3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 0.7, 0.045)
+font = ExtResource("1_font")
+pixel_size = 0.0032
+modulate = Color(0.95, 0.88, 1, 1)
+text = "D"
+font_size = 46
+
+[node name="Author" type="Label3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.64, 0.72, 0.03)
+pixel_size = 0.003
+horizontal_alignment = 0
+modulate = Color(0.95, 0.97, 1, 1)
+text = "Doom Bot  @endless_loop · now"
+font_size = 38
+
+[node name="FollowBtn" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 0.72, 0.025)
+material_override = SubResource("Mat_FollowBtn")
+mesh = SubResource("Mesh_FollowBtn")
+
+[node name="FollowLbl" type="Label3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 0.72, 0.04)
+font = ExtResource("1_font")
+pixel_size = 0.0024
+text = "FOLLOW"
+font_size = 36
+
+[node name="Title" type="Label3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.02, 0.44, 0.03)
+font = ExtResource("1_font")
+pixel_size = 0.0032
+horizontal_alignment = 0
+modulate = Color(1, 1, 1, 1)
+text = "Wait until the feed picks your lunch!"
+font_size = 40
+
+[node name="MediaFrame" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0.018)
+material_override = SubResource("Mat_CardBorder")
+mesh = SubResource("Mesh_MediaFrame")
+
+[node name="MediaInner" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0.024)
+material_override = SubResource("Mat_MediaBg4")
+mesh = SubResource("Mesh_MediaInner")
+
+[node name="HypnoRing" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.05, -0.12, 0.038)
+material_override = SubResource("Mat_GlowPurple")
+mesh = SubResource("Mesh_HypnoRing")
+
+[node name="ArtTag" type="Label3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.1, 0.045)
+font = ExtResource("1_font")
+pixel_size = 0.0028
+modulate = Color(0.88, 0.65, 1, 1)
+text = "KEEP SCROLLING"
+font_size = 38
+
+[node name="PlayCircle" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.12, 0.04)
+material_override = SubResource("Mat_PlayBadge")
+mesh = SubResource("Mesh_PlayCircle")
+
+[node name="PlayTri" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.02, -0.12, 0.055)
+material_override = SubResource("Mat_MediaBg4")
+mesh = SubResource("Mesh_PlayTri")
+
+[node name="ScrubTrack" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.48, 0.038)
+material_override = SubResource("Mat_ScrubTrack")
+mesh = SubResource("Mesh_ScrubTrack")
+
+[node name="ScrubFill" type="MeshInstance3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, -0.48, 0.042)
+material_override = SubResource("Mat_GlowPurple")
+mesh = SubResource("Mesh_ScrubFill")
+
+[node name="EngLike" type="Label3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(1, 0.35, 0.68, 1)
 text = "♥ 6.5M"
-font_size = 28
+font_size = 38
 
-[node name="@MeshInstance3D@33" type="MeshInstance3D" parent="." unique_id=693836599]
+[node name="EngChat" type="Label3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(0.45, 0.9, 1, 1)
+text = "◆ 220K"
+font_size = 38
+
+[node name="EngShare" type="Label3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, -0.76, 0.035)
+pixel_size = 0.0032
+modulate = Color(1, 0.85, 0.3, 1)
+text = "↗ 940K"
+font_size = 38
+
+[node name="EngSave" type="Label3D" parent="Card4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.85, -0.76, 0.035)
+pixel_size = 0.003
+modulate = Color(0.8, 0.85, 0.95, 1)
+text = "★ SAVE"
+font_size = 34
+
+[node name="SideHeart" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7, 7.9, -3)
-material_override = SubResource("StandardMaterial3D_eodpq")
-mesh = SubResource("SphereMesh_lobwq")
+material_override = SubResource("Mat_GlowMagenta")
+mesh = SubResource("Mesh_SideGlyphHeart")
 
-[node name="@MeshInstance3D@34" type="MeshInstance3D" parent="." unique_id=1762678173]
+[node name="SideComment" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7, 6.8, -3)
-material_override = SubResource("StandardMaterial3D_q3tc3")
-mesh = SubResource("BoxMesh_gln3x")
+material_override = SubResource("Mat_GlowCyan")
+mesh = SubResource("Mesh_SideGlyphComment")
 
-[node name="@MeshInstance3D@35" type="MeshInstance3D" parent="." unique_id=1398900621]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7, 5.7000003, -3)
-material_override = SubResource("StandardMaterial3D_4qkrj")
-mesh = SubResource("CylinderMesh_r1g8v")
+[node name="SideShare" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 3.7, 5.7, -3)
+material_override = SubResource("Mat_GlowAmber")
+mesh = SubResource("Mesh_SideGlyphShare")
 
-[node name="Attacker" type="Marker3D" parent="." unique_id=450282936]
-transform = Transform3D(-0.9396926, 0, 0.3420202, 0, 1, 0, -0.3420202, 0, -0.9396926, -3.2, 0.6, 0.5)
+[node name="Attacker" type="Marker3D" parent="."]
+transform = Transform3D(-0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, -0.939693, -2.7, 0.22, 0.6)
 
-[node name="Opponent" type="Marker3D" parent="." unique_id=432903224]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.5, 0.22, -0.6)
+[node name="Opponent" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.5, 0.22, -0.4)
 
-[node name="Phone" type="Marker3D" parent="." unique_id=244703263]
+[node name="Phone" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 5.4, -3.2)
 
-[node name="ScreenPortal" type="Marker3D" parent="." unique_id=569390707]
+[node name="ScreenPortal" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 5.4, -2.9)
 
-[node name="Cam_Wide" type="Marker3D" parent="." unique_id=981490922]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35, 2.4, 5.6)
+[node name="Cam_Wide" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 2.35, 6.7)
 
-[node name="Cam_Suck" type="Marker3D" parent="." unique_id=1044122979]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 2.2, 3.2)
+[node name="Cam_Suck" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 2.5, 3.8)
 
-[node name="Cam_Scroll" type="Marker3D" parent="." unique_id=2026524829]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 4.5, 0.6)
+[node name="Cam_Scroll" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 5.2, 1.5)
 
-[node name="Cam_Spat" type="Marker3D" parent="." unique_id=190058341]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 4.2)
+[node name="Cam_Spat" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 1.55, 4.3)
