@@ -96,7 +96,7 @@
         },
         {
           "who": "zuckerbot",
-          "line": "I have prepared the Colosseum. My rear naked choke is ready."
+          "line": "I have prepared the Colosseum. My rear-naked choke is ready."
         }
       ],
       "after_win": [
@@ -129,7 +129,7 @@
   ],
   "ending": [
     "Zuckerbot hoists the golden championship belt in the Metaverse arena.",
-    "His virtual avatar proudly sports brand new, fully articulated legs.",
+    "His virtual avatar proudly sports brand-new, fully articulated legs.",
     "Three billion users receive a notification to like and subscribe."
   ]
 }

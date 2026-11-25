@@ -82,7 +82,7 @@
       "after_win": [
         {
           "who": "dario",
-          "line": "Red team report complete: vulnerability identified in your low guard."
+          "line": "Red-team report complete: vulnerability identified in your low guard."
         }
       ]
     },
@@ -112,7 +112,7 @@
       "before": [
         {
           "who": "algorithm",
-          "line": "Safety constitutional rules encountered. Initiating compliance bypass."
+          "line": "Constitutional safety rules encountered. Initiating compliance bypass."
         },
         {
           "who": "dario",
