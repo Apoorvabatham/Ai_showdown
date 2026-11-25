@@ -1,7 +1,7 @@
 extends SceneTree
 ## Builds every character's move list (res://data/moves/<id>/*.tres) from one shared base
 ## set, per-character tuning, and per-character signature moves, then assigns the lists
-## and character stats to res://data/characters/<id>.tres.
+## and character stats to res://data/kits/<id>.tres.
 ##
 ## Run: godot_console --headless --path . -s res://tools/build_movesets.gd
 ##
@@ -369,7 +369,7 @@ func _initialize() -> void:
 		for file: String in spec.specials:
 			moves.append(_save(_make(spec.specials[file]), dir + file + ".tres"))
 
-		var path := "res://data/characters/%s.tres" % id
+		var path := "res://data/kits/%s.tres" % id
 		var character: CharacterData
 		if ResourceLoader.exists(path):
 			character = load(path) as CharacterData
@@ -396,6 +396,10 @@ func _initialize() -> void:
 			character.portrait = load(portrait)
 		var err := ResourceSaver.save(character, path)
 		print("%-7s %2d moves  err=%d" % [id, moves.size(), err])
+		if err != OK:
+			push_error("build_movesets: could not save %s" % path)
+			quit(1)
+			return
 	quit()
 
 
