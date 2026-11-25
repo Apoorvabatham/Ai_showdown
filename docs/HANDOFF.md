@@ -69,6 +69,9 @@ godot --headless --path . --import
 ```bash
 godot --headless --path . -s res://tests/sim_test.gd
 ```
+On the owner's laptop run Godot through `C:\Users\batha\.local\bin\godot-q.cmd`
+instead of `godot` (same arguments). It allows at most 2 Godot jobs machine-wide and
+runs them at low priority; never start several Godot runs in parallel.
 The last line must print `0 failure(s)` (exit 1 otherwise). Rendering tools need a display:
 use `xvfb-run -a -s "-screen 0 1920x1080x24" godot --rendering-driver opengl3 --path . -s res://tools/<tool>.gd`.
 Python tools need Pillow and numpy. Assets are plain files (no Git LFS).
