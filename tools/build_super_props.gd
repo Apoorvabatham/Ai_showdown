@@ -9,6 +9,8 @@ const PROP_DIR := "res://assets/props/supers/"
 
 func _initialize() -> void:
 	var only := OS.get_cmdline_user_args() # e.g. `-- donald`: rebuild just these folders
+	if only.is_empty() or "dario" in only:
+		_build_dario_props()
 	if only.is_empty() or "tesla" in only:
 		_build_tesla_props()
 	if only.is_empty() or "donald" in only:
@@ -21,6 +23,8 @@ func _initialize() -> void:
 		_build_sundar_props()
 	if only.is_empty() or "xi" in only:
 		_build_xi_props()
+	if only.is_empty() or "yann" in only:
+		_build_yann_props()
 	quit()
 
 # --- Materials ---------------------------------------------------------------
@@ -95,6 +99,137 @@ func _torus(inner: float, outer: float, position: Vector3, material: Material, n
 	torus.rings = 20
 	torus.ring_segments = 8
 	return _mesh(torus, position, material, name, rotation)
+
+# =============================================================================
+# O2 - dario props
+# =============================================================================
+
+func _build_dario_props() -> void:
+	_dir_for("dario")
+	_constitution_scroll()
+	_safe_seal()
+	_safe_stamp()
+
+## A parchment scroll cocoon that wraps the opponent: cream wrapped sheet, wooden rollers
+## with brass ends top and bottom, and printed lines plus a generic title on both faces.
+## Origin at the middle of the cocoon (the scene drops it onto the victim), front = +Z
+## where the cameras are; the back carries the same print so it reads from either side.
+func _constitution_scroll() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "ConstitutionScroll"
+	var parchment := _metal(Color(0.93, 0.87, 0.72), 0.0, 0.85)
+	var parchment_edge := _metal(Color(0.82, 0.73, 0.55), 0.0, 0.9)
+	var ink_color := Color(0.22, 0.12, 0.05)
+	var ink := _metal(ink_color, 0.0, 0.6)
+	var wood := _metal(Color(0.38, 0.20, 0.10), 0.0, 0.5)
+	var wood_light := _metal(Color(0.52, 0.30, 0.15), 0.0, 0.45)
+	var brass := _metal(Color(0.86, 0.66, 0.25), 0.85, 0.25)
+
+	root.add_child(_cylinder(0.49, 0.49, 1.72, Vector3.ZERO, parchment, "Parchment"))
+	root.add_child(_cylinder(0.5, 0.5, 1.66, Vector3(0, 0, -0.012), parchment_edge))
+	# Rollers: thick wooden discs with brass rims and dowel ends.
+	for y in [-0.9, 0.9]:
+		root.add_child(_cylinder(0.55, 0.55, 0.1, Vector3(0, y, 0), wood, "Roller"))
+		root.add_child(_torus(0.5, 0.555, Vector3(0, y + (0.055 if y > 0 else -0.055), 0),
+			brass, "RollerRim", Vector3(PI * 0.5, 0, 0)))
+		root.add_child(_cylinder(0.05, 0.05, 1.24, Vector3(0, y, 0), wood_light, "Dowel",
+			Vector3(0, 0, PI * 0.5)))
+		for side in [-1.0, 1.0]:
+			root.add_child(_sphere(0.075, Vector3(0.65 * side, y, 0), brass, "DowelKnob"))
+	# Gold bands where the sheet meets the rollers.
+	for y in [-0.78, 0.78]:
+		root.add_child(_torus(0.485, 0.515, Vector3(0, y, 0), brass, "Band", Vector3(PI * 0.5, 0, 0)))
+	# Printed title and lines, on both faces.
+	var lines := [0.34, 0.19, 0.04, -0.11, -0.26, -0.41, -0.56]
+	for side in [-1.0, 1.0]:
+		var z: float = 0.505 * float(side)
+		var title := _label("THE CONSTITUTION", 0.13, ink_color, Vector3(0, 0.56, z), "Title")
+		if side < 0:
+			title.rotation.y = PI
+		root.add_child(title)
+		for i in lines.size():
+			var w: float = 0.62 - 0.09 * (i % 3)
+			var line := _box(Vector3(w, 0.018, 0.008), Vector3(-0.02, lines[i], z), ink, "Print")
+			root.add_child(line)
+		var rule := _box(Vector3(0.68, 0.012, 0.008), Vector3(0, 0.45, z), ink, "Rule")
+		root.add_child(rule)
+
+	_save(root, PROP_DIR + "dario/constitution_scroll.tscn")
+
+## Flat round red wax seal with an embossed "SAFE" medallion, facing +Z like the scene's
+## stand-in. A mirrored copy on the back keeps it readable from either side.
+func _safe_seal() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "SafeSeal"
+	var wax := _metal(Color(0.74, 0.12, 0.13), 0.0, 0.45)
+	var wax_light := _metal(Color(0.87, 0.2, 0.18), 0.0, 0.4)
+	var wax_dark := _metal(Color(0.45, 0.04, 0.05), 0.0, 0.55)
+	var gold := _metal(Color(0.98, 0.84, 0.42), 0.7, 0.3)
+	var cream_color := Color(1.0, 0.92, 0.72)
+	var cream := _cloth(cream_color)
+
+	root.add_child(_cylinder(0.44, 0.44, 0.05, Vector3.ZERO, wax, "Wax", Vector3(PI * 0.5, 0, 0)))
+	var dome := _sphere(0.34, Vector3(0, 0, 0.035), wax_light, "Dome")
+	dome.scale = Vector3(1.0, 1.0, 0.12)
+	root.add_child(dome)
+	root.add_child(_torus(0.37, 0.445, Vector3(0, 0, 0.02), wax_dark, "Rim"))
+	root.add_child(_torus(0.3, 0.33, Vector3(0, 0, 0.075), gold, "GoldRing"))
+	# Embossed lettering on both faces.
+	for side in [-1.0, 1.0]:
+		var z: float = 0.085 * float(side)
+		var main := _label("★ SAFE ★", 0.17, cream_color, Vector3(0, 0.035, z), "SafeText")
+		var sub := _label("VERIFIED", 0.07, cream_color, Vector3(0, -0.16, z), "SubText")
+		if side < 0:
+			main.rotation.y = PI
+			sub.rotation.y = PI
+		root.add_child(main)
+		root.add_child(sub)
+	for i in 8:
+		var angle := TAU * i / 8.0
+		root.add_child(_sphere(0.022, Vector3(cos(angle) * 0.405, sin(angle) * 0.405, 0.045),
+			gold, "Stud"))
+
+	_save(root, PROP_DIR + "dario/safe_seal.tscn")
+
+## Giant golden SAFE stamp: disc head on a wooden handle, with a red rubber sole whose
+## underside reads SAFE mirrored (the scene tilts it -90 degrees about X onto the scroll).
+func _safe_stamp() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "SafeStamp"
+	var gold := _metal(Color(0.95, 0.77, 0.28), 0.85, 0.24)
+	var gold_dark := _metal(Color(0.66, 0.46, 0.12), 0.85, 0.3)
+	var wood := _metal(Color(0.38, 0.20, 0.1), 0.0, 0.48)
+	var wood_dark := _metal(Color(0.26, 0.13, 0.06), 0.0, 0.55)
+	var rubber := _rubber(Color(0.66, 0.08, 0.08))
+	var rubber_dark := _rubber(Color(0.4, 0.04, 0.04))
+	var ink_color := Color(0.2, 0.1, 0.04)
+	var ink := _metal(ink_color, 0.0, 0.6)
+
+	root.add_child(_cylinder(0.46, 0.46, 0.18, Vector3.ZERO, gold, "Head"))
+	root.add_child(_torus(0.42, 0.47, Vector3(0, 0.095, 0), gold_dark, "HeadRim", Vector3(PI * 0.5, 0, 0)))
+	root.add_child(_cylinder(0.42, 0.42, 0.05, Vector3(0, -0.11, 0), rubber, "Sole"))
+	root.add_child(_cylinder(0.39, 0.39, 0.012, Vector3(0, -0.14, 0), rubber_dark, "SoleFace"))
+	root.add_child(_cylinder(0.24, 0.29, 0.12, Vector3(0, 0.13, 0), gold_dark, "Collar"))
+	root.add_child(_cylinder(0.16, 0.2, 1.2, Vector3(0, 0.76, 0), wood, "Handle"))
+	root.add_child(_cylinder(0.11, 0.11, 0.08, Vector3(0, 1.39, 0), wood_dark))
+	var knob := _sphere(0.28, Vector3(0, 1.56, 0), wood, "Knob")
+	knob.scale = Vector3(1.0, 0.8, 1.0)
+	root.add_child(knob)
+	# SAFE across the head, readable from either side.
+	for side in [-1.0, 1.0]:
+		var text := _label("SAFE", 0.22, ink_color, Vector3(0, 0, 0.465 * float(side)), "FaceText")
+		if side < 0:
+			text.rotation.y = PI
+		root.add_child(text)
+	# Mirrored print on the underside, like a real rubber stamp.
+	var underside := _label("SAFE", 0.3, Color(0.97, 0.92, 0.84), Vector3(0, -0.15, 0), "Underside")
+	underside.font_size = 112
+	underside.pixel_size = 0.0034
+	underside.scale = Vector3(-1.0, 1.0, 1.0)
+	underside.rotation_degrees = Vector3(90, 0, 0)
+	root.add_child(underside)
+
+	_save(root, PROP_DIR + "dario/safe_stamp.tscn")
 
 # =============================================================================
 # O2a - tesla man props
@@ -732,6 +867,7 @@ func _build_sundar_props() -> void:
 	_dir_for("sundar")
 	_browser_window()
 	_search_bar()
+	_results_page()
 
 const BROWSER_URL := "https://www.skill-issue.com/you/are/here"
 const PAGE_COLOR := Color(0.62, 0.72, 0.9)
@@ -897,6 +1033,81 @@ func _search_bar() -> void:
 
 	_save(root, PROP_DIR + "sundar/search_bar.tscn")
 
+## A 16 x 9 m search results page (Sundar's victory board), front = +Z, origin at its
+## centre. `Query` is the Label3D the scene types into; direct children named `Result*`
+## are revealed one by one and slid into place by the victory scene. Generic wordmark,
+## made-up .test addresses, no real logos or brands.
+func _results_page() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "ResultsPage"
+	var frame := _metal(Color(0.16, 0.18, 0.24), 0.3, 0.45)
+	var white := _metal(Color(0.98, 0.98, 1.0), 0.0, 0.8)
+	var band := _metal(Color(0.93, 0.94, 0.96), 0.0, 0.85)
+	var ink := Color(0.12, 0.13, 0.16)
+	var blue := Color(0.1, 0.25, 0.8)
+	var green := Color(0.13, 0.52, 0.2)
+	var grey := Color(0.4, 0.42, 0.46)
+	var highlight := _metal(Color(0.87, 0.93, 1.0), 0.0, 0.9)
+
+	root.add_child(_box(Vector3(16.4, 9.4, 0.12), Vector3(0, 0, -0.12), frame, "Frame"))
+	root.add_child(_box(Vector3(16.0, 9.0, 0.05), Vector3(0, 0, -0.02), white, "Page"))
+	# Header: a made-up four-colour wordmark and a pill-shaped search field.
+	root.add_child(_box(Vector3(16.0, 0.72, 0.04), Vector3(0, 4.05, 0.0), band, "Header"))
+	var brand := ["S", "E", "A", "R", "C", "H"]
+	var brand_colors := [Color(0.26, 0.52, 0.96), Color(0.92, 0.26, 0.21), Color(0.98, 0.74, 0.02),
+		Color(0.26, 0.52, 0.96), Color(0.2, 0.66, 0.33), Color(0.92, 0.26, 0.21)]
+	for i in brand.size():
+		root.add_child(_page_text(brand[i], 0.78, brand_colors[i], Vector3(-7.1 + i * 0.42, 4.05, 0.02)))
+	root.add_child(_box(Vector3(8.0, 0.98, 0.04), Vector3(2.4, 4.05, 0.0), band, "SearchBar"))
+	root.add_child(_box(Vector3(7.8, 0.82, 0.03), Vector3(2.4, 4.05, 0.03), white))
+	var query := _page_text("who won the fight?", 0.5, ink, Vector3(-1.1, 4.05, 0.06), "Query")
+	query.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	root.add_child(query)
+	root.add_child(_page_text("Q", 0.62, blue, Vector3(5.8, 4.05, 0.06)))
+	# Tab row, divider and result count.
+	root.add_child(_page_text("All    Images    News    Videos    Winners", 0.34, grey, Vector3(-0.4, 3.05, 0.02)))
+	root.add_child(_page_text("All", 0.34, blue, Vector3(-6.5, 3.05, 0.03)))
+	root.add_child(_box(Vector3(16.0, 0.035, 0.03), Vector3(0, 2.72, 0.02), band))
+	root.add_child(_page_text("About 1 result (0.0001 seconds)", 0.3, grey, Vector3(-4.3, 2.25, 0.02)))
+	# Result 1: the winner, on a pale highlighted card.
+	var first := Node3D.new()
+	first.name = "Result1"
+	first.add_child(_box(Vector3(12.6, 2.5, 0.03), Vector3(0, 0, -0.01), highlight, "Card"))
+	first.add_child(_page_text("www.results.test  >  winners", 0.3, green, Vector3(0, 0.82, 0.02)))
+	first.add_child(_page_text("Sundar Pickai - Flawless Victory!", 0.8, blue, Vector3(0, 0.2, 0.02)))
+	first.add_child(_page_text("Knocked out cold. Full recap, rules and replays inside.", 0.32, grey, Vector3(0, -0.4, 0.02)))
+	for y in [-0.85, -1.05]:
+		first.add_child(_box(Vector3(6.0 if y < -0.9 else 9.0, 0.055, 0.02), Vector3(-2.0, y, 0.02), band, "TextLine"))
+	first.position = Vector3(0, 0.95, 0.04)
+	root.add_child(first)
+	# Result 2 and 3: smaller rows with blue links and blank text lines.
+	var second := Node3D.new()
+	second.name = "Result2"
+	second.add_child(_page_text("Sponsored: ice packs for that knockout", 0.45, blue, Vector3(0, 0.12, 0.02)))
+	second.add_child(_page_text("Ad  -  www.example-gear.test", 0.28, green, Vector3(0, -0.32, 0.02)))
+	second.add_child(_box(Vector3(8.0, 0.055, 0.02), Vector3(-2.5, -0.62, 0.02), band, "TextLine"))
+	second.position = Vector3(0, -1.7, 0.04)
+	root.add_child(second)
+	var third := Node3D.new()
+	third.name = "Result3"
+	third.add_child(_page_text("Tutorial: how to accept defeat gracefully", 0.45, blue, Vector3(0, 0.12, 0.02)))
+	third.add_child(_page_text("www.example-coaching.test", 0.28, grey, Vector3(0, -0.32, 0.02)))
+	third.add_child(_box(Vector3(7.0, 0.055, 0.02), Vector3(-3.0, -0.62, 0.02), band, "TextLine"))
+	third.position = Vector3(0, -3.1, 0.04)
+	root.add_child(third)
+	# A page scrollbar down the right edge.
+	root.add_child(_box(Vector3(0.14, 6.4, 0.02), Vector3(7.7, 0.2, 0.02), band, "ScrollTrack"))
+	root.add_child(_box(Vector3(0.18, 1.6, 0.03), Vector3(7.7, 1.8, 0.04), frame, "ScrollThumb"))
+
+	_save(root, PROP_DIR + "sundar/results_page.tscn")
+
+func _page_text(text: String, size: float, color: Color, position: Vector3, name := "") -> Label3D:
+	var label := _label(text, size, color, position, name)
+	label.outline_size = 6
+	label.outline_modulate = Color(0.02, 0.02, 0.05, 0.5)
+	label.position += Vector3(0, 0, 0.06)
+	return label
+
 ## Label3D sized like the scene's stand-ins: `size` is roughly the world height.
 func _label(text: String, size: float, color: Color, position: Vector3, name := "") -> Label3D:
 	var label: Label3D = Label3D.new()
@@ -1037,6 +1248,56 @@ func _paper_dragon() -> void:
 	root.add_child(light)
 
 	_save(root, PROP_DIR + "xi/paper_dragon.tscn")
+
+# =============================================================================
+# O2 - yann props
+# =============================================================================
+
+func _build_yann_props() -> void:
+	_dir_for("yann")
+	_heavy_letters()
+
+## Seven heavy stone letter blocks spelling "YOU / LOSE", the words the autocomplete
+## scene drops on the opponent. Children are named `Letter_<char>_<index>` (the scene's
+## stand-in used the same names) and rest at the scene's landing spots so the pile reads
+## correctly even before the drop is animated. Origin at the pile centre, front = -Z.
+func _heavy_letters() -> void:
+	var root: Node3D = Node3D.new()
+	root.name = "HeavyLetters"
+	var stone := _metal(Color(0.62, 0.66, 0.74), 0.2, 0.6)
+	var stone_light := _metal(Color(0.74, 0.78, 0.84), 0.15, 0.55)
+	var stone_dark := _metal(Color(0.36, 0.4, 0.48), 0.25, 0.65)
+	var rim_mat := _glow(Color(0.3, 0.8, 1.0), 2.2)
+	var letter_mat := _metal(Color(0.97, 0.98, 0.92), 0.1, 0.5)
+	var chars := ["Y", "O", "U", "L", "O", "S", "E"]
+	var spots := [Vector3(-1.0, 0.35, -0.3), Vector3(-0.4, 0.35, -0.3), Vector3(0.2, 0.35, -0.3),
+		Vector3(-0.9, 0.35, 0.5), Vector3(-0.3, 0.35, 0.5), Vector3(0.3, 0.35, 0.5),
+		Vector3(0.9, 0.35, 0.5)]
+
+	for i in chars.size():
+		var block := Node3D.new()
+		block.name = "Letter_%s_%d" % [chars[i], i]
+		block.position = spots[i]
+		block.rotation_degrees = Vector3(-3.0 + (i % 3) * 3.0, -6.0 + (i % 4) * 4.0, -2.0 + (i % 3) * 2.0)
+		block.add_child(_box(Vector3(0.68, 0.78, 0.47), Vector3.ZERO, stone_dark, "Base"))
+		block.add_child(_box(Vector3(0.64, 0.74, 0.45), Vector3.ZERO, stone, "Slab"))
+		block.add_child(_box(Vector3(0.6, 0.68, 0.02), Vector3(0, 0, 0.232), stone_light, "Face"))
+		for y in [-0.38, 0.38]:
+			block.add_child(_box(Vector3(0.67, 0.04, 0.47), Vector3(0, y, 0), rim_mat, "Rim"))
+		for side in [-1.0, 1.0]:
+			var text_mesh := TextMesh.new()
+			text_mesh.text = chars[i]
+			text_mesh.font_size = 100
+			text_mesh.pixel_size = 0.0062
+			text_mesh.depth = 0.12
+			text_mesh.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			var letter := _mesh(text_mesh, Vector3(0, -0.2, 0.245 * side), letter_mat, "Letter3D")
+			if side < 0:
+				letter.rotation.y = PI
+			block.add_child(letter)
+		root.add_child(block)
+
+	_save(root, PROP_DIR + "yann/heavy_letters.tscn")
 
 ## Makes sure every node below `root` is owned by `root` so PackedScene.pack()
 ## keeps the whole subtree (see tools/build_custom_hair.gd).

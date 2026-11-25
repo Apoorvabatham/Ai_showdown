@@ -1,0 +1,149 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nnf1e"]
+albedo_color = Color(0.95, 0.77, 0.28, 1)
+metallic = 0.85
+roughness = 0.24
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_qh817"]
+top_radius = 0.46
+bottom_radius = 0.46
+height = 0.18
+radial_segments = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o2gky"]
+albedo_color = Color(0.66, 0.46, 0.12, 1)
+metallic = 0.85
+roughness = 0.3
+
+[sub_resource type="TorusMesh" id="TorusMesh_p1xh0"]
+inner_radius = 0.42
+outer_radius = 0.47
+rings = 20
+ring_segments = 8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rplng"]
+albedo_color = Color(0.66, 0.08, 0.08, 1)
+metallic = 0.05
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_imx0m"]
+top_radius = 0.42
+bottom_radius = 0.42
+height = 0.05
+radial_segments = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uryj7"]
+albedo_color = Color(0.4, 0.04, 0.04, 1)
+metallic = 0.05
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_khsxx"]
+top_radius = 0.39
+bottom_radius = 0.39
+height = 0.012
+radial_segments = 16
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_rwak7"]
+top_radius = 0.24
+bottom_radius = 0.29
+height = 0.12
+radial_segments = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1paf8"]
+albedo_color = Color(0.38, 0.2, 0.1, 1)
+roughness = 0.48
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_4ptex"]
+top_radius = 0.16
+bottom_radius = 0.2
+height = 1.2
+radial_segments = 16
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4cjyn"]
+albedo_color = Color(0.26, 0.13, 0.06, 1)
+roughness = 0.55
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_g305x"]
+top_radius = 0.11
+bottom_radius = 0.11
+height = 0.08
+radial_segments = 16
+
+[sub_resource type="SphereMesh" id="SphereMesh_fo7lp"]
+radius = 0.28
+height = 0.56
+radial_segments = 16
+
+[node name="SafeStamp" type="Node3D" unique_id=649020421]
+
+[node name="Head" type="MeshInstance3D" parent="." unique_id=285728598]
+material_override = SubResource("StandardMaterial3D_nnf1e")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_qh817")
+
+[node name="HeadRim" type="MeshInstance3D" parent="." unique_id=75915212]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.095, 0)
+material_override = SubResource("StandardMaterial3D_o2gky")
+cast_shadow = 0
+mesh = SubResource("TorusMesh_p1xh0")
+
+[node name="Sole" type="MeshInstance3D" parent="." unique_id=681079332]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.11, 0)
+material_override = SubResource("StandardMaterial3D_rplng")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_imx0m")
+
+[node name="SoleFace" type="MeshInstance3D" parent="." unique_id=97498824]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14, 0)
+material_override = SubResource("StandardMaterial3D_uryj7")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_khsxx")
+
+[node name="Collar" type="MeshInstance3D" parent="." unique_id=834915441]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0)
+material_override = SubResource("StandardMaterial3D_o2gky")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_rwak7")
+
+[node name="Handle" type="MeshInstance3D" parent="." unique_id=1216135849]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76, 0)
+material_override = SubResource("StandardMaterial3D_1paf8")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_4ptex")
+
+[node name="@MeshInstance3D@34" type="MeshInstance3D" parent="." unique_id=1154096509]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.39, 0)
+material_override = SubResource("StandardMaterial3D_4cjyn")
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_g305x")
+
+[node name="Knob" type="MeshInstance3D" parent="." unique_id=1451250024]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 1.56, 0)
+material_override = SubResource("StandardMaterial3D_1paf8")
+cast_shadow = 0
+mesh = SubResource("SphereMesh_fo7lp")
+
+[node name="FaceText" type="Label3D" parent="." unique_id=1984035215]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -0.465)
+pixel_size = 0.00341
+modulate = Color(0.2, 0.1, 0.04, 1)
+text = "SAFE"
+font_size = 64
+outline_size = 0
+
+[node name="@Label3D@35" type="Label3D" parent="." unique_id=1986546000]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.465)
+pixel_size = 0.00341
+modulate = Color(0.2, 0.1, 0.04, 1)
+text = "SAFE"
+font_size = 64
+outline_size = 0
+
+[node name="Underside" type="Label3D" parent="." unique_id=1607218803]
+transform = Transform3D(-1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.15, 0)
+pixel_size = 0.0034
+modulate = Color(0.97, 0.92, 0.84, 1)
+text = "SAFE"
+font_size = 112
+outline_size = 0
