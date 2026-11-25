@@ -62,172 +62,447 @@ func _build_server_farm() -> void:
 	var stage := get_parent()
 	_relabel(stage, "NeonFight", "GPU FARM")
 	_relabel(stage, "NeonNight", "ZONE 7")
-	# Indoors: no rain falling between the racks (the rooftop's drizzle and rain loop).
-	_remove(stage, "Rain")
-	_remove(stage, "Sound")
+	# Strip rooftop rain, residential water tank, old AC units, patio string lights, and helipad batches.
+	for node_name in [
+		"Rain", "Sound", "DoorLamp",
+		"WaterTank", "WaterTankRoof", "TankBand34", "TankBand43", "TankBand52",
+		"Fan11", "@MeshInstance3D@2", "@MeshInstance3D@3", "@MeshInstance3D@4",
+		"Geometry/Batch1", "Geometry/Batch4", "Geometry/Batch5"
+	]:
+		_remove(stage, node_name)
 	_ambience("res://assets/audio/ambience/city_traffic.ogg", -26.0)
 
-	# Environment atmosphere pass: cool datacenter night rooftop lighting & volumetric haze
+	# Keep server_farm.tscn's environment (sky, SSR, fog, tonemap); duplicate so Settings can tweak it.
 	var we := stage.get_node_or_null("WorldEnvironment") as WorldEnvironment
 	if we and we.environment:
 		we.environment = we.environment.duplicate()
-		we.environment.tonemap_mode = Environment.TONE_MAPPER_ACES
-		we.environment.tonemap_exposure = 0.95
-		we.environment.glow_enabled = true
-		we.environment.glow_bloom = 0.22
-		we.environment.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
-		we.environment.adjustment_enabled = true
-		we.environment.adjustment_contrast = 1.25
-		we.environment.adjustment_saturation = 1.15
-		we.environment.volumetric_fog_enabled = true
-		we.environment.volumetric_fog_albedo = Color(0.20, 0.40, 0.70)
-		we.environment.volumetric_fog_density = 0.006
 
-	# Reflection probe for wet raised floor, metallic racks and LED lights
-	var probe := ReflectionProbe.new()
-	probe.name = "ServerFarmReflectionProbe"
-	probe.size = Vector3(26.0, 8.0, 20.0)
-	probe.origin_offset = Vector3(0.0, 2.5, -3.5)
-	probe.update_mode = ReflectionProbe.UPDATE_ONCE
-	probe.intensity = 0.95
-	probe.max_distance = 32.0
-	probe.ambient_mode = ReflectionProbe.AMBIENT_COLOR
-	probe.ambient_color = Color(0.08, 0.10, 0.15)
-	add_child(probe)
+	_server_farm_build_floor()
+	_server_farm_build_racks()
+	_server_farm_build_cable_trays()
+	_server_farm_build_cooling()
+	_server_farm_build_consoles()
+	_server_farm_build_skyline()
 
-	# 1. Dark wet raised-floor panels over the helipad with PBR anti-skid tiles & reflective aisle markings
-	var floor_mat := _pbr_texture_mat(
-		"res://assets/stage_props/server_farm/Textures/anti_skid_tiles_diff_1k.jpg",
-		"res://assets/stage_props/server_farm/Textures/anti_skid_tiles_nor_1k.jpg",
-		"res://assets/stage_props/server_farm/Textures/anti_skid_tiles_rough_1k.jpg",
-		Vector3(14, 8, 1), 0.25, 0.4)
-	# Dark graphite tiles: the light texture under the pink neon washed out to pale peach.
-	floor_mat.albedo_color = Color(0.3, 0.32, 0.38)
-	_box(Vector3(18.0, 0.02, 10.0), Vector3(0, 0.01, 0.0), floor_mat)
-	# Floor grid seams with drainage channels
-	for x in range(-8, 9, 2):
-		_box(Vector3(0.03, 0.025, 10.0), Vector3(x, 0.012, 0.0), _mat(Color(0.03, 0.03, 0.04), 0.5, 0.8))
-	for z in range(-4, 5, 2):
-		_box(Vector3(18.0, 0.025, 0.03), Vector3(0, 0.012, z), _mat(Color(0.03, 0.03, 0.04), 0.5, 0.8))
-	# High-gloss water puddles on the rooftop floor reflecting LEDs
-	var puddle_mat := _mat(Color(0.05, 0.06, 0.08), 0.03, 0.8)
-	for pz in [-1.5, 1.2]:
-		_box(Vector3(4.5, 0.028, 1.8), Vector3(-3.2, 0.014, pz), puddle_mat)
-		_box(Vector3(3.8, 0.028, 2.2), Vector3(3.5, 0.014, pz), puddle_mat)
-	# Glowing cold aisle boundary strips
-	for z in [-3.6, 3.6]:
-		_box(Vector3(17.5, 0.026, 0.08), Vector3(0, 0.013, z), _glow(Color(0.1, 0.85, 1.0), 2.8))
-	for x in [-8.5, 8.5]:
-		_box(Vector3(0.08, 0.026, 7.2), Vector3(x, 0.013, 0), _glow(Color(1.0, 0.65, 0.1), 2.2))
+	# Focused rooftop datacenter lighting (kept lean for 60 fps on integrated GPUs)
+	_light(Vector3(0.0, 3.2, -3.6), Color(0.70, 0.88, 1.0), 2.0, 11.0)
+	_light(Vector3(-4.8, 2.4, -4.0), Color(0.10, 0.78, 1.0), 1.8, 7.5)
+	_light(Vector3(4.8, 2.4, -4.0), Color(0.10, 0.85, 0.65), 1.8, 7.5)
+	_light(Vector3(0.0, 2.2, -8.5), Color(0.25, 0.65, 1.0), 1.6, 8.5)
 
-	# 2. Detailed server racks: 2 rows (Row A and Row B) with 14 racks each
-	var led_colors := [Color(0.1, 1.0, 0.3), Color(0.1, 0.7, 1.0), Color(1.0, 0.7, 0.1), Color(0.9, 0.2, 0.8)]
+
+func _server_farm_build_floor() -> void:
+	# Wet anti-skid raised floor using rooftop's wet_deck shader for organic mirror puddles.
+	var floor_mat := ShaderMaterial.new()
+	floor_mat.shader = load("res://assets/stages/rooftop/wet_deck.gdshader")
+	var diff_path := _resolve_tex_path("res://assets/stage_props/server_farm/Textures/anti_skid_tiles_diff_1k.jpg")
+	var nor_path := _resolve_tex_path("res://assets/stage_props/server_farm/Textures/anti_skid_tiles_nor_1k.jpg")
+	var rough_path := _resolve_tex_path("res://assets/stage_props/server_farm/Textures/anti_skid_tiles_rough_1k.jpg")
+	if not diff_path.is_empty():
+		floor_mat.set_shader_parameter("albedo_tex", load(diff_path))
+	if not nor_path.is_empty():
+		floor_mat.set_shader_parameter("normal_tex", load(nor_path))
+	if not rough_path.is_empty():
+		floor_mat.set_shader_parameter("rough_tex", load(rough_path))
+	floor_mat.set_shader_parameter("textured", true)
+	floor_mat.set_shader_parameter("tint", Color(0.56, 0.62, 0.72))
+	floor_mat.set_shader_parameter("tiling", 0.65)
+	floor_mat.set_shader_parameter("dry_roughness", 0.52)
+	floor_mat.set_shader_parameter("ao_strength", 0.0)
+	floor_mat.set_shader_parameter("wetness", 0.65)
+	floor_mat.set_shader_parameter("puddles", 0.52)
+	floor_mat.set_shader_parameter("ripples", 0.05)
+	_box(Vector3(24.0, 0.02, 20.0), Vector3(0.0, 0.01, -2.0), floor_mat)
+
+	# Raised floor tile seam grid
+	var seam_mat := _mat(Color(0.05, 0.06, 0.08), 0.45, 0.65)
+	for x in range(-10, 11, 2):
+		_box(Vector3(0.025, 0.024, 18.0), Vector3(x, 0.012, -2.0), seam_mat)
+	for z in range(-10, 7, 2):
+		_box(Vector3(22.0, 0.024, 0.025), Vector3(0.0, 0.012, z), seam_mat)
+
+	# Cold-aisle floor grating strip in front of the rack pods
+	var grate_frame := _mat(Color(0.14, 0.16, 0.19), 0.35, 0.8)
+	var under_glow := _glow(Color(0.08, 0.78, 1.0), 1.8)
+	for gx in [-5.1, 5.1]:
+		_box(Vector3(4.8, 0.018, 0.75), Vector3(gx, 0.013, -4.15), grate_frame)
+		_box(Vector3(4.6, 0.01, 0.06), Vector3(gx, 0.018, -4.15), under_glow)
+		for slat in range(-10, 11):
+			_box(Vector3(0.03, 0.022, 0.70), Vector3(gx + slat * 0.22, 0.013, -4.15), seam_mat)
+
+	# Subtle wet-deck safety edge markings (fight zone boundary)
+	var strip_cyan := _glow(Color(0.1, 0.8, 1.0), 1.9)
+	var strip_amber := _glow(Color(1.0, 0.62, 0.1), 1.7)
+	_box(Vector3(16.0, 0.01, 0.045), Vector3(0.0, 0.02, -3.6), strip_cyan)
+	_box(Vector3(16.0, 0.01, 0.045), Vector3(0.0, 0.02, 3.6), strip_cyan)
+	for x in [-7.8, 7.8]:
+		_box(Vector3(0.045, 0.01, 7.2), Vector3(x, 0.02, 0.0), strip_amber)
+
+
+func _server_farm_build_racks() -> void:
+	# Shared blinking LED materials (kept to 8 for low draw/state overhead)
+	var led_colors := [
+		Color(0.10, 1.00, 0.35),
+		Color(0.10, 0.80, 1.00),
+		Color(1.00, 0.65, 0.10),
+		Color(0.15, 0.95, 0.65),
+		Color(1.00, 0.22, 0.15),
+		Color(0.20, 0.72, 1.00),
+	]
 	var led_mats: Array = []
 	for i in 8:
-		var m := _glow(led_colors[i % led_colors.size()], 3.5, true)
-		_blinkers.append([m, 3.5, 2.2 + i * 1.1, i * 1.5])
+		var m := _glow(led_colors[i % led_colors.size()], 3.4, true)
+		_blinkers.append([m, 3.4, 2.0 + i * 1.15, i * 1.37])
 		led_mats.append(m)
-	var rack_mat := _mat(Color(0.07, 0.08, 0.09), 0.35, 0.7)
-	var blade_mat := _mat(Color(0.16, 0.17, 0.20), 0.25, 0.8)
-	var rail_mat := _mat(Color(0.4, 0.42, 0.45), 0.2, 0.9)
-	var n := 0
-	for row_z in [-5.2, -7.4]:
-		for i in 14:
-			var x := -7.8 + i * 1.2
-			# Main rack enclosure cabinet
-			_box(Vector3(1.1, 2.4, 1.05), Vector3(x, 1.2, row_z), rack_mat)
-			# Vertical rack corner rails (brushed metal)
-			for rx in [-0.52, 0.52]:
-				_box(Vector3(0.05, 2.38, 0.05), Vector3(x + rx, 1.2, row_z + 0.52), rail_mat)
-			# Stacked server blade chassis (6 units per rack)
-			for b in 6:
-				var by := 0.25 + b * 0.36
-				_box(Vector3(0.96, 0.32, 0.03), Vector3(x, by, row_z + 0.52), blade_mat)
-				# Drive bay arrays and status LEDs on each server blade
-				_box(Vector3(0.45, 0.22, 0.01), Vector3(x - 0.22, by, row_z + 0.54), _mat(Color(0.1, 0.11, 0.13), 0.5, 0.5))
-				for k in 4:
-					var led_pos := Vector3(x + 0.08 + k * 0.09, by, row_z + 0.54)
-					_box(Vector3(0.05, 0.025, 0.01), led_pos, led_mats[(n + b * 2 + k) % led_mats.size()])
-			# Perforated mesh door frame overlay
-			_box(Vector3(1.02, 2.3, 0.01), Vector3(x, 1.2, row_z + 0.55), _mat(Color(0.12, 0.14, 0.16, 0.4), 0.2, 0.6))
-			n += 1
-		var is_row_a: bool = (row_z > -6.0)
-		_label("GPU POD %s — H100 SXM5" % ("A" if is_row_a else "B"), Vector3(-8.6, 2.65, row_z + 0.55), 0.18, Color(0.4, 0.9, 1.0), true)
-		if is_row_a: # the back row's copy lined up behind the front one on screen
-			_label("ACTIVE COMPUTE // 800Gb/s RoCE", Vector3(5.2, 2.65, row_z + 0.55), 0.14, Color(0.2, 1.0, 0.5), true)
 
-	# 3. Overhead ladder cable trays, conduit looms & inter-rack bridges
-	var tray_mat := _mat(Color(0.28, 0.30, 0.33), 0.35, 0.8)
-	for row_z in [-5.2, -7.4]:
-		# Longitudinal ladder tray
-		_box(Vector3(17.8, 0.06, 0.6), Vector3(0, 2.85, row_z), tray_mat)
-		for side_x in range(-8, 9, 2):
-			_box(Vector3(0.04, 0.07, 0.6), Vector3(side_x, 2.85, row_z), tray_mat)
-		# Multi-coloured optical fiber & power cable looms
-		_box(Vector3(17.8, 0.04, 0.05), Vector3(0, 2.95, row_z - 0.18), _mat(Color(0.05, 0.7, 1.0), 0.3))
-		_box(Vector3(17.8, 0.04, 0.05), Vector3(0, 2.95, row_z - 0.06), _mat(Color(0.95, 0.75, 0.1), 0.3))
-		_box(Vector3(17.8, 0.04, 0.05), Vector3(0, 2.95, row_z + 0.06), _mat(Color(0.95, 0.25, 0.1), 0.3))
-		_box(Vector3(17.8, 0.04, 0.05), Vector3(0, 2.95, row_z + 0.18), _mat(Color(0.7, 0.1, 0.9), 0.3))
-	# Transverse bridge cable trays crossing between Row A and Row B
-	for bx in [-5.0, 0.0, 5.0]:
-		_box(Vector3(0.5, 0.06, 2.2), Vector3(bx, 2.9, -6.3), tray_mat)
-		_box(Vector3(0.08, 0.04, 2.2), Vector3(bx - 0.1, 2.98, -6.3), _mat(Color(0.05, 0.7, 1.0), 0.3))
-		_box(Vector3(0.08, 0.04, 2.2), Vector3(bx + 0.1, 2.98, -6.3), _mat(Color(0.95, 0.75, 0.1), 0.3))
-		_prop("res://assets/stage_props/server_farm/pipe.glb", Vector3(bx, 2.9, -5.2), Vector3(0, 90, 0), Vector3(1.3, 1.3, 1.3))
-		_prop("res://assets/stage_props/server_farm/pipe-bend.glb", Vector3(bx, 2.9, -7.4), Vector3(0, 0, 0), Vector3(1.3, 1.3, 1.3))
+	var steady_cyan := _glow(Color(0.12, 0.85, 1.0), 2.6)
+	var steady_green := _glow(Color(0.15, 0.95, 0.4), 2.4)
+	var cabinet_mat := _mat(Color(0.07, 0.08, 0.10), 0.38, 0.75)
+	var recess_mat := _mat(Color(0.04, 0.045, 0.055), 0.55, 0.4)
+	var blade_dark := _mat(Color(0.13, 0.145, 0.17), 0.28, 0.82)
+	var blade_light := _mat(Color(0.20, 0.22, 0.26), 0.25, 0.85)
+	var rail_mat := _mat(Color(0.42, 0.45, 0.50), 0.22, 0.90)
+	var bay_mat := _mat(Color(0.06, 0.065, 0.075), 0.45, 0.6)
+	var port_blue := _mat(Color(0.10, 0.55, 0.95), 0.3, 0.4)
+	var port_red := _mat(Color(0.88, 0.22, 0.14), 0.3, 0.4)
 
-	# 4. Heavy rooftop industrial cooling units & multi-plume steam exhaust
-	var beacon_amber := _glow(Color(1.0, 0.55, 0.05), 4.5, true)
-	var beacon_red := _glow(Color(1.0, 0.1, 0.1), 4.5, true)
-	_blinkers.append([beacon_amber, 4.5, 3.5, 0.0])
-	_blinkers.append([beacon_red, 4.5, 4.2, 1.5])
-	var chiller_mat := _mat(Color(0.35, 0.38, 0.42), 0.35, 0.75)
-	var louver_mat := _mat(Color(0.12, 0.13, 0.15), 0.4, 0.6)
-	for x in [-9.8, 9.8]:
-		_prop("res://assets/stage_props/server_farm/structure-panel.glb", Vector3(x, 1.0, -5.0), Vector3(0, 90 if x < 0 else -90, 0), Vector3(1.6, 1.6, 1.6))
-		_prop("res://assets/stage_props/server_farm/floor-panel.glb", Vector3(x, 0.05, -3.5), Vector3.ZERO, Vector3(1.5, 1.0, 1.5))
-		# Main chiller housing
-		_box(Vector3(1.8, 2.2, 2.2), Vector3(x, 1.1, -3.5), chiller_mat)
-		# Intake louvers on chiller sides
-		_box(Vector3(0.04, 1.8, 1.8), Vector3(x + (0.92 if x < 0 else -0.92), 1.1, -3.5), louver_mat)
-		# Twin top exhaust fan shrouds
-		for fz in [-4.1, -2.9]:
-			_cylinder(0.48, 0.25, Vector3(x, 2.3, fz), _mat(Color(0.1, 0.11, 0.13), 0.3, 0.8))
-			_cylinder(0.42, 0.02, Vector3(x, 2.42, fz), _mat(Color(0.05, 0.05, 0.06), 0.2))
-			# Warning strobe beacons
-			_cylinder(0.08, 0.18, Vector3(x, 2.52, fz), beacon_amber if fz < -3.5 else beacon_red)
-			_light(Vector3(x, 2.8, fz), Color(1.0, 0.6, 0.1) if fz < -3.5 else Color(0.2, 0.8, 1.0), 1.8, 5.0)
-			# Active high-pressure steam plume venting from each cooling tower
-			_steam(Vector3(x, 2.45, fz))
-		# Insulated frost lines wrapping around chiller
-		_cylinder(0.18, 2.2, Vector3(x + (0.8 if x < 0 else -0.8), 1.1, -2.2), _mat(Color(0.85, 0.88, 0.92), 0.2, 0.85))
+	# Front Row A: Left Pod & Right Pod leaving an open central corridor
+	var rack_idx := 0
+	var front_xs := [-6.85, -5.65, -4.45, -3.25, 3.25, 4.45, 5.65, 6.85]
+	for x in front_xs:
+		_server_farm_rack(
+			Vector3(x, 0.0, -5.2), rack_idx, led_mats,
+			cabinet_mat, recess_mat, blade_dark, blade_light,
+			rail_mat, bay_mat, steady_cyan, steady_green)
+		rack_idx += 1
 
-	# 5. Diagnostic monitoring consoles at each flank with real computer screen & workstation models
-	for cx in [-8.4, 8.4]:
-		_box(Vector3(1.0, 0.9, 0.65), Vector3(cx, 0.45, -3.6), _mat(Color(0.15, 0.16, 0.18), 0.35, 0.5))
-		_prop("res://assets/stage_props/server_farm/computer-screen.glb", Vector3(cx, 0.9, -3.5), Vector3(0, 180 if cx < 0 else 0, 0), Vector3(1.2, 1.2, 1.2))
-		_box(Vector3(0.55, 0.35, 0.01), Vector3(cx, 1.18, -3.47), _glow(Color(0.1, 0.88, 0.98), 2.5))
-		_label("GPU CLUSTER ONLINE\nPUE: 1.09 | CHILLER: 14°C\n40960 CORES SYNCED", Vector3(cx, 1.18, -3.45), 0.065, Color(0.9, 1.0, 1.0))
-		# Keyboard & terminal desk accessories
-		_box(Vector3(0.4, 0.02, 0.15), Vector3(cx, 0.91, -3.35), _mat(Color(0.08, 0.09, 0.1), 0.4))
-	_label("CRITICAL INFRASTRUCTURE\nDO NOT INTERRUPT TRAINING RUN", Vector3(-1.2, 2.05, -4.6), 0.13, Color(1.0, 0.85, 0.2), true)
+	# Back Row B behind Pods A & B for real hot-aisle depth
+	var back_xs := [-6.25, -5.05, -3.85, 3.85, 5.05, 6.25]
+	for x in back_xs:
+		_server_farm_rack(
+			Vector3(x, 0.0, -7.6), rack_idx, led_mats,
+			cabinet_mat, recess_mat, blade_dark, blade_light,
+			rail_mat, bay_mat, steady_cyan, steady_green)
+		rack_idx += 1
 
-	# 6. CC0 Infrastructure models: server cabinets, power modules, display wall & barriers
-	_prop("res://assets/stage_props/server_farm/container-tall.glb", Vector3(-8.8, 0.0, -6.5), Vector3(0, 90, 0), Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/server_farm/container-tall.glb", Vector3(8.8, 0.0, -6.5), Vector3(0, -90, 0), Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/server_farm/container-wide.glb", Vector3(-7.5, 0.0, -2.8), Vector3(0, 45, 0), Vector3(1.3, 1.3, 1.3))
-	_prop("res://assets/stage_props/server_farm/container-wide.glb", Vector3(7.5, 0.0, -2.8), Vector3(0, -45, 0), Vector3(1.3, 1.3, 1.3))
-	_prop("res://assets/stage_props/server_farm/structure-barrier.glb", Vector3(-9.2, 0.0, -0.5), Vector3(0, 90, 0), Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/server_farm/structure-barrier.glb", Vector3(9.2, 0.0, -0.5), Vector3(0, -90, 0), Vector3(1.4, 1.4, 1.4))
-	_prop("res://assets/stage_props/server_farm/computer-system.glb", Vector3(-6.8, 0.0, -3.8), Vector3(0, 45, 0), Vector3(1.3, 1.3, 1.3))
-	_prop("res://assets/stage_props/server_farm/computer-wide.glb", Vector3(6.8, 0.0, -3.8), Vector3(0, -45, 0), Vector3(1.3, 1.3, 1.3))
-	_prop("res://assets/stage_props/server_farm/display-wall.glb", Vector3(0.0, 3.2, -7.8), Vector3.ZERO, Vector3(1.8, 1.4, 1.0))
+	# Liquid-cooling vertical CDU manifolds on the inner aisle ends of Pods A & B
+	for side_x in [-2.60, 2.60]:
+		_box(Vector3(0.24, 2.05, 0.88), Vector3(side_x, 1.025, -5.2), cabinet_mat)
+		_cylinder(0.045, 2.1, Vector3(side_x, 1.05, -4.85), port_blue)
+		_cylinder(0.045, 2.1, Vector3(side_x, 1.05, -5.00), port_red)
+		_box(Vector3(0.14, 0.22, 0.02), Vector3(side_x, 1.45, -4.75), steady_cyan)
 
-	# 7. Cinematic Stage Lighting
-	_light(Vector3(0, 3.4, -3.8), Color(0.65, 0.85, 1.0), 3.2, 12.0)
-	_light(Vector3(-5.5, 3.0, -2.5), Color(0.15, 0.75, 1.0), 2.0, 8.0)
-	_light(Vector3(5.5, 3.0, -2.5), Color(0.15, 0.85, 0.7), 2.0, 8.0)
-	_light(Vector3(0, 1.0, -1.0), Color(0.1, 0.4, 0.8), 1.2, 6.0)
+	# Lightly tinted cold-aisle glass containment doors framing the central walkway (leaves center open)
+	var glass_mat := _mat(Color(0.55, 0.82, 1.0, 0.13), 0.05, 0.1)
+	glass_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	for gx: float in [-2.35, 2.35]:
+		var dir: float = 1.0 if gx < 0.0 else -1.0
+		_box(Vector3(0.05, 2.15, 0.06), Vector3(gx, 1.075, -4.72), rail_mat)
+		_box(Vector3(0.52, 2.08, 0.02), Vector3(gx + dir * 0.27, 1.04, -4.72), glass_mat)
+	# Overhead pod nameplates mounted directly to the front pod headers
+	for pod_x: float in [-5.05, 5.05]:
+		var is_a: bool = pod_x < 0.0
+		_box(Vector3(3.4, 0.26, 0.06), Vector3(pod_x, 2.24, -4.72), cabinet_mat)
+		_box(Vector3(3.4, 0.02, 0.07), Vector3(pod_x, 2.11, -4.72), steady_cyan)
+		var pod_text: String = "GPU POD A // H100 CLUSTER" if is_a else "GPU POD B // 800Gb/s RoCE"
+		_label(pod_text, Vector3(pod_x, 2.24, -4.68), 0.14, Color(0.55, 0.94, 1.0), true)
+
+	# Central network core & liquid-cooling manifold (compact so flanking chillers read clearly)
+	_box(Vector3(0.95, 1.48, 0.82), Vector3(0.0, 0.74, -7.7), cabinet_mat)
+	_box(Vector3(1.02, 0.05, 0.88), Vector3(0.0, 1.50, -7.7), rail_mat)
+	for b in 5:
+		var sy: float = 0.28 + b * 0.24
+		_box(Vector3(0.78, 0.18, 0.03), Vector3(0.0, sy, -7.28), blade_dark if b % 2 == 0 else blade_light)
+		_box(Vector3(0.32, 0.022, 0.015), Vector3(-0.16, sy, -7.26), steady_cyan if b % 2 == 0 else steady_green)
+		_box(Vector3(0.18, 0.022, 0.015), Vector3(0.20, sy, -7.26), led_mats[b % led_mats.size()])
+	for mx in [-0.58, 0.58]:
+		_cylinder(0.04, 1.52, Vector3(mx, 0.76, -7.5), port_blue if mx < 0.0 else port_red)
+	_box(Vector3(2.1, 0.30, 0.05), Vector3(0.0, 1.70, -7.55), cabinet_mat)
+	_label("CRITICAL INFRASTRUCTURE\nDO NOT INTERRUPT TRAINING RUN", Vector3(0.0, 1.70, -7.51), 0.10, Color(1.0, 0.84, 0.22), true)
+
+
+func _server_farm_rack(
+	base_pos: Vector3,
+	rack_idx: int,
+	led_mats: Array,
+	cabinet_mat: Material,
+	recess_mat: Material,
+	blade_dark: Material,
+	blade_light: Material,
+	rail_mat: Material,
+	bay_mat: Material,
+	steady_cyan: Material,
+	steady_green: Material
+) -> void:
+	# Cabinet shell: 1.04m wide x 2.10m tall x 1.00m deep, recessed front bay so blades/LEDs pop
+	_box(Vector3(1.04, 2.10, 0.92), base_pos + Vector3(0.0, 1.05, -0.04), cabinet_mat)
+	_box(Vector3(0.94, 1.96, 0.02), base_pos + Vector3(0.0, 1.04, 0.43), recess_mat)
+
+	# Brushed steel vertical side posts & top/bottom door frame bars (no opaque panel covering blades!)
+	for rx in [-0.49, 0.49]:
+		_box(Vector3(0.05, 2.08, 0.08), base_pos + Vector3(rx, 1.05, 0.44), rail_mat)
+	_box(Vector3(1.04, 0.08, 0.10), base_pos + Vector3(0.0, 2.06, 0.44), cabinet_mat)
+	_box(Vector3(1.04, 0.08, 0.10), base_pos + Vector3(0.0, 0.04, 0.44), cabinet_mat)
+
+	# 8 stacked 2U/4U GPU compute blades inside the open front bay
+	for b in 8:
+		var by := 0.20 + b * 0.21
+		var b_mat := blade_dark if (b % 2 == 0) else blade_light
+		_box(Vector3(0.88, 0.17, 0.04), base_pos + Vector3(0.0, by, 0.44), b_mat)
+		# Drive bays / cooling intake louver block on left half
+		_box(Vector3(0.42, 0.11, 0.015), base_pos + Vector3(-0.20, by, 0.465), bay_mat)
+		for d in 3:
+			_box(Vector3(0.015, 0.09, 0.01), base_pos + Vector3(-0.34 + d * 0.11, by, 0.472), rail_mat)
+		# Crisp status LED cluster on right half
+		_box(Vector3(0.05, 0.022, 0.012), base_pos + Vector3(0.08, by + 0.03, 0.466), steady_green)
+		for k in 3:
+			var led_mat: Material = led_mats[(rack_idx * 3 + b * 2 + k) % led_mats.size()]
+			_box(Vector3(0.042, 0.020, 0.012), base_pos + Vector3(0.17 + k * 0.075, by + (0.03 if k % 2 == 0 else -0.025), 0.466), led_mat)
+
+	# Top-of-Rack (ToR) network switch at U42 with dense cyan/green link LEDs
+	_box(Vector3(0.88, 0.11, 0.05), base_pos + Vector3(0.0, 1.91, 0.445), rail_mat)
+	for p in 5:
+		var p_mat := steady_cyan if (p % 2 == 0) else steady_green
+		_box(Vector3(0.032, 0.022, 0.012), base_pos + Vector3(-0.32 + p * 0.075, 1.91, 0.474), p_mat)
+	# Vertical patch-cable management bundle running up right side of bay
+	_box(Vector3(0.03, 1.65, 0.025), base_pos + Vector3(0.43, 1.04, 0.46), steady_cyan)
+
+
+func _server_farm_build_cable_trays() -> void:
+	var tray_mat := _mat(Color(0.30, 0.33, 0.38), 0.32, 0.85)
+	var post_mat := _mat(Color(0.18, 0.20, 0.23), 0.4, 0.8)
+	var fiber_cyan := _mat(Color(0.06, 0.78, 1.0), 0.28)
+	var fiber_yellow := _mat(Color(0.98, 0.78, 0.12), 0.28)
+	var power_orange := _mat(Color(0.95, 0.34, 0.08), 0.32)
+
+	# Overhead ladder cable trays directly above Pods A & B (leaves central GPU FARM sign clear)
+	for pod in [[-5.05, 4.9], [5.05, 4.9]]:
+		var px: float = pod[0]
+		var pw: float = pod[1]
+		for row_z: float in [-5.2, -7.6]:
+			# Side rails of ladder tray
+			for sz: float in [-0.26, 0.26]:
+				_box(Vector3(pw, 0.07, 0.04), Vector3(px, 2.50, row_z + sz), tray_mat)
+			# Ladder cross-rungs every 0.45m
+			var rung_count := int(pw / 0.45)
+			for r in rung_count:
+				var rx: float = px - pw * 0.46 + r * 0.45
+				_box(Vector3(0.035, 0.035, 0.52), Vector3(rx, 2.48, row_z), tray_mat)
+			# Stanchion posts anchoring tray to rack roofs
+			for sx: float in [-pw * 0.42, 0.0, pw * 0.42]:
+				_box(Vector3(0.05, 0.40, 0.05), Vector3(px + sx, 2.30, row_z), post_mat)
+			# Colored fiber-optic & power cable looms inside the tray
+			_box(Vector3(pw - 0.1, 0.045, 0.07), Vector3(px, 2.53, row_z - 0.13), fiber_cyan)
+			_box(Vector3(pw - 0.1, 0.045, 0.07), Vector3(px, 2.53, row_z), fiber_yellow)
+			_box(Vector3(pw - 0.1, 0.045, 0.07), Vector3(px, 2.53, row_z + 0.13), power_orange)
+		# Transverse bridge trays connecting front Row A to back Row B over each pod
+		for bx: float in [px - 1.2, px + 1.2]:
+			_box(Vector3(0.48, 0.05, 2.4), Vector3(bx, 2.54, -6.4), tray_mat)
+			_box(Vector3(0.07, 0.04, 2.4), Vector3(bx - 0.11, 2.57, -6.4), fiber_cyan)
+			_box(Vector3(0.07, 0.04, 2.4), Vector3(bx + 0.11, 2.57, -6.4), fiber_yellow)
+
+	# Vertical fiber waterfall drops from tray into the rack tops
+	for dx: float in [-6.5, -5.3, -4.1, -2.9, 2.9, 4.1, 5.3, 6.5]:
+		_box(Vector3(0.065, 0.42, 0.055), Vector3(dx, 2.31, -5.05), fiber_cyan)
+		_box(Vector3(0.055, 0.42, 0.055), Vector3(dx + 0.08, 2.31, -5.05), fiber_yellow)
+
+	# Low floor-level armored cable trench linking Pods A & B to the central manifold (unobstructed sky)
+	_box(Vector3(5.6, 0.04, 0.36), Vector3(0.0, 0.02, -7.7), tray_mat)
+	_box(Vector3(5.4, 0.02, 0.06), Vector3(0.0, 0.045, -7.64), fiber_cyan)
+	_box(Vector3(5.4, 0.02, 0.06), Vector3(0.0, 0.045, -7.76), power_orange)
+
+
+func _server_farm_build_cooling() -> void:
+	var chiller_mat := _mat(Color(0.32, 0.35, 0.40), 0.35, 0.78)
+	var trim_mat := _mat(Color(0.14, 0.16, 0.19), 0.35, 0.85)
+	var louver_mat := _mat(Color(0.07, 0.08, 0.09), 0.55, 0.6)
+	var frost_pipe := _mat(Color(0.76, 0.82, 0.88), 0.25, 0.85)
+	var cold_band := _mat(Color(0.12, 0.62, 0.95), 0.3, 0.5)
+	var hazard_mat := _mat(Color(0.95, 0.65, 0.08), 0.45)
+	var beacon_amber := _glow(Color(1.0, 0.55, 0.05), 3.6, true)
+	var beacon_red := _glow(Color(1.0, 0.12, 0.10), 3.6, true)
+	_blinkers.append([beacon_amber, 3.6, 3.4, 0.0])
+	_blinkers.append([beacon_red, 3.6, 4.1, 1.4])
+
+	# Twin flanking rooftop CRAC chiller towers visible on the left/right edges
+	for x: float in [-7.9, 7.9]:
+		var inward: float = 1.0 if x < 0.0 else -1.0
+		_server_farm_chiller_unit(
+			Vector3(x, 0.0, -6.3), Vector3(1.55, 2.20, 2.0), inward,
+			chiller_mat, trim_mat, louver_mat, hazard_mat, beacon_amber, beacon_red)
+		# Insulated chilled-water pipe run feeding into Pods A & B
+		_cylinder(0.14, 1.85, Vector3(x + inward * 0.88, 0.95, -5.2), frost_pipe)
+		_cylinder(0.155, 0.12, Vector3(x + inward * 0.88, 1.45, -5.2), cold_band)
+		_box(Vector3(1.1, 0.18, 0.18), Vector3(x + inward * 1.05, 1.82, -5.2), frost_pipe)
+
+	# Twin industrial rooftop cooling towers visible in the central corridor beside the manifold
+	for bx: float in [-1.25, 1.25]:
+		_server_farm_chiller_unit(
+			Vector3(bx, 0.0, -8.3), Vector3(1.15, 1.72, 1.25), 0.0,
+			chiller_mat, trim_mat, louver_mat, hazard_mat, beacon_amber, beacon_red)
+		_cylinder(0.09, 1.3, Vector3(bx * 0.62, 0.68, -7.9), frost_pipe)
+		_cylinder(0.105, 0.09, Vector3(bx * 0.62, 0.98, -7.9), cold_band)
+
+
+func _server_farm_chiller_unit(
+	pos: Vector3,
+	size: Vector3,
+	inward: float,
+	body_mat: Material,
+	trim_mat: Material,
+	louver_mat: Material,
+	hazard_mat: Material,
+	beacon_a: Material,
+	beacon_b: Material
+) -> void:
+	# Concrete/steel equipment plinth
+	_box(Vector3(size.x + 0.16, 0.14, size.z + 0.16), pos + Vector3(0, 0.07, 0), trim_mat)
+	_box(Vector3(size.x + 0.18, 0.05, size.z + 0.18), pos + Vector3(0, 0.14, 0), hazard_mat)
+	# Main insulated housing
+	_box(size, pos + Vector3(0, size.y * 0.5 + 0.14, 0), body_mat)
+	# Front & inward intake louver slats
+	var slat_y0 := pos.y + 0.42
+	for s in 7:
+		_box(Vector3(size.x * 0.78, 0.06, 0.04), Vector3(pos.x, slat_y0 + s * 0.18, pos.z + size.z * 0.51), louver_mat)
+		if absf(inward) > 0.1:
+			_box(Vector3(0.04, 0.06, size.z * 0.76), Vector3(pos.x + inward * size.x * 0.51, slat_y0 + s * 0.18, pos.z), louver_mat)
+
+	# Twin top exhaust fan shrouds with blades, warning beacons, and billowing steam plumes
+	var top_y: float = pos.y + size.y + 0.14
+	var fan_offsets: Array = [Vector3(0, 0, -size.z * 0.24), Vector3(0, 0, size.z * 0.24)] if absf(inward) > 0.1 else [Vector3(-size.x * 0.24, 0, 0), Vector3(size.x * 0.24, 0, 0)]
+	for idx in fan_offsets.size():
+		var fpos: Vector3 = pos + Vector3(0, top_y, 0) + (fan_offsets[idx] as Vector3)
+		_cylinder(0.42, 0.22, fpos + Vector3(0, 0.11, 0), trim_mat)
+		_cylinder(0.36, 0.04, fpos + Vector3(0, 0.18, 0), louver_mat)
+		# Fan hub and cross-blades inside shroud
+		_cylinder(0.10, 0.08, fpos + Vector3(0, 0.21, 0), body_mat)
+		for b in 2:
+			var blade := _box(Vector3(0.66, 0.02, 0.08), fpos + Vector3(0, 0.21, 0), body_mat)
+			blade.rotation_degrees = Vector3(12, b * 90.0 + 25.0, 0)
+		# Strobe beacon on shroud rim
+		var b_pos: Vector3 = fpos + Vector3(inward * 0.38 if absf(inward) > 0.1 else 0.0, 0.28, 0.32 if absf(inward) < 0.1 else 0.0)
+		_cylinder(0.055, 0.14, b_pos, beacon_a if idx == 0 else beacon_b)
+		# Dense visible steam plume
+		_server_farm_steam(fpos + Vector3(0, 0.25, 0))
+
+
+func _server_farm_steam(pos: Vector3) -> GPUParticles3D:
+	var particles := GPUParticles3D.new()
+	var mat := ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	mat.emission_sphere_radius = 0.24
+	mat.direction = Vector3(0.06, 1.0, 0.0)
+	mat.spread = 16.0
+	mat.initial_velocity_min = 0.65
+	mat.initial_velocity_max = 1.20
+	mat.gravity = Vector3(0.03, 0.08, 0.0)
+	mat.scale_min = 0.7
+	mat.scale_max = 1.65
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.76, 0.88, 1.0, 0.0))
+	grad.add_point(0.20, Color(0.80, 0.91, 1.0, 0.28))
+	grad.add_point(0.60, Color(0.72, 0.85, 1.0, 0.14))
+	grad.set_color(1, Color(0.65, 0.80, 1.0, 0.0))
+	var ramp := GradientTexture1D.new()
+	ramp.gradient = grad
+	mat.color_ramp = ramp
+	particles.process_material = mat
+	particles.amount = 22
+	particles.lifetime = 2.4
+	particles.preprocess = 1.8
+
+	# Soft radial cloud sprite texture so steam puffs look wispy instead of hard circles
+	var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
+	for py in 32:
+		for px in 32:
+			var dx: float = (px + 0.5) / 16.0 - 1.0
+			var dy: float = (py + 0.5) / 16.0 - 1.0
+			var r2: float = clampf(dx * dx + dy * dy, 0.0, 1.0)
+			var falloff: float = pow(1.0 - r2, 2.4)
+			img.set_pixel(px, py, Color(1.0, 1.0, 1.0, falloff))
+	var puff_tex := ImageTexture.create_from_image(img)
+
+	var quad := QuadMesh.new()
+	quad.size = Vector2(1.05, 1.05)
+	var smat := StandardMaterial3D.new()
+	smat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	smat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	smat.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
+	smat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	smat.billboard_keep_scale = true
+	smat.vertex_color_use_as_albedo = true
+	smat.albedo_texture = puff_tex
+	smat.albedo_color = Color(0.85, 0.93, 1.0, 0.9)
+	quad.material = smat
+	particles.draw_pass_1 = quad
+	particles.position = pos
+	particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(particles)
+	return particles
+
+
+func _server_farm_build_consoles() -> void:
+	# Sleek dark-anodized rolling NOC diagnostic workstations flanking the stage (near sysadmins at x=±8.4, z=-4.2)
+	var cart_mat := _mat(Color(0.11, 0.12, 0.14), 0.32, 0.82)
+	var trim_mat := _mat(Color(0.35, 0.38, 0.42), 0.25, 0.88)
+	var screen_glow := _glow(Color(0.08, 0.82, 0.98), 2.1)
+	for cx: float in [-7.55, 7.55]:
+		var yaw: float = 24.0 if cx < 0.0 else -24.0
+		var pivot := Node3D.new()
+		pivot.position = Vector3(cx, 0.0, -3.75)
+		pivot.rotation_degrees = Vector3(0.0, yaw, 0.0)
+		add_child(pivot)
+		_box(Vector3(0.95, 0.88, 0.56), Vector3(0.0, 0.48, 0.0), cart_mat, pivot)
+		_box(Vector3(1.0, 0.04, 0.60), Vector3(0.0, 0.94, 0.0), trim_mat, pivot)
+		# Dual angled telemetry monitors
+		_box(Vector3(0.68, 0.40, 0.03), Vector3(0.0, 1.24, -0.10), cart_mat, pivot)
+		_box(Vector3(0.62, 0.34, 0.015), Vector3(0.0, 1.24, -0.08), screen_glow, pivot)
+		_box(Vector3(0.45, 0.02, 0.16), Vector3(0.0, 0.97, 0.10), trim_mat, pivot)
+		var lbl := _label("CLUSTER ONLINE\nPUE: 1.09 | 14°C\n40960 GPUs SYNCED", Vector3(0.0, 1.24, -0.068), 0.06, Color(0.92, 1.0, 1.0), true)
+		lbl.get_parent().remove_child(lbl)
+		pivot.add_child(lbl)
+
+
+func _server_farm_build_skyline() -> void:
+	# Distant silhouetted city towers flanking the rooftop with subtle sparse window lights
+	var tower_mat := _mat(Color(0.025, 0.035, 0.06), 0.85, 0.15)
+	var win_warm := _glow(Color(1.0, 0.76, 0.42), 1.05)
+	var win_cyan := _glow(Color(0.32, 0.78, 1.0), 0.95)
+	var beacon_mat := _glow(Color(1.0, 0.14, 0.10), 3.2)
+
+	var towers := [
+		[-14.2, -23.0, 3.8, 11.5, 3.0, true],
+		[-10.4, -26.0, 3.2, 12.8, 2.8, false],
+		[10.6, -25.0, 3.2, 13.0, 2.8, true],
+		[14.4, -22.5, 3.8, 11.0, 3.0, false],
+	]
+	for t: Array in towers:
+		var tx: float = t[0]
+		var tz: float = t[1]
+		var tw: float = t[2]
+		var th: float = t[3]
+		var td: float = t[4]
+		var warm: bool = t[5]
+		_box(Vector3(tw, th, td), Vector3(tx, th * 0.5 - 4.5, tz), tower_mat)
+		var wmat: Material = win_warm if warm else win_cyan
+		# Irregular tiny office window lights
+		for row in 7:
+			var wy: float = 1.0 + row * 0.9
+			if wy > th - 4.8:
+				continue
+			for col in 4:
+				if ((row * 3 + col * 5) % 7) > 2:
+					continue
+				var wx: float = tx + (col - 1.5) * (tw * 0.21)
+				_box(Vector3(0.20, 0.09, 0.04), Vector3(wx, wy, tz + td * 0.5 + 0.02), wmat)
+		if th >= 12.5:
+			_cylinder(0.04, 1.2, Vector3(tx, th - 4.0, tz), tower_mat)
+			_box(Vector3(0.15, 0.15, 0.15), Vector3(tx, th - 3.35, tz), beacon_mat)
+
+	# Rooftop parapet edge security markers along the rear safety wall
+	var edge_amber := _glow(Color(1.0, 0.52, 0.08), 1.6)
+	for rx in range(-10, 11, 4):
+		_box(Vector3(0.14, 0.08, 0.14), Vector3(rx, 1.16, -12.8), edge_amber)
 
 
 # --- Mensa (the dojo) ------------------------------------------------------------------
