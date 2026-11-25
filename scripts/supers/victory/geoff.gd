@@ -5,6 +5,7 @@ extends VictoryScene
 var podium: Node3D
 var geoff_puppet: ScenePuppet
 var medal: Node3D
+var _plaque: Node3D
 var _centre := Vector3.ZERO
 var _gold_mat: StandardMaterial3D
 var _silver_mat: StandardMaterial3D
@@ -19,8 +20,7 @@ func _init() -> void:
 
 func build() -> void:
 	_centre = (attacker.global_position + defender.global_position) * 0.5
-	if absf(_centre.x) > 6.0:
-		_centre.x = 0.0
+	_centre.x = clampf(_centre.x, -2.5, 2.5)
 
 	_gold_mat = SuperStandins.metal(Color(1.0, 0.82, 0.2), 0.95, 0.2)
 	_silver_mat = SuperStandins.metal(Color(0.85, 0.86, 0.9), 0.9, 0.3)
@@ -101,11 +101,19 @@ func build() -> void:
 	medal.position = Vector3(0.0, 1.25, 0.2)
 	medal.scale = Vector3.ZERO
 
+	_plaque = make_plaque("1ST PLACE!", "“I PROFOUNDLY REGRET MY LIFE'S WORK”", 5.8,
+			Color(0.06, 0.07, 0.12), _gold_mat)
+	_plaque.name = "CeremonyPlaque"
+	add_child(_plaque)
+	_plaque.global_position = _centre + Vector3(0.0, 3.65, -1.3)
+	_plaque.scale = Vector3(0.001, 1.0, 1.0)
+	_plaque.visible = false
+
 
 func run() -> void:
-	camera.fov = 52.0
-	camera.global_position = _centre + Vector3(0.0, 2.4, 7.6)
-	camera.look_at(_centre + Vector3(0.0, 2.1, -1.0))
+	camera.fov = 46.0
+	camera.global_position = _centre + Vector3(0.0, 2.25, 5.8)
+	camera.look_at(_centre + Vector3(-0.15, 2.05, -1.0))
 	sound("victory")
 
 	# Podium rises with Geoff from below the arena floor.
@@ -119,25 +127,14 @@ func run() -> void:
 	await wait(0.4)
 
 	# Confetti burst celebrating the winner.
-	_confetti(_centre + Vector3(0.0, 4.5, -1.0))
+	_confetti(_centre + Vector3(0.0, 4.2, -1.0))
 	await wait(0.3)
 
 	# Geoff continues to look deeply concerned about the future.
 	geoff_puppet.face = &"pain"
-	big_text("1ST PLACE!", _centre + Vector3(0.0, 3.8, -1.0), Color(1.0, 0.94, 0.72), 0.75)
-	var worry := Label3D.new()
-	worry.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
-	worry.text = "“I PROFOUNDLY REGRET MY LIFE'S WORK”"
-	worry.font_size = 80
-	worry.pixel_size = 0.005
-	worry.modulate = Color(1.0, 0.95, 0.85)
-	worry.outline_size = 12
-	worry.outline_modulate = Color(0.03, 0.03, 0.06, 0.95)
-	worry.position = _centre + Vector3(0.0, 3.0, -1.0)
-	worry.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	worry.no_depth_test = true
-	worry.shaded = false
-	add_child(worry)
+	_plaque.visible = true
+	var pop := create_tween()
+	pop.tween_property(_plaque, "scale:x", 1.0, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _process(delta: float) -> void:
@@ -147,8 +144,8 @@ func _process(delta: float) -> void:
 		# Perpetually worried expression
 		geoff_puppet.face = &"pain"
 	if camera and _time > 0.1 and attacker:
-		camera.global_position.x = _centre.x + sin(_time * 0.2) * 0.6
-		camera.look_at(_centre + Vector3(0.0, 2.1, -1.0))
+		camera.global_position.x = _centre.x + sin(_time * 0.2) * 0.55
+		camera.look_at(_centre + Vector3(-0.15, 2.05, -1.0))
 
 
 func _make_step_label(num: String, color: Color) -> Label3D:

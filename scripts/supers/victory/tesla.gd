@@ -77,10 +77,11 @@ func run() -> void:
 	await wait(0.6)
 
 	# Hero shot, low, looking up at him and the flag.
-	shot("mars", "Cam_Hero", spot + Vector3(0.4, 1.6, 0))
+	shot("mars", "Cam_Hero", spot + Vector3(0.25, 1.45, 0))
 	var to_camera := camera.global_position
 	to_camera.y = winner.global_position.y
 	winner.look_at(to_camera)
 	winner.play(&"fight/victory_fist_pump")
 	winner.face = &"grin"
-	big_text("OCCUPY MARS!\n★ 420x SECURED ★", spot + Vector3(-0.65, 2.35, -0.6), Color(1.0, 0.55, 0.22), 0.42)
+	var tag := big_text("OCCUPY MARS!\n★ 420x SECURED ★", spot + Vector3(-0.85, 2.75, -0.6), Color(1.0, 0.94, 0.72), 0.46)
+	tag.outline_size = 18

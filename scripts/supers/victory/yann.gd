@@ -9,6 +9,7 @@ var leg_fr: Node3D
 var leg_bl: Node3D
 var leg_br: Node3D
 var tail: Node3D
+var _plaque: Node3D
 var _centre := Vector3.ZERO
 var _walking := false
 var _sitting := false
@@ -24,8 +25,7 @@ func _init() -> void:
 
 func build() -> void:
 	_centre = (attacker.global_position + defender.global_position) * 0.5
-	if absf(_centre.x) > 6.0:
-		_centre.x = 0.0
+	_centre.x = clampf(_centre.x, -2.5, 2.5)
 
 	_fur_mat = StandardMaterial3D.new()
 	_fur_mat.albedo_color = Color(0.88, 0.52, 0.22) # Orange tabby
@@ -43,20 +43,29 @@ func build() -> void:
 
 	cat = _make_cat()
 	add_child(cat)
-	# Spawns from the left flank off-screen / stage edge, walking behind the fighters
-	cat.global_position = _centre + Vector3(-9.2, 0.0, -1.2)
+	# Spawns from the left flank behind the fighters so it never clips through Yann while walking.
+	cat.global_position = _centre + Vector3(-9.2, 0.0, -1.6)
 	cat.look_at(cat.global_position + Vector3(1.0, 0.0, 0.0), Vector3.UP)
+
+	var trim := SuperStandins.glow(Color(0.35, 1.0, 0.65), 1.6)
+	_plaque = make_plaque("WORLD MODELS > LLMs!", "“THE CAT HAS MORE COMMON SENSE THAN YOUR LLM”", 6.2,
+			Color(0.04, 0.10, 0.12), trim, Color(0.35, 1.0, 0.65))
+	_plaque.name = "WorldModelPlaque"
+	add_child(_plaque)
+	_plaque.global_position = _centre + Vector3(0.0, 3.15, -1.6)
+	_plaque.scale = Vector3(0.001, 1.0, 1.0)
+	_plaque.visible = false
 
 
 func run() -> void:
 	var winner_pos := attacker.global_position
-	camera.fov = 54.0
-	camera.global_position = _centre + Vector3(0.0, 2.2, 7.8)
-	camera.look_at(_centre + Vector3(0.0, 1.4, -0.5))
+	camera.fov = 48.0
+	camera.global_position = _centre + Vector3(0.0, 2.0, 6.4)
+	camera.look_at(_centre + Vector3(0.0, 1.35, -0.6))
 	sound("victory")
 
 	_walking = true
-	var walk_dest := winner_pos + Vector3(2.2, 0.0, -0.6)
+	var walk_dest := winner_pos + Vector3(2.2, 0.0, -1.0)
 	cat.look_at(cat.global_position + (walk_dest - cat.global_position).normalized(), Vector3.UP)
 
 	# Walk across the arena toward Yann.
@@ -74,20 +83,9 @@ func run() -> void:
 	_sit_down()
 	await wait(0.3)
 
-	big_text("WORLD MODELS > LLMs!", _centre + Vector3(0.0, 3.6, -1.0), Color(0.35, 1.0, 0.65), 0.75)
-	var quote := Label3D.new()
-	quote.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
-	quote.text = "“THE CAT HAS MORE COMMON SENSE THAN YOUR LLM”"
-	quote.font_size = 76
-	quote.pixel_size = 0.005
-	quote.modulate = Color(1.0, 0.95, 0.85)
-	quote.outline_size = 14
-	quote.outline_modulate = Color(0.03, 0.03, 0.06, 0.95)
-	quote.position = _centre + Vector3(0.0, 2.8, -1.0)
-	quote.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	quote.no_depth_test = true
-	quote.shaded = false
-	add_child(quote)
+	_plaque.visible = true
+	var pop := create_tween()
+	pop.tween_property(_plaque, "scale:x", 1.0, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _process(delta: float) -> void:
@@ -117,8 +115,8 @@ func _process(delta: float) -> void:
 			cat_body.position.y = 0.62 + sin(_time * 2.0) * 0.02
 
 	if camera and _time > 0.1 and attacker:
-		camera.global_position.x = _centre.x + sin(_time * 0.18) * 0.7
-		camera.look_at(_centre + Vector3(0.0, 1.4, -0.5))
+		camera.global_position.x = _centre.x + sin(_time * 0.18) * 0.55
+		camera.look_at(_centre + Vector3(0.0, 1.35, -0.6))
 
 
 func _sit_down() -> void:

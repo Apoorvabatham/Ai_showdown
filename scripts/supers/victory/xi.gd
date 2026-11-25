@@ -8,6 +8,7 @@ const LANTERN_HEIGHT := 0.65
 
 var lanterns: Array[Node3D] = []
 var _lantern_speeds: Array[float] = []
+var _banner: Node3D
 var _centre := Vector3.ZERO
 var _time := 0.0
 var _red_paper: StandardMaterial3D
@@ -20,8 +21,7 @@ func _init() -> void:
 
 func build() -> void:
 	_centre = (attacker.global_position + defender.global_position) * 0.5
-	if absf(_centre.x) > 6.0:
-		_centre.x = 0.0
+	_centre.x = clampf(_centre.x, -2.5, 2.5)
 
 	_red_paper = StandardMaterial3D.new()
 	_red_paper.albedo_color = Color(0.92, 0.12, 0.12)
@@ -32,52 +32,50 @@ func build() -> void:
 
 	_gold_trim = SuperStandins.metal(Color(1.0, 0.82, 0.2), 0.9, 0.25)
 
-	# Arrange lanterns around the arena at varying radii and angles.
+	# Arrange lanterns closer around the arena at varied heights so they fill the frame cleanly.
 	for i in LANTERN_COUNT:
 		var angle := float(i) / float(LANTERN_COUNT) * TAU + randf_range(-0.15, 0.15)
-		var dist := randf_range(3.2, 7.5)
+		var dist := randf_range(2.2, 4.8)
 		var lantern := _make_lantern()
 		add_child(lantern)
-		var spawn_pos := _centre + Vector3(cos(angle) * dist, randf_range(0.2, 1.2), sin(angle) * dist * 0.6 - 1.5)
+		var spawn_pos := _centre + Vector3(cos(angle) * dist, randf_range(0.15, 0.9), sin(angle) * dist * 0.45 - 1.2)
 		lantern.global_position = spawn_pos
 		lanterns.append(lantern)
 		_lantern_speeds.append(randf_range(1.4, 2.6))
 
+	# Crimson & gold ceremonial banner keeps both lines crisp and avoids overlapping stage signage.
+	_banner = make_plaque("+1,000,000 SOCIAL CREDIT!", "★ HARMONIOUS STABILITY MAINTAINED ★", 5.8,
+			Color(0.55, 0.05, 0.06), _gold_trim, Color(1.0, 0.88, 0.28), Color(1.0, 0.96, 0.86))
+	_banner.name = "CreditBanner"
+	add_child(_banner)
+	_banner.global_position = _centre + Vector3(0.0, 2.35, -2.8)
+	_banner.scale = Vector3(0.001, 1.0, 1.0)
+	_banner.visible = false
+
 
 func run() -> void:
-	camera.fov = 58.0
-	camera.global_position = _centre + Vector3(0.0, 2.5, 9.2)
-	camera.look_at(_centre + Vector3(0.0, 3.2, -2.0))
+	camera.fov = 42.0
+	camera.global_position = _centre + Vector3(0.0, 2.05, 4.7)
+	camera.look_at(_centre + Vector3(0.0, 1.05, -1.0))
 	sound("victory")
 	sound("gong_strike", -2.0)
 
-	# Lanterns rise gracefully into the sky.
+	# Lanterns rise gracefully into the upper backdrop.
 	for i in lanterns.size():
 		var l := lanterns[i]
 		var rise := create_tween()
-		var target_y := l.global_position.y + randf_range(7.0, 11.0)
+		var target_y := l.global_position.y + randf_range(1.6, 2.4)
 		var duration := randf_range(3.2, 4.8)
 		rise.tween_property(l, "global_position:y", target_y, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 	await wait(0.4)
-	big_text("+1,000,000 SOCIAL CREDIT!", _centre + Vector3(0.0, 3.8, -2.0), Color(1.0, 0.94, 0.72), 0.75)
-	var sub := Label3D.new()
-	sub.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
-	sub.text = "★ HARMONIOUS STABILITY MAINTAINED ★"
-	sub.font_size = 80
-	sub.pixel_size = 0.005
-	sub.modulate = Color(1.0, 0.95, 0.82)
-	sub.outline_size = 14
-	sub.outline_modulate = Color(0.04, 0.03, 0.06, 0.95)
-	sub.position = _centre + Vector3(0.0, 2.9, -2.0)
-	sub.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	sub.no_depth_test = true
-	sub.shaded = false
-	add_child(sub)
+	_banner.visible = true
+	var unfurl := create_tween()
+	unfurl.tween_property(_banner, "scale:x", 1.0, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
-	# Sequential fireworks bursts in the night sky.
+	# Sequential fireworks bursts framed cleanly inside the backdrop.
 	for f in 6:
-		var fx_pos := _centre + Vector3(randf_range(-6.0, 6.0), randf_range(5.5, 9.0), randf_range(-5.0, -1.0))
+		var fx_pos := _centre + Vector3(randf_range(-3.2, 3.2), randf_range(2.0, 3.0), randf_range(-4.6, -2.8))
 		var color := Color(1.0, 0.2, 0.2) if f % 2 == 0 else Color(1.0, 0.85, 0.2)
 		_firework(fx_pos, color)
 		await wait(0.45)
@@ -92,8 +90,8 @@ func _process(delta: float) -> void:
 			l.rotation.y = sin(_time * 1.2 + i * 0.7) * 0.2
 			l.position.x += sin(_time * 2.0 + i) * 0.003
 	if camera and _time > 0.1 and attacker:
-		camera.global_position.x = _centre.x + sin(_time * 0.2) * 1.2
-		camera.look_at(_centre + Vector3(0.0, 3.0, -2.0))
+		camera.global_position.x = _centre.x + sin(_time * 0.2) * 0.55
+		camera.look_at(_centre + Vector3(0.0, 1.05, -1.0))
 
 
 func _make_lantern() -> Node3D:

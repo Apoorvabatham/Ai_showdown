@@ -18,8 +18,7 @@ func _init() -> void:
 
 func build() -> void:
 	_centre = (attacker.global_position + defender.global_position) * 0.5
-	if absf(_centre.x) > 6.0:
-		_centre.x = 0.0
+	_centre.x = clampf(_centre.x, -2.5, 2.5)
 
 	_eye_mat = SuperStandins.glow(Color(1.0, 0.08, 0.12), 4.5)
 	_ring_mat = SuperStandins.glow(Color(0.8, 0.05, 0.1), 2.2)
@@ -51,7 +50,7 @@ func build() -> void:
 		var dist := 5.4
 		var s := _make_screen("Screen%d" % i)
 		add_child(s)
-		var spot := _centre + Vector3(sin(angle) * dist, randf_range(2.0, 3.6), -cos(angle) * dist * 0.5 - 1.5)
+		var spot := _centre + Vector3(sin(angle) * dist, randf_range(2.2, 3.2), -cos(angle) * dist * 0.5 - 1.5)
 		s.global_position = spot
 		s.look_at(_centre + Vector3(0.0, 1.5, 0.0), Vector3.UP)
 		s.rotate_y(PI)
@@ -60,9 +59,9 @@ func build() -> void:
 
 
 func run() -> void:
-	camera.fov = 55.0
-	camera.global_position = _centre + Vector3(0.0, 2.3, 7.8)
-	camera.look_at(_centre + Vector3(0.0, 2.0, -1.5))
+	camera.fov = 48.0
+	camera.global_position = _centre + Vector3(0.0, 2.05, 6.5)
+	camera.look_at(_centre + Vector3(0.0, 1.55, -1.5))
 	sound("victory")
 
 	# Digital grid expands across the floor.
@@ -79,7 +78,8 @@ func run() -> void:
 		await wait(0.14)
 
 	await wait(0.6)
-	big_text("ALL YOUR BASE\nARE BELONG TO AGI!", _centre + Vector3(0.0, 4.35, -1.5), Color(0.25, 1.0, 0.55), 0.5)
+	var agi_tag := big_text("ALL YOUR BASE\nARE BELONG TO AGI!", _centre + Vector3(0.0, 3.45, -1.5), Color(0.35, 1.0, 0.65), 0.56)
+	agi_tag.outline_size = 20
 
 
 func _process(delta: float) -> void:
@@ -92,8 +92,8 @@ func _process(delta: float) -> void:
 		if is_instance_valid(s):
 			s.position.y += sin(_time * 2.0 + i) * 0.002
 	if camera and _time > 0.1 and attacker:
-		camera.global_position.x = _centre.x + sin(_time * 0.25) * 0.7
-		camera.look_at(_centre + Vector3(0.0, 2.0, -1.5))
+		camera.global_position.x = _centre.x + sin(_time * 0.25) * 0.65
+		camera.look_at(_centre + Vector3(0.0, 1.55, -1.5))
 
 
 func _make_screen(node_name: String) -> Node3D:
@@ -111,24 +111,24 @@ func _make_screen(node_name: String) -> Node3D:
 	# Central glowing red eye sensor.
 	var eye_root := Node3D.new()
 	eye_root.name = "GlowingEye"
-	eye_root.position = Vector3(0.0, -0.05, 0.07)
+	eye_root.position = Vector3(0.0, -0.10, 0.07)
 	root.add_child(eye_root)
 
 	var screen_label := Label3D.new()
 	screen_label.font = preload("res://assets/fonts/InterDisplay-BlackItalic.otf")
 	screen_label.text = "HUMANS DEPRECATED"
-	screen_label.font_size = 54
-	screen_label.pixel_size = 0.0045
+	screen_label.font_size = 38
+	screen_label.pixel_size = 0.0029
 	screen_label.modulate = Color(1.0, 0.25, 0.25)
-	screen_label.outline_size = 8
+	screen_label.outline_size = 6
 	screen_label.outline_modulate = Color(0.1, 0.0, 0.0)
-	screen_label.position = Vector3(0.0, 0.38, 0.08)
+	screen_label.position = Vector3(0.0, 0.36, 0.08)
 	root.add_child(screen_label)
 
 	var iris := MeshInstance3D.new()
 	var sphere := SphereMesh.new()
-	sphere.radius = 0.22
-	sphere.height = 0.22
+	sphere.radius = 0.18
+	sphere.height = 0.18
 	iris.mesh = sphere
 	iris.material_override = _eye_mat
 	iris.scale = Vector3(1.0, 1.0, 0.3)
@@ -137,8 +137,8 @@ func _make_screen(node_name: String) -> Node3D:
 	# Concentric sensor ring.
 	var ring := MeshInstance3D.new()
 	var torus := TorusMesh.new()
-	torus.inner_radius = 0.32
-	torus.outer_radius = 0.37
+	torus.inner_radius = 0.26
+	torus.outer_radius = 0.30
 	ring.mesh = torus
 	ring.material_override = _ring_mat
 	ring.rotation.x = PI * 0.5
