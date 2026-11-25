@@ -3190,15 +3190,17 @@ func face_tests() -> void:
 	var voice := AudioStreamPlayer.new()
 	root.add_child(voice)
 	voice.stream = load("res://assets/audio/voice/fighters/kenji_special_1.ogg")
-	voice.play()
 	watcher.speak(voice)
+	# Drive the mouth from the clip's envelope frame by frame (no real-time audio), so the
+	# measured peak does not depend on how quickly the audio happens to render.
+	var envelope := PackedByteArray(envelopes["kenji_special_1"])
 	var widest := 0.0
-	for i in 30:
-		await process_frame
+	for frame in envelope.size():
+		watcher.set_voice_frame(frame)
 		watcher.set_face(&"neutral", 1.0 / 60.0)
 		widest = maxf(widest, watcher._face_meshes[0].get_blend_shape_value(watcher._face_indices[0][4]))
 	check("A shout opens the jaw", widest > 0.5, "%.2f" % widest)
-	voice.stop()
+	watcher.set_voice_frame(-1)
 	for i in 30:
 		watcher.set_face(&"neutral", 1.0 / 60.0)
 	check("... and it closes again when the shout ends",
