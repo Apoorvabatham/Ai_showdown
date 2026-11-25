@@ -216,7 +216,7 @@ func _fit_big_text(entry: Dictionary) -> void:
 	var text := raw
 	var pad := Vector2.ONE * float(label.outline_size * 2)
 	var text_px: Vector2 = label.font.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1.0, label.font_size) + pad
-	if text_px.x * base_pixel > max_w * 1.28 and not "\n" in raw:
+	if text_px.x * base_pixel > max_w * 1.28 and raw.find("\n") == -1:
 		var wrapped := _wrap_balanced(raw)
 		if wrapped != raw:
 			text = wrapped
