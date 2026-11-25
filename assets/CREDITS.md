@@ -117,6 +117,7 @@ Third-party assets are CC0, except the "Aelia" character model (CC-BY, credited 
 | Inter / Inter Display fonts (Medium, SemiBold, Bold, Display ExtraBold, Display Black Italic) | `assets/fonts/Inter*.otf` | Rasmus Andersson | https://rsms.me/inter/ | SIL Open Font License 1.1 |
 | Permanent Marker font | `assets/fonts/PermanentMarker-Regular.ttf` | Font Diner / Google Fonts | https://fonts.google.com/specimen/Permanent+Marker | Apache 2.0 |
 
+| Fighter super voice lines | `assets/audio/voice/fighters/*_super_1.ogg` | Made by us with Google Gemini TTS (owner, Nov 2026) | — | ours |
 Notes:
 - `Superhero_Male_FullBody.gltf` was edited to point to `T_Hair_1_Normal.png` / `T_Eye_Normal.png` (the shipped file referenced missing `*_png.png` names).
 - `T_Superhero_Male_Light.png` is the pack's `T_Superhero_Male_Ligh.png`, renamed.

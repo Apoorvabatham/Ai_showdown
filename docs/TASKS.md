@@ -508,3 +508,31 @@ Done on `main` (suite `0 failure(s)` after every step):
   - `F10`: Stand-in props.
   - `F12`: HUD wording.
   - `F5`: Windows export.
+- `F5`: Windows export.
+
+## 14. Nov 25 (evening): status
+
+- **Done** (done and merged into main):
+  - combo trials removed (C13)
+  - README/loading tips/HUD plain words
+  - stage realism x4 (G12)
+  - super sounds (G7b)
+  - props (O2)
+  - release docs
+  - Training plain input display (C16)
+  - Zuckerbot Like Bomb (C8)
+  - shoes + Geoff top (O8)
+  - victory/super polish (G8/G9)
+  - stage select and move-list UI (C17/C18)
+  - crowd crash fix (C15)
+- **In progress**:
+  - Xi likeness round 2 (owner approves; Jensen approved)
+  - style clips Jensen/Zuckerbot/Xi (O6-wire)
+  - alt-outfit shoes
+  - Xi victory banner
+  - Yann word_tokens clip
+  - deterministic jaw test
+- **Next**:
+  - README screenshots
+  - Windows release build
+  - full play-through
