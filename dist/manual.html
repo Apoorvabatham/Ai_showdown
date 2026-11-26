@@ -171,7 +171,7 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding-top: 20px;
         <tr><td><strong>Arcade</strong></td><td>A ladder of opponents ending with <strong>AGI</strong> in the Senate Hearing Room (pick AGI and face your shadow). <a href="#modes">More</a></td></tr>
         <tr><td><strong>Story</strong></td><td>A fighter-specific campaign with an intro, pre- and post-fight dialogue, a rival bout, AGI finale and ending. <a href="#modes">More</a></td></tr>
         <tr><td><strong>Versus</strong></td><td>Two players on one computer using shared keyboard or two gamepads. <a href="#modes">More</a></td></tr>
-        <tr><td><strong>Training</strong></td><td>Practice against a dummy with health/meter refill, frame data, input history, hitboxes and dummy recording. <a href="#training">More</a></td></tr>
+        <tr><td><strong>Training</strong></td><td>Practice against a dummy with health/meter refill, a plain input display showing Power and Super, hitboxes and dummy recording. Frame data is an advanced option, off by default. <a href="#training">More</a></td></tr>
         <tr><td><strong>Demo</strong></td><td>Watch two CPU fighters battle on a random stage. Press any button to return to the menu.</td></tr>
         <tr><td><strong>Options</strong></td><td>Audio volumes, action camera, CPU difficulty, fight intros, display, resolution, graphics, pad swap and controls. <a href="#options">More</a></td></tr>
         <tr><td><strong>Best Scores</strong></td><td>Your best Arcade scores per fighter.</td></tr>
@@ -239,6 +239,7 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding-top: 20px;
         <tr><td><strong>Fighter name &amp; round pips</strong></td><td>Each round won lights a round indicator under the bar; two wins takes a standard match.</td></tr>
         <tr><td><strong>Super meter</strong></td><td>Bottom corners. Builds as you attack, block, and take damage. Glows when full and carries over between rounds.</td></tr>
         <tr><td><strong>Controls hint</strong></td><td>Shown automatically on your first fight of a session to remind you of attacks, Power and Super.</td></tr>
+        <tr><td><strong>Callouts</strong></td><td>Short plain-word notes flash by the relevant fighter: <em>ESCAPED!</em> on a throw tech, <em>INTERRUPT!</em> on a counter, <em>TANKED IT!</em> when armour absorbs a hit, <em>COMEBACK!</em> on a reversal, and <em>WALL SPLAT</em> (or <em>ROPE BOUNCE</em>) on an edge impact.</td></tr>
       </tbody>
     </table></div>
     <h3>Action camera &amp; intros</h3>
@@ -253,6 +254,7 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding-top: 20px;
       <li>Press <span class="btn pw">Power</span> (<kbd>O</kbd> / <kbd>Num 7</kbd> / <kbd>\</kbd> / <kbd>LB</kbd>) alone for your fighter's neutral signature special.</li>
       <li>Hold <strong>Forward</strong>, <strong>Back</strong>, or <strong>Down</strong> while pressing <span class="btn pw">Power</span> to unleash their alternate specials (projectiles, anti-airs, stances, armour rushes, command grabs, or teleports depending on the fighter).</li>
       <li>Several heavy or rush moves feature <strong>super armour</strong>, letting them absorb a hit without flinching. Counter-stances and reflect moves catch incoming blows or send projectiles back.</li>
+      <li>Each fighter also has a themed Power move that throws an animated object — for example, Mark Zuckerbot's <strong>Like Bomb</strong> fires two blue thumbs-up projectiles.</li>
     </ul>
     <h3>Super moves</h3>
     <p>When your Super meter is completely full, press <span class="btn sp">Super</span> (<kbd>P</kbd> / <kbd>Num 8</kbd> / <kbd>=</kbd> / <kbd>RT</kbd>). The screen flashes and freezes briefly on a cut-in before unleashing your fighter's cinematic finisher, consuming the full meter.</p>
@@ -292,6 +294,7 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding-top: 20px;
         <p>Trained in jiu-jitsu, raised on growth metrics. Hunts for close-range throws and slams.</p>
         <dl class="moves">
           <dt>Signature</dt><dd>Data Harvest Slam, Pivot to Video, Move Fast Tackle</dd>
+          <dt>Power move</dt><dd>Like Bomb (two blue thumbs-up projectiles)</dd>
           <dt>Super</dt><dd><strong>Metaverse Trap</strong> (command grab)</dd>
         </dl>
       </article>
@@ -397,7 +400,7 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding-top: 20px;
 
   <section id="training">
     <h2><span class="num">10</span>Training</h2>
-    <p class="lede">Test moves, check frame advantage, practice punishes, and inspect hitboxes without round timers or K.O.s.</p>
+    <p class="lede">Free practice against a dummy without round timers or K.O.s. There are no combo trials: learn your moves and spacing at your own pace.</p>
     <p>Press <kbd>Tab</kbd> (or <kbd>Back</kbd> on a gamepad) to open the Training menu.</p>
     <div class="table-wrap"><table>
       <thead><tr><th>Setting / Shortcut</th><th>What it does</th></tr></thead>
@@ -405,7 +408,9 @@ footer { border-top: 1px solid var(--line); margin-top: 60px; padding-top: 20px;
         <tr><td><strong>Dummy</strong></td><td>Stand, Crouch, Jump, CPU (fights back), or Playback (repeats recorded moves).</td></tr>
         <tr><td><strong>Guard</strong></td><td>None, Block All, Block After First Hit, or Random.</td></tr>
         <tr><td><strong>Health Refill / Infinite Meter</strong></td><td>Automatically restores health or keeps the Super meter filled.</td></tr>
-        <tr><td><strong>Frame Data / Input History / Hitboxes</strong></td><td>Displays live startup/active/recovery/advantage numbers, recent inputs, or attack/body boxes.</td></tr>
+        <tr><td><strong>Input Display / Input History</strong></td><td>On by default: a stick gate with lamps for your actual keys or pad buttons — including <strong>Power</strong> and <strong>Super</strong> — plus a plain-text list of recent inputs.</td></tr>
+        <tr><td><strong>Frame data (advanced)</strong></td><td>Off by default; switch it on in the Training menu to see startup, active, recovery, damage and advantage for your last landed attack.</td></tr>
+        <tr><td><strong>Hitboxes</strong></td><td>Shows attack and body boxes.</td></tr>
         <tr><td><strong>Record / Playback (<kbd>F6</kbd> / <kbd>F7</kbd>)</strong></td><td>Take control of the dummy with <kbd>F6</kbd> to record up to 10 seconds of actions, then toggle playback with <kbd>F7</kbd>.</td></tr>
         <tr><td><strong>Reset positions (<kbd>Backspace</kbd> / <kbd>L3</kbd>)</strong></td><td>Returns both fighters to center stage immediately.</td></tr>
       </tbody>
