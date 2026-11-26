@@ -371,6 +371,7 @@ func _initialize() -> void:
 	await scores_credits_tests()
 	await replay_tests()
 	await controls_tests()
+	await options_tests()
 	await outfit_tests()
 	await hair_tests()
 	await tail_tests()
@@ -2445,6 +2446,137 @@ func controls_tests() -> void:
 		f.close()
 	else:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(settings_file))
+
+
+## Options menu sanity: every setting the Options screen exposes must survive a
+## save/load round-trip, and the Controls screen's remap + reset must restore the
+## defaults. Uses a scratch settings file so the player's settings.cfg is never touched.
+func options_tests() -> void:
+	var settings = root.get_node("Settings")
+	var setup = root.get_node("InputSetup")
+	var real_path: String = settings.PATH
+	var test_path := "user://settings_test.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(test_path))
+	settings.PATH = test_path
+	var saved_bindings: Dictionary = setup.bindings.duplicate(true)
+	var saved := {
+		"music": settings.music_volume, "sfx": settings.sfx_volume,
+		"voice": settings.voice_volume, "ambience": settings.ambience_volume,
+		"camera": settings.camera_mode, "difficulty": settings.ai_difficulty,
+		"intros": settings.fight_intros, "display": settings.display_mode,
+		"window": settings.window_size, "resolution": settings.resolution,
+		"graphics": settings.graphics, "auto": settings.auto_graphics,
+		"swap": settings.swap_pads,
+	}
+
+	# Distinct, non-default values for every setting the Options screen writes.
+	settings.music_volume = 0.35
+	settings.sfx_volume = 0.55
+	settings.voice_volume = 0.75
+	settings.ambience_volume = 0.15
+	settings.camera_mode = ActionCamera.Mode.SUBTLE
+	settings.ai_difficulty = AIController.Difficulty.HARD
+	settings.fight_intros = false
+	settings.display_mode = settings.DisplayMode.BORDERLESS
+	settings.window_size = 2
+	settings.resolution = 3
+	settings.graphics = settings.Graphics.MEDIUM
+	settings.auto_graphics = false
+	settings.swap_pads = true
+	settings.save_settings()
+	check("Options: settings are written to the test file", FileAccess.file_exists(test_path))
+
+	# Wipe the in-memory values, then load them back from the file.
+	settings.music_volume = 1.0
+	settings.sfx_volume = 1.0
+	settings.voice_volume = 1.0
+	settings.ambience_volume = 1.0
+	settings.camera_mode = ActionCamera.Mode.FULL
+	settings.ai_difficulty = AIController.Difficulty.EASY
+	settings.fight_intros = true
+	settings.display_mode = settings.DisplayMode.WINDOWED
+	settings.window_size = 0
+	settings.resolution = 2
+	settings.graphics = settings.Graphics.HIGH
+	settings.auto_graphics = true
+	settings.swap_pads = false
+	settings.load_settings()
+	check("Options: music volume saves and loads", is_equal_approx(settings.music_volume, 0.35), str(settings.music_volume))
+	check("Options: effects volume saves and loads", is_equal_approx(settings.sfx_volume, 0.55), str(settings.sfx_volume))
+	check("Options: announcer volume saves and loads", is_equal_approx(settings.voice_volume, 0.75), str(settings.voice_volume))
+	check("Options: ambience volume saves and loads", is_equal_approx(settings.ambience_volume, 0.15), str(settings.ambience_volume))
+	check("Options: action camera saves and loads", settings.camera_mode == ActionCamera.Mode.SUBTLE)
+	check("Options: CPU difficulty saves and loads", settings.ai_difficulty == AIController.Difficulty.HARD)
+	check("Options: fight intros save and load", settings.fight_intros == false)
+	check("Options: display mode saves and loads", settings.display_mode == settings.DisplayMode.BORDERLESS)
+	check("Options: window size saves and loads", settings.window_size == 2)
+	check("Options: resolution saves and loads", settings.resolution == 3)
+	check("Options: graphics preset saves and loads", settings.graphics == settings.Graphics.MEDIUM)
+	check("Options: auto_graphics saves and loads", settings.auto_graphics == false)
+	check("Options: swap gamepads saves and loads", settings.swap_pads == true)
+
+	# Controls: a remap survives save / load, and reset restores the defaults.
+	setup.reset_player("p1")
+	setup.set_binding("p1", "lp", "key", KEY_O)
+	settings.save_settings()
+	setup.reset_player("p1")
+	check("Options: reset restores P1's defaults in memory", _has_key("p1_lp", KEY_U))
+	settings.load_settings()
+	check("Options: a remapped key survives save / load", _has_key("p1_lp", KEY_O),
+		setup.key_name(setup.bindings.p1.lp.key))
+
+	setup.reset_player("p1")
+	settings.save_settings()
+	setup.set_binding("p1", "lp", "key", KEY_K) # changed after the reset was saved
+	settings.load_settings()
+	check("Options: P1 reset to defaults is saved and loaded",
+		_has_key("p1_lp", KEY_U) and _has_pad("p1_lp", JOY_BUTTON_X))
+
+	setup.set_binding("p2", "hp", "key", KEY_Z)
+	settings.save_settings()
+	setup.reset_player("p2")
+	settings.save_settings()
+	setup.set_binding("p2", "hp", "key", KEY_X) # changed after the reset was saved
+	settings.load_settings()
+	check("Options: P2 reset to defaults is saved and loaded", _has_key("p2_hp", KEY_KP_5),
+		setup.key_name(setup.bindings.p2.hp.key))
+
+	# The Options screen itself: the controls show the saved values, a change through
+	# the screen is applied and saved, and picking a preset turns auto_graphics off.
+	change_scene_to_file("res://scenes/options.tscn")
+	await process_frame; await process_frame
+	var screen = current_scene
+	check("Options screen: sliders show the saved volumes",
+		is_equal_approx(screen.music_slider.value, 0.35) and is_equal_approx(screen.sfx_slider.value, 0.55))
+	check("Options screen: the saved preset is selected", screen.graphics_option.selected == settings.Graphics.MEDIUM)
+	screen._change(&"music_volume", 0.25)
+	settings.load_settings()
+	check("Options screen: a slider change is applied and saved", is_equal_approx(settings.music_volume, 0.25),
+		str(settings.music_volume))
+	screen.graphics_option.item_selected.emit(settings.Graphics.LOW)
+	check("Options screen: picking a preset turns auto_graphics off", settings.auto_graphics == false)
+	settings.load_settings()
+	check("Options screen: auto_graphics off is saved", settings.auto_graphics == false)
+
+	# Restore the player's settings and bindings exactly.
+	settings.PATH = real_path
+	settings.music_volume = float(saved.music)
+	settings.sfx_volume = float(saved.sfx)
+	settings.voice_volume = float(saved.voice)
+	settings.ambience_volume = float(saved.ambience)
+	settings.camera_mode = int(saved.camera)
+	settings.ai_difficulty = int(saved.difficulty)
+	settings.fight_intros = bool(saved.intros)
+	settings.display_mode = int(saved.display)
+	settings.window_size = int(saved.window)
+	settings.resolution = int(saved.resolution)
+	settings.graphics = int(saved.graphics)
+	settings.auto_graphics = bool(saved.auto)
+	settings.swap_pads = bool(saved.swap)
+	setup.bindings = saved_bindings
+	setup.apply(settings.swap_pads)
+	settings.apply_graphics(root)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(test_path))
 
 
 func jin_tests() -> void:
