@@ -182,6 +182,7 @@ var _voice_stream: AudioStream
 var _look_data: CharacterData # for set_look_variant() after the build
 var _look_alt := false
 var _voice_envelope := PackedByteArray()
+var _voice_frame := -1 # test hook: a fixed envelope frame instead of the player's position
 var _voice_level := 0.0 # smoothed envelope, 0-1
 var _voice_mix := 0.0 # 1 while a clip drives the jaw
 static var _envelopes: Dictionary # clip file name -> PackedByteArray, loaded on first use
@@ -612,17 +613,20 @@ func set_look_variant(index: int) -> void:
 	if outfit == null:
 		return
 	var colors := _look_data.alt_outfit_colors if _look_alt and not _look_data.alt_outfit_colors.is_empty() else _look_data.outfit_colors
-	if index >= 0 and index < _look_data.variant_outfit_colors.size():
+	var variant := index >= 0 and index < _look_data.variant_outfit_colors.size()
+	if variant:
 		colors = _look_data.variant_outfit_colors[index]
 	for surface in _look_data.outfit_mesh.get_surface_count():
 		var material := outfit.get_surface_override_material(surface) as StandardMaterial3D
 		if material == null:
 			continue
 		var slot := _surface_slot(_look_data, surface)
-		var color: Color = colors[slot] if slot < colors.size() else Color.WHITE
-		var brightest := maxf(color.r, maxf(color.g, color.b))
-		if brightest > MAX_FABRIC_ALBEDO:
-			color = Color(color * (MAX_FABRIC_ALBEDO / brightest), 1.0)
+		var printed := not variant and not _look_alt and _look_data.outfit_textures.has(slot)
+		var color: Color = Color.WHITE if printed else (colors[slot] if slot < colors.size() else Color.WHITE)
+		if not printed:
+			var brightest := maxf(color.r, maxf(color.g, color.b))
+			if brightest > MAX_FABRIC_ALBEDO:
+				color = Color(color * (MAX_FABRIC_ALBEDO / brightest), 1.0)
 		var cloth := material.duplicate() as StandardMaterial3D
 		cloth.albedo_color = color
 		if _fabric_name(_look_data, slot) == &"glow":
@@ -1050,12 +1054,24 @@ func speak(player: AudioStreamPlayer) -> void:
 	_voice_envelope = envelope
 
 
+## Sets the envelope frame (60 a second) the mouth reads, instead of the player's own
+## playback position, so the lip-sync can be checked without real-time audio. Call
+## speak() first; -1 goes back to following the player.
+func set_voice_frame(frame: int) -> void:
+	_voice_frame = frame
+
+
 ## The loudness (0-1) of the voice clip this fighter is speaking, or -1 when silent.
 ## Read from the player's position, so it stays in sync with the sound (pitch, pauses).
 func _voice_level_now() -> float:
 	if _voice_player == null:
 		return -1.0
-	if not is_instance_valid(_voice_player) or not _voice_player.playing or _voice_player.stream != _voice_stream:
+	if not is_instance_valid(_voice_player) or _voice_player.stream != _voice_stream:
+		_voice_player = null # finished, or the pooled player moved on to another sound
+		return -1.0
+	if _voice_frame >= 0:
+		return _voice_envelope[mini(_voice_frame, _voice_envelope.size() - 1)] / 100.0
+	if not _voice_player.playing:
 		_voice_player = null # finished, or the pooled player moved on to another sound
 		return -1.0
 	var frame := int(_voice_player.get_playback_position() * 60.0)

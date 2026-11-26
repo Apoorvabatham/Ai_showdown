@@ -6,9 +6,9 @@
 script = ExtResource("1_n81rt")
 name = "Word Tokens"
 input = "214K"
-animation = &"fight/overhead_smash"
-animation_impact = 0.25
-animation_end = 0.7
+animation = &"ual2/OverhandThrow"
+animation_impact = 0.4
+animation_end = 0.9
 startup = 14
 active = 18
 recovery = 22

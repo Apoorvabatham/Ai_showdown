@@ -3190,15 +3190,17 @@ func face_tests() -> void:
 	var voice := AudioStreamPlayer.new()
 	root.add_child(voice)
 	voice.stream = load("res://assets/audio/voice/fighters/kenji_special_1.ogg")
-	voice.play()
 	watcher.speak(voice)
+	# Drive the mouth from the clip's envelope frame by frame (no real-time audio), so the
+	# measured peak does not depend on how quickly the audio happens to render.
+	var envelope := PackedByteArray(envelopes["kenji_special_1"])
 	var widest := 0.0
-	for i in 30:
-		await process_frame
+	for frame in envelope.size():
+		watcher.set_voice_frame(frame)
 		watcher.set_face(&"neutral", 1.0 / 60.0)
 		widest = maxf(widest, watcher._face_meshes[0].get_blend_shape_value(watcher._face_indices[0][4]))
 	check("A shout opens the jaw", widest > 0.5, "%.2f" % widest)
-	voice.stop()
+	watcher.set_voice_frame(-1)
 	for i in 30:
 		watcher.set_face(&"neutral", 1.0 / 60.0)
 	check("... and it closes again when the shout ends",
@@ -4998,6 +5000,19 @@ func showdown_tests() -> void:
 				problems.append("%s: rival line for unknown %s" % [c.id, rival])
 	check("Showdown: every fighter has a kit, its own moveset with one super, CPU style, portrait, outfit and cut-in",
 		problems.is_empty(), "; ".join(problems))
+	# Every move's animation must name a real clip in the fighter animation libraries
+	# (FighterModel.show_clip warns and shows the T-pose otherwise).
+	var missing := []
+	for c: CharacterData in gs.roster:
+		for mv: MoveData in c.moves:
+			if mv.animation == &"":
+				continue
+			var parts := String(mv.animation).split("/", false, 1)
+			var lib = FighterModel.LIBRARIES.get(StringName(parts[0])) if parts.size() == 2 else null
+			if lib == null or not lib.has_animation(StringName(parts[1])):
+				missing.append("%s/%s: %s" % [c.id, mv.id, mv.animation])
+	check("Showdown: every move animation of every fighter exists in the animation libraries",
+		missing.is_empty(), "; ".join(missing))
 	var supers := {}
 	for c: CharacterData in gs.roster:
 		for mv in c.moves:
