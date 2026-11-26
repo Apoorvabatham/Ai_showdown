@@ -42,3 +42,12 @@ Kilo anonymous quota small; OpenCode free models: up to 4 parallel.
 ## Owner decisions
 Keep real logos/brands. Jensen likeness approved; Xi "more like him" (3D pipeline only, no photoreal
 images of real people). No combos. Voices credited as Gemini TTS. Push main after green merges.
+
+## Nov 26 morning notes
+- Batch 4 on `integrate/batch4` (sound test, loudness, credits + CREDITS.md export fix, options tests,
+  how-to-play + demo guard): test run in progress; merge + push when green.
+- Gemini senate-desks / npc-shoes failed twice: their first Godot step waited 2 h in the godot-q queue
+  behind a balance_sim that runs for hours at low priority. Relaunch when the queue is free
+  (check `Get-CimInstance Win32_Process -Filter "Name like 'godot%'"`).
+- Running: style clips (Sonnet, relay_g-style), Xi round 2 (Opus, relay_g-xi-likeness, 2 commits),
+  beginner difficulty (Sonnet worktree), crowd-proof (Cline), random-fighter (Kilo), menu-back (OpenCode).
