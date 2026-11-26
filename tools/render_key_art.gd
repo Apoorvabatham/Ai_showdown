@@ -8,11 +8,14 @@ extends SceneTree
 const OUT := "res://assets/ui/source/key_art_fighters.png"
 const SIZE := Vector2i(1920, 1080)
 ## Lineup slots (x, z, scale) by roster order: six in front, four behind, and AGI (boss)
-## looming large in the center back.
+## looming large in the center back. The back rank stands in the gaps between the front
+## one (not behind a front fighter, which read as two fighters inside each other) and far
+## enough back that its silhouettes clear the front rank at 1920x1080 and 1280x720.
 const SLOTS := [
-	Vector3(-3.5, 0.0, 1.0), Vector3(-2.1, 0.0, 1.0), Vector3(-0.7, 0.0, 1.0),
-	Vector3(0.7, 0.0, 1.0), Vector3(2.1, 0.0, 1.0), Vector3(3.5, 0.0, 1.0),
-	Vector3(-2.25, 1.5, 1.0), Vector3(-0.75, 1.5, 1.0), Vector3(0.75, 1.5, 1.0), Vector3(2.25, 1.5, 1.0),
+	Vector3(-4.0, 0.0, 1.0), Vector3(-2.4, 0.0, 1.0), Vector3(-0.8, 0.0, 1.0),
+	Vector3(0.8, 0.0, 1.0), Vector3(2.4, 0.0, 1.0), Vector3(4.0, 0.0, 1.0),
+	Vector3(-4.174, 3.1, 1.0), Vector3(-2.086, 3.1, 1.0),
+	Vector3(2.086, 3.1, 1.0), Vector3(4.174, 3.1, 1.0),
 	Vector3(0.0, 3.4, 1.5),
 ]
 
