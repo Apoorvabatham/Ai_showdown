@@ -96,6 +96,8 @@ func _build() -> void:
 
 ## The card's text from P1's current bindings: "Move WASD / Left stick", etc.
 func _rows() -> Dictionary:
+	# Looked up at run time: this script also compiles where autoload names aren't known.
+	var InputSetup: Node = (Engine.get_main_loop() as SceneTree).root.get_node("InputSetup")
 	var b: Dictionary = InputSetup.bindings.p1
 	var move := "%s%s%s%s" % [
 		InputSetup.key_name(b.up.key), InputSetup.key_name(b.left.key),
