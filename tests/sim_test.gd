@@ -2522,6 +2522,7 @@ func options_tests() -> void:
 	setup.reset_player("p1")
 	check("Options: reset restores P1's defaults in memory", _has_key("p1_lp", KEY_U))
 	settings.load_settings()
+	settings.apply() # a restart loads the file and then applies it (Settings._ready)
 	check("Options: a remapped key survives save / load", _has_key("p1_lp", KEY_O),
 		setup.key_name(setup.bindings.p1.lp.key))
 
@@ -2529,6 +2530,7 @@ func options_tests() -> void:
 	settings.save_settings()
 	setup.set_binding("p1", "lp", "key", KEY_K) # changed after the reset was saved
 	settings.load_settings()
+	settings.apply()
 	check("Options: P1 reset to defaults is saved and loaded",
 		_has_key("p1_lp", KEY_U) and _has_pad("p1_lp", JOY_BUTTON_X))
 
@@ -2538,6 +2540,7 @@ func options_tests() -> void:
 	settings.save_settings()
 	setup.set_binding("p2", "hp", "key", KEY_X) # changed after the reset was saved
 	settings.load_settings()
+	settings.apply()
 	check("Options: P2 reset to defaults is saved and loaded", _has_key("p2_hp", KEY_KP_5),
 		setup.key_name(setup.bindings.p2.hp.key))
 
