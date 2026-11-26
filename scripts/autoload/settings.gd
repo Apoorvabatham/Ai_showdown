@@ -9,7 +9,7 @@ var voice_volume := 1.0
 ## Stage background sound and crowd reactions (0 turns them off).
 var ambience_volume := 1.0
 var camera_mode: ActionCamera.Mode = ActionCamera.Mode.FULL
-var ai_difficulty: AIController.Difficulty = AIController.Difficulty.NORMAL
+var ai_difficulty: AIController.Difficulty = AIController.Difficulty.EASY
 ## Pre-fight intros (FightIntro) before round 1 of an offline match.
 var fight_intros := true
 ## Display: a window, a borderless window covering the screen, or exclusive fullscreen

@@ -429,8 +429,49 @@ func ai_tests() -> void:
 	var b := _ai_match(11, 12, 600)
 	check("AI match is deterministic", a.state == b.state, "%s vs %s" % [a.state, b.state])
 
+	# Beginner default: Easy out of the box, and a simple jab/kick player beats Easy.
+	var fresh = load("res://scripts/autoload/settings.gd").new()
+	check("default CPU difficulty is Easy", fresh.ai_difficulty == AIController.Difficulty.EASY)
+	fresh.free()
+	check("Easy blocks and punishes rarely", AIController.PROFILES[AIController.Difficulty.EASY].block_chance <= 0.3
+		and AIController.PROFILES[AIController.Difficulty.EASY].punish_chance <= 0.25)
+	var dealt := 0
+	var taken := 0
+	for seed_value in [21, 22, 23]:
+		var r := _easy_vs_poker(seed_value, 1800)
+		dealt += r.dealt
+		taken += r.taken
+	check("Easy stays beatable by a simple scripted player", dealt > taken and dealt > 0, "dealt %d, taken %d" % [dealt, taken])
+
 	p1.controller = ctl
 	reset(D.STAND)
+
+
+## P1 walks up and pokes with jab / kick (no blocking) against an Easy CPU; returns damage both ways.
+func _easy_vs_poker(seed_value: int, ticks: int) -> Dictionary:
+	var poker := PokeBot.new()
+	var cpu := AIController.new(AIController.Difficulty.EASY, seed_value)
+	cpu.attach(p2)
+	m.start_match(); m.start_fight_immediately()
+	p1.controller = poker; p2.controller = cpu
+	var h1 := p1.health
+	var h2 := p2.health
+	for i in ticks:
+		step()
+	return {dealt = h2 - p2.health, taken = h1 - p1.health}
+
+
+class PokeBot extends FighterController:
+	var _tick := 0
+	func read(f: Fighter) -> int:
+		_tick += 1
+		var d := Vector2(f.opponent.position.x - f.position.x, f.opponent.position.z - f.position.z).length()
+		if d > 1.15:
+			return InputBuffer.pack(6, 0)
+		var b := 0
+		if _tick % 12 == 0:
+			b = InputBuffer.LP if (_tick / 12) % 2 == 0 else InputBuffer.LK
+		return InputBuffer.pack(5, b)
 
 
 ## Runs an AI-vs-AI match from a fresh round and summarizes it.
