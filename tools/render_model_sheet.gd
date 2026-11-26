@@ -6,7 +6,8 @@ extends SceneTree
 ## Run windowed (needs a renderer; Xvfb works):
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" godot --rendering-driver opengl3 --path . -s res://tools/render_model_sheet.gd [-- <id> ...]
 
-const OUT := "res://docs/screenshots/roster.jpg"
+var out_path := "res://docs/screenshots/roster.jpg"
+var use_alt := false
 const CELL := Vector2i(300, 560)
 const HEAD_CELL := Vector2i(300, 300)
 
@@ -18,6 +19,10 @@ func _initialize() -> void:
 	settings.resolution = settings.RESOLUTIONS.size() - 1
 	settings.apply_graphics(root)
 	var only := OS.get_cmdline_user_args()
+	if "alt" in only: # `-- alt <id> ...`: alternate outfits, saved to docs/review/outfits/alt_sheet.jpg
+		use_alt = true
+		out_path = "res://docs/review/outfits/alt_sheet.jpg"
+		only.remove_at(only.find("alt"))
 	var roster: Array = (root.get_node("GameState").roster as Array).filter(func(c: CharacterData) -> bool:
 		return only.is_empty() or String(c.id) in only)
 	var sheet := Image.create(CELL.x * roster.size(), CELL.y * 2 + HEAD_CELL.y, false, Image.FORMAT_RGB8)
@@ -31,9 +36,9 @@ func _initialize() -> void:
 		sheet.blit_rect(side, Rect2i(Vector2i.ZERO, CELL), Vector2i(i * CELL.x, CELL.y))
 		sheet.blit_rect(head, Rect2i(Vector2i.ZERO, HEAD_CELL), Vector2i(i * CELL.x, CELL.y * 2))
 		print("rendered ", character.id)
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT.get_base_dir()))
-	sheet.save_jpg(OUT, 0.9)
-	print("saved ", OUT)
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_path.get_base_dir()))
+	sheet.save_jpg(out_path, 0.9)
+	print("saved ", out_path)
 	quit()
 
 
@@ -60,7 +65,7 @@ func _render(character: CharacterData, size: Vector2i, turn: float, head_only: b
 	key.look_at_from_position(Vector3(1.0, 2.5, -2.0), Vector3(0, 1, 0))
 	var model := FighterModel.new()
 	vp.add_child(model)
-	model.build(character)
+	model.build(character, use_alt)
 	model.rotation.y = turn
 	for i in 3:
 		model.show_clip(&"fight/guard", 0.5, 1.0, 1.0 / 60.0)
