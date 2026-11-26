@@ -228,7 +228,7 @@ func _ready() -> void:
 ## The first-launch card is shown once ever. Online matches and replays aren't the
 ## player's own first fight, so they never wait behind it.
 func should_show_how_to_play() -> bool:
-	return not Settings.seen_how_to_play and not is_online() and not is_replay()
+	return not Settings.seen_how_to_play and not is_online() and not is_replay() and not is_demo()
 
 
 ## Opens the card and pauses the fight until any button dismisses it. Returns the card,
