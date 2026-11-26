@@ -274,6 +274,22 @@ func _make_portrait_button(character: CharacterData) -> Button:
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, PORTRAIT_INSET)
 	button.add_child(portrait)
+	var shade := Gradient.new()
+	shade.set_color(0, Color(0, 0, 0, 0))
+	shade.add_point(0.45, Color(0, 0, 0, 0.55))
+	shade.add_point(1, Color(0, 0, 0, 0.92))
+	var shade_texture := GradientTexture2D.new()
+	shade_texture.gradient = shade
+	shade_texture.fill_from = Vector2(0, 0)
+	shade_texture.fill_to = Vector2(0, 1)
+	var band := TextureRect.new()
+	band.texture = shade_texture
+	band.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	band.stretch_mode = TextureRect.STRETCH_SCALE
+	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	band.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE, Control.PRESET_MODE_MINSIZE, PORTRAIT_INSET)
+	band.offset_top = -maxi(28, int(side * 0.4))
+	button.add_child(band)
 	var label := Label.new()
 	label.text = character.display_name
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

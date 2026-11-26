@@ -613,17 +613,20 @@ func set_look_variant(index: int) -> void:
 	if outfit == null:
 		return
 	var colors := _look_data.alt_outfit_colors if _look_alt and not _look_data.alt_outfit_colors.is_empty() else _look_data.outfit_colors
-	if index >= 0 and index < _look_data.variant_outfit_colors.size():
+	var variant := index >= 0 and index < _look_data.variant_outfit_colors.size()
+	if variant:
 		colors = _look_data.variant_outfit_colors[index]
 	for surface in _look_data.outfit_mesh.get_surface_count():
 		var material := outfit.get_surface_override_material(surface) as StandardMaterial3D
 		if material == null:
 			continue
 		var slot := _surface_slot(_look_data, surface)
-		var color: Color = colors[slot] if slot < colors.size() else Color.WHITE
-		var brightest := maxf(color.r, maxf(color.g, color.b))
-		if brightest > MAX_FABRIC_ALBEDO:
-			color = Color(color * (MAX_FABRIC_ALBEDO / brightest), 1.0)
+		var printed := not variant and not _look_alt and _look_data.outfit_textures.has(slot)
+		var color: Color = Color.WHITE if printed else (colors[slot] if slot < colors.size() else Color.WHITE)
+		if not printed:
+			var brightest := maxf(color.r, maxf(color.g, color.b))
+			if brightest > MAX_FABRIC_ALBEDO:
+				color = Color(color * (MAX_FABRIC_ALBEDO / brightest), 1.0)
 		var cloth := material.duplicate() as StandardMaterial3D
 		cloth.albedo_color = color
 		if _fabric_name(_look_data, slot) == &"glow":
