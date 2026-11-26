@@ -13,13 +13,8 @@ Godot only via `C:\Users\batha\.local\bin\godot-q.cmd` (2 slots, mutex-based sin
    capture_screens.gd for a visual check.
 4. Merge into main (`--no-ff`), push to origin (owner wants pushes after every green batch).
 
-## Ready for batch 3 (committed, reviewed)
-- `relay/xi-banner`: Xi victory lanterns no longer cover the banner (5 lines).
-- `relay/story-proof`: story text proofreading (7 files, small).
-- `relay/g-hotspot`: Server Farm light 2.8 -> 1.4 (judge on a fight capture).
-- `relay/jaw-test` (4120b38): deterministic jaw test via set_voice_frame() hook (inactive in play); suite 0 failure(s) x2.
-- `worktree-agent-a6d0863ac4eff20fd` (93d13b6): Yann word_tokens -> ual2/OverhandThrow (generator), + test that every move animation exists; suite 0 failure(s).
-- `worktree-agent-a7d397f166056dae0` (6a0801f): render_model_sheet `-- alt` option + alt review images (tool/docs only).
+## Merged
+Batch 3 merged and pushed (4123ab1): jaw test, Yann clip + animation test, Xi banner, story proofreading, hotspot, alt render option, docs refresh, select tiles, stage thumbs, title key art.
 
 ## In progress (worktree -> what's left)
 - `relay/g-style` (agent-worktrees/.../relay_g-style): style clips Jensen/Zuckerbot/Xi, UNCOMMITTED.
