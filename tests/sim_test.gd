@@ -2378,13 +2378,32 @@ func scores_credits_tests() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(ArcadeRun.save_path))
 	ArcadeRun.save_path = real_path
 
+	var credits_script: GDScript = load("res://scripts/ui/credits_screen.gd")
+	var parsed: PackedStringArray = credits_script.asset_credit_lines(
+		"| Asset | Path | Author | Source | License |\n|---|---|---|---|---|\n| Thing | `x` | Ann | https://e.x | CC0 1.0 |")
+	check("Credits screen: Markdown table rows become what — source — licence lines",
+		parsed.size() == 1 and parsed[0] == "Thing — Ann https://e.x — CC0 1.0", str(parsed))
+
 	change_scene_to_file("res://scenes/credits.tscn")
 	await process_frame; await process_frame
-	var roll: CreditsRoll = current_scene._roll
-	var y0 := roll.position.y
-	for i in 30: await process_frame
-	check("Credits screen: the roll scrolls and credits the creator", roll.rolling and roll.position.y < y0
-		and CreditsRoll.CREDITS.any(func(e): return e[1] == "Clint Christopher Canada"))
+	var screen = current_scene
+	var texts: Array = screen.find_children("*", "Label", true, false).map(
+		func(n: Node) -> String: return (n as Label).text)
+	var shown := "\n".join(PackedStringArray(texts))
+	check("Credits screen: opens with the title, the 3D Fighter credit and the disclaimer",
+		screen.scene_file_path == "res://scenes/credits.tscn" and shown.contains("AI Showdown")
+		and shown.contains("Based on 3D Fighter by Clint Christopher Canada (MIT / CC BY 4.0)")
+		and shown.contains("Not affiliated with or endorsed by any real person"))
+	check("Credits screen: lists the asset credits read from assets/CREDITS.md",
+		shown.contains("Quaternius") and shown.contains("Kenney") and shown.contains("CC0")
+		and shown.contains("—"))
+	var back := InputEventAction.new()
+	back.action = "ui_cancel"
+	back.pressed = true
+	screen._unhandled_input(back)
+	await process_frame; await process_frame
+	check("Credits screen: Esc / B returns to the main menu",
+		current_scene != null and current_scene.scene_file_path == "res://scenes/main_menu.tscn")
 
 
 func _has_key(action: String, key: int) -> bool:
