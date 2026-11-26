@@ -5788,6 +5788,50 @@ func showdown_tests() -> void:
 		and current_scene.find_child("StoryButton", true, false).text == "Story")
 	check("Showdown: best of 3 rounds", gs.ROUNDS_TO_WIN == 2)
 	check("Showdown: the game is called AI Showdown", ProjectSettings.get_setting("application/config/name") == "AI Showdown")
+	# Every sound("<name>") in a super scene / victory scene resolves to a file, using the same
+	# rule as SuperScene.sound(): SOUND_DIR/<attacker id>/<name>.ogg|.wav. A scene script belongs
+	# to every fighter whose move has that cinematic; a victory script to its own fighter (and to
+	# any scene it preloads).
+	var snd_re := RegEx.create_from_string(r'\bsound\(\s*"([^"]+)"')
+	var pre_re := RegEx.create_from_string(r'preload\("res://scripts/supers/scenes/([a-z0-9_]+)\.gd"\)')
+	var scene_sounds := {}
+	var scene_owners := {}
+	for file in DirAccess.get_files_at("res://scripts/supers/scenes"):
+		if file.ends_with(".gd"):
+			var names := []
+			for m in snd_re.search_all(FileAccess.get_file_as_string("res://scripts/supers/scenes/" + file)):
+				names.append(m.get_string(1))
+			scene_sounds[file.get_basename()] = names
+			scene_owners[file.get_basename()] = []
+	for c: CharacterData in gs.roster:
+		for mv: MoveData in c.moves:
+			if mv.cinematic != &"" and scene_owners.has(String(mv.cinematic)) and not scene_owners[String(mv.cinematic)].has(String(c.id)):
+				scene_owners[String(mv.cinematic)].append(String(c.id))
+	var snd_pairs := {}
+	for scene_name: String in scene_sounds:
+		for fid in scene_owners[scene_name]:
+			for sn in scene_sounds[scene_name]:
+				snd_pairs[fid + "/" + sn] = true
+	for file in DirAccess.get_files_at("res://scripts/supers/victory"):
+		if file.ends_with(".gd"):
+			var src := FileAccess.get_file_as_string("res://scripts/supers/victory/" + file)
+			var fid := file.get_basename()
+			for m in snd_re.search_all(src):
+				snd_pairs[fid + "/" + m.get_string(1)] = true
+			for m in pre_re.search_all(src):
+				for sn in scene_sounds.get(m.get_string(1), []):
+					snd_pairs[fid + "/" + sn] = true
+	var missing_snd := []
+	for pair: String in snd_pairs:
+		var found := false
+		for ext: String in [".ogg", ".wav"]:
+			if ResourceLoader.exists("res://assets/audio/supers/" + pair + ext):
+				found = true
+		if not found:
+			missing_snd.append(pair)
+	missing_snd.sort()
+	check("Every super/victory sound() resolves to a file", not snd_pairs.is_empty() and missing_snd.is_empty(),
+		"%d (fighter/name) pairs, missing: %s" % [snd_pairs.size(), ", ".join(missing_snd)])
 	gs.use_engine_content()
 	change_scene_to_file("res://scenes/main_menu.tscn")
 	await process_frame; await process_frame
