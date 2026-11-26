@@ -6,6 +6,13 @@ extends SceneTree
 
 const OUT_DIR := "res://assets/ui/stages/"
 const SIZE := Vector2i(640, 360)
+## Fixed, reproducible pair of roster fighters per stage (stage file basename -> ids).
+const FIGHTERS := {
+	"server_farm": [&"jensen", &"sundar"],
+	"mensa": [&"dario", &"ram"],
+	"senate": [&"donald", &"xi"],
+	"foundry": [&"jensen", &"xi"],
+}
 
 
 func _initialize() -> void:
@@ -13,6 +20,7 @@ func _initialize() -> void:
 	await process_frame
 	var settings: Node = root.get_node("Settings") # render at full quality whatever the player's setting
 	settings.graphics = settings.Graphics.HIGH
+	settings.auto_graphics = false # keep High quality for the whole render
 	settings.resolution = settings.RESOLUTIONS.size() - 1 # native
 	settings.display_mode = settings.DisplayMode.WINDOWED # 16:9 whatever the player's display setting
 	settings.window_size = settings.WINDOW_SIZES.find(Vector2i(1920, 1080))
@@ -22,12 +30,15 @@ func _initialize() -> void:
 		await process_frame
 	settings.apply_graphics(root)
 	var gs = root.get_node("GameState")
-	gs.player_character = gs.roster[0]
-	gs.p2_character = gs.roster[1]
+	gs.load_roster() # real AI Showdown fighters, not the engine kit stand-ins
 	var only := OS.get_cmdline_user_args() # `-- train dojo` renders just those stages
 	for stage: Dictionary in gs.stages:
-		if not only.is_empty() and not String(stage.path).get_file().get_basename() in only:
+		var basename := String(stage.path).get_file().get_basename()
+		if not only.is_empty() and not basename in only:
 			continue
+		var pair: Array = FIGHTERS.get(basename, [&"jensen", &"xi"])
+		gs.player_character = gs.find_character(pair[0])
+		gs.p2_character = gs.find_character(pair[1])
 		gs.stage_path = stage.path
 		change_scene_to_file("res://scenes/fight.tscn")
 		for i in 4:
