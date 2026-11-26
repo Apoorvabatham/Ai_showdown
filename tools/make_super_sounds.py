@@ -31,9 +31,11 @@ def add_into(dst: list[float], src: list[float], start_s: float, gain: float = 1
 
 
 def normalize_and_fade(
-    samples: list[float], fade_in_s: float = 0.006, fade_out_s: float = 0.015
+    samples: list[float], fade_in_s: float = 0.006, fade_out_s: float = 0.015,
+    target_rms_db: float = -16.0
 ) -> list[float]:
-    """Apply endpoint fades to prevent clicks and peak-normalize to -1 dBFS."""
+    """Apply endpoint fades to prevent clicks and peak-normalize to -1 dBFS,
+    then RMS-normalize to `target_rms_db` dBFS."""
     n = len(samples)
     out = list(samples)
     att = min(n, int(round(fade_in_s * SAMPLE_RATE)))
@@ -46,6 +48,12 @@ def normalize_and_fade(
     if peak > 1e-9:
         scale = TARGET_PEAK / peak
         out = [x * scale for x in out]
+    # RMS normalization
+    rms = math.sqrt(sum(x * x for x in out) / len(out)) if len(out) > 0 else 0.0
+    if rms > 1e-9:
+        target_rms_linear = 10.0 ** (target_rms_db / 20.0)
+        rms_scale = target_rms_linear / rms
+        out = [x * rms_scale for x in out]
     return out
 
 
@@ -60,7 +68,10 @@ def write_wav(path: str, samples: list[float]) -> None:
         wf.setframerate(SAMPLE_RATE)
         wf.writeframes(pcm.tobytes())
     peak_db = 20.0 * math.log10(max((abs(x) for x in norm), default=1e-9))
-    print(f"Generated {path} ({len(norm) / SAMPLE_RATE:.2f}s, peak {peak_db:.2f} dBFS)")
+    # Also print RMS dBFS after normalization
+    rms = math.sqrt(sum(x * x for x in norm) / len(norm)) if len(norm) > 0 else 0.0
+    rms_db = 20.0 * math.log10(max(rms, 1e-9))
+    print(f"Generated {path} ({len(norm) / SAMPLE_RATE:.2f}s, peak {peak_db:.2f} dBFS, RMS {rms_db:.2f} dBFS)")
 
 
 # --- DSP Building Blocks -------------------------------------------------------
