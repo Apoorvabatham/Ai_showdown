@@ -122,7 +122,7 @@
       "after_win": [
         {
           "who": "jensen",
-          "line": "Firmware update installed. AGI power cap throttled to 350 Watts."
+          "line": "Firmware update installed. AGI power cap throttled to 350 watts."
         }
       ]
     }
@@ -130,6 +130,6 @@
   "ending": [
     "Jensen signs the casing of a fresh GPU wafer in shiny permanent marker.",
     "His leather jacket gleams under three trillion dollars of market cap.",
-    "The next generation chip is announced: sixty times faster, 100% hotter."
+    "The next-generation chip is announced: sixty times faster, 100% hotter."
   ]
 }

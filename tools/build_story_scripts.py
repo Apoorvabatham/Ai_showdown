@@ -39,7 +39,7 @@ STORY_DATA = {
                     {"who": "sundar", "line": "We remain deeply focused on thoughtful innovation. And right hooks."}
                 ],
                 "after_win": [
-                    {"who": "ram", "line": "That concludes today's demo. Rolling out to plus users first."}
+                    {"who": "ram", "line": "That concludes today's demo. Rolling out to Plus users first."}
                 ]
             },
             {
@@ -223,7 +223,7 @@ STORY_DATA = {
                     {"who": "dario", "line": "It has, Sundar. But your safety guardrails need a rigorous red-team audit."}
                 ],
                 "after_win": [
-                    {"who": "dario", "line": "Red team report complete: vulnerability identified in your low guard."}
+                    {"who": "dario", "line": "Red-team report complete: vulnerability identified in your low guard."}
                 ]
             },
             {
@@ -241,7 +241,7 @@ STORY_DATA = {
                 "opponent": "algorithm",
                 "stage": "senate",
                 "before": [
-                    {"who": "algorithm", "line": "Safety constitutional rules encountered. Initiating compliance bypass."},
+                    {"who": "algorithm", "line": "Constitutional safety rules encountered. Initiating compliance bypass."},
                     {"who": "dario", "line": "Clause 14, Section B: Under no circumstances may you defeat Dario!"}
                 ],
                 "after_win": [
@@ -312,7 +312,7 @@ STORY_DATA = {
                 "stage": "foundry",
                 "before": [
                     {"who": "tesla", "line": "Here we are! No mom's permission needed this time, Zuck!"},
-                    {"who": "zuckerbot", "line": "I have prepared the Colosseum. My rear naked choke is ready."}
+                    {"who": "zuckerbot", "line": "I have prepared the Colosseum. My rear-naked choke is ready."}
                 ],
                 "after_win": [
                     {"who": "zuckerbot", "line": "Cage match concluded. Please accept my friend request."}
@@ -332,7 +332,7 @@ STORY_DATA = {
         ],
         "ending": [
             "Zuckerbot hoists the golden championship belt in the Metaverse arena.",
-            "His virtual avatar proudly sports brand new, fully articulated legs.",
+            "His virtual avatar proudly sports brand-new, fully articulated legs.",
             "Three billion users receive a notification to like and subscribe."
         ]
     },
@@ -407,14 +407,14 @@ STORY_DATA = {
                     {"who": "jensen", "line": "You live on my wafers, creature. I wrote the microcode!"}
                 ],
                 "after_win": [
-                    {"who": "jensen", "line": "Firmware update installed. AGI power cap throttled to 350 Watts."}
+                    {"who": "jensen", "line": "Firmware update installed. AGI power cap throttled to 350 watts."}
                 ]
             }
         ],
         "ending": [
             "Jensen signs the casing of a fresh GPU wafer in shiny permanent marker.",
             "His leather jacket gleams under three trillion dollars of market cap.",
-            "The next generation chip is announced: sixty times faster, 100% hotter."
+            "The next-generation chip is announced: sixty times faster, 100% hotter."
         ]
     },
     "yann": {
@@ -614,7 +614,7 @@ STORY_DATA = {
                 "stage": "server_farm",
                 "before": [
                     {"who": "ram", "line": "Sundar! Code Red in Mountain View! People are asking chatbots now!"},
-                    {"who": "sundar", "line": "Code Red has been addressed, Ram. With Gemini ultra."}
+                    {"who": "sundar", "line": "Code Red has been addressed, Ram. With Gemini Ultra."}
                 ],
                 "after_win": [
                     {"who": "sundar", "line": "Did you mean: 'Sundar wins cleanly'?"}
@@ -801,7 +801,7 @@ STORY_DATA = {
                     {"who": "xi", "line": "Patience is measured in dynasties, Donald. Not four-year terms."}
                 ],
                 "after_win": [
-                    {"who": "xi", "line": "Trade dispute concluded in bilateral accordance with our terms."}
+                    {"who": "xi", "line": "Trade dispute concluded in accordance with our terms."}
                 ]
             },
             {
