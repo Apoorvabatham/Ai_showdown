@@ -194,11 +194,11 @@ func _style_top() -> void:
 
 ## The friendly controls card, from the pause menu ("How to play"). The first-launch
 ## card is opened by FightManager before the first fight; both share HowToPlay.
-func show_how_to_play() -> Node:
+func show_how_to_play():
 	var existing := get_node_or_null("HowToPlay")
 	if existing:
 		return existing
-	var screen := HOW_TO_PLAY_SCRIPT.new()
+	var screen = HOW_TO_PLAY_SCRIPT.new()
 	screen.name = "HowToPlay"
 	add_child(screen)
 	return screen

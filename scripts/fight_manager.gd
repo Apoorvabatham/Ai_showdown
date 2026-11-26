@@ -233,10 +233,10 @@ func should_show_how_to_play() -> bool:
 
 ## Opens the card and pauses the fight until any button dismisses it. Returns the card,
 ## or null once it has been seen. Tests call this directly (headless runs skip _ready's).
-func show_how_to_play_first_time() -> Node:
+func show_how_to_play_first_time():
 	if not should_show_how_to_play():
 		return null
-	var screen := HOW_TO_PLAY_SCRIPT.new()
+	var screen = HOW_TO_PLAY_SCRIPT.new()
 	screen.name = "HowToPlay"
 	add_child(screen)
 	get_tree().paused = true

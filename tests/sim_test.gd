@@ -2468,7 +2468,7 @@ func how_to_play_tests() -> void:
 	setup.bindings.p1.lp.key = KEY_Q
 	var screen = fight.show_how_to_play_first_time()
 	var body: String = screen.body_text() if screen else ""
-	check("How to play: shown before the first fight", screen != null and get_tree().paused)
+	check("How to play: shown before the first fight", screen != null and paused)
 	check("How to play: reads the real (remapped) keys and pad buttons",
 		body.contains(setup.key_name(KEY_Q)) and body.contains(setup.key_name(setup.bindings.p1.super.key))
 		and body.contains(setup.pad_name(setup.bindings.p1.power.pad)) and body.contains("SUPER meter is full"),
@@ -2476,9 +2476,9 @@ func how_to_play_tests() -> void:
 	setup.bindings.p1.lp.key = old_lp
 
 	screen.close()
-	await process_frame
+	await process_frame; await process_frame
 	check("How to play: any button closes it, marks it seen and resumes the fight",
-		settings.seen_how_to_play and not get_tree().paused and not is_instance_valid(screen))
+		settings.seen_how_to_play and not paused and not is_instance_valid(screen))
 	check("How to play: not shown a second time", fight.show_how_to_play_first_time() == null)
 
 	# The flag is part of the saved settings, not just this session.
@@ -2497,7 +2497,7 @@ func how_to_play_tests() -> void:
 	check("How to play: the pause-menu entry opens the card", later != null and later.get_parent() == hud)
 	if later:
 		later.close()
-	await process_frame
+	await process_frame; await process_frame
 	settings.seen_how_to_play = was_seen
 
 
