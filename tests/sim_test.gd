@@ -379,6 +379,7 @@ func _initialize() -> void:
 	await net_tests()
 	await server_tests()
 	await showdown_tests()
+	await how_to_play_tests()
 
 	if had_settings:
 		var f := FileAccess.open(settings_file, FileAccess.WRITE)
@@ -2599,6 +2600,59 @@ func options_tests() -> void:
 	setup.apply(settings.swap_pads)
 	settings.apply_graphics(root)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(test_path))
+
+
+## First-launch "How to play": shown once before the first fight, remembered in Settings,
+## and reachable again from the pause menu.
+func how_to_play_tests() -> void:
+	var gs = root.get_node("GameState")
+	var settings = root.get_node("Settings")
+	var setup = root.get_node("InputSetup")
+	var was_seen: bool = settings.seen_how_to_play
+	gs.mode = gs.Mode.VS_CPU
+	gs.player_character = gs.roster[0]; gs.p2_character = gs.roster[2]
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var fight = current_scene
+	fight.set_physics_process(false)
+
+	# Remapped keys must appear on the card (it reads InputSetup, not the defaults).
+	settings.seen_how_to_play = false
+	var old_lp: int = setup.bindings.p1.lp.key
+	setup.bindings.p1.lp.key = KEY_Q
+	var screen = fight.show_how_to_play_first_time()
+	var body: String = screen.body_text() if screen else ""
+	check("How to play: shown before the first fight", screen != null and paused)
+	check("How to play: reads the real (remapped) keys and pad buttons",
+		body.contains(setup.key_name(KEY_Q)) and body.contains(setup.key_name(setup.bindings.p1.super.key))
+		and body.contains(setup.pad_name(setup.bindings.p1.power.pad)) and body.contains("SUPER meter is full"),
+		body)
+	setup.bindings.p1.lp.key = old_lp
+
+	screen.close()
+	await process_frame; await process_frame
+	check("How to play: any button closes it, marks it seen and resumes the fight",
+		settings.seen_how_to_play and not paused and not is_instance_valid(screen))
+	check("How to play: not shown a second time", fight.show_how_to_play_first_time() == null)
+
+	# The flag is part of the saved settings, not just this session.
+	settings.save_settings()
+	settings.seen_how_to_play = false
+	settings.load_settings()
+	check("How to play: the seen flag persists in the settings file", settings.seen_how_to_play)
+
+	# Later it lives in the pause menu.
+	var hud = fight.hud
+	var button := hud.get_node_or_null("%HowToPlayButton") as Button
+	check("How to play: the pause menu has the entry", button != null and button.text == "How to play")
+	if button:
+		button.pressed.emit()
+	var later = hud.get_node_or_null("HowToPlay")
+	check("How to play: the pause-menu entry opens the card", later != null and later.get_parent() == hud)
+	if later:
+		later.close()
+	await process_frame; await process_frame
+	settings.seen_how_to_play = was_seen
 
 
 func jin_tests() -> void:

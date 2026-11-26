@@ -37,6 +37,7 @@ const ARCADE_END_SCENE := "res://scenes/arcade_end.tscn"
 const STORY_SCENE := "res://scenes/story_screen.tscn"
 const REPLAYS_SCENE := "res://scenes/replays.tscn"
 const FIGHTER_SCENE := preload("res://scenes/fighter/fighter.tscn")
+const HOW_TO_PLAY_SCRIPT := preload("res://scripts/ui/how_to_play.gd")
 const TICKS_PER_SECOND := 60
 ## "ROUND N" shows from the start of the intro; "FIGHT!" at the end, when input unlocks.
 const INTRO_TICKS := 110
@@ -147,11 +148,6 @@ func _ready() -> void:
 		var stage_entry := GameState.arcade.current()
 		ai.set_difficulty(stage_entry.difficulty)
 		hud.p2_name.text = "%s (%s)" % [GameState.arcade.opponent_title(), "BOSS" if stage_entry.boss else "CPU"]
-	if not (is_demo() or is_replay() or is_online()) and DisplayServer.get_name() != "headless":
-		var hint := "P1  " + InputSetup.describe("p1")
-		if is_versus():
-			hint += "\nP2  " + InputSetup.describe("p2")
-		hud.show_controls_hint(hint + "\nEsc  pause")
 	hud.rematch_pressed.connect(_on_rematch_pressed)
 	hud.restart_pressed.connect(func() -> void:
 		if replay_match:
@@ -223,6 +219,32 @@ func _ready() -> void:
 	if "--smoke-test" in OS.get_cmdline_user_args():
 		print("SMOKE TEST: fight ready (%s vs %s, %d moves loaded)" % [p1.data.display_name, p2.data.display_name, p1.data.moves.size()])
 		round_ended.connect(func(_w: Fighter, reason: String) -> void: print("SMOKE TEST: round ended (%s)" % reason))
+	# The friendly controls card comes before the very first fight. Headless runs (the
+	# test suite, smoke tests) skip it: nobody is there to press a button.
+	if DisplayServer.get_name() != "headless":
+		show_how_to_play_first_time()
+
+
+## The first-launch card is shown once ever. Online matches and replays aren't the
+## player's own first fight, so they never wait behind it.
+func should_show_how_to_play() -> bool:
+	return not Settings.seen_how_to_play and not is_online() and not is_replay() and not is_demo()
+
+
+## Opens the card and pauses the fight until any button dismisses it. Returns the card,
+## or null once it has been seen. Tests call this directly (headless runs skip _ready's).
+func show_how_to_play_first_time():
+	if not should_show_how_to_play():
+		return null
+	var screen = HOW_TO_PLAY_SCRIPT.new()
+	screen.name = "HowToPlay"
+	add_child(screen)
+	get_tree().paused = true
+	screen.closed.connect(func() -> void:
+		Settings.seen_how_to_play = true
+		Settings.save_settings()
+		get_tree().paused = false)
+	return screen
 
 
 ## Pre-fight intros: offline matches (not training), if the player hasn't turned them off.

@@ -376,6 +376,13 @@ theme_override_font_sizes/font_size = 28
 toggle_mode = true
 text = "Move List"
 
+[node name="HowToPlayButton" type="Button" parent="PauseMenu/Center/Row/Panel/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "How to play"
+
 [node name="PauseSelectButton" type="Button" parent="PauseMenu/Center/Row/Panel/Buttons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 56)
