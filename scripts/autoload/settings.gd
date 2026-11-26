@@ -1,7 +1,9 @@
 extends Node
 ## Player options, persisted to user://settings.cfg and applied on load and change.
 
-const PATH := "user://settings.cfg"
+## The player's options file. A var, not a const, so the headless test suite can point
+## it at a scratch file (user://settings_test.cfg) and never touch the real one.
+var PATH := "user://settings.cfg"
 
 var music_volume := 0.7
 var sfx_volume := 0.9
