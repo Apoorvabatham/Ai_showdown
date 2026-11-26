@@ -5000,6 +5000,19 @@ func showdown_tests() -> void:
 				problems.append("%s: rival line for unknown %s" % [c.id, rival])
 	check("Showdown: every fighter has a kit, its own moveset with one super, CPU style, portrait, outfit and cut-in",
 		problems.is_empty(), "; ".join(problems))
+	# Every move's animation must name a real clip in the fighter animation libraries
+	# (FighterModel.show_clip warns and shows the T-pose otherwise).
+	var missing := []
+	for c: CharacterData in gs.roster:
+		for mv: MoveData in c.moves:
+			if mv.animation == &"":
+				continue
+			var parts := String(mv.animation).split("/", false, 1)
+			var lib = FighterModel.LIBRARIES.get(StringName(parts[0])) if parts.size() == 2 else null
+			if lib == null or not lib.has_animation(StringName(parts[1])):
+				missing.append("%s/%s: %s" % [c.id, mv.id, mv.animation])
+	check("Showdown: every move animation of every fighter exists in the animation libraries",
+		missing.is_empty(), "; ".join(missing))
 	var supers := {}
 	for c: CharacterData in gs.roster:
 		for mv in c.moves:

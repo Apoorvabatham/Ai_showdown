@@ -95,7 +95,7 @@ const MOVESETS := {
 				projectile_look = &"word_token", projectile_count = 3, projectile_interval = 8,
 				projectile_speed = 5.2, projectile_lifetime = 80,
 				hitbox_radius = 0.32, damage = 25, chip_damage = 3,
-				animation = &"fight/overhead_smash", animation_impact = 0.25, animation_end = 0.7,
+				animation = &"ual2/OverhandThrow", animation_impact = 0.4, animation_end = 0.9,
 				startup = 14, active = 18, recovery = 22, projectile_color = Color(0.35, 0.65, 0.95),
 				camera_intensity = 0.2}},
 		},
