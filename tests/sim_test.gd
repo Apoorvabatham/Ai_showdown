@@ -371,6 +371,7 @@ func _initialize() -> void:
 	await scores_credits_tests()
 	await replay_tests()
 	await controls_tests()
+	await options_tests()
 	await outfit_tests()
 	await hair_tests()
 	await tail_tests()
@@ -378,6 +379,7 @@ func _initialize() -> void:
 	await net_tests()
 	await server_tests()
 	await showdown_tests()
+	await how_to_play_tests()
 
 	if had_settings:
 		var f := FileAccess.open(settings_file, FileAccess.WRITE)
@@ -2378,13 +2380,32 @@ func scores_credits_tests() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(ArcadeRun.save_path))
 	ArcadeRun.save_path = real_path
 
+	var credits_script: GDScript = load("res://scripts/ui/credits_screen.gd")
+	var parsed: PackedStringArray = credits_script.asset_credit_lines(
+		"| Asset | Path | Author | Source | License |\n|---|---|---|---|---|\n| Thing | `x` | Ann | https://e.x | CC0 1.0 |")
+	check("Credits screen: Markdown table rows become what — source — licence lines",
+		parsed.size() == 1 and parsed[0] == "Thing — Ann https://e.x — CC0 1.0", str(parsed))
+
 	change_scene_to_file("res://scenes/credits.tscn")
 	await process_frame; await process_frame
-	var roll: CreditsRoll = current_scene._roll
-	var y0 := roll.position.y
-	for i in 30: await process_frame
-	check("Credits screen: the roll scrolls and credits the creator", roll.rolling and roll.position.y < y0
-		and CreditsRoll.CREDITS.any(func(e): return e[1] == "Clint Christopher Canada"))
+	var screen = current_scene
+	var texts: Array = screen.find_children("*", "Label", true, false).map(
+		func(n: Node) -> String: return (n as Label).text)
+	var shown := "\n".join(PackedStringArray(texts))
+	check("Credits screen: opens with the title, the 3D Fighter credit and the disclaimer",
+		screen.scene_file_path == "res://scenes/credits.tscn" and shown.contains("AI Showdown")
+		and shown.contains("Based on 3D Fighter by Clint Christopher Canada (MIT / CC BY 4.0)")
+		and shown.contains("Not affiliated with or endorsed by any real person"))
+	check("Credits screen: lists the asset credits read from assets/CREDITS.md",
+		shown.contains("Quaternius") and shown.contains("Kenney") and shown.contains("CC0")
+		and shown.contains("—"))
+	var back := InputEventAction.new()
+	back.action = "ui_cancel"
+	back.pressed = true
+	screen._unhandled_input(back)
+	await process_frame; await process_frame
+	check("Credits screen: Esc / B returns to the main menu",
+		current_scene != null and current_scene.scene_file_path == "res://scenes/main_menu.tscn")
 
 
 func _has_key(action: String, key: int) -> bool:
@@ -2445,6 +2466,193 @@ func controls_tests() -> void:
 		f.close()
 	else:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(settings_file))
+
+
+## Options menu sanity: every setting the Options screen exposes must survive a
+## save/load round-trip, and the Controls screen's remap + reset must restore the
+## defaults. Uses a scratch settings file so the player's settings.cfg is never touched.
+func options_tests() -> void:
+	var settings = root.get_node("Settings")
+	var setup = root.get_node("InputSetup")
+	var real_path: String = settings.PATH
+	var test_path := "user://settings_test.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(test_path))
+	settings.PATH = test_path
+	var saved_bindings: Dictionary = setup.bindings.duplicate(true)
+	var saved := {
+		"music": settings.music_volume, "sfx": settings.sfx_volume,
+		"voice": settings.voice_volume, "ambience": settings.ambience_volume,
+		"camera": settings.camera_mode, "difficulty": settings.ai_difficulty,
+		"intros": settings.fight_intros, "display": settings.display_mode,
+		"window": settings.window_size, "resolution": settings.resolution,
+		"graphics": settings.graphics, "auto": settings.auto_graphics,
+		"swap": settings.swap_pads,
+	}
+
+	# Distinct, non-default values for every setting the Options screen writes.
+	settings.music_volume = 0.35
+	settings.sfx_volume = 0.55
+	settings.voice_volume = 0.75
+	settings.ambience_volume = 0.15
+	settings.camera_mode = ActionCamera.Mode.SUBTLE
+	settings.ai_difficulty = AIController.Difficulty.HARD
+	settings.fight_intros = false
+	settings.display_mode = settings.DisplayMode.BORDERLESS
+	settings.window_size = 2
+	settings.resolution = 3
+	settings.graphics = settings.Graphics.MEDIUM
+	settings.auto_graphics = false
+	settings.swap_pads = true
+	settings.save_settings()
+	check("Options: settings are written to the test file", FileAccess.file_exists(test_path))
+
+	# Wipe the in-memory values, then load them back from the file.
+	settings.music_volume = 1.0
+	settings.sfx_volume = 1.0
+	settings.voice_volume = 1.0
+	settings.ambience_volume = 1.0
+	settings.camera_mode = ActionCamera.Mode.FULL
+	settings.ai_difficulty = AIController.Difficulty.EASY
+	settings.fight_intros = true
+	settings.display_mode = settings.DisplayMode.WINDOWED
+	settings.window_size = 0
+	settings.resolution = 2
+	settings.graphics = settings.Graphics.HIGH
+	settings.auto_graphics = true
+	settings.swap_pads = false
+	settings.load_settings()
+	check("Options: music volume saves and loads", is_equal_approx(settings.music_volume, 0.35), str(settings.music_volume))
+	check("Options: effects volume saves and loads", is_equal_approx(settings.sfx_volume, 0.55), str(settings.sfx_volume))
+	check("Options: announcer volume saves and loads", is_equal_approx(settings.voice_volume, 0.75), str(settings.voice_volume))
+	check("Options: ambience volume saves and loads", is_equal_approx(settings.ambience_volume, 0.15), str(settings.ambience_volume))
+	check("Options: action camera saves and loads", settings.camera_mode == ActionCamera.Mode.SUBTLE)
+	check("Options: CPU difficulty saves and loads", settings.ai_difficulty == AIController.Difficulty.HARD)
+	check("Options: fight intros save and load", settings.fight_intros == false)
+	check("Options: display mode saves and loads", settings.display_mode == settings.DisplayMode.BORDERLESS)
+	check("Options: window size saves and loads", settings.window_size == 2)
+	check("Options: resolution saves and loads", settings.resolution == 3)
+	check("Options: graphics preset saves and loads", settings.graphics == settings.Graphics.MEDIUM)
+	check("Options: auto_graphics saves and loads", settings.auto_graphics == false)
+	check("Options: swap gamepads saves and loads", settings.swap_pads == true)
+
+	# Controls: a remap survives save / load, and reset restores the defaults.
+	setup.reset_player("p1")
+	setup.set_binding("p1", "lp", "key", KEY_O)
+	settings.save_settings()
+	setup.reset_player("p1")
+	check("Options: reset restores P1's defaults in memory", _has_key("p1_lp", KEY_U))
+	settings.load_settings()
+	settings.apply() # a restart loads the file and then applies it (Settings._ready)
+	check("Options: a remapped key survives save / load", _has_key("p1_lp", KEY_O),
+		setup.key_name(setup.bindings.p1.lp.key))
+
+	setup.reset_player("p1")
+	settings.save_settings()
+	setup.set_binding("p1", "lp", "key", KEY_K) # changed after the reset was saved
+	settings.load_settings()
+	settings.apply()
+	check("Options: P1 reset to defaults is saved and loaded",
+		_has_key("p1_lp", KEY_U) and _has_pad("p1_lp", JOY_BUTTON_X))
+
+	setup.set_binding("p2", "hp", "key", KEY_Z)
+	settings.save_settings()
+	setup.reset_player("p2")
+	settings.save_settings()
+	setup.set_binding("p2", "hp", "key", KEY_X) # changed after the reset was saved
+	settings.load_settings()
+	settings.apply()
+	check("Options: P2 reset to defaults is saved and loaded", _has_key("p2_hp", KEY_KP_5),
+		setup.key_name(setup.bindings.p2.hp.key))
+
+	# The Options screen itself: the controls show the saved values, a change through
+	# the screen is applied and saved, and picking a preset turns auto_graphics off.
+	change_scene_to_file("res://scenes/options.tscn")
+	await process_frame; await process_frame
+	var screen = current_scene
+	check("Options screen: sliders show the saved volumes",
+		is_equal_approx(screen.music_slider.value, 0.35) and is_equal_approx(screen.sfx_slider.value, 0.55))
+	check("Options screen: the saved preset is selected", screen.graphics_option.selected == settings.Graphics.MEDIUM)
+	screen._change(&"music_volume", 0.25)
+	settings.load_settings()
+	check("Options screen: a slider change is applied and saved", is_equal_approx(settings.music_volume, 0.25),
+		str(settings.music_volume))
+	screen.graphics_option.item_selected.emit(settings.Graphics.LOW)
+	check("Options screen: picking a preset turns auto_graphics off", settings.auto_graphics == false)
+	settings.load_settings()
+	check("Options screen: auto_graphics off is saved", settings.auto_graphics == false)
+
+	# Restore the player's settings and bindings exactly.
+	settings.PATH = real_path
+	settings.music_volume = float(saved.music)
+	settings.sfx_volume = float(saved.sfx)
+	settings.voice_volume = float(saved.voice)
+	settings.ambience_volume = float(saved.ambience)
+	settings.camera_mode = int(saved.camera)
+	settings.ai_difficulty = int(saved.difficulty)
+	settings.fight_intros = bool(saved.intros)
+	settings.display_mode = int(saved.display)
+	settings.window_size = int(saved.window)
+	settings.resolution = int(saved.resolution)
+	settings.graphics = int(saved.graphics)
+	settings.auto_graphics = bool(saved.auto)
+	settings.swap_pads = bool(saved.swap)
+	setup.bindings = saved_bindings
+	setup.apply(settings.swap_pads)
+	settings.apply_graphics(root)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(test_path))
+
+
+## First-launch "How to play": shown once before the first fight, remembered in Settings,
+## and reachable again from the pause menu.
+func how_to_play_tests() -> void:
+	var gs = root.get_node("GameState")
+	var settings = root.get_node("Settings")
+	var setup = root.get_node("InputSetup")
+	var was_seen: bool = settings.seen_how_to_play
+	gs.mode = gs.Mode.VS_CPU
+	gs.player_character = gs.roster[0]; gs.p2_character = gs.roster[2]
+	change_scene_to_file("res://scenes/fight.tscn")
+	await process_frame; await process_frame
+	var fight = current_scene
+	fight.set_physics_process(false)
+
+	# Remapped keys must appear on the card (it reads InputSetup, not the defaults).
+	settings.seen_how_to_play = false
+	var old_lp: int = setup.bindings.p1.lp.key
+	setup.bindings.p1.lp.key = KEY_Q
+	var screen = fight.show_how_to_play_first_time()
+	var body: String = screen.body_text() if screen else ""
+	check("How to play: shown before the first fight", screen != null and paused)
+	check("How to play: reads the real (remapped) keys and pad buttons",
+		body.contains(setup.key_name(KEY_Q)) and body.contains(setup.key_name(setup.bindings.p1.super.key))
+		and body.contains(setup.pad_name(setup.bindings.p1.power.pad)) and body.contains("SUPER meter is full"),
+		body)
+	setup.bindings.p1.lp.key = old_lp
+
+	screen.close()
+	await process_frame; await process_frame
+	check("How to play: any button closes it, marks it seen and resumes the fight",
+		settings.seen_how_to_play and not paused and not is_instance_valid(screen))
+	check("How to play: not shown a second time", fight.show_how_to_play_first_time() == null)
+
+	# The flag is part of the saved settings, not just this session.
+	settings.save_settings()
+	settings.seen_how_to_play = false
+	settings.load_settings()
+	check("How to play: the seen flag persists in the settings file", settings.seen_how_to_play)
+
+	# Later it lives in the pause menu.
+	var hud = fight.hud
+	var button := hud.get_node_or_null("%HowToPlayButton") as Button
+	check("How to play: the pause menu has the entry", button != null and button.text == "How to play")
+	if button:
+		button.pressed.emit()
+	var later = hud.get_node_or_null("HowToPlay")
+	check("How to play: the pause-menu entry opens the card", later != null and later.get_parent() == hud)
+	if later:
+		later.close()
+	await process_frame; await process_frame
+	settings.seen_how_to_play = was_seen
 
 
 func jin_tests() -> void:
@@ -5788,6 +5996,50 @@ func showdown_tests() -> void:
 		and current_scene.find_child("StoryButton", true, false).text == "Story")
 	check("Showdown: best of 3 rounds", gs.ROUNDS_TO_WIN == 2)
 	check("Showdown: the game is called AI Showdown", ProjectSettings.get_setting("application/config/name") == "AI Showdown")
+	# Every sound("<name>") in a super scene / victory scene resolves to a file, using the same
+	# rule as SuperScene.sound(): SOUND_DIR/<attacker id>/<name>.ogg|.wav. A scene script belongs
+	# to every fighter whose move has that cinematic; a victory script to its own fighter (and to
+	# any scene it preloads).
+	var snd_re := RegEx.create_from_string(r'\bsound\(\s*"([^"]+)"')
+	var pre_re := RegEx.create_from_string(r'preload\("res://scripts/supers/scenes/([a-z0-9_]+)\.gd"\)')
+	var scene_sounds := {}
+	var scene_owners := {}
+	for file in DirAccess.get_files_at("res://scripts/supers/scenes"):
+		if file.ends_with(".gd"):
+			var names := []
+			for m in snd_re.search_all(FileAccess.get_file_as_string("res://scripts/supers/scenes/" + file)):
+				names.append(m.get_string(1))
+			scene_sounds[file.get_basename()] = names
+			scene_owners[file.get_basename()] = []
+	for c: CharacterData in gs.roster:
+		for mv: MoveData in c.moves:
+			if mv.cinematic != &"" and scene_owners.has(String(mv.cinematic)) and not scene_owners[String(mv.cinematic)].has(String(c.id)):
+				scene_owners[String(mv.cinematic)].append(String(c.id))
+	var snd_pairs := {}
+	for scene_name: String in scene_sounds:
+		for fid in scene_owners[scene_name]:
+			for sn in scene_sounds[scene_name]:
+				snd_pairs[fid + "/" + sn] = true
+	for file in DirAccess.get_files_at("res://scripts/supers/victory"):
+		if file.ends_with(".gd"):
+			var src := FileAccess.get_file_as_string("res://scripts/supers/victory/" + file)
+			var fid := file.get_basename()
+			for m in snd_re.search_all(src):
+				snd_pairs[fid + "/" + m.get_string(1)] = true
+			for m in pre_re.search_all(src):
+				for sn in scene_sounds.get(m.get_string(1), []):
+					snd_pairs[fid + "/" + sn] = true
+	var missing_snd := []
+	for pair: String in snd_pairs:
+		var found := false
+		for ext: String in [".ogg", ".wav"]:
+			if ResourceLoader.exists("res://assets/audio/supers/" + pair + ext):
+				found = true
+		if not found:
+			missing_snd.append(pair)
+	missing_snd.sort()
+	check("Every super/victory sound() resolves to a file", not snd_pairs.is_empty() and missing_snd.is_empty(),
+		"%d (fighter/name) pairs, missing: %s" % [snd_pairs.size(), ", ".join(missing_snd)])
 	gs.use_engine_content()
 	change_scene_to_file("res://scenes/main_menu.tscn")
 	await process_frame; await process_frame
