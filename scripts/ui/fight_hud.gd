@@ -10,6 +10,7 @@ signal restart_pressed
 signal character_select_pressed
 signal main_menu_pressed
 
+const HOW_TO_PLAY_SCRIPT := preload("res://scripts/ui/how_to_play.gd")
 const TRAIL_DELAY := 0.45
 const TRAIL_DRAIN_TIME := 0.35
 const PIP_SIZE := Vector2(22, 22)
@@ -128,6 +129,7 @@ func _ready() -> void:
 		hide_pause()
 		restart_pressed.emit())
 	%MoveListButton.toggled.connect(func(on: bool) -> void: move_list_panel.visible = on)
+	%HowToPlayButton.pressed.connect(show_how_to_play)
 	%PauseSelectButton.pressed.connect(func() -> void: character_select_pressed.emit())
 	%PauseMenuButton.pressed.connect(func() -> void: main_menu_pressed.emit())
 
@@ -190,37 +192,16 @@ func _style_top() -> void:
 	_build_move_list()
 
 
-## Newcomer help: the controls in a glass pill near the bottom for a few seconds, the first
-## fight of each session only (laptop players rarely open the Controls screen first).
-static var _controls_hint_shown := false
-
-
-func show_controls_hint(text: String) -> void:
-	if _controls_hint_shown:
-		return
-	_controls_hint_shown = true
-	var panel := PanelContainer.new()
-	panel.name = "ControlsHint"
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_theme_stylebox_override("panel", UiStyle.glass_panel(18.0))
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 22)
-	label.add_theme_color_override("font_color", Color(0.92, 0.94, 0.97))
-	panel.add_child(label)
-	panel.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	panel.offset_bottom = -90
-	panel.modulate.a = 0.0
-	add_child(panel)
-	var tween := create_tween()
-	tween.tween_interval(1.2)
-	tween.tween_property(panel, "modulate:a", 1.0, 0.35)
-	tween.tween_interval(6.0)
-	tween.tween_property(panel, "modulate:a", 0.0, 0.6)
-	tween.tween_callback(panel.queue_free)
+## The friendly controls card, from the pause menu ("How to play"). The first-launch
+## card is opened by FightManager before the first fight; both share HowToPlay.
+func show_how_to_play() -> Node:
+	var existing := get_node_or_null("HowToPlay")
+	if existing:
+		return existing
+	var screen := HOW_TO_PLAY_SCRIPT.new()
+	screen.name = "HowToPlay"
+	add_child(screen)
+	return screen
 
 
 ## `p2_tag` labels P2: "CPU", "P2" (versus, which also tags P1) or "Dummy".
